@@ -58,6 +58,10 @@ func GetAutoRegistration() bool {
 	return CONF.AutoRegistration
 }
 
+func GetHttpNet() *HttpNet {
+	return CONF.HttpNet
+}
+
 func GetGateWay() *GateWay {
 	return GetConfig().GateWay
 }

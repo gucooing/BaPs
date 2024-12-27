@@ -3,31 +3,34 @@ package protocol
 import (
 	"encoding/json"
 	"errors"
+
+	"github.com/gucooing/BaPs/mx"
+	"github.com/gucooing/BaPs/mx/cmd"
 )
 
 type NetworkProtocol struct {
-	Packet   string // 包数据
-	Protocol string // 协议名称
+	Packet   string `json:"packet"`   // 包数据
+	Protocol string `json:"protocol"` // 协议名称
 }
 
-func Unmarshal(b []byte, m Message) (string, error) {
-	if m == nil {
-		return "", errors.New("message nil")
-	}
+// Unmarshal 解码
+func Unmarshal(b []byte) (mx.Message, error) {
 	network := new(NetworkProtocol)
 	err := json.Unmarshal(b, network)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	err = json.Unmarshal([]byte(network.Packet), m)
+	packet := cmd.Get().GetRequestPacketByCmdId(network.Protocol)
+	err = json.Unmarshal([]byte(network.Packet), packet)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return network.Protocol, nil
+	return packet, nil
 }
 
-func Marshal(m Message) ([]byte, error) {
+// Marshal 编码
+func Marshal(m mx.Message) (*NetworkProtocol, error) {
 	if m == nil {
 		return nil, errors.New("message nil")
 	}
@@ -40,5 +43,5 @@ func Marshal(m Message) ([]byte, error) {
 		Protocol: m.GetProtocolValue(),
 	}
 
-	return json.Marshal(v)
+	return v, nil
 }

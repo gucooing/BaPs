@@ -2,38 +2,61 @@ package gateway
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/gucooing/BaPs/mx"
 	"github.com/gucooing/BaPs/mx/protocol"
+	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
 )
 
-func NewGateWay(router *gin.Engine) {
-	api := router.Group("/api")
+type Gateway struct {
+	router *gin.Engine
+	snow   *alg.SnowflakeWorker
+}
+
+func NewGateWay(router *gin.Engine) *Gateway {
+	g := &Gateway{
+		router: router,
+		snow:   alg.NewSnowflakeWorker(16),
+	}
+	g.initRouter()
+
+	return g
+}
+
+func (g *Gateway) initRouter() {
+	g.router.POST("/getEnterTicket/gateway", g.getEnterTicket)
+	api := g.router.Group("/api")
 	{
-		api.POST("/gateway", gateway)
+		api.POST("/gateway", g.gateWay)
 	}
 }
 
-func gateway(c *gin.Context) {
-	if c.GetHeader("user-agent") != "BestHTTP/2 v2.4.0" ||
-		c.GetHeader("accept-encoding") != "gzip" {
-		return
-	}
-	file, err := c.FormFile("mx")
+func (g *Gateway) send(c *gin.Context, n mx.Message) {
+	rsp, err := protocol.Marshal(n)
 	if err != nil {
-		logger.Debug("", err.Error())
+		logger.Debug("marshal err:", err)
 		return
 	}
-	fileContent, err := file.Open()
+	c.JSON(200, rsp)
+}
+
+func (g *Gateway) gateWay(c *gin.Context) {
+	if !alg.CheckGateWay(c) {
+		c.JSON(404, gin.H{})
+		return
+	}
+	bin, err := alg.GetFormMx(c)
 	if err != nil {
-		logger.Debug("", err.Error())
+		c.JSON(404, gin.H{})
+		logger.Warn("get form mx error:", err)
 		return
 	}
-	bin := make([]byte, file.Size)
-	_, err = fileContent.Read(bin)
+	packet, err := protocol.Unmarshal(bin)
 	if err != nil {
+		c.JSON(404, gin.H{})
+		logger.Debug("unmarshal c--->s err:", err)
 		return
 	}
-	s, err := protocol.Decode(bin)
-	logger.Debug("c--->s:%s", s)
-	// YostarLoginToken 只能用一次！！！！！！！！！
+	logger.Debug("gateway c--->s :%s", string(bin))
+	g.registerMessage(c, packet)
 }
