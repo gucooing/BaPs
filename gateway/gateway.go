@@ -45,7 +45,7 @@ func (g *Gateway) gateWay(c *gin.Context) {
 		c.JSON(404, gin.H{})
 		return
 	}
-	bin, err := alg.GetFormMx(c)
+	bin, err := mx.GetFormMx(c)
 	if err != nil {
 		c.JSON(404, gin.H{})
 		logger.Warn("get form mx error:", err)

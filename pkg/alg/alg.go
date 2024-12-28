@@ -1,10 +1,7 @@
 package alg
 
 import (
-	"bytes"
-	"compress/gzip"
-	"errors"
-	"io"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,30 +20,10 @@ func CheckGateWay(c *gin.Context) bool {
 	return true
 }
 
-func GetFormMx(c *gin.Context) ([]byte, error) {
-	file, err := c.FormFile("mx")
-	if err != nil {
-		return nil, err
+func S2I64(msg string) int64 {
+	if msg == "" {
+		return 0
 	}
-	fileContent, err := file.Open()
-	if err != nil {
-		return nil, err
-	}
-	bin := make([]byte, file.Size)
-	_, err = fileContent.Read(bin)
-	if err != nil {
-		return nil, err
-	}
-	// 下面是解密
-	if len(bin) <= 12 {
-		return nil, errors.New("binary too short")
-	}
-	Xor(bin, []byte{0xD9})
-	z, err := gzip.NewReader(bytes.NewReader(bin[12:]))
-	if err != nil {
-		return nil, err
-	}
-	defer z.Close()
-	p, err := io.ReadAll(z)
-	return p, err
+	ms, _ := strconv.ParseUint(msg, 10, 32)
+	return int64(ms)
 }

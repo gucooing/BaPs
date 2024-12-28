@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -13,6 +14,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/config"
 	"github.com/gucooing/BaPs/db"
 	"github.com/gucooing/BaPs/gateway"
@@ -47,6 +49,12 @@ func NewBaPs() {
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	// 初始化数据库
 	db.NewPE(cfg.DB)
+	// 尝试保存硬盘中的玩家数据
+	if !enter.TaskUpDiskPlayerData() {
+		logger.Info("请检查硬盘中的玩家数据是否正确再启动")
+		logger.CloseLogger()
+		return
+	}
 	// 初始化gin
 	router, server := newGin(cfg.HttpNet)
 	// 初始化sdk
@@ -58,15 +66,20 @@ func NewBaPs() {
 	// 启动服务器
 	go func() {
 		if err = Run(cfg.HttpNet, server); err != nil {
-			logger.Error("服务器错误:%s", err.Error())
-			done <- syscall.SIGTERM
+			if !errors.Is(http.ErrServerClosed, err) {
+				logger.Error("服务器错误:%s", err.Error())
+				done <- syscall.SIGTERM
+			}
 		}
 	}()
 
 	// close
 	clo := func() {
-		_, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+		_, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 		defer cancel()
+		logger.Info("Max Close Time 5 Minute")
+		server.Close()
+		enter.UpAllDate()
 		logger.Info("BaPs Close")
 		logger.CloseLogger()
 		os.Exit(0)

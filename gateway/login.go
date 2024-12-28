@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/db"
+	"github.com/gucooing/BaPs/mx"
 	"github.com/gucooing/BaPs/mx/proto"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
@@ -17,7 +18,7 @@ func (g *Gateway) getEnterTicket(c *gin.Context) {
 		c.JSON(404, gin.H{})
 		return
 	}
-	bin, err := alg.GetFormMx(c)
+	bin, err := mx.GetFormMx(c)
 	if err != nil {
 		return
 	}

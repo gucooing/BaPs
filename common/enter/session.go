@@ -1,19 +1,30 @@
 package enter
 
 import (
+	"fmt"
+	"os"
+	"path/filepath"
 	"time"
+
+	sro "github.com/gucooing/BaPs/common/server_only"
+	"github.com/gucooing/BaPs/db"
+	"github.com/gucooing/BaPs/pkg/alg"
+	"github.com/gucooing/BaPs/pkg/logger"
+	pb "google.golang.org/protobuf/proto"
 )
 
 type Session struct {
 	AccountServerId int64
 	MxToken         string
 	Time            time.Time
+	PlayerBin       *sro.PlayerBin // 玩家数据
 }
 
 // 定时检查一次是否有用户长时间离线
 func (e *EnterSet) checkSession() {
 	for accountServerId, info := range GetAllSession() {
 		if time.Now().After(info.Time.Add(30 * time.Minute)) {
+			info.UpDate()
 			DelSession(accountServerId)
 		}
 	}
@@ -56,4 +67,96 @@ func DelSession(accountServerId int64) bool {
 		return true
 	}
 	return false
+}
+
+// AddSession 添加Session
+func AddSession(x *Session) bool {
+	if x == nil ||
+		x.AccountServerId == 0 {
+		return false
+	}
+	e := getEnterSet()
+	e.sessionSync.Lock()
+	defer e.sessionSync.Unlock()
+	if e.SessionMap == nil {
+		e.SessionMap = make(map[int64]*Session)
+	}
+	if _, ok := e.SessionMap[x.AccountServerId]; ok {
+		return false
+	}
+	e.SessionMap[x.AccountServerId] = x
+	return true
+}
+
+// UpAllDate 保存全部玩家数据
+func UpAllDate() {
+	for _, info := range GetAllSession() {
+		info.UpDate()
+	}
+}
+
+// UpDate 保存玩家数据
+func (x *Session) UpDate() bool {
+	var fin = true
+	defer func() {
+		if !fin {
+			logger.Debug("玩家:%v,数据保存失败,数据保存将到服务端硬盘,将在下次启动时尝试写入数据库", x.AccountServerId)
+			if err := x.upDataDisk(); err != nil {
+				logger.Debug("玩家:%v,数据保存将到服务端硬盘失败,失败原因:%s", x.AccountServerId, err.Error())
+			}
+		}
+	}()
+	bin, err := pb.Marshal(x.PlayerBin)
+	if err != nil {
+		fin = false
+		return false
+	}
+	data := &db.YostarGame{
+		AccountServerId: x.AccountServerId,
+		BinData:         bin,
+	}
+	if err = db.UpdateYostarGame(data); err != nil {
+		fin = false
+		return false
+	}
+	return true
+}
+
+func (x *Session) upDataDisk() error {
+	bin, err := pb.Marshal(x.PlayerBin)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(fmt.Sprintf("./player/%v.bin", x.AccountServerId), bin, 0644)
+	return err
+}
+
+// TaskUpDiskPlayerData 保存上次保存失败的数据到数据库中
+func TaskUpDiskPlayerData() bool {
+	files, err := filepath.Glob(filepath.Join("./player/", "*.bin"))
+	if err != nil {
+		return true
+	}
+	logger.Info("尝试保存本地玩家数据")
+	for _, file := range files {
+		bin, err := os.ReadFile(file)
+		if err != nil {
+			logger.Error("读取本地玩家数据失败:%s", err.Error())
+			return false
+		}
+		accountServerId := alg.S2I64(filepath.Base(file))
+		if accountServerId == 0 {
+			logger.Error("本地玩家数据文件名错误,文件:%s", file)
+			return false
+		}
+		data := &db.YostarGame{
+			AccountServerId: accountServerId,
+			BinData:         bin,
+		}
+		if err = db.UpdateYostarGame(data); err != nil {
+			return false
+		}
+	}
+	logger.Info("保存本地玩家数据成功")
+	return true
 }
