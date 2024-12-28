@@ -41,7 +41,7 @@ func (s *SDK) YostarAuthRequest(c *gin.Context) {
 	}
 	logger.Debug("邮箱:%s,语言:%s,平台:%s 发起邮箱验证码登录", req.Account, req.AuthLang, req.Platform)
 	// 验证请求间隔是否过短
-	if code := s.code.GetCode(req.Account); code != 0 {
+	if code := s.code.GetCodeInfo(req.Account); code != nil {
 		logger.Debug("邮箱:%s,验证码还未过期/使用不刷新", req.Account)
 	} else {
 		newCode := alg.RandCode()
@@ -80,9 +80,14 @@ func (s *SDK) YostarAuthSubmit(c *gin.Context) {
 		return
 	}
 	// 验证验证码是否有效
-	if code := s.code.GetCode(req.Account); code == 0 ||
-		req.Code != code {
+	if code := s.code.GetCodeInfo(req.Account); code == nil ||
+		req.Code != code.Code {
 		rsp.Result = 100306
+		logger.Debug("邮箱:%s,无验证码", req.Account)
+		return
+	} else if req.Code != code.Code {
+		rsp.Result = 100307
+		code.FialNum++
 		logger.Debug("邮箱:%s,验证码无效:%v", req.Account, req.Code)
 		return
 	}

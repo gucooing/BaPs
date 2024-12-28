@@ -6,14 +6,17 @@ import (
 	"time"
 )
 
+var MaxFialNum = 5
+
 type Code struct {
 	codeMap  map[string]*CodeInfo // 验证码字典
 	codeSync sync.RWMutex
 }
 
 type CodeInfo struct {
-	code    int32     // 验证码
+	Code    int32     // 验证码
 	endTime time.Time // 到期时间
+	FialNum int
 }
 
 func NewCode() *Code {
@@ -36,22 +39,23 @@ func (x *Code) CheckCodeTime() {
 	}
 }
 
-// GetCode 通过邮箱获取缓存的验证码
-func (x *Code) GetCode(account string) int32 {
+// GetCodeInfo 通过邮箱获取缓存的验证码
+func (x *Code) GetCodeInfo(account string) *CodeInfo {
 	if x == nil {
-		return 0
+		return nil
 	}
 	x.codeSync.RLock()
 	defer x.codeSync.RUnlock()
 	code, ok := x.codeMap[account]
 	if !ok {
-		return 0
+		return nil
 	}
-	if !code.endTime.After(time.Now()) {
+	if !code.endTime.After(time.Now()) ||
+		code.FialNum >= MaxFialNum {
 		delete(x.codeMap, account)
-		return 0
+		return nil
 	}
-	return code.code
+	return code
 }
 
 // GetAllCode 获取全部已缓存的验证码
@@ -71,12 +75,12 @@ func (x *Code) GetAllCode() map[string]*CodeInfo {
 // SetCode 设置邮箱的验证码 直接刷新
 func (x *Code) SetCode(account string, code int32) error {
 	if x == nil {
-		return errors.New("code is nil")
+		return errors.New("Code is nil")
 	}
 	x.codeSync.Lock()
 	defer x.codeSync.Unlock()
 	x.codeMap[account] = &CodeInfo{
-		code:    code,
+		Code:    code,
 		endTime: time.Now().Add(30 * time.Minute), // 30分钟有效期
 	}
 	return nil
