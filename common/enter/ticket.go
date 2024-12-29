@@ -60,6 +60,9 @@ func GetEnterTicketInfo(ticker string) *TicketInfo {
 	e.ticketSync.RLock()
 	defer e.ticketSync.RUnlock()
 	if info, ok := e.EnterTicketMap[ticker]; ok {
+		if time.Now().After(info.EndTime) {
+			return nil
+		}
 		return info
 	}
 	return nil

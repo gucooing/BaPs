@@ -8,6 +8,7 @@ import (
 
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/db"
+	"github.com/gucooing/BaPs/mx"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
 	pb "google.golang.org/protobuf/proto"
@@ -16,14 +17,14 @@ import (
 type Session struct {
 	AccountServerId int64
 	MxToken         string
-	Time            time.Time
+	EndTime         time.Time
 	PlayerBin       *sro.PlayerBin // 玩家数据
 }
 
 // 定时检查一次是否有用户长时间离线
 func (e *EnterSet) checkSession() {
 	for accountServerId, info := range GetAllSession() {
-		if time.Now().After(info.Time.Add(30 * time.Minute)) {
+		if time.Now().After(info.EndTime) {
 			info.UpDate()
 			DelSession(accountServerId)
 		}
@@ -40,6 +41,39 @@ func (e *EnterSet) checkSessionRepeat(accountServerId int64) {
 	if _, ok := e.SessionMap[accountServerId]; ok {
 		delete(e.SessionMap, accountServerId)
 	}
+}
+
+// GetSessionBySessionKey 获取指定在线玩家
+func GetSessionBySessionKey(sessionKey *mx.SessionKey) *Session {
+	if sessionKey == nil ||
+		sessionKey.AccountServerId == 0 ||
+		sessionKey.MxToken == "" {
+		return nil
+	}
+	e := getEnterSet()
+	e.sessionSync.RLock()
+	defer e.sessionSync.RUnlock()
+	if info, ok := e.SessionMap[sessionKey.AccountServerId]; ok {
+		if info.MxToken != sessionKey.MxToken {
+			return nil
+		}
+		return info
+	}
+	return nil
+}
+
+// GetSessionByAccountServerId 获取指定在线玩家
+func GetSessionByAccountServerId(accountServerId int64) *Session {
+	if accountServerId == 0 {
+		return nil
+	}
+	e := getEnterSet()
+	e.sessionSync.RLock()
+	defer e.sessionSync.RUnlock()
+	if info, ok := e.SessionMap[accountServerId]; ok {
+		return info
+	}
+	return nil
 }
 
 // GetAllSession 获取全部在线玩家

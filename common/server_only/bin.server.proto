@@ -7,4 +7,5 @@ option go_package = "./;proto";
 import "enum.server.proto";
 
 message PlayerBin {
+  int64 account_id = 1; // 账号id
 }

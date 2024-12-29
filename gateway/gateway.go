@@ -9,8 +9,9 @@ import (
 )
 
 type Gateway struct {
-	router *gin.Engine
-	snow   *alg.SnowflakeWorker
+	router       *gin.Engine
+	snow         *alg.SnowflakeWorker
+	funcRouteMap map[int32]handlerFunc
 }
 
 func NewGateWay(router *gin.Engine) *Gateway {
@@ -24,6 +25,7 @@ func NewGateWay(router *gin.Engine) *Gateway {
 }
 
 func (g *Gateway) initRouter() {
+	g.newFuncRouteMap()
 	g.router.POST("/getEnterTicket/gateway", g.getEnterTicket)
 	api := g.router.Group("/api")
 	{
@@ -32,7 +34,7 @@ func (g *Gateway) initRouter() {
 }
 
 func (g *Gateway) send(c *gin.Context, n mx.Message) {
-	rsp, err := protocol.Marshal(n)
+	rsp, err := protocol.MarshalResponse(n)
 	if err != nil {
 		logger.Debug("marshal err:", err)
 		return
@@ -42,21 +44,24 @@ func (g *Gateway) send(c *gin.Context, n mx.Message) {
 
 func (g *Gateway) gateWay(c *gin.Context) {
 	if !alg.CheckGateWay(c) {
-		c.JSON(404, gin.H{})
+		errBestHTTP(c)
 		return
 	}
 	bin, err := mx.GetFormMx(c)
 	if err != nil {
-		c.JSON(404, gin.H{})
+		errBestHTTP(c)
 		logger.Warn("get form mx error:", err)
 		return
 	}
-	packet, err := protocol.Unmarshal(bin)
+	packet, base, err := protocol.UnmarshalRequest(bin)
 	if err != nil {
-		c.JSON(404, gin.H{})
-		logger.Debug("unmarshal c--->s err:", err)
+		errBestHTTP(c)
+		logger.Debug("unmarshal c--->s err:%s", err)
 		return
 	}
-	logger.Debug("gateway c--->s :%s", string(bin))
-	g.registerMessage(c, packet)
+	g.registerMessage(c, packet, base)
+}
+
+func errBestHTTP(c *gin.Context) {
+	c.JSON(404, gin.H{})
 }
