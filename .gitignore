@@ -27,3 +27,5 @@ go.work.sum
 /build
 /test
 /mx
+/common/server_only/google
+/tools

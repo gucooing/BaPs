@@ -56,7 +56,7 @@ func (g *Gateway) gateWay(c *gin.Context) {
 	packet, base, err := protocol.UnmarshalRequest(bin)
 	if err != nil {
 		errBestHTTP(c)
-		logger.Debug("unmarshal c--->s err:%s", err)
+		logger.Debug("unmarshal c--->s err:%s,json:%s", err, string(bin))
 		return
 	}
 	g.registerMessage(c, packet, base)

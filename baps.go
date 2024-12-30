@@ -18,6 +18,7 @@ import (
 	"github.com/gucooing/BaPs/config"
 	"github.com/gucooing/BaPs/db"
 	"github.com/gucooing/BaPs/gateway"
+	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
 	"github.com/gucooing/BaPs/sdk"
 )
@@ -62,7 +63,7 @@ func NewBaPs() {
 	// 初始化gateWay
 	gateway.NewGateWay(router)
 	// 初始化资源文件
-
+	gdconf.LoadGameConfig(cfg.DataPath, cfg.ResourcesPath)
 	// 启动服务器
 	go func() {
 		if err = Run(cfg.HttpNet, server); err != nil {

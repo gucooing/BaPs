@@ -5,7 +5,21 @@ package proto;
 option go_package = "./;proto";
 
 import "enum.server.proto";
+import "google/protobuf/timestamp.proto";
 
 message PlayerBin {
+    BasePlayer base_bin = 1; // 基础信息
+    AcademyBin academy_bin = 2; // 学院信息
+}
+
+message BasePlayer {
   int64 account_id = 1; // 账号id
+  int32 level = 2; // 账号等级
+  string nickname = 3; // 账号昵称
+  google.protobuf.Timestamp create_date = 4; // 账号创建时间
+  google.protobuf.Timestamp last_connect_time = 5; // 上次登录时间
+}
+
+message AcademyBin {
+
 }

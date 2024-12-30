@@ -5,9 +5,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/common/enter"
-	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/mx"
 	"github.com/gucooing/BaPs/mx/cmd"
+	"github.com/gucooing/BaPs/pack"
 	"github.com/gucooing/BaPs/pkg/logger"
 )
 
@@ -15,8 +15,12 @@ type handlerFunc func(s *enter.Session, request, response mx.Message)
 
 func (g *Gateway) newFuncRouteMap() {
 	g.funcRouteMap = map[int32]handlerFunc{
-		mx.Protocol_Account_CheckYostar: g.AccountCheckYostar, // 验证EnterTicket
-		mx.Protocol_Account_Auth:        game.AccountAuth,     // 账号验证
+		mx.Protocol_Account_CheckYostar:        g.AccountCheckYostar,           // 验证EnterTicket
+		mx.Protocol_Account_Auth:               pack.AccountAuth,               // 账号验证
+		mx.Protocol_Account_Nickname:           pack.AccountNickname,           // 设置昵称
+		mx.Protocol_ProofToken_RequestQuestion: pack.ProofTokenRequestQuestion, // 验证登录token
+		mx.Protocol_NetworkTime_Sync:           pack.NetworkTimeSync,           // 同步时间
+		mx.Protocol_Academy_GetInfo:            pack.AcademyGetInfo,            // 获取学院信息
 	}
 }
 

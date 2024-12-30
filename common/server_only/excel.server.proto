@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "./;proto";
+
+// 请使用帕斯卡命名规则
+
+message Excel {
+  CafeInfoExcelTableInfo CafeInfoExcelTableInfo = 1;
+}
+
+message CafeInfoExcelTableInfo {
+  repeated CafeInfoExcelTable OrigCafeInfoExcelTable =1;
+  map<int32,CafeInfoExcelTable> CafeInfoExcelTables = 2;
+}
+
+message CafeInfoExcelTable {
+  int32 CafeId = 1;
+  bool IsDefault = 2;
+  string OpenConditionCafeId = 3;
+  string OpenConditionCafeInvite = 4;
+}

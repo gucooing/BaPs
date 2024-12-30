@@ -9,6 +9,7 @@ import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/db"
 	"github.com/gucooing/BaPs/mx"
+	"github.com/gucooing/BaPs/mx/proto"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
 	pb "google.golang.org/protobuf/proto"
@@ -18,6 +19,7 @@ type Session struct {
 	AccountServerId int64
 	MxToken         string
 	EndTime         time.Time
+	AccountState    proto.AccountState
 	PlayerBin       *sro.PlayerBin // 玩家数据
 }
 
@@ -27,6 +29,7 @@ func (e *EnterSet) checkSession() {
 		if time.Now().After(info.EndTime) {
 			info.UpDate()
 			DelSession(accountServerId)
+			logger.Debug("AccountId:%v,超时离线", accountServerId)
 		}
 	}
 }
