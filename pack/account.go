@@ -32,3 +32,16 @@ func AccountNickname(s *enter.Session, request, response mx.Message) {
 func ProofTokenRequestQuestion(s *enter.Session, request, response mx.Message) {}
 
 func NetworkTimeSync(s *enter.Session, request, response mx.Message) {}
+
+func AccountLoginSync(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.AccountLoginSyncRequest)
+	rsp := response.(*proto.AccountLoginSyncResponse)
+	for _, cmdId := range req.SyncProtocols {
+		switch cmdId {
+		case proto.Protocol_Cafe_Get:
+			rsp.CafeGetInfoResponse = &proto.CafeGetInfoResponse{}
+		case proto.Protocol_Account_CurrencySync:
+			
+		}
+	}
+}
