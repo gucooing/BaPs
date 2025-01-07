@@ -26,6 +26,6 @@ go.work.sum
 .idea
 /build
 /test
-/mx
 /common/server_only/google
 /tools
+/mx/protot
