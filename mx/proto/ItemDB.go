@@ -4,7 +4,8 @@ package proto
 
 type ItemDB struct{
     Type ParcelType
-    IsNew bool
-    IsLocked bool
+    ServerId int64
+    UniqueId int64
+    StackCount int32
 }
 

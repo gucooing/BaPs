@@ -10,6 +10,6 @@ type AccountCurrencyDB struct{
     AccountLevel int64
     AcademyLocationRankSum int64
     CurrencyDict map[CurrencyTypes]int64
-    UpdateTimeDict map[CurrencyTypes]*time.Time
+    UpdateTimeDict map[CurrencyTypes]time.Time
 }
 

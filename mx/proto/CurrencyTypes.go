@@ -2,7 +2,7 @@
 
 package proto
 
-type CurrencyTypes int32
+type CurrencyTypes string
 
 const (
     CurrencyTypes_Invalid = 0
@@ -101,7 +101,7 @@ var (
    }
 )
 
-func (x CurrencyTypes) String() string {
-  return CurrencyTypes_name[int32(x)]
+func (x CurrencyTypes) Value(v int32) string {
+  return CurrencyTypes_name[v]
 }
 

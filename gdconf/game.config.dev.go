@@ -23,6 +23,8 @@ func (g *GameConfig) LoadExcel() {
 	g.Excel = new(sro.Excel)
 	g.loadFunc = []func(){
 		g.loadCafeInfoExcelTable,
+		g.loadDefaultCharacterExcelTable,
+		g.loadCharacterExcelTable,
 	}
 
 	for _, fn := range g.loadFunc {

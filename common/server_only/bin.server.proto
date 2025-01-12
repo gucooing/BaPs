@@ -10,7 +10,13 @@ import "google/protobuf/timestamp.proto";
 message PlayerBin {
     BasePlayer base_bin = 1; // 基础信息
     AcademyBin academy_bin = 2; // 学院信息
+    CafeBin cafe_bin = 3; // 咖啡馆信息
+    CurrencyBin currency_bin = 4; // 货币
+    CharacterBin character_bin = 5; // 角色信息
+    ItemBin item_bin = 6; // 背包物品
 }
+
+// 基础信息
 
 message BasePlayer {
   int64 account_id = 1; // 账号id
@@ -20,6 +26,60 @@ message BasePlayer {
   google.protobuf.Timestamp last_connect_time = 5; // 上次登录时间
 }
 
+// 学院信息
+
 message AcademyBin {
+
+}
+
+// 咖啡馆信息
+
+message CafeBin { // 咖啡馆信息
+  map<int64,CafeInfo> cafe_info_list = 1; // 咖啡馆集合
+}
+
+message CafeInfo { // 单独咖啡馆信息
+  int64 cafe_id = 1; // 咖啡馆id
+  int64 lase_update_time = 2; // 最近一次更新时间
+  int32 cafe_rank = 3; // 等级
+  int64 production_applied_time = 4; // 生产开始时间？
+}
+
+// 货币
+
+message CurrencyBin {
+  map<int32,CurrencyInfo> Currency_info_list = 1;
+}
+
+message CurrencyInfo {
+  int32 currency_id = 1;
+  int64 currency_num = 2;
+  int64 update_time = 3;
+}
+
+// 角色信息
+
+message CharacterBin {
+  map<int64,CharacterInfo> character_info_list = 1; // 角色数据
+}
+
+message CharacterInfo {
+  int64 character_id = 1; // 角色id
+  int32 level = 2; // 等级
+  int64 exp = 3; // 经验
+  int32 favor_rank = 4; // 好感度等级
+  int64 favor_exp = 5; // 好感度经验
+  int32 star_grade = 6; // 星级
+  int32 ex_skill_level = 7; // ex 技能
+  int32 passive_skillLevel = 8;
+  int32 extra_passive_skillLevel = 9;
+  int32 common_skill_level = 10; // 基本技能
+  int32 leader_skill_level = 11;
+  map<string,int64> equipment_list = 12; // 装备
+}
+
+// 背包物品
+
+message ItemBin {
 
 }

@@ -11,7 +11,7 @@ import (
 func (g *GameConfig) loadCafeInfoExcelTable() {
 	g.Excel.CafeInfoExcelTableInfo = &sro.CafeInfoExcelTableInfo{
 		OrigCafeInfoExcelTable: make([]*sro.CafeInfoExcelTable, 0),
-		CafeInfoExcelTables:    make(map[int32]*sro.CafeInfoExcelTable),
+		CafeInfoExcelTables:    make(map[int64]*sro.CafeInfoExcelTable),
 	}
 	name := "CafeInfoExcelTable.json"
 	file, err := os.ReadFile(g.excelPath + name)
@@ -27,4 +27,12 @@ func (g *GameConfig) loadCafeInfoExcelTable() {
 		g.Excel.CafeInfoExcelTableInfo.CafeInfoExcelTables[v.CafeId] = v
 	}
 	logger.Info("文件:%s 读取成功,解析数量:%v", name, len(g.Excel.CafeInfoExcelTableInfo.CafeInfoExcelTables))
+}
+
+func GetCafeInfoExcelTables() map[int64]*sro.CafeInfoExcelTable {
+	if e := GC.GetExcel(); e == nil {
+		return nil
+	} else {
+		return e.GetCafeInfoExcelTableInfo().GetCafeInfoExcelTables()
+	}
 }

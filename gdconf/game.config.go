@@ -31,3 +31,10 @@ func LoadGameConfig(dataPath string, resPath string) *GameConfig {
 	logger.Info("读取资源完成,用时:%v秒", endTime-startTime)
 	return gc
 }
+
+func (g *GameConfig) GetExcel() *sro.Excel {
+	if g == nil {
+		return nil
+	}
+	return g.Excel
+}

@@ -7,17 +7,70 @@ option go_package = "./;proto";
 // 请使用帕斯卡命名规则
 
 message Excel {
-  CafeInfoExcelTableInfo CafeInfoExcelTableInfo = 1;
+  CafeInfoExcelTableInfo CafeInfoExcelTableInfo = 1;// 咖啡馆信息
+  DefaultCharacterExcelTable DefaultCharacterExcelTable = 2; // 默认角色信息
+  CharacterExcelTable CharacterExcelTable = 3; // 角色基本数据
 }
 
 message CafeInfoExcelTableInfo {
   repeated CafeInfoExcelTable OrigCafeInfoExcelTable =1;
-  map<int32,CafeInfoExcelTable> CafeInfoExcelTables = 2;
+  map<int64,CafeInfoExcelTable> CafeInfoExcelTables = 2;
 }
 
 message CafeInfoExcelTable {
-  int32 CafeId = 1;
+  int64 CafeId = 1;
   bool IsDefault = 2;
   string OpenConditionCafeId = 3;
   string OpenConditionCafeInvite = 4;
+}
+
+message DefaultCharacterExcelTable {
+  repeated DefaultCharacterExcel OrigCharacterExcelTable = 1;
+}
+
+message DefaultCharacterExcel {
+  int64 CharacterId = 1;
+  bool FavoriteCharacter = 2;
+  int32 Level = 3;
+  int64 Exp = 4;
+  int64 FavorExp = 5;
+  int32 FavorRank = 6;
+  int32 StarGrade = 7;
+  int32 ExSkillLevel = 8;
+  int32 PassiveSkillLevel = 9;
+  int32 ExtraPassiveSkillLevel = 10;
+  int32 CommonSkillLevel = 11;
+  int32 LeaderSkillLevel = 12;
+}
+
+message CharacterExcelTable {
+  repeated CharacterExcel OrigCharacterExcelTable = 1;
+  map<int64,CharacterExcel> CharacterExcelMap = 2;
+}
+
+message CharacterExcel {
+  int64 Id = 1;
+  string DevName =  2;
+  int64 CostumeGroupId = 3;
+  bool IsPlayable = 4;
+  string ProductionStep_ = 5;
+  bool CollectionVisible = 6;
+  bool IsPlayableCharacter = 7;
+  int64 LocalizeEtcId = 8;
+  string Rarity_ = 9;
+  int32 DefaultStarGrade = 10;
+  int32 MaxStarGrade = 11;
+  bool Jumpable = 12;
+  int32 PersonalityId = 13;
+  int32 CharacterAIId = 14;
+  string ScenarioCharacter = 15;
+  int32 FavorLevelupType = 16;
+  repeated string EquipmentSlot = 17;
+  float HpBarHeight = 18;
+  repeated string Tags = 19;
+  int32 SecretStoneItemId = 20;
+  int32 SecretStoneItemAmount = 21;
+  int32 CharacterPieceItemId = 22;
+  int32 CharacterPieceItemAmount = 23;
+  int32 CombineRecipeId = 24;
 }

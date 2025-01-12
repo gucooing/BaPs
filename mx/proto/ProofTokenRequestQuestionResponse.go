@@ -12,7 +12,8 @@ type ProofTokenRequestQuestionResponse struct{
 	message mx.ProtoMessage
 	ResponsePacket
 
-    
+	Hint int64
+	Question string
 }
 
 func (x *ProofTokenRequestQuestionResponse) String() string {

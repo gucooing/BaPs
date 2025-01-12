@@ -3,18 +3,37 @@ package game
 import (
 	"time"
 
+	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/alg"
+	"github.com/gucooing/BaPs/pkg/logger"
 )
+
+func GetDBId() int64 {
+	return 123456
+}
+
+func GetServerId() int64 {
+	return 987654
+}
 
 func NewYostarGame(accountId int64) *sro.PlayerBin {
 	bin := &sro.PlayerBin{
 		BaseBin: &sro.BasePlayer{
-			AccountId: accountId,
-			Level:     1,
-			Nickname:  "",
+			AccountId:  accountId,
+			Level:      1,
+			Nickname:   "",
 			CreateDate: alg.GetTimestampProto(time.Now()),
 		},
 	}
 	return bin
+}
+
+func GetPlayerBin(s *enter.Session) *sro.PlayerBin {
+	if s == nil ||
+		s.PlayerBin == nil {
+		logger.Error("数据损坏")
+		return nil
+	}
+	return s.PlayerBin
 }

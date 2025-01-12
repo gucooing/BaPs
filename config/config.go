@@ -66,6 +66,14 @@ func GetGateWay() *GateWay {
 	return GetConfig().GateWay
 }
 
+func GetIsLogMsgPlayer() bool {
+	return CONF.GateWay.IsLogMsgPlayer
+}
+
+func GetBlackCmd() map[string]bool {
+	return CONF.GateWay.BlackCmd
+}
+
 var FileNotExist = errors.New("config file not found")
 
 func LoadConfig() error {

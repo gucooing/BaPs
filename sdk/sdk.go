@@ -42,7 +42,7 @@ func (s *SDK) initRouter() {
 
 	gucooingApi := s.router.Group("/gucooing/api", s.autoGucooingApi())
 	{
-		gucooingApi.GET("/getEmailCode", s.getEmailCode)
+		gucooingApi.GET("/ba/getEmailCode", s.getEmailCode)
 	}
 }
 

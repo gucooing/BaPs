@@ -12,7 +12,7 @@ type AccountLoginSyncResponse struct{
 	message mx.ProtoMessage
 	ResponsePacket
 
-    Responses *ResponsePacket
+    // Responses *ResponsePacket
     CafeGetInfoResponse *CafeGetInfoResponse
     AccountCurrencySyncResponse *AccountCurrencySyncResponse
     CharacterListResponse *CharacterListResponse
