@@ -28,7 +28,5 @@ go.work.sum
 /test
 /common/server_only/google
 /tools
-/mx/protot
 /mx/prototemp
-/mx
 /bin
