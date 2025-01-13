@@ -14,7 +14,7 @@ func GetDBId() int64 {
 }
 
 func GetServerId() int64 {
-	return 987654
+	return 1864403355
 }
 
 func NewYostarGame(accountId int64) *sro.PlayerBin {

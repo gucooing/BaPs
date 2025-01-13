@@ -18,7 +18,7 @@ func NewCurrency() *sro.CurrencyBin {
 }
 
 var DefaultCurrencyNum = map[int32]int64{
-	proto.CurrencyTypes_Gold:                      1000,
+	proto.CurrencyTypes_Gold:                      10000,
 	proto.CurrencyTypes_GemPaid:                   0,
 	proto.CurrencyTypes_GemBonus:                  600,
 	proto.CurrencyTypes_Gem:                       600,
@@ -49,7 +49,8 @@ var DefaultCurrencyNum = map[int32]int64{
 }
 
 func NewCurrencyInfo(currencyId int32) *sro.CurrencyInfo {
-	if currencyId == 0 {
+	if currencyId == proto.CurrencyTypes_Max ||
+		currencyId == proto.CurrencyTypes_Invalid {
 		return nil
 	}
 	currencyNum, ok := DefaultCurrencyNum[currencyId]
@@ -97,6 +98,7 @@ func GetAccountCurrencyDB(s *enter.Session) *proto.AccountCurrencyDB {
 		if db == nil {
 			continue
 		}
+		bin.CurrencyInfoList[id] = db
 		accountCurrencyDB.CurrencyDict[proto.CurrencyTypes(v)] = db.CurrencyNum
 		accountCurrencyDB.UpdateTimeDict[proto.CurrencyTypes(v)] = time.Unix(db.UpdateTime, 0)
 	}

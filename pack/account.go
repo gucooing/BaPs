@@ -45,7 +45,6 @@ func AccountLoginSync(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.AccountLoginSyncResponse)
 
 	rsp.FriendCode = "BNAGBIES"
-	rsp.ServerNotification = proto.ServerNotificationFlag_HasUnreadMail
 	rsp.StaticOpenConditions = game.GetStaticOpenConditions(s)
 
 	for _, cmdId := range req.SyncProtocols {
@@ -59,7 +58,7 @@ func AccountLoginSync(s *enter.Session, request, response mx.Message) {
 			logger.Error("AccountLoginSync SyncProtocol Rsp failed:%v", cmdId)
 			continue
 		}
-		syncRsp.SetSessionKey(&mx.BasePacket{Protocol: int32(cmdId)})
+		syncRsp.SetSessionKey(rsp.BasePacket)
 		switch cmdId {
 		case proto.Protocol_Cafe_Get:
 			CafeGetInfo(s, syncReq, syncRsp)
@@ -175,10 +174,4 @@ func ContentSaveGet(s *enter.Session, request, response mx.Message) {
 
 func ProofTokenSubmit(s *enter.Session, request, response mx.Message) {
 
-}
-
-func AccountGetTutorial(s *enter.Session, request, response mx.Message) {
-	rsp := response.(*proto.AccountGetTutorialResponse)
-
-	rsp.TutorialIds = make([]int64, 0)
 }

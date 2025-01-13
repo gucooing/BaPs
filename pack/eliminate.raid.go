@@ -10,7 +10,6 @@ func EliminateRaidLogin(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.EliminateRaidLoginResponse)
 
 	rsp.SeasonType = proto.RaidSeasonType_Close
-	rsp.ServerNotification = proto.ServerNotificationFlag_HasUnreadMail
 }
 
 func MultiFloorRaidSync(s *enter.Session, request, response mx.Message) {

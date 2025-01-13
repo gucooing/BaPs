@@ -14,6 +14,7 @@ message PlayerBin {
     CurrencyBin currency_bin = 4; // 货币
     CharacterBin character_bin = 5; // 角色信息
     ItemBin item_bin = 6; // 背包物品
+    MissionBin mission_bin = 7; // 任务信息
 }
 
 // 基础信息
@@ -82,4 +83,10 @@ message CharacterInfo {
 
 message ItemBin {
 
+}
+
+// 任务信息
+
+message MissionBin{
+  map<int64,bool> tutorial_list = 1; // 已完成的教程
 }

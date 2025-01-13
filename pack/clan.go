@@ -14,3 +14,5 @@ func ClanLogin(s *enter.Session, request, response mx.Message) {
 		AccountId: s.AccountServerId,
 	}
 }
+
+func ClanCheck(s *enter.Session, request, response mx.Message) {}

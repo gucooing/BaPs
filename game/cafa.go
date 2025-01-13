@@ -55,11 +55,33 @@ func GetPbCafeDBs(s *enter.Session) []*proto.CafeDB {
 			ProductionAppliedTime: time.Unix(bin.ProductionAppliedTime, 0),
 			ProductionDB:          nil,
 		}
+
+		for _, id := range []int64{16000, 16007, 10031} {
+			db.CafeVisitCharacterDBs[id] = &proto.CafeCharacterDB{
+				UniqueId: id,
+			}
+		}
+
 		productionDB := &proto.CafeProductionDB{
-			CafeDBId:              GetDBId(),
-			ComfortValue:          0,
-			AppliedDate:           time.Time{},
-			ProductionParcelInfos: make([]*proto.CafeProductionParcelInfo, 0),
+			CafeDBId:     GetDBId(),
+			ComfortValue: 0,
+			AppliedDate:  time.Unix(bin.ProductionAppliedTime, 0),
+			ProductionParcelInfos: []*proto.CafeProductionParcelInfo{
+				{
+					Key: proto.ParcelKeyPair{
+						Type: proto.ParcelType_Currency,
+						Id:   1,
+					},
+					Amount: 0,
+				},
+				{
+					Key: proto.ParcelKeyPair{
+						Type: proto.ParcelType_Currency,
+						Id:   5,
+					},
+					Amount: 0,
+				},
+			},
 		}
 
 		db.ProductionDB = productionDB

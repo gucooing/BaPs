@@ -10,6 +10,7 @@ message Excel {
   CafeInfoExcelTableInfo CafeInfoExcelTableInfo = 1;// 咖啡馆信息
   DefaultCharacterExcelTable DefaultCharacterExcelTable = 2; // 默认角色信息
   CharacterExcelTable CharacterExcelTable = 3; // 角色基本数据
+  DefaultFurnitureExcelTable DefaultFurnitureExcelTable = 4; // 默认家具
 }
 
 message CafeInfoExcelTableInfo {
@@ -73,4 +74,12 @@ message CharacterExcel {
   int32 CharacterPieceItemId = 22;
   int32 CharacterPieceItemAmount = 23;
   int32 CombineRecipeId = 24;
+}
+
+message DefaultFurnitureExcelTable {
+  repeated  DefaultFurnitureExcel DefaultFurnitureExcelList = 1;
+}
+
+message DefaultFurnitureExcel {
+  
 }
