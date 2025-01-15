@@ -27,10 +27,8 @@ func (g *Gateway) newFuncRouteMap() {
 		proto.Protocol_Account_LoginSync:                    pack.AccountLoginSync,                    // 同步账号信息
 		proto.Protocol_Cafe_Get:                             pack.CafeGetInfo,                         // 获取咖啡馆信息
 		proto.Protocol_Account_CurrencySync:                 pack.AccountCurrencySync,                 // 同步账号货币
-		proto.Protocol_Character_List:                       pack.CharacterList,                       // 获取角色列表
 		proto.Protocol_Equipment_List:                       pack.EquipmentList,                       // 获取装备信息
 		proto.Protocol_CharacterGear_List:                   pack.CharacterGearList,                   // 获取角色??
-		proto.Protocol_Echelon_List:                         pack.EchelonList,                         // 获取队伍信息
 		proto.Protocol_MemoryLobby_List:                     pack.MemoryLobbyList,                     // 获取记忆大厅列表
 		proto.Protocol_Arena_Login:                          pack.ArenaLogin,                          // 登录获取竞技场信息
 		proto.Protocol_Raid_Login:                           pack.RaidLogin,                           // 登录获取总力站信息
@@ -54,6 +52,10 @@ func (g *Gateway) newFuncRouteMap() {
 		proto.Protocol_Mail_Check:                           pack.MailCheck,                           // 邮件检查
 		proto.Protocol_Friend_Check:                         pack.FriendCheck,                         // 好友检查
 		proto.Protocol_ContentLog_UIOpenStatistics:          pack.ContentLogUIOpenStatistics,          // 历史ui打开
+		// 角色
+		proto.Protocol_Character_List: pack.CharacterList, // 获取角色列表
+		// 队伍
+		proto.Protocol_Echelon_List: pack.EchelonList, // 获取队伍信息
 		// 基础
 		proto.Protocol_OpenCondition_EventList: pack.OpenConditionEventList, // 获取开放事件
 		// 剧情/教程
@@ -66,7 +68,7 @@ func (g *Gateway) newFuncRouteMap() {
 		proto.Protocol_Mission_Sync:                   pack.MissionSync,                // 同步任务/成就
 		proto.Protocol_Mission_GuideMissionSeasonList: pack.GuideMissionSeasonList,     // 获取指南任务信息
 		proto.Protocol_Scenario_Skip:                  pack.ScenarioSkip,               // 剧情跳过
-		proto.Protocol_Account_SetTutorial:            pack.AccountSetTutorial,         // 设置完成教程d
+		proto.Protocol_Account_SetTutorial:            pack.AccountSetTutorial,         // 设置完成教程
 		// 社团
 		proto.Protocol_Clan_Login: pack.ClanLogin, // 登录获取社团信息
 		proto.Protocol_Clan_Check: pack.ClanCheck, // 社团检查

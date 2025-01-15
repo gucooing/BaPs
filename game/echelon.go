@@ -200,7 +200,7 @@ func GetEchelonDB(s *enter.Session, db *sro.EchelonInfo) *proto.EchelonDB {
 	}
 	i = 1
 	for ; i <= GetCombatStyleNum(proto.EchelonType(db.EchelonType)); i++ {
-		info.SkillCardMulliganCharacterIds = append(info.SkillCardMulliganCharacterIds, 0)
+		info.CombatStyleIndex = append(info.CombatStyleIndex, 0)
 	}
 
 	return info
