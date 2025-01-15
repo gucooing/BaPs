@@ -7,18 +7,16 @@ option go_package = "./;proto";
 // 请使用帕斯卡命名规则
 
 message Excel {
-  CafeInfoExcelTableInfo CafeInfoExcelTableInfo = 1;// 咖啡馆信息
-  DefaultCharacterExcelTable DefaultCharacterExcelTable = 2; // 默认角色信息
-  CharacterExcelTable CharacterExcelTable = 3; // 角色基本数据
-  DefaultFurnitureExcelTable DefaultFurnitureExcelTable = 4; // 默认家具
+  repeated CafeInfoExcelTableInfo CafeInfoExcelTableInfo = 1;// 咖啡馆信息
+  repeated DefaultCharacterExcelTable DefaultCharacterExcelTable = 2; // 默认角色信息
+  repeated CharacterExcelTable CharacterExcelTable = 3; // 角色基本数据
+  repeated DefaultFurnitureExcelTable DefaultFurnitureExcelTable = 4; // 默认家具
+  repeated DefaultEchelonExcelTable DefaultEchelonExcelTable = 5; // 默认队伍
+  repeated ShopExcelTable ShopExcelTable = 6; // 商店数据
+  repeated ShopInfoExcelTable ShopInfoExcelTable = 7; // 商店配置
 }
 
 message CafeInfoExcelTableInfo {
-  repeated CafeInfoExcelTable OrigCafeInfoExcelTable =1;
-  map<int64,CafeInfoExcelTable> CafeInfoExcelTables = 2;
-}
-
-message CafeInfoExcelTable {
   int64 CafeId = 1;
   bool IsDefault = 2;
   string OpenConditionCafeId = 3;
@@ -26,10 +24,6 @@ message CafeInfoExcelTable {
 }
 
 message DefaultCharacterExcelTable {
-  repeated DefaultCharacterExcel OrigCharacterExcelTable = 1;
-}
-
-message DefaultCharacterExcel {
   int64 CharacterId = 1;
   bool FavoriteCharacter = 2;
   int32 Level = 3;
@@ -45,11 +39,6 @@ message DefaultCharacterExcel {
 }
 
 message CharacterExcelTable {
-  repeated CharacterExcel OrigCharacterExcelTable = 1;
-  map<int64,CharacterExcel> CharacterExcelMap = 2;
-}
-
-message CharacterExcel {
   int64 Id = 1;
   string DevName =  2;
   int64 CostumeGroupId = 3;
@@ -59,6 +48,7 @@ message CharacterExcel {
   bool IsPlayableCharacter = 7;
   int64 LocalizeEtcId = 8;
   string Rarity_ = 9;
+  bool IsNPC = 25;
   int32 DefaultStarGrade = 10;
   int32 MaxStarGrade = 11;
   bool Jumpable = 12;
@@ -69,17 +59,74 @@ message CharacterExcel {
   repeated string EquipmentSlot = 17;
   float HpBarHeight = 18;
   repeated string Tags = 19;
-  int32 SecretStoneItemId = 20;
+  int64 SecretStoneItemId = 20;
   int32 SecretStoneItemAmount = 21;
-  int32 CharacterPieceItemId = 22;
+  int64 CharacterPieceItemId = 22;
   int32 CharacterPieceItemAmount = 23;
-  int32 CombineRecipeId = 24;
+  int64 CombineRecipeId = 24;
 }
 
 message DefaultFurnitureExcelTable {
-  repeated  DefaultFurnitureExcel DefaultFurnitureExcelList = 1;
+  int64 Id = 1;
+  float PositionX = 2;
+  float PositionY = 3;
+  float Rotation = 4;
+  string Location = 5;
 }
 
-message DefaultFurnitureExcel {
-  
+message DefaultEchelonExcelTable{
+  int32 EchlonId = 1;
+  int64 LeaderId = 2;
+  repeated int64 MainId = 3;
+  repeated int64 SupportId = 4;
+  int64 TssId = 5;
+}
+
+message ShopExcelTable {
+  int64 Id = 1;
+  int64 LocalizeEtcId= 2;
+  string CategoryType = 3;
+  bool IsLegacy = 4;
+  repeated int64 GoodsId = 5;
+  int64 DisplayOrder = 6;
+  string SalePeriodFrom = 7;
+  string SalePeriodTo = 8;
+  int64 PurchaseCooltimeMin = 9;
+  int64 PurchaseCountLimit = 10;
+  string PurchaseCountResetType_ = 11;
+  string BuyReportEventName = 12;
+  bool RestrictBuyWhenInventoryFull = 13;
+  string DisplayTag = 14;
+  int64 ShopUpdateGroupId = 15;
+}
+
+message ShopInfoExcelTable {
+  string CategoryType = 1;
+  bool IsRefresh = 2;
+  bool IsSoldOutDimmed = 3;
+  repeated string CostParcelType = 4;
+  repeated int64 CostParcelId = 5;
+  int64 AutoRefreshCoolTime = 6;
+  int64 RefreshAbleCount = 7;
+  repeated int64 GoodsId = 8;
+  string OpenPeriodFrom = 9;
+  string OpenPeriodTo = 10;
+  string ShopProductUpdateTime = 11;
+  string DisplayParcelType = 12;
+  int64 DisplayParcelId = 13;
+  bool IsShopVisible = 14;
+  int64 DisplayOrder = 15;
+  int64 ShopUpdateDate = 16;
+  int64 ShopUpdateGroupId1 = 17;
+  int64 ShopUpdateGroupId2 = 18;
+  int64 ShopUpdateGroupId3 = 19;
+  int64 ShopUpdateGroupId4 = 20;
+  int64 ShopUpdateGroupId5 = 21;
+  int64 ShopUpdateGroupId6 = 22;
+  int64 ShopUpdateGroupId7 = 23;
+  int64 ShopUpdateGroupId8 = 24;
+  int64 ShopUpdateGroupId9 = 25;
+  int64 ShopUpdateGroupId10 = 26;
+  int64 ShopUpdateGroupId11 = 27;
+  int64 ShopUpdateGroupId12 = 28;
 }

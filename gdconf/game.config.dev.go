@@ -25,6 +25,10 @@ func (g *GameConfig) LoadExcel() {
 		g.loadCafeInfoExcelTable,
 		g.loadDefaultCharacterExcelTable,
 		g.loadCharacterExcelTable,
+		g.loadDefaultEchelonExcelTable,
+		g.loadDefaultFurnitureExcelTable,
+		g.loadShopExcelTable,
+		g.loadShopInfoExcelTable,
 	}
 
 	for _, fn := range g.loadFunc {

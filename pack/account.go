@@ -1,6 +1,8 @@
 package pack
 
 import (
+	"time"
+
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/mx"
@@ -14,13 +16,41 @@ func AccountAuth(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.AccountAuthResponse)
 
 	rsp.CurrentVersion = req.Version
+	rsp.BattleValidation = true
 	rsp.AccountDB = game.GetAccountDB(s)
+	rsp.StaticOpenConditions = game.GetStaticOpenConditions(s)
 	rsp.AttendanceBookRewards = game.GetAttendanceBookRewards(s)
+	rsp.AttendanceHistoryDBs = []*proto.AttendanceHistoryDB{
+		{
+			ServerId:               999,
+			AccountServerId:        s.AccountServerId,
+			AttendanceBookUniqueId: 1,
+			AttendedDay:            make(map[int64]*time.Time),
+			Expired:                false,
+		},
+		{
+			ServerId:               998,
+			AccountServerId:        s.AccountServerId,
+			AttendanceBookUniqueId: 22,
+			AttendedDay:            make(map[int64]*time.Time),
+			Expired:                false,
+		},
+	}
 
 	rsp.IssueAlertInfos = make([]*proto.IssueAlertInfoDB, 0)
-	rsp.StaticOpenConditions = game.GetStaticOpenConditions(s)
-	game.SetLastConnectTime(s)
+	rsp.OpenConditions = make([]*proto.OpenConditionDB, 0)
+	rsp.RepurchasableMonthlyProductCountDBs = make([]*proto.PurchaseCountDB, 0)
+	rsp.MonthlyProductParcel = make([]*proto.ParcelInfo, 0)
+	rsp.MonthlyProductMail = make([]*proto.ParcelInfo, 0)
+	rsp.BiweeklyProductParcel = make([]*proto.ParcelInfo, 0)
+	rsp.BiweeklyProductMail = make([]*proto.ParcelInfo, 0)
+	rsp.WeeklyProductParcel = make([]*proto.ParcelInfo, 0)
+	rsp.WeeklyProductMail = make([]*proto.ParcelInfo, 0)
+	rsp.EncryptedUID = "1"
+	rsp.AccountRestrictionsDB = &proto.AccountRestrictionsDB{}
+
 	s.AccountState = proto.AccountState_Normal
+	game.SetLastConnectTime(s)
 }
 
 func AccountNickname(s *enter.Session, request, response mx.Message) {
@@ -145,31 +175,8 @@ func AccountCurrencySync(s *enter.Session, request, response mx.Message) {
 	rsp.ExpiredCurrency = make(map[proto.CurrencyTypes]int64)
 }
 
-func EchelonList(s *enter.Session, request, response mx.Message) {
-	rsp := response.(*proto.EchelonListResponse)
-
-	rsp.EchelonDBs = make([]*proto.EchelonDB, 0)
-
-	echelonDB := &proto.EchelonDB{
-		AccountServerId:               s.AccountServerId,
-		EchelonType:                   proto.EchelonType_Adventure,
-		EchelonNumber:                 1,
-		ExtensionType:                 proto.EchelonExtensionType_Base,
-		LeaderServerId:                game.GetServerId(),
-		MainSlotServerIds:             []int64{game.GetServerId(), 0, 0, 0},
-		SupportSlotServerIds:          []int64{game.GetServerId(), 0},
-		TSSInteractionServerId:        0,
-		UsingFlag:                     0,
-		SkillCardMulliganCharacterIds: make([]int64, 0),
-		CombatStyleIndex:              []int{0, 0, 0, 0, 0, 0},
-	}
-	rsp.EchelonDBs = append(rsp.EchelonDBs, echelonDB)
-}
-
 func ContentSaveGet(s *enter.Session, request, response mx.Message) {
-	rsp := response.(*proto.ContentSaveGetResponse)
 
-	rsp.ServerNotification = proto.ServerNotificationFlag_HasUnreadMail
 }
 
 func ProofTokenSubmit(s *enter.Session, request, response mx.Message) {

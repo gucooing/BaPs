@@ -4,9 +4,6 @@ package proto;
 
 option go_package = "./;proto";
 
-import "enum.server.proto";
-import "google/protobuf/timestamp.proto";
-
 message PlayerBin {
     BasePlayer base_bin = 1; // 基础信息
     AcademyBin academy_bin = 2; // 学院信息
@@ -14,7 +11,11 @@ message PlayerBin {
     CurrencyBin currency_bin = 4; // 货币
     CharacterBin character_bin = 5; // 角色信息
     ItemBin item_bin = 6; // 背包物品
-    MissionBin mission_bin = 7; // 任务信息
+    MissionBin mission_bin = 7; // 剧情信息
+    int64 server_id = 8; // 唯一id计数器
+    EchelonBin echelon_bin = 9; // 队伍信息
+    GachaBin gacha_bin = 10; // 抽卡记录
+    CampaignBin Campaign_bin = 11; // 任务信息
 }
 
 // 基础信息
@@ -23,8 +24,8 @@ message BasePlayer {
   int64 account_id = 1; // 账号id
   int32 level = 2; // 账号等级
   string nickname = 3; // 账号昵称
-  google.protobuf.Timestamp create_date = 4; // 账号创建时间
-  google.protobuf.Timestamp last_connect_time = 5; // 上次登录时间
+  int64 create_date = 4; // 账号创建时间
+  int64 last_connect_time = 5; // 上次登录时间
 }
 
 // 学院信息
@@ -77,16 +78,81 @@ message CharacterInfo {
   int32 common_skill_level = 10; // 基本技能
   int32 leader_skill_level = 11;
   map<string,int64> equipment_list = 12; // 装备
+  int64 server_id = 13; //  唯一id
 }
 
 // 背包物品
 
 message ItemBin {
+  map<int64,ItemInfo> item_info_list = 1; // type 4
+}
 
+message ItemInfo {
+  int64 server_id = 1;
+  int64 unique_id = 2;
+  int32 stack_count = 3;
+}
+
+// 剧情信息
+
+message MissionBin{
+  map<int64,bool> tutorial_list = 1; // 已完成的教程
+  map<int64,ScenarioGroupHistoryInfo> scenario_group_history_info_list = 2; // 场景剧情完成信息
+  map<int64,ScenarioHistoryInfo> scenario_history_info_list = 3; // 剧情完成信息
+}
+
+message ScenarioGroupHistoryInfo {
+  int64 scenario_group_uqniue_id = 1;
+  int64 clear_date_time = 2;
+  int64 scenario_type = 3;
+  int64 event_content_id = 4;
+}
+
+message ScenarioHistoryInfo {
+  int64 scenario_unique_id = 1;
+  int64 clear_date_time = 2;
+}
+
+// 队伍信息
+
+message EchelonBin {
+  map<int32,EchelonTypeInfo> echelon_type_info_list = 1; // 队伍类型集合
+}
+
+message EchelonTypeInfo {
+  map<int64,EchelonInfo> echelon_info_list = 1; // 队伍集合
+  int64 echelon_num = 2; // 累积队伍序号
+}
+
+message EchelonInfo {
+  int32 echelon_type = 1; // 队伍类型
+  int32 extension_type = 2; // 拓展类型
+  int64 echelon_num = 3; // 队伍序号
+  int64 leader_character = 4; // 队长
+  map<int32,int64> main_character_list = 5; // 主要角色
+  map<int32,int64> support_character_list = 6; // 支援角色
+  map<int32,int64> skill_character_list = 7; // 优先释放技能角色
+  int64 tss_id = 8;
+}
+
+// 抽卡记录
+
+message GachaBin {
+    BeforehandInfo beforehand_info = 1; // 新手免费十连
+}
+
+message BeforehandInfo {
+  bool already_picked = 1;
+  int64 shop_unique_id = 2;
+  int64 last_index = 3; // max 9
+  int64 saved_index = 4;
+  repeated int64 last_results = 5;
+  repeated int64 saved_results = 6;
+  int64 goods_id = 7;
 }
 
 // 任务信息
 
-message MissionBin{
-  map<int64,bool> tutorial_list = 1; // 已完成的教程
+message CampaignBin {
+
 }

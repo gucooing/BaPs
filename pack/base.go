@@ -14,12 +14,6 @@ func MemoryLobbyList(s *enter.Session, request, response mx.Message) {
 	rsp.MemoryLobbyDBs = make([]*proto.MemoryLobbyDB, 0)
 }
 
-func CampaignList(s *enter.Session, request, response mx.Message) {
-	rsp := response.(*proto.CampaignListResponse)
-
-	rsp.StageHistoryDBs = make([]*proto.CampaignStageHistoryDB, 0)
-}
-
 func TimeAttackDungeonLogin(s *enter.Session, request, response mx.Message) {
 	// rsp := response.(*proto.TimeAttackDungeonLoginResponse)
 	//
@@ -129,4 +123,8 @@ func NotificationEventContentReddotCheck(s *enter.Session, request, response mx.
 
 	rsp.Reddots = make(map[int64][]proto.NotificationEventReddot)
 	rsp.EventContentUnlockCGDBs = make(map[int64][]*proto.EventContentCollectionDB)
+}
+
+func ContentLogUIOpenStatistics(s *enter.Session, request, response mx.Message) {
+
 }

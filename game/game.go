@@ -1,11 +1,11 @@
 package game
 
 import (
+	"math"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
-	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
 )
 
@@ -13,8 +13,16 @@ func GetDBId() int64 {
 	return 123456
 }
 
-func GetServerId() int64 {
-	return 1864403355
+func GetServerId(s *enter.Session) int64 {
+	if s == nil ||
+		s.PlayerBin == nil {
+		return 0
+	}
+	if s.PlayerBin.ServerId == math.MaxInt64 {
+		logger.Warn("[UID:%v]玩家唯一计数器达到最大值:%v", s.AccountServerId, s.PlayerBin.ServerId)
+	}
+	s.PlayerBin.ServerId++
+	return s.PlayerBin.ServerId
 }
 
 func NewYostarGame(accountId int64) *sro.PlayerBin {
@@ -23,7 +31,7 @@ func NewYostarGame(accountId int64) *sro.PlayerBin {
 			AccountId:  accountId,
 			Level:      1,
 			Nickname:   "",
-			CreateDate: alg.GetTimestampProto(time.Now()),
+			CreateDate: time.Now().Unix(),
 		},
 	}
 	return bin

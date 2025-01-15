@@ -20,5 +20,5 @@ type ResponsePacket struct {
 	ServerNotification         ServerNotificationFlag
 	MissionProgressDBs         []*MissionProgressDB
 	EventMissionProgressDBDict map[uint64][]*MissionProgressDB
-	StaticOpenConditions       map[string]int32 // map[OpenConditionContent]OpenConditionLockReason
+	StaticOpenConditions       map[string]int32 //   map[OpenConditionContent]OpenConditionLockReason
 }

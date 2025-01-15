@@ -119,6 +119,7 @@ func AddSession(x *Session) bool {
 		e.SessionMap = make(map[int64]*Session)
 	}
 	if _, ok := e.SessionMap[x.AccountServerId]; ok {
+		e.SessionMap[x.AccountServerId] = x
 		return false
 	}
 	e.SessionMap[x.AccountServerId] = x

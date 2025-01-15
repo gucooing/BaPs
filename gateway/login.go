@@ -70,6 +70,7 @@ func (g *Gateway) AccountCheckYostar(s *enter.Session, request, response mx.Mess
 	}
 	enter.DelEnterTicket(req.EnterTicket)
 	s = enter.GetSessionByAccountServerId(tickInfo.AccountServerId)
+	mxToken := fmt.Sprintf("%v%s", g.snow.GenId(), alg.RandStr(30))
 	if s == nil {
 		yostarGame := db.GetYostarGameByAccountServerId(tickInfo.AccountServerId)
 		if yostarGame == nil {
@@ -80,11 +81,8 @@ func (g *Gateway) AccountCheckYostar(s *enter.Session, request, response mx.Mess
 				return
 			}
 		}
-		mxToken := fmt.Sprintf("%v%s", g.snow.GenId(), alg.RandStr(30))
 		s = &enter.Session{
 			AccountServerId: tickInfo.AccountServerId,
-			MxToken:         mxToken,
-			EndTime:         time.Now().Add(30 * time.Minute),
 			PlayerBin:       new(sro.PlayerBin),
 		}
 		if yostarGame.BinData != nil {
@@ -93,10 +91,12 @@ func (g *Gateway) AccountCheckYostar(s *enter.Session, request, response mx.Mess
 			s.PlayerBin = game.NewYostarGame(tickInfo.AccountServerId)
 			logger.Debug("AccountServerId:%v,新玩家登录Game,创建新账号中", tickInfo.AccountServerId)
 		}
-		if !enter.AddSession(s) {
-			logger.Debug("AccountServerId:%v,重复上线账号", tickInfo.AccountServerId)
-			return
-		}
+	}
+	// 更新一次账号缓存
+	s.MxToken = mxToken
+	s.EndTime = time.Now().Add(30 * time.Minute)
+	if !enter.AddSession(s) {
+		logger.Debug("AccountServerId:%v,重复上线账号", tickInfo.AccountServerId)
 	}
 	rsp.ResultState = 1
 	base := &mx.BasePacket{

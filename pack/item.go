@@ -13,12 +13,14 @@ func ItemList(s *enter.Session, request, response mx.Message) {
 	rsp.ExpiryItemDBs = make([]*proto.ItemDB, 0)
 	rsp.ItemDBs = make([]*proto.ItemDB, 0)
 
-	rsp.ItemDBs = append(rsp.ItemDBs, &proto.ItemDB{
-		Type:       proto.ParcelType_Item,
-		ServerId:   game.GetServerId(),
-		UniqueId:   2,
-		StackCount: 5,
-	})
+	for _, conf := range game.GetItemList(s) {
+		rsp.ItemDBs = append(rsp.ItemDBs, &proto.ItemDB{
+			Type:       proto.ParcelType_Item,
+			ServerId:   conf.ServerId,
+			UniqueId:   conf.UniqueId,
+			StackCount: conf.StackCount,
+		})
+	}
 }
 
 func EquipmentList(s *enter.Session, request, response mx.Message) {

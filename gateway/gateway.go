@@ -63,5 +63,8 @@ func (g *Gateway) gateWay(c *gin.Context) {
 }
 
 func errBestHTTP(c *gin.Context) {
-	c.JSON(404, gin.H{})
+	c.JSON(200, gin.H{
+		"protocol": "Error",
+		"packet":   "{\"Protocol\":-1,\"ErrorCode\":500,\"ServerTimeTicks\":114514}",
+	})
 }

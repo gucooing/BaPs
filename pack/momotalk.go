@@ -12,9 +12,3 @@ func MomoTalkOutLine(s *enter.Session, request, response mx.Message) {
 	rsp.MomoTalkOutLineDBs = make([]*proto.MomoTalkOutLineDB, 0)
 	rsp.FavorScheduleRecords = make(map[int64][]int64)
 }
-
-func ScenarioList(s *enter.Session, request, response mx.Message) {
-	rsp := response.(*proto.ScenarioListResponse)
-
-	rsp.ScenarioGroupHistoryDBs = make([]*proto.ScenarioGroupHistoryDB, 0)
-}

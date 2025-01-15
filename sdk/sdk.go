@@ -43,6 +43,7 @@ func (s *SDK) initRouter() {
 	gucooingApi := s.router.Group("/gucooing/api", s.autoGucooingApi())
 	{
 		gucooingApi.GET("/ba/getEmailCode", s.getEmailCode)
+		gucooingApi.GET("/ba/getPlayerBin", s.getPlayerBin)
 	}
 }
 
@@ -57,6 +58,7 @@ func (s *SDK) autoGucooingApi() gin.HandlerFunc {
 		return func(c *gin.Context) {
 			if c.GetHeader("Authorization-Gucooing") != config.GetGucooingApiKey() {
 				c.String(401, "Unauthorized")
+				c.Abort()
 			}
 		}
 	}

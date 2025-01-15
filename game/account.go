@@ -5,7 +5,6 @@ import (
 
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/mx/proto"
-	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
 )
 
@@ -19,8 +18,8 @@ func GetAccountDB(s *enter.Session) *proto.AccountDB {
 		ServerId:        baseBin.GetAccountId(),
 		Nickname:        baseBin.GetNickname(),
 		Level:           baseBin.GetLevel(),
-		LastConnectTime: baseBin.GetLastConnectTime().AsTime(),
-		CreateDate:      baseBin.GetCreateDate().AsTime(),
+		LastConnectTime: time.Unix(baseBin.GetLastConnectTime(), 0),
+		CreateDate:      time.Unix(baseBin.GetCreateDate(), 0),
 		VIPLevel:        1,
 		State:           s.AccountState,
 
@@ -33,27 +32,7 @@ func GetAccountDB(s *enter.Session) *proto.AccountDB {
 }
 
 func GetAttendanceBookRewards(s *enter.Session) []*proto.AttendanceBookReward {
-	return []*proto.AttendanceBookReward{
-		{
-			UniqueId:          1,
-			Type:              0,
-			AccountType:       1,
-			DisplayOrder:      0,
-			AccountLevelLimit: 0,
-			Title:             "ATTENDANCEBOOK_NORMAL",
-			TitleImagePath:    "Uis/01_Common/33_Attendance/ImageFont_Attend_1",
-			CountRule:         0,
-			CountReset:        0,
-			BookSize:          10,
-			StartDate:         time.Date(2020, 11, 01, 00, 00, 00, 00, time.UTC),
-			StartableEndDate:  time.Time{},
-			EndDate:           time.Time{},
-			ExpiryDate:        0,
-			MailType:          1,
-			DailyRewardIcons:  make(map[int64]string),
-			DailyRewards:      make(map[int64][]*proto.ParcelInfo),
-		},
-	}
+	return make([]*proto.AttendanceBookReward, 0)
 }
 
 func SetAccountNickname(s *enter.Session, nickname string) bool {
@@ -70,7 +49,7 @@ func SetLastConnectTime(s *enter.Session) {
 	if baseBin == nil {
 		return
 	}
-	baseBin.LastConnectTime = alg.GetTimestampProto(time.Now())
+	baseBin.LastConnectTime = time.Now().Unix()
 }
 
 func GetStaticOpenConditions(s *enter.Session) map[string]int32 {
