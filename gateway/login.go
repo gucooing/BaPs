@@ -47,7 +47,7 @@ func (g *Gateway) getEnterTicket(c *gin.Context) {
 		return
 	}
 	enterTicket := fmt.Sprintf("%v%s", g.snow.GenId(), alg.RandStr(10))
-	if !enter.AddEnterTicket(yoStarUserLogin.AccountServerId, enterTicket) {
+	if !enter.AddEnterTicket(yoStarUserLogin.AccountServerId, req.YostarUID, enterTicket) {
 		return
 	}
 	rsp.EnterTicket = enterTicket
@@ -83,6 +83,7 @@ func (g *Gateway) AccountCheckYostar(s *enter.Session, request, response mx.Mess
 		}
 		s = &enter.Session{
 			AccountServerId: tickInfo.AccountServerId,
+			YostarUID:       tickInfo.YostarUID,
 			PlayerBin:       new(sro.PlayerBin),
 		}
 		if yostarGame.BinData != nil {
@@ -94,7 +95,7 @@ func (g *Gateway) AccountCheckYostar(s *enter.Session, request, response mx.Mess
 	}
 	// 更新一次账号缓存
 	s.MxToken = mxToken
-	s.EndTime = time.Now().Add(30 * time.Minute)
+	s.EndTime = time.Now().Add(time.Duration(enter.MaxCachePlayerTime) * time.Minute)
 	if !enter.AddSession(s) {
 		logger.Debug("AccountServerId:%v,重复上线账号", tickInfo.AccountServerId)
 	}

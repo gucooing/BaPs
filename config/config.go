@@ -18,11 +18,12 @@ type Config struct {
 }
 
 type GateWay struct {
-	MaxPlayerNum   int64           `json:"MaxPlayerNum"`
-	BlackCmd       map[string]bool `json:"BlackCmd"`
-	IsLogMsgPlayer bool            `json:"IsLogMsgPlayer"`
-	IsToken        bool            `json:"IsToken"`
-	GetTokenUrl    string          `json:"GetTokenUrl"`
+	MaxPlayerNum       int64           `json:"MaxPlayerNum"`
+	MaxCachePlayerTime int             `json:"MaxCachePlayerTime"`
+	BlackCmd           map[string]bool `json:"BlackCmd"`
+	IsLogMsgPlayer     bool            `json:"IsLogMsgPlayer"`
+	IsToken            bool            `json:"IsToken"`
+	GetTokenUrl        string          `json:"GetTokenUrl"`
 }
 
 type HttpNet struct {
@@ -110,11 +111,12 @@ var DefaultConfig = &Config{
 		KeyFile:   "./data/key.pem",
 	},
 	GateWay: &GateWay{
-		MaxPlayerNum:   0,
-		BlackCmd:       make(map[string]bool),
-		IsLogMsgPlayer: false,
-		IsToken:        true,
-		GetTokenUrl:    "http://127.0.0.1:8080/gucooing/api/getToken/ba",
+		MaxPlayerNum:       0,
+		MaxCachePlayerTime: 720,
+		BlackCmd:           make(map[string]bool),
+		IsLogMsgPlayer:     false,
+		IsToken:            true,
+		GetTokenUrl:        "http://127.0.0.1:8080/gucooing/api/getToken/ba",
 	},
 	DB: &DB{
 		DbType: "sqlite",

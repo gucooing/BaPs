@@ -68,6 +68,14 @@ func GetCharacterInfoList(s *enter.Session) map[int64]*sro.CharacterInfo {
 	return bin.GetCharacterInfoList()
 }
 
+func GetCharacterInfoListByServerId(s *enter.Session) map[int64]*sro.CharacterInfo {
+	list := make(map[int64]*sro.CharacterInfo)
+	for _, v := range GetCharacterInfoList(s) {
+		list[v.ServerId] = v
+	}
+	return list
+}
+
 func GetCharacterInfo(s *enter.Session, characterId int64) *sro.CharacterInfo {
 	bin := GetCharacterInfoList(s)
 	return bin[characterId]
@@ -141,4 +149,25 @@ func AddCharacter(s *enter.Session, characterId int64) bool {
 	}
 	list[characterId] = info
 	return true
+}
+
+func ServerIdsToCharacterIds(s *enter.Session, serverIdList []int64) []int64 {
+	list := make([]int64, 0)
+	bin := GetCharacterInfoListByServerId(s)
+	for _, serverId := range serverIdList {
+		if db, ok := bin[serverId]; ok {
+			list = append(list, db.CharacterId)
+		}
+	}
+
+	return list
+}
+
+func ServerIdToCharacterId(s *enter.Session, serverId int64) int64 {
+	bin := GetCharacterInfoListByServerId(s)
+	if db, ok := bin[serverId]; ok {
+		return db.CharacterId
+	}
+
+	return 0
 }

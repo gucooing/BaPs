@@ -80,6 +80,8 @@ message DefaultEchelonExcelTable{
   repeated int64 MainId = 3;
   repeated int64 SupportId = 4;
   int64 TssId = 5;
+  repeated int64 SkillId = 6;
+  int32 ExtensionType = 7;
 }
 
 message ShopExcelTable {

@@ -26,8 +26,6 @@ func (g *Gateway) newFuncRouteMap() {
 		proto.Protocol_Academy_GetInfo:                      pack.AcademyGetInfo,                      // 获取学院信息
 		proto.Protocol_Account_LoginSync:                    pack.AccountLoginSync,                    // 同步账号信息
 		proto.Protocol_Cafe_Get:                             pack.CafeGetInfo,                         // 获取咖啡馆信息
-		proto.Protocol_Account_CurrencySync:                 pack.AccountCurrencySync,                 // 同步账号货币
-		proto.Protocol_Equipment_List:                       pack.EquipmentList,                       // 获取装备信息
 		proto.Protocol_CharacterGear_List:                   pack.CharacterGearList,                   // 获取角色??
 		proto.Protocol_MemoryLobby_List:                     pack.MemoryLobbyList,                     // 获取记忆大厅列表
 		proto.Protocol_Arena_Login:                          pack.ArenaLogin,                          // 登录获取竞技场信息
@@ -43,7 +41,6 @@ func (g *Gateway) newFuncRouteMap() {
 		proto.Protocol_Sticker_Login:                        pack.StickerLogin,                        // 登录获取贴纸信息??
 		proto.Protocol_MultiFloorRaid_Sync:                  pack.MultiFloorRaidSync,                  // 制约解除决战信息同步??
 		proto.Protocol_ContentSweep_MultiSweepPresetList:    pack.ContentSweepMultiSweepPresetList,    // ????
-		proto.Protocol_Item_List:                            pack.ItemList,                            // 获取背包物品
 		proto.Protocol_ContentSave_Get:                      pack.ContentSaveGet,                      // ???
 		proto.Protocol_ProofToken_Submit:                    pack.ProofTokenSubmit,                    // 密钥提交
 		proto.Protocol_Toast_List:                           pack.ToastList,                           // ???
@@ -52,10 +49,15 @@ func (g *Gateway) newFuncRouteMap() {
 		proto.Protocol_Mail_Check:                           pack.MailCheck,                           // 邮件检查
 		proto.Protocol_Friend_Check:                         pack.FriendCheck,                         // 好友检查
 		proto.Protocol_ContentLog_UIOpenStatistics:          pack.ContentLogUIOpenStatistics,          // 历史ui打开
+		// 背包
+		proto.Protocol_Account_CurrencySync: pack.AccountCurrencySync, // 同步账号货币
+		proto.Protocol_Item_List:            pack.ItemList,            // 获取背包物品
+		proto.Protocol_Equipment_List:       pack.EquipmentList,       // 获取装备信息
 		// 角色
 		proto.Protocol_Character_List: pack.CharacterList, // 获取角色列表
 		// 队伍
 		proto.Protocol_Echelon_List: pack.EchelonList, // 获取队伍信息
+		proto.Protocol_Echelon_Save: pack.EchelonSave, // 保存/更新队伍
 		// 基础
 		proto.Protocol_NetworkTime_Sync:        pack.NetworkTimeSync,        // 同步时间
 		proto.Protocol_OpenCondition_EventList: pack.OpenConditionEventList, // 获取开放事件
@@ -78,9 +80,10 @@ func (g *Gateway) newFuncRouteMap() {
 		// 卡池
 		proto.Protocol_Shop_GachaRecruitList:    pack.ShopGachaRecruitList,    // 获取卡池历史数据
 		proto.Protocol_Shop_BeforehandGachaGet:  pack.ShopBeforehandGachaGet,  // 获取新手免费十连信息
-		proto.Protocol_Shop_BeforehandGachaRun:  pack.ShopBeforehandGachaRun,  // 新手免费十连抽卡
+		proto.Protocol_Shop_BeforehandGachaRun:  pack.ShopBeforehandGachaRun,  // 新手免费十连抽卡请求
 		proto.Protocol_Shop_BeforehandGachaSave: pack.ShopBeforehandGachaSave, // 缓存新手免费十连结果
 		proto.Protocol_Shop_BeforehandGachaPick: pack.ShopBeforehandGachaPick, // 确定新手卡池免费十连结果
+		proto.Protocol_Shop_BuyGacha3:           pack.ShopBuyGacha3,           // 卡池3抽卡请求
 		// 任务
 		proto.Protocol_Campaign_List: pack.CampaignList, // 获取任务信息
 	}
@@ -122,7 +125,7 @@ func (g *Gateway) registerMessage(c *gin.Context, request mx.Message, base *mx.B
 			logger.Debug("get session nil")
 			return
 		}
-		s.EndTime = time.Now().Add(30 * time.Minute)
+		s.EndTime = time.Now().Add(time.Duration(enter.MaxCachePlayerTime) * time.Minute)
 	}
 	response.SetSessionKey(base) //  任何情况下都不要更改handler执行和SetSessionKey的顺序
 	handler(s, request, response)

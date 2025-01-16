@@ -7,6 +7,13 @@ import (
 	"github.com/gucooing/BaPs/mx/proto"
 )
 
+func AccountCurrencySync(s *enter.Session, request, response mx.Message) {
+	rsp := response.(*proto.AccountCurrencySyncResponse)
+
+	rsp.AccountCurrencyDB = game.GetAccountCurrencyDB(s)
+	rsp.ExpiredCurrency = make(map[proto.CurrencyTypes]int64)
+}
+
 func ItemList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.ItemListResponse)
 

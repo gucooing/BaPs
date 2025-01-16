@@ -15,8 +15,11 @@ import (
 	pb "google.golang.org/protobuf/proto"
 )
 
+var MaxCachePlayerTime = 720 // 最大玩家缓存时间 单位:分钟
+
 type Session struct {
 	AccountServerId int64
+	YostarUID       int64
 	MxToken         string
 	EndTime         time.Time
 	AccountState    proto.AccountState
@@ -31,18 +34,6 @@ func (e *EnterSet) checkSession() {
 			DelSession(accountServerId)
 			logger.Debug("AccountId:%v,超时离线", accountServerId)
 		}
-	}
-}
-
-// 有锁 检查并处理重复登录
-func (e *EnterSet) checkSessionRepeat(accountServerId int64) {
-	e.sessionSync.Lock()
-	defer e.sessionSync.Unlock()
-	if e.SessionMap == nil {
-		e.SessionMap = make(map[int64]*Session)
-	}
-	if _, ok := e.SessionMap[accountServerId]; ok {
-		delete(e.SessionMap, accountServerId)
 	}
 }
 

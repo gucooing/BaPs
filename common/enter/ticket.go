@@ -6,6 +6,7 @@ import (
 
 type TicketInfo struct {
 	AccountServerId int64
+	YostarUID       int64
 	Ticket          string
 	EndTime         time.Time
 }
@@ -20,12 +21,12 @@ func (e *EnterSet) checkTicket() {
 }
 
 // AddEnterTicket 有锁 添加EnterTicket
-func AddEnterTicket(accountServerId int64, ticker string) bool {
+func AddEnterTicket(accountServerId, yostarUID int64, ticker string) bool {
 	e := getEnterSet()
 
-	e.checkSessionRepeat(accountServerId)
 	info := &TicketInfo{
 		AccountServerId: accountServerId,
+		YostarUID:       yostarUID,
 		Ticket:          ticker,
 		EndTime:         time.Now().Add(30 * time.Minute), // 30分钟有效期
 	}

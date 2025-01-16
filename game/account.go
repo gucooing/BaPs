@@ -4,27 +4,52 @@ import (
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
+	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/mx/proto"
 	"github.com/gucooing/BaPs/pkg/logger"
 )
 
+func GetBaseBin(s *enter.Session) *sro.BasePlayer {
+	bin := GetPlayerBin(s)
+	if bin == nil {
+		return nil
+	}
+	return bin.GetBaseBin()
+}
+
+func GetAccountLevel(s *enter.Session) int32 {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return 0
+	}
+	return bin.GetLevel()
+}
+
+func GetNickname(s *enter.Session) string {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return "hkrpg-go"
+	}
+	return bin.GetNickname()
+}
+
 func GetAccountDB(s *enter.Session) *proto.AccountDB {
-	baseBin := s.PlayerBin.GetBaseBin()
-	if baseBin == nil {
-		logger.Error("AccountId:%v,账号数据损坏", s.AccountServerId)
+	baseBin := GetBaseBin(s)
+	if s == nil || baseBin == nil {
+		logger.Error("账号数据损坏")
 		return nil
 	}
 	info := &proto.AccountDB{
 		ServerId:        baseBin.GetAccountId(),
-		Nickname:        baseBin.GetNickname(),
-		Level:           baseBin.GetLevel(),
+		Nickname:        GetNickname(s),
+		Level:           GetAccountLevel(s),
 		LastConnectTime: time.Unix(baseBin.GetLastConnectTime(), 0),
 		CreateDate:      time.Unix(baseBin.GetCreateDate(), 0),
-		VIPLevel:        1,
+		VIPLevel:        10,
 		State:           s.AccountState,
 
 		RepresentCharacterServerId: 1,
-		PublisherAccountId:         1,
+		PublisherAccountId:         s.YostarUID,
 		RetentionDays:              1,
 	}
 

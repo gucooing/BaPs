@@ -31,14 +31,6 @@ func GetBeforehandInfo(s *enter.Session) *sro.BeforehandInfo {
 	return bin.BeforehandInfo
 }
 
-func NewBeforehandInfo(s *enter.Session) {
-	bin := GetGachaBin(s)
-	if bin == nil {
-		return
-	}
-	bin.BeforehandInfo = nil
-}
-
 func GetBeforehandGachaSnapshotDB(s *enter.Session) *proto.BeforehandGachaSnapshotDB {
 	bin := GetBeforehandInfo(s)
 	info := &proto.BeforehandGachaSnapshotDB{
@@ -98,8 +90,9 @@ func GachaRun(num int, ssr bool, sr bool) []int64 {
 	return results
 }
 
-func SaveGachaResults(s *enter.Session, results []int64) ([]*proto.GachaResult, map[int64]int32) {
-	addItemList := make(map[int64]int32, 0)
+// 保存抽卡结果
+func SaveGachaResults(s *enter.Session, results []int64) ([]*proto.GachaResult, map[int64]bool) {
+	addItemList := make(map[int64]bool, 0)
 	list := make([]*proto.GachaResult, 0)
 	for _, id := range results {
 		gachaResult := &proto.GachaResult{
@@ -122,10 +115,10 @@ func SaveGachaResults(s *enter.Session, results []int64) ([]*proto.GachaResult, 
 				UniqueId:   conf.SecretStoneItemId,
 				StackCount: conf.SecretStoneItemAmount,
 			}
-			addItemList[conf.SecretStoneItemId] += conf.SecretStoneItemAmount
+			addItemList[conf.SecretStoneItemId] = true
 			// 添加碎片
 			AddItem(s, conf.CharacterPieceItemId, conf.CharacterPieceItemAmount)
-			addItemList[conf.CharacterPieceItemId] += conf.CharacterPieceItemAmount
+			addItemList[conf.CharacterPieceItemId] = true
 		}
 		list = append(list, gachaResult)
 	}

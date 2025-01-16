@@ -2,6 +2,8 @@ package gateway
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/gucooing/BaPs/common/enter"
+	"github.com/gucooing/BaPs/config"
 	"github.com/gucooing/BaPs/mx"
 	"github.com/gucooing/BaPs/mx/protocol"
 	"github.com/gucooing/BaPs/pkg/alg"
@@ -19,6 +21,7 @@ func NewGateWay(router *gin.Engine) *Gateway {
 		router: router,
 		snow:   alg.NewSnowflakeWorker(16),
 	}
+	enter.MaxCachePlayerTime = alg.MaxInt(config.GetGateWay().MaxCachePlayerTime, 30)
 	g.initRouter()
 
 	return g

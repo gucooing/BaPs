@@ -173,13 +173,6 @@ func AccountLoginSync(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func AccountCurrencySync(s *enter.Session, request, response mx.Message) {
-	rsp := response.(*proto.AccountCurrencySyncResponse)
-
-	rsp.AccountCurrencyDB = game.GetAccountCurrencyDB(s)
-	rsp.ExpiredCurrency = make(map[proto.CurrencyTypes]int64)
-}
-
 func ContentSaveGet(s *enter.Session, request, response mx.Message) {
 
 }
