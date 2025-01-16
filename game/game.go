@@ -6,6 +6,7 @@ import (
 
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
+	"github.com/gucooing/BaPs/mx/proto"
 	"github.com/gucooing/BaPs/pkg/logger"
 )
 
@@ -23,6 +24,18 @@ func GetServerId(s *enter.Session) int64 {
 	}
 	s.PlayerBin.ServerId++
 	return s.PlayerBin.ServerId
+}
+
+func GetServerTime() int64 {
+	return (time.Now().Unix() * 10000000) + 621356292000000000
+}
+
+func GetServerTimeTick() int64 {
+	return time.Now().UnixNano()/100 + 621356292000000000
+}
+
+func GetServerNotification(s *enter.Session) proto.ServerNotificationFlag {
+	return proto.ServerNotificationFlag_None
 }
 
 func NewYostarGame(accountId int64) *sro.PlayerBin {

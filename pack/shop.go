@@ -27,7 +27,7 @@ func ShopList(s *enter.Session, request, response mx.Message) {
 			ManualRefreshCount:  0,
 			IsRefresh:           conf.IsRefresh,
 			NextAutoRefreshDate: time.Now().Add(24 * time.Hour),
-			LastAutoRefreshDate: time.Time{},
+			LastAutoRefreshDate: time.Now(),
 			ShopProductList:     make([]*proto.ShopProductDB, 0),
 		}
 		for _, product := range gdconf.GetShopExcelType(categoryType.String()) {
@@ -43,6 +43,8 @@ func ShopList(s *enter.Session, request, response mx.Message) {
 			})
 		}
 
-		rsp.ShopInfos = append(rsp.ShopInfos, info)
+		if len(info.ShopProductList) > 0 {
+			rsp.ShopInfos = append(rsp.ShopInfos, info)
+		}
 	}
 }

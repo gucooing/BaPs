@@ -52,6 +52,11 @@ type BasePacket struct {
 	SessionKey *SessionKey
 	Protocol   int32
 	AccountId  int64
+	// s
+	ServerTimeTicks    int64
+	ServerNotification int32 // proto.ServerNotificationFlag
+	// c
+	ClientUpTime int
 }
 
 type SessionKey struct {

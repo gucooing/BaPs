@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/config"
+	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/mx"
 	"github.com/gucooing/BaPs/mx/cmd"
 	"github.com/gucooing/BaPs/mx/proto"
@@ -22,7 +23,6 @@ func (g *Gateway) newFuncRouteMap() {
 		proto.Protocol_Account_Auth:                         pack.AccountAuth,                         // 账号验证
 		proto.Protocol_Account_Nickname:                     pack.AccountNickname,                     // 设置昵称
 		proto.Protocol_ProofToken_RequestQuestion:           pack.ProofTokenRequestQuestion,           // 验证登录token
-		proto.Protocol_NetworkTime_Sync:                     pack.NetworkTimeSync,                     // 同步时间
 		proto.Protocol_Academy_GetInfo:                      pack.AcademyGetInfo,                      // 获取学院信息
 		proto.Protocol_Account_LoginSync:                    pack.AccountLoginSync,                    // 同步账号信息
 		proto.Protocol_Cafe_Get:                             pack.CafeGetInfo,                         // 获取咖啡馆信息
@@ -57,6 +57,7 @@ func (g *Gateway) newFuncRouteMap() {
 		// 队伍
 		proto.Protocol_Echelon_List: pack.EchelonList, // 获取队伍信息
 		// 基础
+		proto.Protocol_NetworkTime_Sync:        pack.NetworkTimeSync,        // 同步时间
 		proto.Protocol_OpenCondition_EventList: pack.OpenConditionEventList, // 获取开放事件
 		// 剧情/教程
 		proto.Protocol_Scenario_List:                  pack.ScenarioList,               // 获取场景剧情信息
@@ -123,15 +124,15 @@ func (g *Gateway) registerMessage(c *gin.Context, request mx.Message, base *mx.B
 		}
 		s.EndTime = time.Now().Add(30 * time.Minute)
 	}
-	response.SetSessionKey(base)
+	response.SetSessionKey(base) //  任何情况下都不要更改handler执行和SetSessionKey的顺序
 	handler(s, request, response)
 	logPlayerMsg(Client, request)
 	logPlayerMsg(Server, response)
+	base.ServerTimeTicks = game.GetServerTime()
+	base.ServerNotification = int32(game.GetServerNotification(s))
 	g.send(c, response)
 	return
 }
-
-// 62135629200 * 10000000 + curTime
 
 const (
 	Client  = 1

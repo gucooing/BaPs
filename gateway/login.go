@@ -104,8 +104,10 @@ func (g *Gateway) AccountCheckYostar(s *enter.Session, request, response mx.Mess
 			AccountServerId: tickInfo.AccountServerId,
 			MxToken:         s.MxToken,
 		},
-		Protocol:  response.GetProtocol(),
-		AccountId: tickInfo.AccountServerId,
+		Protocol:           response.GetProtocol(),
+		AccountId:          tickInfo.AccountServerId,
+		ServerNotification: int32(game.GetServerNotification(s)),
+		ServerTimeTicks:    game.GetServerTime(),
 	}
 	response.SetSessionKey(base)
 }

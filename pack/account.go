@@ -68,7 +68,12 @@ func ProofTokenRequestQuestion(s *enter.Session, request, response mx.Message) {
 	rsp.Hint = 1
 }
 
-func NetworkTimeSync(s *enter.Session, request, response mx.Message) {}
+func NetworkTimeSync(s *enter.Session, request, response mx.Message) {
+	rsp := response.(*proto.NetworkTimeSyncResponse)
+
+	rsp.ReceiveTick = game.GetServerTime()
+	rsp.EchoSendTick = game.GetServerTimeTick()
+}
 
 func AccountLoginSync(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.AccountLoginSyncRequest)
