@@ -4,8 +4,8 @@ import (
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
-	"github.com/gucooing/BaPs/mx/proto"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/protocol/proto"
 )
 
 func NewCharacter(s *enter.Session) *sro.CharacterBin {
@@ -81,6 +81,14 @@ func GetCharacterInfo(s *enter.Session, characterId int64) *sro.CharacterInfo {
 	return bin[characterId]
 }
 
+func GetCharacterServerId(s *enter.Session, characterId int64) int64 {
+	bin := GetCharacterInfo(s, characterId)
+	if bin == nil {
+		return 0
+	}
+	return bin.ServerId
+}
+
 func GetCharacterDBs(s *enter.Session) []*proto.CharacterDB {
 	list := make([]*proto.CharacterDB, 0)
 	for _, bin := range GetCharacterInfoList(s) {
@@ -92,6 +100,9 @@ func GetCharacterDBs(s *enter.Session) []*proto.CharacterDB {
 
 func GetCharacterDB(s *enter.Session, characterId int64) *proto.CharacterDB {
 	bin := GetCharacterInfo(s, characterId)
+	if bin == nil {
+		return nil
+	}
 	info := &proto.CharacterDB{
 		Type:                   proto.ParcelType_Character,
 		ServerId:               bin.ServerId,

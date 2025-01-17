@@ -5,7 +5,9 @@ import (
 
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
-	"github.com/gucooing/BaPs/mx/proto"
+	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
+	"github.com/gucooing/BaPs/protocol/proto"
 )
 
 func NewItemList(s *enter.Session) map[int64]*sro.ItemInfo {
@@ -69,6 +71,23 @@ func AddItem(s *enter.Session, id int64, num int32) int64 {
 	return info.ServerId
 }
 
+func RemoveItem(s *enter.Session, id int64, num int32) bool {
+	bin := GetItemBin(s)
+	if bin == nil {
+		return false
+	}
+	if bin.ItemInfoList == nil {
+		bin.ItemInfoList = NewItemList(s)
+	}
+	if info, ok := bin.ItemInfoList[id]; ok {
+		if info.StackCount >= num {
+			info.StackCount -= num
+			return true
+		}
+	}
+	return false
+}
+
 var DefaultCurrencyNum = map[int32]int64{
 	proto.CurrencyTypes_Gem:                      600,
 	proto.CurrencyTypes_GemPaid:                  0,
@@ -109,42 +128,28 @@ func NewCurrencyInfo() map[int32]*sro.CurrencyInfo {
 	return list
 }
 
-func UpCurrencyGem(s *enter.Session) *sro.CurrencyInfo {
+func UpCurrency(s *enter.Session, parcelId int64, num int64) *sro.CurrencyInfo {
 	bin := GetCurrencyList(s)
 	if bin == nil {
 		return nil
 	}
+	info := GetCurrencyInfo(s, int32(parcelId))
+	if info == nil {
+		return nil
+	}
+	if num < 0 && info.CurrencyNum < -(num) {
+		return nil
+	}
+	info.CurrencyNum += num
+	info.UpdateTime = time.Now().Unix()
+
 	gemBonus := GetCurrencyInfo(s, proto.CurrencyTypes_GemBonus)
 	gem := GetCurrencyInfo(s, proto.CurrencyTypes_Gem)
-	gemPaid := GetCurrencyInfo(s, proto.CurrencyTypes_GemPaid)
-
-	if gemBonus == nil || gem == nil || gemPaid == nil ||
-		gem.CurrencyNum < gemPaid.CurrencyNum {
-		return gemBonus
+	if gem != nil || gemBonus != nil {
+		gem.CurrencyNum = gemBonus.CurrencyNum
 	}
 
-	gemBonus.CurrencyNum = gem.CurrencyNum - gemPaid.CurrencyNum
-	gemPaid.CurrencyNum = 0
-	gem.CurrencyNum = gemBonus.CurrencyNum
-
-	gemBonus.UpdateTime = time.Now().Unix()
-	gemPaid.UpdateTime = time.Now().Unix()
-	gem.UpdateTime = time.Now().Unix()
-
-	return gemBonus
-}
-
-func SetGemPaid(s *enter.Session, num int64) bool {
-	gemPaid := GetCurrencyInfo(s, proto.CurrencyTypes_GemPaid)
-	gem := GetCurrencyInfo(s, proto.CurrencyTypes_Gem)
-	if gemPaid == nil || gem == nil {
-		return false
-	}
-	if gem.CurrencyNum < (gemPaid.CurrencyNum + num) {
-		return false
-	}
-	gemPaid.CurrencyNum += num
-	return true
+	return info
 }
 
 func GetCurrencyList(s *enter.Session) map[int32]*sro.CurrencyInfo {
@@ -181,12 +186,75 @@ func GetAccountCurrencyDB(s *enter.Session) *proto.AccountCurrencyDB {
 		AccountLevel:           int64(GetAccountLevel(s)),
 		AcademyLocationRankSum: 1,
 		CurrencyDict:           make(map[proto.CurrencyTypes]int64),
-		UpdateTimeDict:         make(map[proto.CurrencyTypes]time.Time),
+		UpdateTimeDict:         make(map[proto.CurrencyTypes]mx.MxTime),
 	}
 	for id, db := range GetCurrencyList(s) {
 		accountCurrencyDB.CurrencyDict[proto.CurrencyTypes(proto.CurrencyTypes_name[id])] = db.CurrencyNum
-		accountCurrencyDB.UpdateTimeDict[proto.CurrencyTypes(proto.CurrencyTypes_name[id])] = time.Unix(db.UpdateTime, 0)
+		accountCurrencyDB.UpdateTimeDict[proto.CurrencyTypes(proto.CurrencyTypes_name[id])] = mx.Unix(db.UpdateTime, 0)
 	}
 
 	return accountCurrencyDB
+}
+
+type ParcelResult struct {
+	ParcelType proto.ParcelType
+	ParcelId   int64
+	Amount     int32
+}
+
+func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.ParcelResultDB {
+	info := &proto.ParcelResultDB{
+		AccountDB:                       GetAccountDB(s),
+		AcademyLocationDBs:              nil,
+		CharacterDBs:                    nil,
+		WeaponDBs:                       nil,
+		CostumeDBs:                      nil,
+		TSSCharacterDBs:                 nil,
+		EquipmentDBs:                    nil,
+		RemovedEquipmentIds:             nil,
+		ItemDBs:                         nil,
+		RemovedItemIds:                  nil,
+		FurnitureDBs:                    nil,
+		RemovedFurnitureIds:             nil,
+		IdCardBackgroundDBs:             nil,
+		EmblemDBs:                       nil,
+		StickerDBs:                      nil,
+		CharacterNewUniqueIds:           nil,
+		SecretStoneCharacterIdAndCounts: nil,
+		DisplaySequence:                 make([]*proto.ParcelInfo, 0),
+		ParcelForMission:                nil,
+		ParcelResultStepInfoList:        nil,
+		BaseAccountExp:                  0,
+		AdditionalAccountExp:            0,
+		GachaResultCharacters:           nil,
+	}
+
+	for _, parcelResult := range parcelResultList {
+		switch parcelResult.ParcelType {
+		case proto.ParcelType_Currency: // 货币
+			UpCurrency(s, parcelResult.ParcelId, int64(parcelResult.Amount))
+			info.AccountCurrencyDB = GetAccountCurrencyDB(s)
+		case proto.ParcelType_MemoryLobby: // 记忆大厅
+			UpMemoryLobbyInfo(s, parcelResult.ParcelId)
+			info.MemoryLobbyDBs = append(info.MemoryLobbyDBs,
+				GetMemoryLobbyDB(s, parcelResult.ParcelId))
+		default:
+			logger.Warn("没有处理的奖励类型 Unknown ParcelType:%s", parcelResult.ParcelType.String())
+		}
+		info.DisplaySequence = append(info.DisplaySequence, &proto.ParcelInfo{
+			Key: &proto.ParcelKeyPair{
+				Type: parcelResult.ParcelType,
+				Id:   parcelResult.ParcelId,
+			},
+			Amount: int64(parcelResult.Amount),
+			Multiplier: &proto.BasisPoint{
+				RawValue: 10000,
+			},
+			Probability: &proto.BasisPoint{
+				RawValue: 10000,
+			},
+		})
+	}
+
+	return info
 }

@@ -14,6 +14,10 @@ message Excel {
   repeated DefaultEchelonExcelTable DefaultEchelonExcelTable = 5; // 默认队伍
   repeated ShopExcelTable ShopExcelTable = 6; // 商店数据
   repeated ShopInfoExcelTable ShopInfoExcelTable = 7; // 商店配置
+  repeated ItemExcelTable ItemExcelTable = 8; // 物品配置
+  repeated EmblemExcel EmblemExcel = 9; // 称号配置
+  repeated AcademyFavorScheduleExcelTable AcademyFavorScheduleExcelTable = 10; // MomoTalk剧情配置
+  repeated AcademyMessangerExcelTable AcademyMessangerExcelTable = 11; // MomoTalk对话配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -131,4 +135,90 @@ message ShopInfoExcelTable {
   int64 ShopUpdateGroupId10 = 26;
   int64 ShopUpdateGroupId11 = 27;
   int64 ShopUpdateGroupId12 = 28;
+}
+
+message ItemExcelTable {
+  int64 Id = 1;
+  int64 GroupId = 2;
+  string Rarity_ = 3;
+  string ProductionStep_ = 4;
+  int64 LocalizeEtcId = 5;
+  string ItemCategory_ = 6;
+  int64 Quality = 7;
+  string Icon = 8;
+  string SpriteName = 9;
+  int64 StackableMax = 10;
+  int64 StackableFunction = 11;
+  bool ImmediateUse = 12;
+  string UsingResultParcelType = 13;
+  int64 UsingResultId = 14;
+  int64 UsingResultAmount = 15;
+  string MailType_ = 16;
+  string ExpiryChangeParcelType = 17;
+  int64 ExpiryChangeId = 18;
+  int64 ExpiryChangeAmount = 19;
+  bool CanTierUpgrade = 20;
+  int64 TierUpgradeRecipeCraftId = 21;
+  repeated string Tags = 22;
+  int64 CraftQualityTier0 = 23;
+  int64 CraftQualityTier1 = 24;
+  int64 CraftQualityTier2 = 25;
+  int64 ShiftingCraftQuality = 26;
+  int64 MaxGiftTags = 27;
+  repeated string ShopCategory = 28;
+  string ExpirationDateTime = 29;
+  int64 ExpirationNotifyDateIn = 30;
+  int64 ShortcutTypeId = 31;
+  string GachaTicket = 32;
+}
+
+message EmblemExcel {
+  int64 Id = 1;
+  string Category = 2;
+  string Rarity = 3;
+  int64 DisplayOrder = 4;
+  int64 LocalizeEtcId = 5;
+  int64 LocalizeCodeId = 6;
+  int64 UseAtLocalizeId = 7;
+  bool EmblemTextVisible = 8;
+  string IconPath = 9;
+  string EmblemIconPath = 10;
+  int64 EmblemIconNumControl = 11;
+  string EmblemIconBGPath = 12;
+  string EmblemBGPathJp = 13;
+  string EmblemBGPathKr = 14;
+  string DisplayType = 15;
+  string DisplayStartDate = 16;
+  string DisplayEndDate = 17;
+  int64 DislpayFavorLevel = 18;
+  string CheckPassType = 19;
+  int64 EmblemParameter = 20;
+  int64 CheckPassCount = 21;
+}
+
+message AcademyFavorScheduleExcelTable {
+  int64 Id = 1;
+  int64 CharacterId = 2;
+  int64 ScheduleGroupId = 3;
+  int64 OrderInGroup = 4;
+  int64 LocalizeScenarioId = 5;
+  int64 FavorRank = 6;
+  int64 SecretStoneAmount = 7;
+  int64 ScenarioSriptGroupId = 8;
+  repeated string RewardParcelType = 9;
+  repeated int64 RewardParcelId = 10;
+  repeated int32 RewardAmount = 11;
+}
+
+message AcademyMessangerExcelTable {
+  int64 MessageGroupId = 1;
+  int64 Id = 2;
+  int64 CharacterId = 3;
+  string MessageCondition = 4;
+  int64 ConditionValue = 5;
+  int64 PreConditionGroupId = 6;
+  int64 PreConditionFavorScheduleId = 7;
+  int64 FavorScheduleId = 8;
+  int64 NextGroupId = 9;
+  int64 FeedbackTimeMillisec = 10;
 }

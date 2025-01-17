@@ -6,7 +6,7 @@ import (
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
-	"github.com/gucooing/BaPs/mx/proto"
+	"github.com/gucooing/BaPs/protocol/proto"
 )
 
 func GetGachaBin(s *enter.Session) *sro.GachaBin {
@@ -121,6 +121,12 @@ func SaveGachaResults(s *enter.Session, results []int64) ([]*proto.GachaResult, 
 			addItemList[conf.CharacterPieceItemId] = true
 		}
 		list = append(list, gachaResult)
+	}
+	// 添加次数
+	recruitCoin := gdconf.GetRecruitCoin()
+	if recruitCoin != nil {
+		AddItem(s, recruitCoin.Id, int32(len(results)))
+		addItemList[recruitCoin.Id] = true
 	}
 	return list, addItemList
 }

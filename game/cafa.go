@@ -6,7 +6,7 @@ import (
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
-	"github.com/gucooing/BaPs/mx/proto"
+	"github.com/gucooing/BaPs/protocol/proto"
 )
 
 func NewCafe() *sro.CafeBin {

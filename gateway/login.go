@@ -10,10 +10,10 @@ import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/db"
 	"github.com/gucooing/BaPs/game"
-	"github.com/gucooing/BaPs/mx"
-	"github.com/gucooing/BaPs/mx/proto"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
+	"github.com/gucooing/BaPs/protocol/proto"
 	pb "google.golang.org/protobuf/proto"
 )
 

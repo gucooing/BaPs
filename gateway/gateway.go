@@ -4,10 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/config"
-	"github.com/gucooing/BaPs/mx"
-	"github.com/gucooing/BaPs/mx/protocol"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
+	"github.com/gucooing/BaPs/protocol"
 )
 
 type Gateway struct {

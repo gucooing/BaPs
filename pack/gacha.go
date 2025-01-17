@@ -5,9 +5,10 @@ import (
 
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
-	"github.com/gucooing/BaPs/mx"
-	"github.com/gucooing/BaPs/mx/proto"
+	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
+	"github.com/gucooing/BaPs/protocol/proto"
 )
 
 func ShopGachaRecruitList(s *enter.Session, request, response mx.Message) {
@@ -107,10 +108,30 @@ func ShopBuyGacha3(s *enter.Session, request, response mx.Message) {
 	rsp.GachaResults = make([]*proto.GachaResult, 0)
 	rsp.AcquiredItems = make([]*proto.ItemDB, 0)
 	// 成本计算
-	if game.SetGemPaid(s, req.Cost.Currency.Gem) {
-
+	if game.UpCurrency(s, proto.CurrencyTypes_GemBonus, -req.Cost.Currency.Gem) != nil {
 		num := req.Cost.Currency.Gem / 120
-		results := game.GachaRun(int(num), false, false)
+
+		isDu := false
+		for _, itemDB := range req.Cost.ItemDBs {
+			conf := gdconf.GetRecruitCoin()
+			if conf == nil || conf.Id != itemDB.UniqueId {
+				continue
+			}
+			itemInfo := game.GetItemInfo(s, itemDB.UniqueId)
+			if itemInfo != nil &&
+				itemDB.StackCount == 200 && itemInfo.UniqueId == itemDB.UniqueId &&
+				game.RemoveItem(s, itemDB.UniqueId, itemDB.StackCount) {
+				isDu = true
+			}
+		}
+
+		var results []int64
+		if isDu {
+			results = game.GachaRun(1, true, false)
+		} else {
+			results = game.GachaRun(int(num), false, false)
+		}
+
 		list, addItemList := game.SaveGachaResults(s, results)
 		rsp.GachaResults = list
 		for id, _ := range addItemList {
@@ -125,15 +146,9 @@ func ShopBuyGacha3(s *enter.Session, request, response mx.Message) {
 				StackCount: itemInfo.StackCount,
 			})
 		}
-		rsp.AcquiredItems = append(rsp.AcquiredItems, &proto.ItemDB{
-			Type:       proto.ParcelType_Item,
-			ServerId:   114514,
-			UniqueId:   70141,
-			StackCount: int32(num),
-		})
 	}
 
-	info := game.UpCurrencyGem(s)
+	info := game.GetCurrencyInfo(s, proto.CurrencyTypes_GemBonus)
 	if info != nil {
 		rsp.GemBonusRemain = info.CurrencyNum
 		rsp.UpdateTime = time.Unix(info.UpdateTime, 0)

@@ -4,8 +4,8 @@ import (
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
-	"github.com/gucooing/BaPs/mx/proto"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/protocol/proto"
 )
 
 const (
@@ -198,6 +198,41 @@ func GetEchelonInfo(s *enter.Session, echelonType int32, num int64) *sro.Echelon
 	return bin.EchelonInfoList[num]
 }
 
+func NewEchelonPresetGuidList() map[int32]*sro.EchelonTypeInfo {
+	list := make(map[int32]*sro.EchelonTypeInfo)
+	for _, gid := range []int32{0, 1, 2, 3} {
+		typeInfo := &sro.EchelonTypeInfo{
+			EchelonInfoList: make(map[int64]*sro.EchelonInfo),
+			EchelonNum:      4,
+		}
+		for _, index := range []int64{0, 1, 2, 3, 4} {
+			typeInfo.EchelonInfoList[index] = &sro.EchelonInfo{
+				EchelonType:          gid,
+				ExtensionType:        0,
+				EchelonNum:           index,
+				LeaderCharacter:      0,
+				MainCharacterList:    make(map[int32]int64),
+				SupportCharacterList: make(map[int32]int64),
+				SkillCharacterList:   make(map[int32]int64),
+				TssId:                0,
+			}
+		}
+		list[gid] = typeInfo
+	}
+	return list
+}
+
+func GetEchelonPresetGuidList(s *enter.Session) map[int32]*sro.EchelonTypeInfo {
+	bin := GetEchelonBin(s)
+	if bin == nil {
+		return nil
+	}
+	if bin.EchelonPresetGuidList == nil {
+		bin.EchelonPresetGuidList = NewEchelonPresetGuidList()
+	}
+	return bin.EchelonPresetGuidList
+}
+
 func GetEchelonDB(s *enter.Session, db *sro.EchelonInfo) *proto.EchelonDB {
 	if db == nil {
 		return nil
@@ -258,6 +293,42 @@ func GetEchelonDB(s *enter.Session, db *sro.EchelonInfo) *proto.EchelonDB {
 	}
 	i = 1
 	for ; i <= GetCombatStyleNum(proto.EchelonType(db.EchelonType)); i++ {
+		info.CombatStyleIndex = append(info.CombatStyleIndex, 0)
+	}
+
+	return info
+}
+
+func GetEchelonPresetGroupDB(db *sro.EchelonInfo) *proto.EchelonPresetDB {
+	if db == nil {
+		return nil
+	}
+	info := &proto.EchelonPresetDB{
+		GroupIndex:             db.EchelonType,
+		Index:                  int32(db.EchelonNum),
+		Label:                  "",
+		LeaderUniqueId:         db.LeaderCharacter,
+		TSSInteractionUniqueId: db.TssId,
+		StrikerUniqueIds:       make([]int64, 0), // 主角色
+		SpecialUniqueIds:       make([]int64, 0), // 支援角色
+		CombatStyleIndex:       make([]int64, 0),
+		MulliganUniqueIds:      make([]int64, 0),
+		ExtensionType:          proto.EchelonExtensionType_Base,
+		StrikerSlotCount:       0,
+		SpecialSlotCount:       0,
+	}
+	var i int32 = 1
+	for ; i <= 6; i++ {
+		id, _ := db.MainCharacterList[i]
+		info.StrikerUniqueIds = append(info.StrikerUniqueIds, id)
+	}
+	i = 1
+	for ; i <= 2; i++ {
+		id, _ := db.SupportCharacterList[i]
+		info.SpecialUniqueIds = append(info.SpecialUniqueIds, id)
+	}
+	i = 1
+	for ; i <= 6; i++ {
 		info.CombatStyleIndex = append(info.CombatStyleIndex, 0)
 	}
 

@@ -12,12 +12,18 @@ import (
 func (g *GameConfig) LoadExcel() {
 	// 验证文件夹是否存在
 	g.excelPath = g.resPath + "/Excel"
-	dirInfo, err := os.Stat(g.excelPath)
-	if err != nil || !dirInfo.IsDir() {
+	if dirInfo, err := os.Stat(g.excelPath); err != nil || !dirInfo.IsDir() {
 		info := fmt.Sprintf("找不到文件夹:%s,err:%s", g.excelPath, err)
 		panic(info)
 	}
 	g.excelPath += "/"
+
+	g.excelDbPath = g.resPath + "/ExcelDB"
+	if dirInfo, err := os.Stat(g.excelDbPath); err != nil || !dirInfo.IsDir() {
+		info := fmt.Sprintf("找不到文件夹:%s,err:%s", g.excelDbPath, err)
+		panic(info)
+	}
+	g.excelDbPath += "/"
 
 	// 初始化excel
 	g.Excel = new(sro.Excel)
@@ -29,6 +35,10 @@ func (g *GameConfig) LoadExcel() {
 		g.loadDefaultFurnitureExcelTable,
 		g.loadShopExcelTable,
 		g.loadShopInfoExcelTable,
+		g.loadItemExcelTable,
+		g.loadEmblemExcel,
+		g.loadAcademyFavorScheduleExcelTable,
+		g.loadAcademyMessangerExcelTable,
 	}
 
 	for _, fn := range g.loadFunc {

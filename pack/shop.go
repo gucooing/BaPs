@@ -5,8 +5,8 @@ import (
 
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/gdconf"
-	"github.com/gucooing/BaPs/mx"
-	"github.com/gucooing/BaPs/mx/proto"
+	"github.com/gucooing/BaPs/pkg/mx"
+	"github.com/gucooing/BaPs/protocol/proto"
 )
 
 func ShopList(s *enter.Session, request, response mx.Message) {

@@ -1,18 +1,10 @@
 package pack
 
 import (
-	"time"
-
 	"github.com/gucooing/BaPs/common/enter"
-	"github.com/gucooing/BaPs/mx"
-	"github.com/gucooing/BaPs/mx/proto"
+	"github.com/gucooing/BaPs/pkg/mx"
+	"github.com/gucooing/BaPs/protocol/proto"
 )
-
-func MemoryLobbyList(s *enter.Session, request, response mx.Message) {
-	rsp := response.(*proto.MemoryLobbyListResponse)
-
-	rsp.MemoryLobbyDBs = make([]*proto.MemoryLobbyDB, 0)
-}
 
 func TimeAttackDungeonLogin(s *enter.Session, request, response mx.Message) {
 	// rsp := response.(*proto.TimeAttackDungeonLoginResponse)
@@ -48,29 +40,6 @@ func EventContentPermanentList(s *enter.Session, request, response mx.Message) {
 			EventContentId:            id,
 			IsStageAllClear:           false,
 			IsReceivedCharacterReward: false,
-		})
-	}
-}
-
-func AttachmentGet(s *enter.Session, request, response mx.Message) {
-	rsp := response.(*proto.AttachmentGetResponse)
-
-	rsp.AccountAttachmentDB = &proto.AccountAttachmentDB{
-		AccountId:      s.AccountServerId,
-		EmblemUniqueId: 0,
-	}
-}
-
-func AttachmentEmblemList(s *enter.Session, request, response mx.Message) {
-	rsp := response.(*proto.AttachmentEmblemListResponse)
-
-	rsp.EmblemDBs = make([]*proto.EmblemDB, 0)
-	for _, id := range []int64{1, 2, 3, 4, 5} {
-		rsp.EmblemDBs = append(rsp.EmblemDBs, &proto.EmblemDB{
-			Type:        proto.ParcelType_IdCardBackground,
-			UniqueId:    id,
-			ReceiveDate: time.Now(),
-			ParcelInfos: make([]*proto.ParcelInfo, 0),
 		})
 	}
 }

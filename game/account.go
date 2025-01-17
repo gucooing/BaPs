@@ -5,8 +5,8 @@ import (
 
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
-	"github.com/gucooing/BaPs/mx/proto"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/protocol/proto"
 )
 
 func GetBaseBin(s *enter.Session) *sro.BasePlayer {
@@ -33,6 +33,65 @@ func GetNickname(s *enter.Session) string {
 	return bin.GetNickname()
 }
 
+func GetComment(s *enter.Session) string {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return "此服务器是免费的"
+	}
+	return bin.GetComment()
+}
+
+func SetComment(s *enter.Session, comment string) {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return
+	}
+	bin.Comment = comment
+}
+
+func GetEmblemUniqueId(s *enter.Session) int64 {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return 0
+	}
+	return bin.GetEmblemUniqueId()
+}
+
+func SetEmblemUniqueId(s *enter.Session, id int64) bool {
+	bin := GetBaseBin(s)
+	list := GetEmblemInfoList(s)
+	if bin == nil || list == nil {
+		return false
+	}
+	if list[id] == nil {
+		return false
+	}
+	bin.EmblemUniqueId = id
+	return true
+}
+
+func GetLobbyStudent(s *enter.Session) int64 {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return 0
+	}
+	return bin.GetLobbyStudent()
+}
+
+func SetLobbyStudent(s *enter.Session, serverId int64) bool {
+	bin := GetBaseBin(s)
+	list := GetCharacterInfoListByServerId(s)
+	if bin == nil || list == nil {
+		return false
+	}
+	if characterInfo := list[serverId]; characterInfo == nil {
+		return false
+	} else {
+		bin.LobbyStudent = characterInfo.CharacterId
+		return true
+	}
+}
+
 func GetAccountDB(s *enter.Session) *proto.AccountDB {
 	baseBin := GetBaseBin(s)
 	if s == nil || baseBin == nil {
@@ -40,15 +99,15 @@ func GetAccountDB(s *enter.Session) *proto.AccountDB {
 		return nil
 	}
 	info := &proto.AccountDB{
-		ServerId:        baseBin.GetAccountId(),
-		Nickname:        GetNickname(s),
-		Level:           GetAccountLevel(s),
-		LastConnectTime: time.Unix(baseBin.GetLastConnectTime(), 0),
-		CreateDate:      time.Unix(baseBin.GetCreateDate(), 0),
-		VIPLevel:        10,
-		State:           s.AccountState,
-
-		RepresentCharacterServerId: 1,
+		ServerId:                   baseBin.GetAccountId(),
+		Nickname:                   GetNickname(s),
+		Level:                      GetAccountLevel(s),
+		LastConnectTime:            time.Unix(baseBin.GetLastConnectTime(), 0),
+		CreateDate:                 time.Unix(baseBin.GetCreateDate(), 0),
+		VIPLevel:                   10,
+		State:                      s.AccountState,
+		Comment:                    GetComment(s),
+		RepresentCharacterServerId: GetCharacterServerId(s, GetLobbyStudent(s)),
 		PublisherAccountId:         s.YostarUID,
 		RetentionDays:              1,
 	}

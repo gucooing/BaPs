@@ -5,8 +5,8 @@ import (
 
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
-	"github.com/gucooing/BaPs/mx"
-	"github.com/gucooing/BaPs/mx/proto"
+	"github.com/gucooing/BaPs/pkg/mx"
+	"github.com/gucooing/BaPs/protocol/proto"
 )
 
 func MissionList(s *enter.Session, request, response mx.Message) {
@@ -135,7 +135,7 @@ func ScenarioClear(s *enter.Session, request, response mx.Message) {
 
 	game.BattleCheck(s, req.BattleSummary)
 	game.FinishScenarioHistoryInfo(s, req.ScenarioId)
-
+	// todo 奖励
 	bin := game.GetScenarioHistoryInfo(s, req.ScenarioId)
 	if bin != nil {
 		rsp.ScenarioHistoryDB = &proto.ScenarioHistoryDB{

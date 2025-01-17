@@ -11,20 +11,25 @@ import (
 var GC *GameConfig
 
 type GameConfig struct {
-	dataPath  string
-	resPath   string
-	excelPath string
-	loadFunc  []func()
-	gppFunc   []func()
-	Excel     *sro.Excel
-	GPP       *GPP
+	dataPath    string
+	resPath     string
+	excelPath   string
+	excelDbPath string
+	loadFunc    []func()
+	gppFunc     []func()
+	Excel       *sro.Excel
+	GPP         *GPP
 }
 
 type GPP struct {
-	CharacterExcel *CharacterExcel
-	CafeInfoExcel  *CafeInfoExcel
-	ShopExcel      *ShopExcel
-	ShopInfoExcel  *ShopInfoExcel
+	CharacterExcel            *CharacterExcel
+	CafeInfoExcel             *CafeInfoExcel
+	ShopExcel                 *ShopExcel
+	ShopInfoExcel             *ShopInfoExcel
+	ItemExcel                 *ItemExcel
+	Emblem                    *Emblem
+	AcademyFavorScheduleExcel *AcademyFavorScheduleExcel
+	AcademyMessangerExcel     *AcademyMessangerExcel
 }
 
 func LoadGameConfig(dataPath string, resPath string) *GameConfig {
@@ -50,6 +55,10 @@ func (g *GameConfig) gpp() {
 		g.gppCharacterExcelTable,
 		g.gppShopExcelTable,
 		g.gppShopInfoExcelTable,
+		g.gppItemExcelTable,
+		g.gppEmblemExcel,
+		g.gppAcademyFavorScheduleExcelTable,
+		g.gppAcademyMessangerExcelTable,
 	}
 
 	for _, fn := range g.gppFunc {

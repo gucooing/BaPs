@@ -8,24 +8,29 @@ message PlayerBin {
     BasePlayer base_bin = 1; // 基础信息
     AcademyBin academy_bin = 2; // 学院信息
     CafeBin cafe_bin = 3; // 咖啡馆信息
-//    CurrencyBin currency_bin = 4; // 货币
+    MailBin mail_bin = 4; // 邮箱配置
     CharacterBin character_bin = 5; // 角色信息
     ItemBin item_bin = 6; // 背包物品
     MissionBin mission_bin = 7; // 剧情信息
     int64 server_id = 8; // 唯一id计数器
     EchelonBin echelon_bin = 9; // 队伍信息
     GachaBin gacha_bin = 10; // 抽卡记录
-    CampaignBin Campaign_bin = 11; // 任务信息
+    CampaignBin campaign_bin = 11; // 任务信息
+    AttachmentBin attachment_bin = 12; // 玩家档案
+    MomoTalkBin MomoTalk_bin = 13; // MomoTalk 信息
 }
 
 // 基础信息
 
-message BasePlayer {
+message BasePlayer { // 此处仅留必要数据
   int64 account_id = 1; // 账号id
   int32 level = 2; // 账号等级
   string nickname = 3; // 账号昵称
   int64 create_date = 4; // 账号创建时间
   int64 last_connect_time = 5; // 上次登录时间
+  int64 emblem_unique_id = 6; // 称号
+  string comment = 7; // 签名
+  int64 lobby_student = 8; // 值日生
 }
 
 // 学院信息
@@ -112,6 +117,7 @@ message ScenarioHistoryInfo {
 
 message EchelonBin {
   map<int32,EchelonTypeInfo> echelon_type_info_list = 1; // 队伍类型集合
+  map<int32,EchelonTypeInfo> echelon_preset_guid_list = 2; // 预制队伍
 }
 
 message EchelonTypeInfo {
@@ -150,4 +156,45 @@ message BeforehandInfo {
 
 message CampaignBin {
 
+}
+
+// 邮箱配置
+
+message MailBin {
+
+}
+
+// 玩家档案
+
+message AttachmentBin {
+  map<int64,EmblemInfo> emblem_list = 1; // 称号列表
+}
+
+message EmblemInfo {
+  int64 emblem_id = 1;
+  int64 receive_date = 2;
+}
+
+// MomoTalk 信息
+
+message MomoTalkBin {
+  map<int64,FavorScheduleInfo> favor_schedule_info_list = 1; // 角色 MomoTalk剧情信息
+  map<int64,MemoryLobbyInfo> memory_lobby_info_list = 2; // 已获取的记忆大厅
+}
+
+message FavorScheduleInfo {
+  map<int64,bool> schedule_group_list = 1; // 已完成的MomoTalk剧情列表
+  map<int64,MomoTalkInfo> momo_talk_info_list = 2; // 已完成的对话
+  int64 cur_message_group_id = 3; // 当前对话
+}
+
+message MomoTalkInfo {
+  int64 message_group_id = 1;
+  int64 chosen_message_id = 2;
+  int64 chosen_date = 3;
+}
+
+message MemoryLobbyInfo {
+  int64 memory_lobby_id = 1;
+  int64 chosen_date = 2;
 }

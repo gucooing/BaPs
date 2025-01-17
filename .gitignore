@@ -30,4 +30,5 @@ go.work.sum
 /tools
 /mx/prototemp
 /bin
-/mx
+/pkg/mx
+/protocol
