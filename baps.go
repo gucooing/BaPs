@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gucooing/BaPs/command"
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/config"
 	"github.com/gucooing/BaPs/db"
@@ -64,6 +65,8 @@ func NewBaPs() {
 	sdk.New(router)
 	// 初始化gateWay
 	gateway.NewGateWay(router)
+	// 初始化command
+	command.NewCommand(router)
 	// 初始化资源文件
 	gdconf.LoadGameConfig(cfg.DataPath, cfg.ResourcesPath)
 	// 启动服务器

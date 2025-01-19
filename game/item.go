@@ -5,6 +5,7 @@ import (
 
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
+	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
 	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
@@ -196,6 +197,95 @@ func GetAccountCurrencyDB(s *enter.Session) *proto.AccountCurrencyDB {
 	return accountCurrencyDB
 }
 
+func GetItemDB(s *enter.Session, id int64) *proto.ItemDB {
+	bin := GetItemInfo(s, id)
+	if bin == nil {
+		return nil
+	}
+	return &proto.ItemDB{
+		Type:       proto.ParcelType_Item,
+		ServerId:   bin.ServerId,
+		UniqueId:   bin.UniqueId,
+		StackCount: bin.StackCount,
+	}
+}
+
+func GetWeaponInfoList(s *enter.Session) map[int64]*sro.WeaponInfo {
+	bin := GetItemBin(s)
+	if bin == nil {
+		return nil
+	}
+	if bin.WeaponInfoList == nil {
+		bin.WeaponInfoList = make(map[int64]*sro.WeaponInfo)
+	}
+	return bin.WeaponInfoList
+}
+
+func GetWeaponInfo(s *enter.Session, characterId int64) *sro.WeaponInfo {
+	bin := GetWeaponInfoList(s)
+	if bin == nil {
+		return nil
+	}
+	return bin[characterId]
+}
+
+func AddWeapon(s *enter.Session, characterId int64) {
+	bin := GetItemBin(s)
+	if bin == nil {
+		return
+	}
+	conf := gdconf.GetCharacterWeaponExcelTable(characterId)
+	if bin.WeaponInfoList == nil {
+		bin.WeaponInfoList = make(map[int64]*sro.WeaponInfo)
+	}
+	characterInfo := GetCharacterInfo(s, characterId)
+	if conf == nil || characterInfo == nil ||
+		characterInfo.StarGrade < 5 {
+		return
+	}
+	bin.WeaponInfoList[characterId] = &sro.WeaponInfo{
+		UniqueId:          characterId,
+		CharacterServerId: characterInfo.ServerId,
+		StarGrade:         1,
+		Level:             1,
+		Exp:               0,
+		IsLocked:          false,
+	}
+}
+
+func GetWeaponDBs(s *enter.Session) []*proto.WeaponDB {
+	list := make([]*proto.WeaponDB, 0)
+	for _, bin := range GetWeaponInfoList(s) {
+		list = append(list, &proto.WeaponDB{
+			Type:                   proto.ParcelType_CharacterWeapon,
+			UniqueId:               bin.UniqueId,
+			Level:                  bin.Level,
+			Exp:                    bin.Exp,
+			StarGrade:              bin.StarGrade,
+			BoundCharacterServerId: bin.CharacterServerId,
+			IsLocked:               bin.IsLocked,
+		})
+	}
+
+	return list
+}
+
+func GetWeaponDB(s *enter.Session, characterId int64) *proto.WeaponDB {
+	bin := GetWeaponInfo(s, characterId)
+	if bin == nil {
+		return nil
+	}
+	return &proto.WeaponDB{
+		Type:                   proto.ParcelType_CharacterWeapon,
+		UniqueId:               bin.UniqueId,
+		Level:                  bin.Level,
+		Exp:                    bin.Exp,
+		StarGrade:              bin.StarGrade,
+		BoundCharacterServerId: bin.CharacterServerId,
+		IsLocked:               bin.IsLocked,
+	}
+}
+
 type ParcelResult struct {
 	ParcelType proto.ParcelType
 	ParcelId   int64
@@ -219,15 +309,18 @@ func GetParcelResultList(typeList []string, idList, numList []int64) []*ParcelRe
 
 func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.ParcelResultDB {
 	info := &proto.ParcelResultDB{
-		AccountDB:                       GetAccountDB(s),
+		AccountDB:      GetAccountDB(s),
+		MemoryLobbyDBs: make([]*proto.MemoryLobbyDB, 0),
+		ItemDBs:        make(map[int64]*proto.ItemDB),
+		EmblemDBs:      make([]*proto.EmblemDB, 0),
+		CharacterDBs:   make([]*proto.CharacterDB, 0),
+		WeaponDBs:      make([]*proto.WeaponDB, 0),
+
 		AcademyLocationDBs:              nil,
-		CharacterDBs:                    nil,
-		WeaponDBs:                       nil,
 		CostumeDBs:                      nil,
 		TSSCharacterDBs:                 nil,
 		EquipmentDBs:                    nil,
 		RemovedEquipmentIds:             nil,
-		ItemDBs:                         nil,
 		RemovedItemIds:                  nil,
 		FurnitureDBs:                    nil,
 		RemovedFurnitureIds:             nil,
@@ -256,6 +349,14 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 			UpEmblemInfoList(s, []int64{parcelResult.ParcelId})
 			info.EmblemDBs = append(info.EmblemDBs,
 				GetEmblemDB(s, parcelResult.ParcelId))
+		case proto.ParcelType_Item: // 背包物品
+			serverId := AddItem(s, parcelResult.ParcelId, int32(parcelResult.Amount))
+			info.ItemDBs[serverId] = GetItemDB(s, parcelResult.ParcelId)
+		case proto.ParcelType_Character: // 角色
+			AddCharacter(s, parcelResult.ParcelId)
+			info.CharacterDBs = append(info.CharacterDBs, GetCharacterDB(s, parcelResult.ParcelId))
+		case proto.ParcelType_CharacterWeapon: // 角色武器 仅同步
+			info.WeaponDBs = append(info.WeaponDBs, GetWeaponDB(s, parcelResult.ParcelId))
 		default:
 			logger.Warn("没有处理的奖励类型 Unknown ParcelType:%s", parcelResult.ParcelType.String())
 		}

@@ -24,7 +24,6 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Academy_GetInfo:                      pack.AcademyGetInfo,                      // 获取学院信息
 		mx.Protocol_Account_LoginSync:                    pack.AccountLoginSync,                    // 同步账号信息
 		mx.Protocol_Cafe_Get:                             pack.CafeGetInfo,                         // 获取咖啡馆信息
-		mx.Protocol_CharacterGear_List:                   pack.CharacterGearList,                   // 获取角色??
 		mx.Protocol_Arena_Login:                          pack.ArenaLogin,                          // 登录获取竞技场信息
 		mx.Protocol_Raid_Login:                           pack.RaidLogin,                           // 登录获取总力站信息
 		mx.Protocol_EliminateRaid_Login:                  pack.EliminateRaidLogin,                  // 登录获取制约解除决战信息
@@ -67,7 +66,12 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Item_List:            pack.ItemList,            // 获取背包物品
 		mx.Protocol_Equipment_List:       pack.EquipmentList,       // 获取装备信息
 		// 角色
-		mx.Protocol_Character_List: pack.CharacterList, // 获取角色列表
+		mx.Protocol_CharacterGear_List:            pack.CharacterGearList,            // 获取角色??
+		mx.Protocol_Character_List:                pack.CharacterList,                // 获取角色列表
+		mx.Protocol_Character_SetFavorites:        pack.CharacterSetFavorites,        // 标记角色
+		mx.Protocol_Character_Transcendence:       pack.CharacterTranscendence,       // 角色升星
+		mx.Protocol_Character_UnlockWeapon:        pack.CharacterUnlockWeapon,        // 角色解锁武器
+		mx.Protocol_Character_WeaponTranscendence: pack.CharacterWeaponTranscendence, // 角色武器升星
 		// 队伍
 		mx.Protocol_Echelon_List:       pack.EchelonList,       // 获取队伍信息
 		mx.Protocol_Echelon_Save:       pack.EchelonSave,       // 保存/更新队伍
@@ -146,6 +150,10 @@ func (g *Gateway) registerMessage(c *gin.Context, request mx.Message, base *mx.B
 	base.ServerTimeTicks = game.GetServerTime()
 	base.ServerNotification = int32(game.GetServerNotification(s))
 	response.SetSessionKey(base) //  任何情况下都不要更改handler执行和SetSessionKey的顺序
+	if s != nil {                // 唯一线程操作锁
+		s.GoroutinesSync.Lock()
+		defer s.GoroutinesSync.Unlock()
+	}
 	handler(s, request, response)
 	logPlayerMsg(Client, request)
 	logPlayerMsg(Server, response)

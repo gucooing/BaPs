@@ -26,10 +26,11 @@ func SetServerNotification(s *enter.Session, flag proto.ServerNotificationFlag, 
 }
 
 func GetServerNotification(s *enter.Session) proto.ServerNotificationFlag {
+	flagS := proto.ServerNotificationFlag_None
 	for flag, ok := range GetActions(s) {
-		if ok {
-			return flag
+		if ok && flagS < flag {
+			flagS = flag
 		}
 	}
-	return proto.ServerNotificationFlag_None
+	return flagS
 }

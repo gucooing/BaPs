@@ -21,6 +21,7 @@ message Excel {
   repeated GuideMissionExcelTable GuideMissionExcelTable = 12; // 成就配置
   repeated ScenarioModeExcel ScenarioModeExcel = 13; // 剧情配置
   repeated ScenarioModeRewardExcel ScenarioModeRewardExcel = 14; // 剧情奖励配置
+  repeated CharacterWeaponExcelTable CharacterWeaponExcelTable = 15; // 角色武器配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -295,4 +296,23 @@ message ScenarioModeRewardExcel {
   int64 RewardParcelId = 5;
   int64 RewardParcelAmount = 6;
   bool IsDisplayed = 7;
+}
+
+message CharacterWeaponExcelTable {
+  int64 Id = 1;
+  string ImagePath = 2;
+  int64 SetRecipe = 3;
+  string StatLevelUpType = 4;
+  int64 AttackPower = 5;
+  int64 AttackPower100 = 6;
+  int64 MaxHP = 7;
+  int64 MaxHP100 = 8;
+  int64 HealPower = 9;
+  int64 HealPower100 = 10;
+  repeated bool Unlock = 11;
+  repeated int64 RecipeId = 12;
+  repeated int64 MaxLevel = 13;
+  repeated string LearnSkillSlot = 14;
+  repeated string StatType = 15;
+  repeated int64 StatValue = 16;
 }

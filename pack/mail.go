@@ -26,6 +26,7 @@ func MailList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.MailListResponse)
 
 	rsp.MailDBs = game.GetMailDBs(s, req.IsReadMail)
+	game.SetServerNotification(s, proto.ServerNotificationFlag_HasUnreadMail, false)
 }
 
 func MailReceive(s *enter.Session, request, response mx.Message) {

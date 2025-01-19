@@ -30,6 +30,7 @@ func NewCharacter(s *enter.Session) *sro.CharacterBin {
 			LeaderSkillLevel:       conf.LeaderSkillLevel,
 			EquipmentList:          NewCharacterEquipment(conf.CharacterId),
 			ServerId:               GetServerId(s),
+			IsFavorite:             false,
 		}
 		bin.CharacterInfoList[conf.CharacterId] = infp
 	}
@@ -81,6 +82,12 @@ func GetCharacterInfo(s *enter.Session, characterId int64) *sro.CharacterInfo {
 	return bin[characterId]
 }
 
+// GetCharacterInfoByServerId 批量拉取不适合此方法
+func GetCharacterInfoByServerId(s *enter.Session, serverId int64) *sro.CharacterInfo {
+	list := GetCharacterInfoListByServerId(s)
+	return list[serverId]
+}
+
 func GetCharacterServerId(s *enter.Session, characterId int64) int64 {
 	bin := GetCharacterInfo(s, characterId)
 	if bin == nil {
@@ -119,7 +126,7 @@ func GetCharacterDB(s *enter.Session, characterId int64) *proto.CharacterDB {
 		LeaderSkillLevel:       bin.LeaderSkillLevel,
 		IsNew:                  false,
 		IsLocked:               false,
-		IsFavorite:             false,
+		IsFavorite:             bin.IsFavorite,
 		EquipmentServerIds:     make([]int64, 0),
 		PotentialStats:         make(map[int32]int32),
 	}
@@ -181,4 +188,24 @@ func ServerIdToCharacterId(s *enter.Session, serverId int64) int64 {
 	}
 
 	return 0
+}
+
+var CharacterStarGradeMap = map[int32]int32{
+	2: 30,  // 1->2
+	3: 80,  // 2->3
+	4: 100, // 3->4
+	5: 120, // 4->5
+}
+
+func GetCharacterUpStarGradeNum(starGrade int32) int32 {
+	return CharacterStarGradeMap[starGrade]
+}
+
+var WeaponStarGradeMap = map[int32]int32{
+	1: 120, // 1->2
+	2: 180, // 2->3
+}
+
+func GetWeaponUpStarGradeNum(starGrade int32) int32 {
+	return WeaponStarGradeMap[starGrade]
 }

@@ -3,6 +3,7 @@ package gateway
 import (
 	"encoding/json"
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -85,6 +86,8 @@ func (g *Gateway) AccountCheckYostar(s *enter.Session, request, response mx.Mess
 			AccountServerId: tickInfo.AccountServerId,
 			YostarUID:       tickInfo.YostarUID,
 			PlayerBin:       new(sro.PlayerBin),
+			GoroutinesSync:  sync.Mutex{},
+			Actions:         make(map[proto.ServerNotificationFlag]bool),
 		}
 		if yostarGame.BinData != nil {
 			pb.Unmarshal(yostarGame.BinData, s.PlayerBin)

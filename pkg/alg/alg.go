@@ -2,12 +2,9 @@ package alg
 
 import (
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang/protobuf/ptypes"
-	"github.com/gucooing/BaPs/pkg/logger"
-	"google.golang.org/protobuf/types/known/timestamppb"
+	"github.com/gucooing/BaPs/config"
 )
 
 func Xor(data []byte, key []byte) {
@@ -32,13 +29,17 @@ func S2I64(msg string) int64 {
 	return int64(ms)
 }
 
-func GetTimestampProto(t time.Time) *timestamppb.Timestamp {
-	ts, err := ptypes.TimestampProto(t)
-	if err != nil {
-		logger.Error("Error creating timestamp:%s", err)
-		return nil
+func AutoGucooingApi() gin.HandlerFunc {
+	if config.GetGucooingApiKey() == "" {
+		return func(c *gin.Context) {}
+	} else {
+		return func(c *gin.Context) {
+			if c.GetHeader("Authorization-Gucooing") != config.GetGucooingApiKey() {
+				c.String(401, "Unauthorized")
+				c.Abort()
+			}
+		}
 	}
-	return ts
 }
 
 func MaxInt(a, b int) int {

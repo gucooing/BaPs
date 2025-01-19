@@ -99,6 +99,33 @@ func GetMailInfo(s *enter.Session, id int64) *sro.MailInfo {
 	return bin[id]
 }
 
+func AddMail(s *enter.Session, info *sro.MailInfo) bool {
+	bin := GetMailBin(s)
+	if bin == nil {
+		return false
+	}
+	if bin.MailInfoList == nil {
+		bin.MailInfoList = make(map[int64]*sro.MailInfo)
+	}
+	serverId := GetServerId(s)
+	info.ServerId = serverId
+	bin.MailInfoList[serverId] = info
+	SetServerNotification(s, proto.ServerNotificationFlag_HasUnreadMail, true)
+	return true
+}
+
+func DelMail(s *enter.Session, id int64) bool {
+	bin := GetMailBin(s)
+	if bin == nil {
+		return false
+	}
+	if _, ok := bin.MailInfoList[id]; ok {
+		delete(bin.MailInfoList, id)
+		return true
+	}
+	return false
+}
+
 func GetMailDBs(s *enter.Session, IsReadMail bool) []*proto.MailDB {
 	list := make([]*proto.MailDB, 0)
 	for _, bin := range GetMailInfoList(s) {

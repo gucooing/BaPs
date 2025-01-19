@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 
 	sro "github.com/gucooing/BaPs/common/server_only"
@@ -25,6 +26,7 @@ type Session struct {
 	AccountState    proto.AccountState
 	PlayerBin       *sro.PlayerBin // 玩家数据
 	Actions         map[proto.ServerNotificationFlag]bool
+	GoroutinesSync  sync.Mutex
 }
 
 // 定时检查一次是否有用户长时间离线
@@ -127,8 +129,13 @@ func UpAllDate() {
 
 // UpDate 保存玩家数据
 func (x *Session) UpDate() bool {
+	if x == nil {
+		return false
+	}
+	x.GoroutinesSync.Lock() // 唯一线程操作锁
 	var fin = true
 	defer func() {
+		x.GoroutinesSync.Unlock()
 		if !fin {
 			logger.Debug("玩家:%v,数据保存失败,数据保存将到服务端硬盘,将在下次启动时尝试写入数据库", x.AccountServerId)
 			if err := x.upDataDisk(); err != nil {

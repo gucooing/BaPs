@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/common/code"
 	"github.com/gucooing/BaPs/config"
+	"github.com/gucooing/BaPs/pkg/alg"
 )
 
 type SDK struct {
@@ -42,28 +43,14 @@ func (s *SDK) initRouter() {
 		user.POST("/login", s.YostarLogin)
 	}
 
-	gucooingApi := s.router.Group("/gucooing/api", s.autoGucooingApi())
+	gucooingApi := s.router.Group("/gucooing/api", alg.AutoGucooingApi())
 	{
 		gucooingApi.GET("/ba/getEmailCode", s.getEmailCode)
-		gucooingApi.GET("/ba/getPlayerBin", s.getPlayerBin)
 	}
 }
 
 func handleIndex(c *gin.Context) {
 	c.String(http.StatusOK, "Ba Ps!")
-}
-
-func (s *SDK) autoGucooingApi() gin.HandlerFunc {
-	if config.GetGucooingApiKey() == "" {
-		return func(c *gin.Context) {}
-	} else {
-		return func(c *gin.Context) {
-			if c.GetHeader("Authorization-Gucooing") != config.GetGucooingApiKey() {
-				c.String(401, "Unauthorized")
-				c.Abort()
-			}
-		}
-	}
 }
 
 func (s *SDK) GetOuterAddr() string {

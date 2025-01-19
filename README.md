@@ -35,3 +35,4 @@ https://yostar-serverinfo.bluearchiveyostar.com http://127.0.0.1:5000
 
 ## 我们欢迎所有想帮助我们的人加入
 ## 注意:玩家数据并不会实时保存到数据库中,如果有最新数据的需求,可通过api进行访问玩家数据
+## Api的使用,过于复杂,没时间写docs自己研究
