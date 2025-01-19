@@ -24,6 +24,7 @@ type Session struct {
 	EndTime         time.Time
 	AccountState    proto.AccountState
 	PlayerBin       *sro.PlayerBin // 玩家数据
+	Actions         map[proto.ServerNotificationFlag]bool
 }
 
 // 定时检查一次是否有用户长时间离线

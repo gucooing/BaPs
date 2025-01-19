@@ -56,6 +56,8 @@ func NewBaPs() {
 		logger.CloseLogger()
 		return
 	}
+	// 检查数据库内容
+	enter.InitEnterSet()
 	// 初始化gin
 	router, server := newGin(cfg.HttpNet)
 	// 初始化sdk

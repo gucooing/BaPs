@@ -17,7 +17,7 @@ message PlayerBin {
     GachaBin gacha_bin = 10; // 抽卡记录
     CampaignBin campaign_bin = 11; // 任务信息
     AttachmentBin attachment_bin = 12; // 玩家档案
-    MomoTalkBin MomoTalk_bin = 13; // MomoTalk 信息
+    MomoTalkBin momo_talk_bin = 13; // MomoTalk 信息
 }
 
 // 基础信息
@@ -161,7 +161,25 @@ message CampaignBin {
 // 邮箱配置
 
 message MailBin {
+  map<int64,bool> yostar_mail = 1; // 已计入的全局邮件
+  map<int64,MailInfo> mail_info_list = 2; // 全部邮件集合
+}
 
+message MailInfo {
+  int64 server_id = 1; // 唯一id
+  string sender = 2; // 发件人
+  string comment = 3; // 内容
+  int64 send_date = 4; // 发送时间
+  int64 expire_date = 5; // 到期日期
+  repeated ParcelInfo parcel_info_list = 6; // 附件
+  bool is_read = 7; // 是否领取
+  int64 receipt_date = 8; // 领取日期
+}
+
+message ParcelInfo {
+  int32 type = 1; // 物品类型
+  int64 id = 2; // 物品id
+  int64 num = 3; // 物品数量
 }
 
 // 玩家档案

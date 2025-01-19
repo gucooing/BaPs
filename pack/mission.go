@@ -134,8 +134,8 @@ func ScenarioClear(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.ScenarioClearResponse)
 
 	game.BattleCheck(s, req.BattleSummary)
-	game.FinishScenarioHistoryInfo(s, req.ScenarioId)
-	// todo 奖励
+	parcelResultList := game.FinishScenarioHistoryInfo(s, req.ScenarioId)
+	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
 	bin := game.GetScenarioHistoryInfo(s, req.ScenarioId)
 	if bin != nil {
 		rsp.ScenarioHistoryDB = &proto.ScenarioHistoryDB{

@@ -12,14 +12,12 @@ import (
 
 type Gateway struct {
 	router       *gin.Engine
-	snow         *alg.SnowflakeWorker
 	funcRouteMap map[int32]handlerFunc
 }
 
 func NewGateWay(router *gin.Engine) *Gateway {
 	g := &Gateway{
 		router: router,
-		snow:   alg.NewSnowflakeWorker(16),
 	}
 	enter.MaxCachePlayerTime = alg.MaxInt(config.GetGateWay().MaxCachePlayerTime, 30)
 	g.initRouter()

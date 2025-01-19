@@ -118,18 +118,8 @@ func UpScheduleGroup(s *enter.Session, scheduleId int64) []*ParcelResult {
 		return nil
 	}
 	bin.ScheduleGroupList[scheduleId] = true
-	list := make([]*ParcelResult, 0)
-	if len(conf.RewardParcelType) == len(conf.RewardParcelType) &&
-		len(conf.RewardParcelType) == len(conf.RewardAmount) {
-		for index, rewardType := range conf.RewardParcelType {
-			list = append(list, &ParcelResult{
-				ParcelType: proto.ParcelType(proto.ParcelType_value[rewardType]),
-				ParcelId:   conf.RewardParcelId[index],
-				Amount:     conf.RewardAmount[index],
-			})
-		}
-	}
-	return list
+
+	return GetParcelResultList(conf.RewardParcelType, conf.RewardParcelId, conf.RewardAmount)
 }
 
 func UpMemoryLobbyInfo(s *enter.Session, memoryLobbyUniqueId int64) {

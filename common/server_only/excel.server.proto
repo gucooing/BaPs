@@ -18,6 +18,9 @@ message Excel {
   repeated EmblemExcel EmblemExcel = 9; // 称号配置
   repeated AcademyFavorScheduleExcelTable AcademyFavorScheduleExcelTable = 10; // MomoTalk剧情配置
   repeated AcademyMessangerExcelTable AcademyMessangerExcelTable = 11; // MomoTalk对话配置
+  repeated GuideMissionExcelTable GuideMissionExcelTable = 12; // 成就配置
+  repeated ScenarioModeExcel ScenarioModeExcel = 13; // 剧情配置
+  repeated ScenarioModeRewardExcel ScenarioModeRewardExcel = 14; // 剧情奖励配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -207,7 +210,7 @@ message AcademyFavorScheduleExcelTable {
   int64 ScenarioSriptGroupId = 8;
   repeated string RewardParcelType = 9;
   repeated int64 RewardParcelId = 10;
-  repeated int32 RewardAmount = 11;
+  repeated int64 RewardAmount = 11;
 }
 
 message AcademyMessangerExcelTable {
@@ -221,4 +224,75 @@ message AcademyMessangerExcelTable {
   int64 FavorScheduleId = 8;
   int64 NextGroupId = 9;
   int64 FeedbackTimeMillisec = 10;
+}
+
+message GuideMissionExcelTable {
+  int64 SeasonId = 1;
+  int64 Id = 2;
+  string Category = 3;
+  bool IsLegacy = 4;
+  int64 TabNumber = 5;
+  int64 Description = 6;
+  string ToastDisplayType = 7;
+  string ToastImagePath = 8;
+  string CompleteConditionType = 9;
+  int64 CompleteConditionCount = 10;
+  repeated int64 CompleteConditionParameter = 11;
+  repeated string CompleteConditionParameterTag = 12;
+  bool IsAutoClearForScenario = 13;
+  repeated string MissionRewardParcelType = 14;
+  repeated int64 MissionRewardParcelId = 15;
+  repeated int64 MissionRewardAmount = 16;
+}
+
+message ScenarioModeExcel {
+  int64 ModeId = 2;
+  string ModeType = 3;
+  string SubType = 4;
+  int64 VolumeId = 5;
+  int64 ChapterId = 6;
+  int64 EpisodeId = 7;
+  string ExposedTime = 8;
+  bool Hide = 9;
+  bool Open = 10;
+  bool IsContinue = 11;
+  int64 EpisodeContinueModeId = 12;
+  int64 FrontScenarioGroupIdLength = 13;
+  int64 StrategyId = 14;
+  int64 GroundId = 15;
+  bool IsDefeatBattle = 16;
+  int64 BattleDuration = 17;
+  int64 BackScenarioGroupIdLength = 18;
+  int64 ClearedModeIdLength = 19;
+  int64 ScenarioModeRewardId = 20;
+  bool IsScenarioSpecialReward = 21;
+  int64 AccountLevelLimit = 22;
+  int64 ClearedStageId = 23;
+  string NeedClub = 24;
+  int64 NeedClubStudentCount = 25;
+  int64 EventContentId = 26;
+  string EventContentType = 27;
+  int64 EventContentCondition = 28;
+  int64 EventContentConditionGroup = 29;
+  string MapDifficulty = 30;
+  int64 StepIndex = 31;
+  int64 RecommendLevel = 32;
+  string EventIconParcelPath = 33;
+  int64 EventBannerTitle = 34;
+  bool Lof = 35;
+  string StageTopography = 36;
+  int64 FixedEchelonId = 37;
+  string CompleteReportEventName = 38;
+  string EchelonExtensionType = 39;
+  int64 CollectionGroupId = 40;
+}
+
+message ScenarioModeRewardExcel {
+  int64 ScenarioModeRewardId = 1;
+  string RewardTag = 2;
+  int64 RewardProb = 3;
+  string RewardParcelType = 4;
+  int64 RewardParcelId = 5;
+  int64 RewardParcelAmount = 6;
+  bool IsDisplayed = 7;
 }

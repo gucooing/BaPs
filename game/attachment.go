@@ -6,6 +6,7 @@ import (
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
+	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -45,6 +46,14 @@ func GetEmblemInfoList(s *enter.Session) map[int64]*sro.EmblemInfo {
 	return bin.EmblemList
 }
 
+func GetEmblemInfo(s *enter.Session, id int64) *sro.EmblemInfo {
+	bin := GetEmblemInfoList(s)
+	if bin == nil {
+		return nil
+	}
+	return bin[id]
+}
+
 func UpEmblemInfoList(s *enter.Session, uniqueIds []int64) {
 	bin := GetAttachmentBin(s)
 	if bin == nil {
@@ -73,4 +82,31 @@ func GetAccountAttachmentDB(s *enter.Session) *proto.AccountAttachmentDB {
 		AccountId:      s.AccountServerId,
 		EmblemUniqueId: GetEmblemUniqueId(s),
 	}
+}
+
+func GetEmblemDB(s *enter.Session, id int64) *proto.EmblemDB {
+	bin := GetEmblemInfo(s, id)
+	if bin == nil {
+		return nil
+	}
+	return &proto.EmblemDB{
+		Type:        proto.ParcelType_IdCardBackground,
+		UniqueId:    bin.EmblemId,
+		ReceiveDate: mx.Unix(bin.ReceiveDate, 0),
+		ParcelInfos: make([]*proto.ParcelInfo, 0),
+	}
+}
+
+func GetEmblemDBs(s *enter.Session) []*proto.EmblemDB {
+	list := make([]*proto.EmblemDB, 0)
+	for _, v := range GetEmblemInfoList(s) {
+		list = append(list, &proto.EmblemDB{
+			Type:        proto.ParcelType_IdCardBackground,
+			UniqueId:    v.EmblemId,
+			ReceiveDate: mx.Unix(v.ReceiveDate, 0),
+			ParcelInfos: make([]*proto.ParcelInfo, 0),
+		})
+	}
+
+	return list
 }

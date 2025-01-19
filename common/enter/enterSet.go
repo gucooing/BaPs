@@ -3,6 +3,8 @@ package enter
 import (
 	"sync"
 	"time"
+
+	"github.com/gucooing/BaPs/db"
 )
 
 var es *EnterSet
@@ -12,6 +14,13 @@ type EnterSet struct {
 	sessionSync    sync.RWMutex
 	EnterTicketMap map[string]*TicketInfo // 登录通行证字典-缓存
 	ticketSync     sync.RWMutex
+	MailMap        map[int64]*db.YostarMail // 全服邮件
+	mailSync       sync.RWMutex
+}
+
+func InitEnterSet() {
+	e := getEnterSet()
+	e.checkMail()
 }
 
 func getEnterSet() *EnterSet {
@@ -19,6 +28,7 @@ func getEnterSet() *EnterSet {
 		es = &EnterSet{
 			sessionSync: sync.RWMutex{},
 			ticketSync:  sync.RWMutex{},
+			mailSync:    sync.RWMutex{},
 		}
 		go es.Check()
 	}
@@ -31,5 +41,6 @@ func (e *EnterSet) Check() {
 		<-ticker.C
 		e.checkTicket()
 		e.checkSession()
+		e.checkMail()
 	}
 }

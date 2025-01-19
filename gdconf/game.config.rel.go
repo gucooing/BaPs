@@ -9,6 +9,7 @@ import (
 
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
 	pb "google.golang.org/protobuf/proto"
 )
 
@@ -25,8 +26,13 @@ func (g *GameConfig) LoadExcel() {
 		logger.Error("Excel.bin 读取失败,err:%s", err)
 		return
 	}
+	bin, err := mx.DeExcelBytes(file)
+	if err != nil {
+		logger.Error("解析Excel失败")
+		return
+	}
 	g.Excel = new(sro.Excel)
-	err = pb.Unmarshal(file, g.Excel)
+	err = pb.Unmarshal(bin, g.Excel)
 	if err != nil {
 		logger.Error("解析Excel失败,err:%s", err)
 		return

@@ -5,6 +5,7 @@ import (
 
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
+	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -93,19 +94,34 @@ func GetScenarioHistoryInfo(s *enter.Session, scenarioUniqueId int64) *sro.Scena
 	return bin[scenarioUniqueId]
 }
 
-func FinishScenarioHistoryInfo(s *enter.Session, scenarioGroupUniqueId int64) bool {
+func FinishScenarioHistoryInfo(s *enter.Session, scenarioGroupUniqueId int64) []*ParcelResult {
 	bin := GetMissionBin(s)
 	if bin == nil {
-		return false
+		return nil
+	}
+	conf := gdconf.GetScenarioModeExcel(scenarioGroupUniqueId)
+	if conf == nil {
+		return nil
 	}
 	if bin.ScenarioHistoryInfoList == nil {
 		bin.ScenarioHistoryInfoList = make(map[int64]*sro.ScenarioHistoryInfo)
+	}
+	if _, ok := bin.ScenarioHistoryInfoList[scenarioGroupUniqueId]; ok {
+		return nil
 	}
 	bin.ScenarioHistoryInfoList[scenarioGroupUniqueId] = &sro.ScenarioHistoryInfo{
 		ScenarioUniqueId: scenarioGroupUniqueId,
 		ClearDateTime:    time.Now().Unix(),
 	}
-	return true
+	list := make([]*ParcelResult, 0)
+	for _, rewardConf := range gdconf.GetScenarioModeRewardExcel(scenarioGroupUniqueId) {
+		list = append(list, &ParcelResult{
+			ParcelType: proto.ParcelType(proto.ParcelType_value[rewardConf.RewardParcelType]),
+			ParcelId:   rewardConf.RewardParcelId,
+			Amount:     rewardConf.RewardParcelAmount,
+		})
+	}
+	return list
 }
 
 func GetProgressDBs(s *enter.Session) []*proto.MissionProgressDB {

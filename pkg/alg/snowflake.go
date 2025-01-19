@@ -87,3 +87,16 @@ func (s *SnowflakeWorker) GenId() int64 {
 	id := (now-epoch)<<timeShift | (s.workerId << workerShift) | (s.number)
 	return id
 }
+
+var s *SnowflakeWorker
+
+func init() {
+	s = NewSnowflakeWorker(16)
+}
+
+func GetSnow() *SnowflakeWorker {
+	if s == nil {
+		s = NewSnowflakeWorker(16)
+	}
+	return s
+}

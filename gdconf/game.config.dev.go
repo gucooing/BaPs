@@ -39,6 +39,9 @@ func (g *GameConfig) LoadExcel() {
 		g.loadEmblemExcel,
 		g.loadAcademyFavorScheduleExcelTable,
 		g.loadAcademyMessangerExcelTable,
+		g.loadGuideMissionExcelTable,
+		g.loadScenarioModeExcel,
+		g.loadScenarioModeRewardExcel,
 	}
 
 	for _, fn := range g.loadFunc {

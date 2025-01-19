@@ -40,7 +40,6 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Toast_List:                           pack.ToastList,                           // ???
 		mx.Protocol_Event_RewardIncrease:                 pack.EventRewardIncrease,                 // ???
 		mx.Protocol_Notification_EventContentReddotCheck: pack.NotificationEventContentReddotCheck, // 红点检查?
-		mx.Protocol_Mail_Check:                           pack.MailCheck,                           // 邮件检查
 		mx.Protocol_ContentLog_UIOpenStatistics:          pack.ContentLogUIOpenStatistics,          // 历史ui打开
 		// 玩家档案
 		mx.Protocol_Account_Nickname:                        pack.AccountNickname,                        // 设置/修改 昵称
@@ -57,6 +56,10 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_MomoTalk_MessageList:   pack.MomoTalkMessageList,   // 获取单个角色的MomoTalk信息
 		mx.Protocol_MomoTalk_Read:          pack.MomoTalkRead,          // MomoTalk对话选择
 		mx.Protocol_MomoTalk_FavorSchedule: pack.MomoTalkFavorSchedule, // 完成MomoTalk剧情
+		// 邮箱
+		mx.Protocol_Mail_Check:   pack.MailCheck,   // 邮件检查
+		mx.Protocol_Mail_List:    pack.MailList,    // 获取邮件列表
+		mx.Protocol_Mail_Receive: pack.MailReceive, // 领取邮件
 		// 好友
 		mx.Protocol_Friend_Check: pack.FriendCheck, // 好友检查
 		// 背包
@@ -87,7 +90,9 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Clan_Login: pack.ClanLogin, // 登录获取社团信息
 		mx.Protocol_Clan_Check: pack.ClanCheck, // 社团检查
 		// 商店
-		mx.Protocol_Shop_List: pack.ShopList, // 获取商店信息
+		mx.Protocol_Shop_List:                  pack.ShopList,                  // 获取商店信息
+		mx.Protocol_Shop_BuyRefreshMerchandise: pack.ShopBuyRefreshMerchandise, // 每日刷新商店购买
+		mx.Protocol_Shop_BuyEligma:             pack.ShopBuyEligma,             // 角色碎片购买
 		// 卡池
 		mx.Protocol_Shop_GachaRecruitList:    pack.ShopGachaRecruitList,    // 获取卡池历史数据
 		mx.Protocol_Shop_BeforehandGachaGet:  pack.ShopBeforehandGachaGet,  // 获取新手免费十连信息

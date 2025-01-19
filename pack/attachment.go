@@ -16,15 +16,7 @@ func AttachmentGet(s *enter.Session, request, response mx.Message) {
 func AttachmentEmblemList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.AttachmentEmblemListResponse)
 
-	rsp.EmblemDBs = make([]*proto.EmblemDB, 0)
-	for _, v := range game.GetEmblemInfoList(s) {
-		rsp.EmblemDBs = append(rsp.EmblemDBs, &proto.EmblemDB{
-			Type:        proto.ParcelType_IdCardBackground,
-			UniqueId:    v.EmblemId,
-			ReceiveDate: mx.Unix(v.ReceiveDate, 0),
-			ParcelInfos: make([]*proto.ParcelInfo, 0),
-		})
-	}
+	rsp.EmblemDBs = game.GetEmblemDBs(s)
 }
 
 func AttachmentEmblemAcquire(s *enter.Session, request, response mx.Message) {
@@ -32,16 +24,7 @@ func AttachmentEmblemAcquire(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.AttachmentEmblemAcquireResponse)
 
 	game.UpEmblemInfoList(s, req.UniqueIds)
-
-	rsp.EmblemDBs = make([]*proto.EmblemDB, 0)
-	for _, v := range game.GetEmblemInfoList(s) {
-		rsp.EmblemDBs = append(rsp.EmblemDBs, &proto.EmblemDB{
-			Type:        proto.ParcelType_IdCardBackground,
-			UniqueId:    v.EmblemId,
-			ReceiveDate: mx.Unix(v.ReceiveDate, 0),
-			ParcelInfos: make([]*proto.ParcelInfo, 0),
-		})
-	}
+	rsp.EmblemDBs = game.GetEmblemDBs(s)
 }
 
 func AttachmentEmblemAttach(s *enter.Session, request, response mx.Message) {

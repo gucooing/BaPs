@@ -199,7 +199,22 @@ func GetAccountCurrencyDB(s *enter.Session) *proto.AccountCurrencyDB {
 type ParcelResult struct {
 	ParcelType proto.ParcelType
 	ParcelId   int64
-	Amount     int32
+	Amount     int64
+}
+
+func GetParcelResultList(typeList []string, idList, numList []int64) []*ParcelResult {
+	list := make([]*ParcelResult, 0)
+	if len(typeList) == len(idList) &&
+		len(idList) == len(numList) {
+		for index, rewardType := range typeList {
+			list = append(list, &ParcelResult{
+				ParcelType: proto.ParcelType(proto.ParcelType_value[rewardType]),
+				ParcelId:   idList[index],
+				Amount:     numList[index],
+			})
+		}
+	}
+	return list
 }
 
 func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.ParcelResultDB {
@@ -217,7 +232,6 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 		FurnitureDBs:                    nil,
 		RemovedFurnitureIds:             nil,
 		IdCardBackgroundDBs:             nil,
-		EmblemDBs:                       nil,
 		StickerDBs:                      nil,
 		CharacterNewUniqueIds:           nil,
 		SecretStoneCharacterIdAndCounts: nil,
@@ -232,12 +246,16 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 	for _, parcelResult := range parcelResultList {
 		switch parcelResult.ParcelType {
 		case proto.ParcelType_Currency: // 货币
-			UpCurrency(s, parcelResult.ParcelId, int64(parcelResult.Amount))
+			UpCurrency(s, parcelResult.ParcelId, parcelResult.Amount)
 			info.AccountCurrencyDB = GetAccountCurrencyDB(s)
 		case proto.ParcelType_MemoryLobby: // 记忆大厅
 			UpMemoryLobbyInfo(s, parcelResult.ParcelId)
 			info.MemoryLobbyDBs = append(info.MemoryLobbyDBs,
 				GetMemoryLobbyDB(s, parcelResult.ParcelId))
+		case proto.ParcelType_Emblem: // 称号
+			UpEmblemInfoList(s, []int64{parcelResult.ParcelId})
+			info.EmblemDBs = append(info.EmblemDBs,
+				GetEmblemDB(s, parcelResult.ParcelId))
 		default:
 			logger.Warn("没有处理的奖励类型 Unknown ParcelType:%s", parcelResult.ParcelType.String())
 		}
@@ -246,7 +264,7 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 				Type: parcelResult.ParcelType,
 				Id:   parcelResult.ParcelId,
 			},
-			Amount: int64(parcelResult.Amount),
+			Amount: parcelResult.Amount,
 			Multiplier: &proto.BasisPoint{
 				RawValue: 10000,
 			},

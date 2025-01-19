@@ -30,6 +30,9 @@ type GPP struct {
 	Emblem                    *Emblem
 	AcademyFavorScheduleExcel *AcademyFavorScheduleExcel
 	AcademyMessangerExcel     *AcademyMessangerExcel
+	GuideMissionExcel         *GuideMissionExcel
+	ScenarioMode              *ScenarioMode
+	ScenarioModeReward        *ScenarioModeReward
 }
 
 func LoadGameConfig(dataPath string, resPath string) *GameConfig {
@@ -59,6 +62,9 @@ func (g *GameConfig) gpp() {
 		g.gppEmblemExcel,
 		g.gppAcademyFavorScheduleExcelTable,
 		g.gppAcademyMessangerExcelTable,
+		g.gppGuideMissionExcelTable,
+		g.gppScenarioModeExcel,
+		g.gppScenarioModeRewardExcel,
 	}
 
 	for _, fn := range g.gppFunc {
