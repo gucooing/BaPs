@@ -3,6 +3,7 @@ package pack
 import (
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
+	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
@@ -20,7 +21,11 @@ func ItemList(s *enter.Session, request, response mx.Message) {
 	rsp.ExpiryItemDBs = make([]*proto.ItemDB, 0)
 	rsp.ItemDBs = make([]*proto.ItemDB, 0)
 
-	for _, conf := range game.GetItemList(s) {
+	for id, conf := range game.GetItemList(s) {
+		if gdconf.GetItemExcelTable(conf.UniqueId) == nil {
+			delete(game.GetItemList(s), id)
+			continue
+		}
 		rsp.ItemDBs = append(rsp.ItemDBs, &proto.ItemDB{
 			Type:       proto.ParcelType_Item,
 			ServerId:   conf.ServerId,

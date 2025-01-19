@@ -292,15 +292,20 @@ type ParcelResult struct {
 	Amount     int64
 }
 
-func GetParcelResultList(typeList []string, idList, numList []int64) []*ParcelResult {
+func GetParcelResultList(typeList []string, idList, numList []int64, isDel bool) []*ParcelResult {
+	//  不验有没有那么多了,随意了
 	list := make([]*ParcelResult, 0)
 	if len(typeList) == len(idList) &&
 		len(idList) == len(numList) {
 		for index, rewardType := range typeList {
+			num := numList[index]
+			if isDel {
+				num = -numList[index]
+			}
 			list = append(list, &ParcelResult{
 				ParcelType: proto.ParcelType(proto.ParcelType_value[rewardType]),
 				ParcelId:   idList[index],
-				Amount:     numList[index],
+				Amount:     num,
 			})
 		}
 	}

@@ -43,6 +43,9 @@ func (g *GameConfig) LoadExcel() {
 		g.loadScenarioModeExcel,
 		g.loadScenarioModeRewardExcel,
 		g.loadCharacterWeaponExcelTable,
+		g.loadCharacterSkillListExcelTable,
+		g.loadSkillExcelTable,
+		g.loadRecipeIngredientExcelTable,
 	}
 
 	for _, fn := range g.loadFunc {

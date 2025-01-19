@@ -23,6 +23,7 @@ func (c *Command) Router() {
 	gucooingApi := c.router.Group("/gucooing/api", alg.AutoGucooingApi())
 	{
 		gucooingApi.POST("/give", c.Give)
+		gucooingApi.POST("/give_all", c.GiveAll)
 		gucooingApi.GET("/getPlayerBin", c.getPlayerBin)
 		gucooingApi.POST("/mail", c.Mail)
 	}

@@ -119,7 +119,7 @@ func UpScheduleGroup(s *enter.Session, scheduleId int64) []*ParcelResult {
 	}
 	bin.ScheduleGroupList[scheduleId] = true
 
-	return GetParcelResultList(conf.RewardParcelType, conf.RewardParcelId, conf.RewardAmount)
+	return GetParcelResultList(conf.RewardParcelType, conf.RewardParcelId, conf.RewardAmount, false)
 }
 
 func UpMemoryLobbyInfo(s *enter.Session, memoryLobbyUniqueId int64) {

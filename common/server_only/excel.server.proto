@@ -22,6 +22,9 @@ message Excel {
   repeated ScenarioModeExcel ScenarioModeExcel = 13; // 剧情配置
   repeated ScenarioModeRewardExcel ScenarioModeRewardExcel = 14; // 剧情奖励配置
   repeated CharacterWeaponExcelTable CharacterWeaponExcelTable = 15; // 角色武器配置
+  repeated CharacterSkillListExcelTable CharacterSkillListExcelTable = 16; // 角色技能配置表
+  repeated SkillExcelTable SkillExcelTable = 17; // 全部技能配置
+  repeated RecipeIngredientExcelTable RecipeIngredientExcelTable = 18; // 技能升级材料配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -315,4 +318,70 @@ message CharacterWeaponExcelTable {
   repeated string LearnSkillSlot = 14;
   repeated string StatType = 15;
   repeated int64 StatValue = 16;
+}
+
+message CharacterSkillListExcelTable {
+  int64 CharacterSkillListGroupId = 1;
+  int32 MinimumGradeCharacterWeapon = 2;
+  int64 MinimumTierCharacterGear = 3;
+  int64 FormIndex = 4;
+  bool IsRootMotion = 5;
+  bool IsMoveLeftRight = 6;
+  bool UseRandomExSkillTimeline = 7;
+  int64 TSAInteractionId = 8;
+  repeated string NormalSkillGroupId = 9;
+  repeated int64 NormalSkillTimeLineIndex = 10;
+  repeated string ExSkillGroupId = 11;
+  repeated string ExSkillCutInTimeLineIndex = 12;
+  repeated string ExSkillLevelTimeLineIndex = 13;
+  repeated string PublicSkillGroupId = 14;
+  repeated int64 PublicSkillTimeLineIndex = 15;
+  repeated string PassiveSkillGroupId = 16;
+  repeated int64 LeaderSkillGroupId = 17;
+  repeated string ExtraPassiveSkillGroupId = 18;
+  repeated string HiddenPassiveSkillGroupId = 19;
+}
+
+message SkillExcelTable {
+  int64 Id = 1;
+  int64 LocalizeSkillId = 2;
+  string GroupId = 3;
+  string SkillDataKey = 4;
+  string VisualDataKey = 5;
+  int32 Level = 6;
+  int64 SkillCost = 7;
+  int64 ExtraSkillCost = 8;
+  int64 EnemySkillCost = 9;
+  int64 ExtraEnemySkillCost = 10;
+  int64 NPCSkillCost = 11;
+  int64 ExtraNPCSkillCost = 12;
+  string BulletType = 13;
+  int64 StartCoolTime = 14;
+  int64 CoolTime = 15;
+  int64 EnemyStartCoolTime = 16;
+  int64 EnemyCoolTime = 17;
+  int64 NPCStartCoolTime = 18;
+  int64 NPCCoolTime = 19;
+  int64 UseAtg = 20;
+  int64 RequireCharacterLevel = 21;
+  int64 RequireLevelUpMaterial = 22;
+  string IconName = 23;
+  bool IsShowInfo = 24;
+  bool IsShowSpeechbubble = 25;
+  int64 PublicSpeechDuration = 26;
+  int64 AdditionalToolTipId = 27;
+  string TextureSkillCardForFormConversion = 28;
+  string SkillCardLabelPath = 29;
+}
+
+message RecipeIngredientExcelTable {
+  int64 Id = 1;
+  string RecipeType_ = 2;
+  repeated string CostParcelType = 3;
+  repeated int64 CostId = 4;
+  repeated int64 CostAmount = 5;
+  repeated string IngredientParcelType = 6;
+  repeated int64 IngredientId = 7;
+  repeated int64 IngredientAmount = 8;
+  int64 CostTimeInSecond = 9;
 }

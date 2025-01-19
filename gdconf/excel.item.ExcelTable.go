@@ -45,6 +45,15 @@ func (g *GameConfig) gppItemExcelTable() {
 	}
 
 	for _, v := range g.GetExcel().GetItemExcelTable() {
+		if v.ExpirationDateTime != "" {
+			enTime, err := time.Parse("2006-01-02 15:04:05", v.ExpirationDateTime)
+			if err != nil {
+				continue
+			}
+			if time.Now().After(enTime) {
+				continue
+			}
+		}
 		g.GetGPP().ItemExcel.ItemExcelMap[v.Id] = v
 		if g.GetGPP().ItemExcel.ItemExcelCategoryMap[v.ItemCategory_] == nil {
 			g.GetGPP().ItemExcel.ItemExcelCategoryMap[v.ItemCategory_] = make([]*sro.ItemExcelTable, 0)
@@ -84,4 +93,12 @@ func GetRecruitCoin() *sro.ItemExcelTable {
 
 	}
 	return nil
+}
+
+func GetItemExcelCategoryMap(itemCategory string) []*sro.ItemExcelTable {
+	return GC.GetGPP().ItemExcel.ItemExcelCategoryMap[itemCategory]
+}
+
+func GetItemExcelTable(id int64) *sro.ItemExcelTable {
+	return GC.GetGPP().ItemExcel.ItemExcelMap[id]
 }

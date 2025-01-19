@@ -34,6 +34,9 @@ type GPP struct {
 	ScenarioMode              *ScenarioMode
 	ScenarioModeReward        *ScenarioModeReward
 	CharacterWeaponExcel      *CharacterWeaponExcel
+	CharacterSkillListExcel   *CharacterSkillListExcel
+	SkillExcel                *SkillExcel
+	RecipeIngredientExcel     *RecipeIngredientExcel
 }
 
 func LoadGameConfig(dataPath string, resPath string) *GameConfig {
@@ -67,6 +70,9 @@ func (g *GameConfig) gpp() {
 		g.gppScenarioModeExcel,
 		g.gppScenarioModeRewardExcel,
 		g.gppCharacterWeaponExcelTable,
+		g.gppCharacterSkillListExcelTable,
+		g.gppSkillExcelTable,
+		g.gppRecipeIngredientExcelTable,
 	}
 
 	for _, fn := range g.gppFunc {

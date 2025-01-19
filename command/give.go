@@ -18,7 +18,6 @@ type ApiGive struct {
 
 type Item struct {
 	Type int32 `json:"type"`
-	All  bool  `json:"all"`
 	Num  int64 `json:"num"`
 	Id   int64 `json:"id"`
 }

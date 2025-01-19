@@ -100,7 +100,9 @@ func (g *Gateway) AccountCheckYostar(s *enter.Session, request, response mx.Mess
 	s.MxToken = mxToken
 	s.EndTime = time.Now().Add(time.Duration(enter.MaxCachePlayerTime) * time.Minute)
 	if !enter.AddSession(s) {
-		logger.Debug("AccountServerId:%v,重复上线账号", tickInfo.AccountServerId)
+		logger.Info("AccountServerId:%v,重复上线账号,如果老客户端在线则会被离线", tickInfo.AccountServerId)
+	} else {
+		logger.Info("AccountServerId:%v,上线账号", tickInfo.AccountServerId)
 	}
 	rsp.ResultState = 1
 	base := &mx.BasePacket{

@@ -66,12 +66,14 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Item_List:            pack.ItemList,            // 获取背包物品
 		mx.Protocol_Equipment_List:       pack.EquipmentList,       // 获取装备信息
 		// 角色
-		mx.Protocol_CharacterGear_List:            pack.CharacterGearList,            // 获取角色??
-		mx.Protocol_Character_List:                pack.CharacterList,                // 获取角色列表
-		mx.Protocol_Character_SetFavorites:        pack.CharacterSetFavorites,        // 标记角色
-		mx.Protocol_Character_Transcendence:       pack.CharacterTranscendence,       // 角色升星
-		mx.Protocol_Character_UnlockWeapon:        pack.CharacterUnlockWeapon,        // 角色解锁武器
-		mx.Protocol_Character_WeaponTranscendence: pack.CharacterWeaponTranscendence, // 角色武器升星
+		mx.Protocol_CharacterGear_List:              pack.CharacterGearList,              // 获取角色??
+		mx.Protocol_Character_List:                  pack.CharacterList,                  // 获取角色列表
+		mx.Protocol_Character_SetFavorites:          pack.CharacterSetFavorites,          // 标记角色
+		mx.Protocol_Character_UpdateSkillLevel:      pack.CharacterUpdateSkillLevel,      // 角色技能升级
+		mx.Protocol_Character_BatchSkillLevelUpdate: pack.CharacterBatchSkillLevelUpdate, // 角色技能批量升级
+		mx.Protocol_Character_Transcendence:         pack.CharacterTranscendence,         // 角色升星
+		mx.Protocol_Character_UnlockWeapon:          pack.CharacterUnlockWeapon,          // 角色解锁武器
+		mx.Protocol_Character_WeaponTranscendence:   pack.CharacterWeaponTranscendence,   // 角色武器升星
 		// 队伍
 		mx.Protocol_Echelon_List:       pack.EchelonList,       // 获取队伍信息
 		mx.Protocol_Echelon_Save:       pack.EchelonSave,       // 保存/更新队伍
