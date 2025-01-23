@@ -18,6 +18,7 @@ message PlayerBin {
     CampaignBin campaign_bin = 11; // 任务信息
     AttachmentBin attachment_bin = 12; // 玩家档案
     MomoTalkBin momo_talk_bin = 13; // MomoTalk 信息
+    DungeonBin dungeon_bin = 14; // 副本信息
 }
 
 // 基础信息
@@ -31,6 +32,8 @@ message BasePlayer { // 此处仅留必要数据
   int64 emblem_unique_id = 6; // 称号
   string comment = 7; // 签名
   int64 lobby_student = 8; // 值日生
+  int64 exp = 9; // 账号经验
+  int32 days = 10; // 登录天数
 }
 
 // 学院信息
@@ -166,7 +169,20 @@ message BeforehandInfo {
 // 任务信息
 
 message CampaignBin {
+ map<int64,StageInfo> stage_history = 1; // 完成的关卡信息
+}
 
+message StageInfo {
+  int64 chapter_unique_id = 1; // 总关卡id
+  int64 clear_turn_record = 2; // 轮次
+  int64 first_clear_reward_receive = 3; // 第一次通关获取奖励时间
+  int64 last_play = 4; // 最近一次游戏时间
+  int64 stage_unique_id = 5; // 关卡id
+  bool star1_flag = 6;
+  bool star2_flag = 7;
+  bool star3_flag = 8;
+  int64 star_reward_receive = 9;
+  int64 tactic_clear_count_with_rank_s_record = 10;
 }
 
 // 邮箱配置
@@ -226,4 +242,23 @@ message MomoTalkInfo {
 message MemoryLobbyInfo {
   int64 memory_lobby_id = 1;
   int64 chosen_date = 2;
+}
+
+message DungeonBin {
+  map<int64,WeekDungeonStageInfo> week_dungeon_stage_history = 1; // 悬赏通缉/特别依赖 通关信息
+  map<int64,SchoolDungeonStageInfo> school_dungeon_stage_history = 2; // 学院交流会通关信息
+}
+
+message WeekDungeonStageInfo {
+  int64 stage_id = 1;
+  map<int32,int64> star_goal_record = 2;
+}
+
+message SchoolDungeonStageInfo {
+  int64 stage_id = 1;
+  bool is_win = 2;
+  bool is_su = 3;
+  bool is_time = 4;
+  bool is_first = 5;
+  bool is_star = 6;
 }

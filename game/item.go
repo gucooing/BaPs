@@ -92,9 +92,9 @@ func RemoveItem(s *enter.Session, id int64, num int32) bool {
 var DefaultCurrencyNum = map[int32]int64{
 	proto.CurrencyTypes_Gem:                      600,
 	proto.CurrencyTypes_GemPaid:                  0,
-	proto.CurrencyTypes_GemBonus:                 600,
-	proto.CurrencyTypes_Gold:                     10000,
-	proto.CurrencyTypes_ActionPoint:              24,
+	proto.CurrencyTypes_GemBonus:                 600,   // 砖石
+	proto.CurrencyTypes_Gold:                     10000, // 金币
+	proto.CurrencyTypes_ActionPoint:              24,    // 体力
 	proto.CurrencyTypes_AcademyTicket:            3,
 	proto.CurrencyTypes_ArenaTicket:              5,
 	proto.CurrencyTypes_RaidTicket:               3,
@@ -109,8 +109,8 @@ var DefaultCurrencyNum = map[int32]int64{
 	proto.CurrencyTypes_WorldRaidTicketA:         40,
 	proto.CurrencyTypes_WorldRaidTicketB:         40,
 	proto.CurrencyTypes_WorldRaidTicketC:         40,
-	proto.CurrencyTypes_ChaserTotalTicket:        6,
-	proto.CurrencyTypes_SchoolDungeonTotalTicket: 6,
+	proto.CurrencyTypes_ChaserTotalTicket:        6, // 悬赏通缉
+	proto.CurrencyTypes_SchoolDungeonTotalTicket: 6, // 学院交流会
 	proto.CurrencyTypes_EliminateTicketA:         3,
 	proto.CurrencyTypes_EliminateTicketB:         3,
 	proto.CurrencyTypes_EliminateTicketC:         3,
@@ -149,8 +149,26 @@ func UpCurrency(s *enter.Session, parcelId int64, num int64) *sro.CurrencyInfo {
 	if gem != nil || gemBonus != nil {
 		gem.CurrencyNum = gemBonus.CurrencyNum
 	}
+	if parcelId == proto.CurrencyTypes_ActionPoint &&
+		num < 0 {
+		AddAccountExp(s, -num) // 如果是体力扣除,就触发账号经验处理
+	}
 
 	return info
+}
+
+// SetCurrency 直接设置,如需要产出请勿使用此方法
+func SetCurrency(s *enter.Session, parcelId int64, num int64) {
+	bin := GetCurrencyList(s)
+	if bin == nil {
+		return
+	}
+	info := GetCurrencyInfo(s, int32(parcelId))
+	if info == nil {
+		return
+	}
+	info.UpdateTime = time.Now().Unix()
+	info.CurrencyNum = num
 }
 
 func GetCurrencyList(s *enter.Session) map[int32]*sro.CurrencyInfo {

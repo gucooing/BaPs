@@ -7,6 +7,7 @@ import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
+	"github.com/gucooing/BaPs/pkg/logger"
 	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
@@ -150,55 +151,55 @@ func CharacterBatchSkillLevelUpdate(s *enter.Session, request, response mx.Messa
 	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
 }
 
-func UpCharacterSkill(characterInfo *sro.CharacterInfo, reqLevel int32, SkillSlot string) []*game.ParcelResult {
+func UpCharacterSkill(characterInfo *sro.CharacterInfo, reqLevel int32, skillSlot string) []*game.ParcelResult {
 	conf := gdconf.GetCharacterSkillListExcelTable(characterInfo.CharacterId, 0)
-	if conf == nil {
+	if conf == nil || len(skillSlot) <= 2 {
 		return nil
 	}
 
-	forFunc := func(groupIdList []string) string {
-		var forNum = 0
+	getGidFunc := func(groupIdList []string) string {
 		for _, id := range groupIdList {
-			forNum++
 			if !strings.Contains(id, "EmptySkill") {
 				return id
-			}
-			if forNum > 10 {
-				break
 			}
 		}
 		return ""
 	}
 
-	var level int32
+	var level *int32
 	var parcelResultList []*game.ParcelResult
-	for level < reqLevel {
+	var forNum int32
+	for {
 		var groupId string
-		var skillType string
+		if forNum >= reqLevel { // 最大递归次数限制
+			return parcelResultList
+		}
+		forNum++
 
-		if strings.Contains(SkillSlot, "ExSkill") { // ex 技能
-			level = characterInfo.ExSkillLevel
-			skillType = "ExSkill"
-			groupId = forFunc(conf.ExSkillGroupId)
-		} else if strings.Contains(SkillSlot, "PublicSkill") { // 第二个 技能
-			level = characterInfo.CommonSkillLevel
-			skillType = "PublicSkill"
-			groupId = forFunc(conf.PublicSkillGroupId)
-		} else if strings.Contains(SkillSlot, "ExtraPassive") { // 第四个 技能
-			level = characterInfo.ExtraPassiveSkillLevel
-			skillType = "ExtraPassive"
-			groupId = forFunc(conf.ExtraPassiveSkillGroupId)
-		} else if strings.Contains(SkillSlot, "Passive") { // 第三个 技能
-			level = characterInfo.PassiveSkillLevel
-			skillType = "Passive"
+		skillType := skillSlot[:len(skillSlot)-2]
+		switch skillType {
+		case "ExSkill": // ex 技能
+			level = &characterInfo.ExSkillLevel
+			groupId = getGidFunc(conf.ExSkillGroupId)
+		case "PublicSkill": // 第二个 技能
+			level = &characterInfo.CommonSkillLevel
+			groupId = getGidFunc(conf.PublicSkillGroupId)
+		case "Passive": // 第三个 技能
+			level = &characterInfo.PassiveSkillLevel
 			if len(conf.PassiveSkillGroupId) != 0 {
-				groupId = forFunc(conf.PassiveSkillGroupId)
+				groupId = getGidFunc(conf.PassiveSkillGroupId)
 			} else {
-				groupId = forFunc(conf.NormalSkillGroupId)
+				groupId = getGidFunc(conf.NormalSkillGroupId)
 			}
+		case "ExtraPassive": // 第四个 技能
+			level = &characterInfo.ExtraPassiveSkillLevel
+			groupId = getGidFunc(conf.ExtraPassiveSkillGroupId)
+		default:
+			logger.Warn("未知的角色技能升级请求skillSlot:%s", skillSlot)
+			return parcelResultList
 		}
 
-		skillConf := gdconf.GetSkillExcelTable(groupId, level)
+		skillConf := gdconf.GetSkillExcelTable(groupId, *level)
 		if skillConf == nil {
 			return parcelResultList
 		}
@@ -211,17 +212,9 @@ func UpCharacterSkill(characterInfo *sro.CharacterInfo, reqLevel int32, SkillSlo
 			recConf.CostId, recConf.CostAmount, true)...)
 		parcelResultList = append(parcelResultList, game.GetParcelResultList(recConf.IngredientParcelType,
 			recConf.IngredientId, recConf.IngredientAmount, true)...)
-		switch skillType {
-		case "ExSkill":
-			characterInfo.ExSkillLevel++
-		case "PublicSkill":
-			characterInfo.CommonSkillLevel++
-		case "Passive":
-			characterInfo.PassiveSkillLevel++
-		case "ExtraPassive":
-			characterInfo.ExtraPassiveSkillLevel++
+		*level++
+		if *level >= reqLevel {
+			return parcelResultList
 		}
-		level++
 	}
-	return parcelResultList
 }

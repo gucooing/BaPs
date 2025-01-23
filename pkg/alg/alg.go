@@ -55,3 +55,10 @@ func MaxInt64(a, b int64) int64 {
 	}
 	return b
 }
+
+func MaxBool(a, b bool) bool {
+	if a {
+		return a
+	}
+	return b
+}

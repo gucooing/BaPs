@@ -5,6 +5,7 @@ import (
 
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
+	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
@@ -92,6 +93,39 @@ func SetLobbyStudent(s *enter.Session, serverId int64) bool {
 	}
 }
 
+func GetAccountExp(s *enter.Session) int64 {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return 0
+	}
+	return bin.Exp
+}
+
+func AddAccountExp(s *enter.Session, num int64) {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return
+	}
+	bin.Exp += num
+	newLevel, newExp := gdconf.UpAccountLevel(GetAccountLevel(s),
+		GetAccountExp(s))
+	if bin.Level < newLevel {
+		// 升级设置满级体力
+		UpCurrency(s, proto.CurrencyTypes_ActionPoint,
+			gdconf.GetAPAutoChargeMax(newLevel))
+	}
+	bin.Exp = newExp
+	bin.Level = newLevel
+}
+
+func GetAccountDays(s *enter.Session) int32 {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return 0
+	}
+	return bin.Days
+}
+
 func GetAccountDB(s *enter.Session) *proto.AccountDB {
 	baseBin := GetBaseBin(s)
 	if s == nil || baseBin == nil {
@@ -102,6 +136,7 @@ func GetAccountDB(s *enter.Session) *proto.AccountDB {
 		ServerId:                   baseBin.GetAccountId(),
 		Nickname:                   GetNickname(s),
 		Level:                      GetAccountLevel(s),
+		Exp:                        GetAccountExp(s),
 		LastConnectTime:            time.Unix(baseBin.GetLastConnectTime(), 0),
 		CreateDate:                 time.Unix(baseBin.GetCreateDate(), 0),
 		VIPLevel:                   10,
@@ -109,7 +144,7 @@ func GetAccountDB(s *enter.Session) *proto.AccountDB {
 		Comment:                    GetComment(s),
 		RepresentCharacterServerId: GetCharacterServerId(s, GetLobbyStudent(s)),
 		PublisherAccountId:         s.YostarUID,
-		RetentionDays:              1,
+		RetentionDays:              0,
 	}
 
 	return info

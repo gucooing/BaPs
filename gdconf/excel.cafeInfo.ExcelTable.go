@@ -28,15 +28,15 @@ type CafeInfoExcel struct {
 }
 
 func (g *GameConfig) gppCafeInfoExcelTable() {
-	info := &CafeInfoExcel{
+	g.GetGPP().CafeInfoExcel = &CafeInfoExcel{
 		CafeInfoExcelTableMap: make(map[int64]*sro.CafeInfoExcelTableInfo, 0),
 	}
 
 	for _, v := range g.GetExcel().GetCafeInfoExcelTableInfo() {
-		info.CafeInfoExcelTableMap[v.CafeId] = v
+		g.GetGPP().CafeInfoExcel.CafeInfoExcelTableMap[v.CafeId] = v
 	}
 
-	logger.Info("处理咖啡厅数量完成:%v个", len(info.CafeInfoExcelTableMap))
+	logger.Info("处理咖啡厅数量完成:%v个", len(g.GetGPP().CafeInfoExcel.CafeInfoExcelTableMap))
 }
 
 func GetCafeInfoExcelTables() map[int64]*sro.CafeInfoExcelTableInfo {

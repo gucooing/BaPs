@@ -25,6 +25,11 @@ message Excel {
   repeated CharacterSkillListExcelTable CharacterSkillListExcelTable = 16; // 角色技能配置表
   repeated SkillExcelTable SkillExcelTable = 17; // 全部技能配置
   repeated RecipeIngredientExcelTable RecipeIngredientExcelTable = 18; // 技能升级材料配置
+  repeated CampaignStageExcelTable CampaignStageExcelTable = 19; // 任务关卡信息配置
+  repeated CampaignUnitExcelTable CampaignUnitExcelTable = 20; // 任务关卡怪物信息
+  repeated WeekDungeonExcelTable WeekDungeonExcelTable = 21; // 悬赏通缉关卡信息
+  repeated SchoolDungeonStageExcel SchoolDungeonStageExcel = 22; // 学院交流会关卡信息
+  repeated AccountLevelExcel AccountLevelExcel = 23; // 账号等级配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -384,4 +389,102 @@ message RecipeIngredientExcelTable {
   repeated int64 IngredientId = 7;
   repeated int64 IngredientAmount = 8;
   int64 CostTimeInSecond = 9;
+}
+
+message CampaignStageExcelTable {
+  int64 Id = 1;
+  bool Deprecated = 2;
+  string Name = 3;
+  string StageNumber = 4;
+  int64 CleardScenarioId = 5;
+  int64 BattleDuration = 6;
+  string StageEnterCostType = 7;
+  int64 StageEnterCostId = 8;
+  int64 StageEnterCostAmount = 9;
+  int64 StageEnterEchelonCount = 10;
+  int64 StarConditionTacticRankSCount = 11;
+  int64 StarConditionTurnCount = 12;
+  repeated string EnterScenarioGroupId = 13;
+  repeated string ClearScenarioGroupId = 14;
+  string StrategyMap = 15;
+  string StrategyMapBG = 16;
+  int64 CampaignStageRewardId = 17;
+  int64 MaxTurn = 18;
+  string StageTopography = 19;
+  int64 RecommandLevel = 20;
+  string StrategyEnvironment = 22;
+  int64 GroundId = 23;
+  int64 StrategySkipGroundId = 24;
+  string ContentType = 25;
+  string FirstClearReportEventName = 27;
+  int64 TacticRewardExp = 28;
+  int64 FixedEchelonId = 29;
+  string EchelonExtensionType = 30;
+}
+
+message CampaignUnitExcelTable {
+  int64 Id = 1;
+  int64 Key = 2;
+  string Name = 3;
+  string PrefabName = 4;
+  string StrategyPrefabName = 5;
+  repeated string EnterScenarioGroupId = 6;
+  repeated string ClearScenarioGroupId = 7;
+  int64 GroundId = 8;
+  int64 MoveRange = 9;
+  string AIMoveType = 10;
+  string Grade = 11;
+  string EnvironmentType = 12;
+  double Scale = 13;
+  bool IsTacticSkip = 14;
+}
+
+message WeekDungeonExcelTable {
+  int64 StageId = 1;
+  string WeekDungeonType = 2;
+  int64 Difficulty = 3;
+  int64 BattleDuration = 4;
+  int64 PrevStageId = 5;
+  repeated string StageEnterCostType = 6;
+  repeated int64 StageEnterCostId = 7;
+  repeated int64 StageEnterCostAmount = 8;
+  int64 GroundId = 9;
+  repeated string StarGoal = 10;
+  repeated int64 StarGoalAmount = 11;
+  string StageTopography = 12;
+  int64 RecommandLevel = 13;
+  int64 StageRewardId = 14;
+  int64 PlayTimeLimitInSeconds = 15;
+  int64 BattleRewardExp = 16;
+  int64 BattleRewardPlayerExp = 17;
+  repeated int64 GroupBuffID = 18;
+  string EchelonExtensionType = 19;
+}
+
+message SchoolDungeonStageExcel {
+  int64 StageId = 1;
+  string DungeonType = 2;
+  int64 Difficulty = 3;
+  int64 BattleDuration = 4;
+  int64 PrevStageId = 5;
+  int64 StageEnterCostTypeLength = 6;
+  int64 StageEnterCostIdLength = 7;
+  int64 StageEnterCostAmountLength = 8;
+  int64 StageEnterCostMinimumAmountLength = 9;
+  int64 GroundId = 10;
+  int64 StarGoalLength = 11;
+  int64 StarGoalAmountLength = 12;
+  string StageTopography = 13;
+  int64 RecommandLevel = 14;
+  int64 StageRewardId = 15;
+  int64 PlayTimeLimitInSeconds = 16;
+  string EchelonExtensionType = 17;
+}
+
+message AccountLevelExcel {
+  int64 Id = 1;
+  int32 Level = 2;
+  int64 Exp = 3;
+  int64 APAutoChargeMax = 4;
+  bool NeedReportEvent = 5;
 }

@@ -38,7 +38,7 @@ func EchelonSave(s *enter.Session, request, response mx.Message) {
 			MainId:        game.ServerIdsToCharacterIds(s, req.EchelonDB.MainSlotServerIds),
 			SupportId:     game.ServerIdsToCharacterIds(s, req.EchelonDB.SupportSlotServerIds),
 			TssId:         game.ServerIdToCharacterId(s, req.EchelonDB.TSSInteractionServerId),
-			SkillId:       game.ServerIdsToCharacterIds(s, req.EchelonDB.SkillCardMulliganCharacterIds),
+			SkillId:       req.EchelonDB.SkillCardMulliganCharacterIds,
 			ExtensionType: int32(req.EchelonDB.ExtensionType),
 		}
 

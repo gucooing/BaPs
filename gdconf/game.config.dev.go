@@ -46,6 +46,11 @@ func (g *GameConfig) LoadExcel() {
 		g.loadCharacterSkillListExcelTable,
 		g.loadSkillExcelTable,
 		g.loadRecipeIngredientExcelTable,
+		g.loadCampaignStageExcelTable,
+		g.loadCampaignUnitExcelTable,
+		g.loadWeekDungeonExcelTable,
+		g.loadSchoolDungeonStageExcel,
+		g.loadAccountLevelExcel,
 	}
 
 	for _, fn := range g.loadFunc {

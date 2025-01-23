@@ -281,15 +281,15 @@ func GetEchelonDB(s *enter.Session, db *sro.EchelonInfo) *proto.EchelonDB {
 	}
 	i = 1
 	for ; i <= GetSkillEchelonNum(proto.EchelonType(db.EchelonType)); i++ {
-		var serverId int64 = 0
+		var characterId int64 = 0
 		characterId, ok := db.SkillCharacterList[i]
 		if ok {
 			characterInfo := GetCharacterInfo(s, characterId)
-			if characterInfo != nil {
-				serverId = characterInfo.ServerId
+			if characterInfo == nil {
+				characterId = 0
 			}
 		}
-		info.SkillCardMulliganCharacterIds = append(info.SkillCardMulliganCharacterIds, serverId)
+		info.SkillCardMulliganCharacterIds = append(info.SkillCardMulliganCharacterIds, characterId)
 	}
 	i = 1
 	for ; i <= GetCombatStyleNum(proto.EchelonType(db.EchelonType)); i++ {
