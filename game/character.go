@@ -132,7 +132,11 @@ func GetCharacterDB(s *enter.Session, characterId int64) *proto.CharacterDB {
 	}
 	for i := 0; i < 3; i++ {
 		e, ok := bin.EquipmentList[int32(i)]
-		if ok || GetEquipmentInfo(s, e) == nil {
+		if ok {
+			if GetEquipmentInfo(s, e) == nil {
+				bin.EquipmentList[int32(i)] = 0
+				e = 0
+			}
 			info.EquipmentServerIds = append(info.EquipmentServerIds, e)
 		} else {
 			info.EquipmentServerIds = append(info.EquipmentServerIds, 0)

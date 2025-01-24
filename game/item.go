@@ -232,13 +232,16 @@ func RecoverActionPoint(s *enter.Session, db *sro.CurrencyInfo) {
 	if db == nil {
 		return
 	}
-	db.UpdateTime = time.Now().Unix()
 	maxAp := gdconf.GetAPAutoChargeMax(GetAccountLevel(s))
 	if db.CurrencyNum >= maxAp {
+		db.UpdateTime = time.Now().Unix()
 		return
 	}
 	num := int64(time.Now().Sub(time.Unix(db.UpdateTime, 0)).Minutes() / 6)
 	db.CurrencyNum = alg.MinInt64(db.CurrencyNum+num, maxAp)
+	if num > 0 { // 这样处理精度不高 但是方便
+		db.UpdateTime = time.Unix(db.UpdateTime, 0).Add(time.Duration(num) * time.Minute).Unix()
+	}
 }
 
 func GetItemDB(s *enter.Session, id int64) *proto.ItemDB {
