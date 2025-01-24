@@ -25,7 +25,6 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Account_LoginSync:                    pack.AccountLoginSync,                    // 同步账号信息
 		mx.Protocol_Cafe_Get:                             pack.CafeGetInfo,                         // 获取咖啡馆信息
 		mx.Protocol_Arena_Login:                          pack.ArenaLogin,                          // 登录获取竞技场信息
-		mx.Protocol_Raid_Login:                           pack.RaidLogin,                           // 登录获取总力站信息
 		mx.Protocol_EliminateRaid_Login:                  pack.EliminateRaidLogin,                  // 登录获取制约解除决战信息
 		mx.Protocol_Craft_List:                           pack.CraftInfoList,                       // 获取制造信息
 		mx.Protocol_TimeAttackDungeon_Login:              pack.TimeAttackDungeonLogin,              // 登录获取限时战斗信息??
@@ -62,9 +61,14 @@ func (g *Gateway) newFuncRouteMap() {
 		// 好友
 		mx.Protocol_Friend_Check: pack.FriendCheck, // 好友检查
 		// 背包
-		mx.Protocol_Account_CurrencySync: pack.AccountCurrencySync, // 同步账号货币
-		mx.Protocol_Item_List:            pack.ItemList,            // 获取背包物品
-		mx.Protocol_Equipment_List:       pack.EquipmentList,       // 获取装备信息
+		mx.Protocol_Account_CurrencySync:          pack.AccountCurrencySync,          // 同步账号货币
+		mx.Protocol_Item_List:                     pack.ItemList,                     // 获取背包物品
+		mx.Protocol_Equipment_List:                pack.EquipmentList,                // 获取装备信息
+		mx.Protocol_Equipment_LevelUp:             pack.EquipmentLevelUp,             // 装备升级
+		mx.Protocol_Equipment_TierUp:              pack.EquipmentTierUp,              // 装备进阶
+		mx.Protocol_Equipment_BatchGrowth:         pack.EquipmentBatchGrowth,         // 装备一键升级
+		mx.Protocol_Character_WeaponTranscendence: pack.CharacterWeaponTranscendence, // 角色武器升星
+		mx.Protocol_Character_WeaponExpGrowth:     pack.CharacterWeaponExpGrowth,     // 角色武器升级
 		// 角色
 		mx.Protocol_CharacterGear_List:              pack.CharacterGearList,              // 获取角色??
 		mx.Protocol_Character_List:                  pack.CharacterList,                  // 获取角色列表
@@ -73,7 +77,7 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Character_BatchSkillLevelUpdate: pack.CharacterBatchSkillLevelUpdate, // 角色技能批量升级
 		mx.Protocol_Character_Transcendence:         pack.CharacterTranscendence,         // 角色升星
 		mx.Protocol_Character_UnlockWeapon:          pack.CharacterUnlockWeapon,          // 角色解锁武器
-		mx.Protocol_Character_WeaponTranscendence:   pack.CharacterWeaponTranscendence,   // 角色武器升星
+		mx.Protocol_Equipment_Equip:                 pack.EquipmentEquip,                 // 装备角色装备
 		// 队伍
 		mx.Protocol_Echelon_List:       pack.EchelonList,       // 获取队伍信息
 		mx.Protocol_Echelon_Save:       pack.EchelonSave,       // 保存/更新队伍
@@ -118,6 +122,8 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_SchoolDungeon_List:         pack.SchoolDungeonList,         // 获取学院交流会通关信息
 		mx.Protocol_SchoolDungeon_EnterBattle:  pack.SchoolDungeonEnterBattle,  // 开始战斗
 		mx.Protocol_SchoolDungeon_BattleResult: pack.SchoolDungeonBattleResult, // 战斗结算
+		// 总力战
+		mx.Protocol_Raid_Login: pack.RaidLogin, // 登录获取总力站信息
 	}
 }
 

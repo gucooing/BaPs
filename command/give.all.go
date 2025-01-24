@@ -69,6 +69,10 @@ func GiveAllJsonToProtobuf(req *ApiGiveAll) []*sro.ParcelInfo {
 	switch req.Type {
 	case "Material": // 材料
 		return GiveAllMaterial(req)
+	case "Character": // 角色
+		return GiveAllCharacter(req)
+	case "Equipment": // 装备
+		return GiveAllEquipment(req)
 	}
 	return nil
 }
@@ -79,12 +83,44 @@ func GiveAllMaterial(req *ApiGiveAll) []*sro.ParcelInfo {
 		req.Num = 999
 	}
 	for _, conf := range gdconf.GetItemExcelCategoryMap("Material") {
-		num := req.Num
-		if num <= 0 {
-			num = alg.MaxInt64(conf.StackableMax/10, 1)
-		}
 		list = append(list, &sro.ParcelInfo{
 			Type: proto.ParcelType_Item,
+			Id:   conf.Id,
+			Num:  req.Num,
+		})
+	}
+
+	return list
+}
+
+func GiveAllCharacter(req *ApiGiveAll) []*sro.ParcelInfo {
+	list := make([]*sro.ParcelInfo, 0)
+	for _, conf := range gdconf.GetCharacterMap() {
+		list = append(list, &sro.ParcelInfo{
+			Type: proto.ParcelType_Character,
+			Id:   conf.Id,
+			Num:  1,
+		})
+	}
+	return list
+}
+
+func GiveAllEquipment(req *ApiGiveAll) []*sro.ParcelInfo {
+	list := make([]*sro.ParcelInfo, 0)
+	for _, conf := range gdconf.GetEquipmentExcelTableMap() {
+		num := req.Num
+		if conf.MaxLevel < 10 {
+			if num <= 0 {
+				num = alg.MaxInt64(conf.StackableMax/10, 1)
+			}
+		} else {
+			if num <= 0 {
+				num = 20
+			}
+		}
+
+		list = append(list, &sro.ParcelInfo{
+			Type: proto.ParcelType_Equipment,
 			Id:   conf.Id,
 			Num:  num,
 		})

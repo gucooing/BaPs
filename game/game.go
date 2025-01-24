@@ -14,23 +14,28 @@ func GetDBId() int64 {
 }
 
 func GetServerId(s *enter.Session) int64 {
-	if s == nil ||
-		s.PlayerBin == nil {
+	bin := GetPlayerBin(s)
+	if bin == nil {
 		return 0
 	}
-	if s.PlayerBin.ServerId == math.MaxInt64 {
-		logger.Warn("[UID:%v]玩家唯一计数器达到最大值:%v", s.AccountServerId, s.PlayerBin.ServerId)
+	if bin.ServerId == math.MaxInt64 {
+		logger.Warn("[UID:%v]玩家唯一计数器达到最大值:%v", s.AccountServerId, bin.ServerId)
 	}
-	s.PlayerBin.ServerId++
-	return s.PlayerBin.ServerId
+	if bin.ServerId < 1e8 {
+		bin.ServerId = 1e8
+	}
+	defer func() {
+		bin.ServerId++
+	}()
+	return bin.ServerId
 }
 
 func GetServerTime() int64 {
-	return (time.Now().Unix() * 10000000) + 621356292000000000
+	return (time.Now().Add(-1*time.Hour).Unix() * 10000000) + 621356292000000000
 }
 
 func GetServerTimeTick() int64 {
-	return time.Now().UnixNano()/100 + 621356292000000000
+	return time.Now().Add(-1*time.Hour).UnixNano()/100 + 621356292000000000
 }
 
 func NewYostarGame(accountId int64) *sro.PlayerBin {

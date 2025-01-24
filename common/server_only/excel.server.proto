@@ -30,6 +30,9 @@ message Excel {
   repeated WeekDungeonExcelTable WeekDungeonExcelTable = 21; // 悬赏通缉关卡信息
   repeated SchoolDungeonStageExcel SchoolDungeonStageExcel = 22; // 学院交流会关卡信息
   repeated AccountLevelExcel AccountLevelExcel = 23; // 账号等级配置
+  repeated EquipmentExcelTable EquipmentExcelTable = 24; // 装备配置表
+  repeated EquipmentStatExcelTable EquipmentStatExcelTable = 25; // 装备详情表
+  repeated EquipmentLevelExcelTable EquipmentLevelExcelTable = 26; // 装备等级配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -487,4 +490,49 @@ message AccountLevelExcel {
   int64 Exp = 3;
   int64 APAutoChargeMax = 4;
   bool NeedReportEvent = 5;
+}
+
+message EquipmentExcelTable {
+  int64 Id = 1;
+  string EquipmentCategory_ = 2;
+  string Rarity_ = 3;
+  int64 LocalizeEtcId = 4;
+  bool Wear = 5;
+  int32 MaxLevel = 6;
+  int64 RecipeId = 7;
+  int32 TierInit = 8;
+  int64 NextTierEquipment = 9;
+  int64 StackableMax = 10;
+  string Icon = 11;
+  string ImageName = 12;
+  repeated string Tags = 13;
+  int64 CraftQualityTier0 = 14;
+  int64 CraftQualityTier1 = 15;
+  int64 CraftQualityTier2 = 16;
+  int64 ShiftingCraftQuality = 17;
+  repeated string ShopCategory = 18;
+  int64 ShortcutTypeId = 19;
+}
+
+message EquipmentStatExcelTable {
+  int64 EquipmentId = 1;
+  string StatLevelUpType_ = 2;
+  repeated string StatType = 3;
+  repeated int64 MinStat = 4;
+  repeated int64 MaxStat = 5;
+  int64 LevelUpInsertLimit = 6;
+  int64 LevelUpFeedExp = 7;
+  string LevelUpFeedCostCurrency = 8;
+  int64 LevelUpFeedCostAmount = 9;
+  string EquipmentCategory_ = 10;
+  int64 LevelUpFeedAddExp = 11;
+  int64 DefaultMaxLevel = 12;
+  int64 TranscendenceMax = 13;
+  string DamageFactorGroupId = 14;
+}
+
+message EquipmentLevelExcelTable {
+  int32 Level = 1;
+  repeated int64 TierLevelExp = 2;
+  repeated int64 TotalExp = 3;
 }

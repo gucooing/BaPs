@@ -16,9 +16,6 @@ func ShopList(s *enter.Session, request, response mx.Message) {
 
 	rsp.ShopInfos = make([]*proto.ShopInfoDB, 0)
 	rsp.ShopEligmaHistoryDBs = make([]*proto.ShopEligmaHistoryDB, 0)
-
-	return
-
 	for _, categoryType := range req.CategoryList {
 		conf := gdconf.GetShopInfoExcel(categoryType.String())
 		info := &proto.ShopInfoDB{

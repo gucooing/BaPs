@@ -73,7 +73,7 @@ message CharacterInfo {
   int32 extra_passive_skillLevel = 9;
   int32 common_skill_level = 10; // 基本技能
   int32 leader_skill_level = 11;
-  map<string,int64> equipment_list = 12; // 装备
+  map<int32,int64> equipment_list = 12; // 装备
   int64 server_id = 13; //  唯一id
   bool is_favorite = 14; // 是否标记
 }
@@ -84,6 +84,8 @@ message ItemBin {
   map<int64,ItemInfo> item_info_list = 1; // type 4
   map<int32,CurrencyInfo> currency_info_list = 2; // 货币
   map<int64,WeaponInfo> weapon_info_list = 3; // 角色武器
+  map<int64,EquipmentInfo> equipment_info_list = 4; // 角色装备
+  map<int64,int64> equipment_item_hash = 5; // 装备物品映射表 id sid
 }
 
 message ItemInfo {
@@ -105,6 +107,17 @@ message WeaponInfo {
   int32 level = 5;
   int64 exp = 6;
   bool is_locked = 7;
+}
+
+message EquipmentInfo {
+  int64 unique_id = 1;
+  int64 character_server_id = 2;
+  int32 level = 3;
+  int64 exp = 4;
+  int64 server_id = 5;
+  int32 tier = 6;
+  int64 stack_count = 7;
+  bool is_locked = 8;
 }
 
 // 剧情信息

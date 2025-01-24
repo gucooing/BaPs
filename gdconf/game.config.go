@@ -42,6 +42,9 @@ type GPP struct {
 	WeekDungeonExcel          *WeekDungeonExcel
 	SchoolDungeonStage        *SchoolDungeonStage
 	AccountLevel              *AccountLevel
+	EquipmentExcel            *EquipmentExcel
+	EquipmentStatExcel        *EquipmentStatExcel
+	EquipmentLevelExcel       *EquipmentLevelExcel
 }
 
 func LoadGameConfig(dataPath string, resPath string) *GameConfig {
@@ -83,6 +86,9 @@ func (g *GameConfig) gpp() {
 		g.gppWeekDungeonExcelTable,
 		g.gppSchoolDungeonStageExcel,
 		g.gppAccountLevelExcel,
+		g.gppEquipmentExcelTable,
+		g.gppEquipmentStatExcelTable,
+		g.gppEquipmentLevelExcelTable,
 	}
 
 	for _, fn := range g.gppFunc {

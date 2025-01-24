@@ -6,6 +6,7 @@ import (
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
+	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
 	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
@@ -142,7 +143,9 @@ func UpCurrency(s *enter.Session, parcelId int64, num int64) *sro.CurrencyInfo {
 		return nil
 	}
 	info.CurrencyNum += num
-	info.UpdateTime = time.Now().Unix()
+	if num > 0 {
+		info.UpdateTime = time.Now().Unix()
+	}
 
 	gemBonus := GetCurrencyInfo(s, proto.CurrencyTypes_GemBonus)
 	gem := GetCurrencyInfo(s, proto.CurrencyTypes_Gem)
@@ -208,11 +211,34 @@ func GetAccountCurrencyDB(s *enter.Session) *proto.AccountCurrencyDB {
 		UpdateTimeDict:         make(map[proto.CurrencyTypes]mx.MxTime),
 	}
 	for id, db := range GetCurrencyList(s) {
+		// 特殊物品刷新查询
+		if (id == proto.CurrencyTypes_ChaserTotalTicket ||
+			id == proto.CurrencyTypes_SchoolDungeonTotalTicket) &&
+			!time.Unix(db.UpdateTime, 0).After(alg.GetDay4()) {
+			db.CurrencyNum = alg.MaxInt64(db.CurrencyNum, 6)
+			db.UpdateTime = time.Now().Unix()
+		}
+		if id == proto.CurrencyTypes_ActionPoint {
+			RecoverActionPoint(s, db)
+		}
 		accountCurrencyDB.CurrencyDict[proto.CurrencyTypes(proto.CurrencyTypes_name[id])] = db.CurrencyNum
 		accountCurrencyDB.UpdateTimeDict[proto.CurrencyTypes(proto.CurrencyTypes_name[id])] = mx.Unix(db.UpdateTime, 0)
 	}
 
 	return accountCurrencyDB
+}
+
+func RecoverActionPoint(s *enter.Session, db *sro.CurrencyInfo) {
+	if db == nil {
+		return
+	}
+	db.UpdateTime = time.Now().Unix()
+	maxAp := gdconf.GetAPAutoChargeMax(GetAccountLevel(s))
+	if db.CurrencyNum >= maxAp {
+		return
+	}
+	num := int64(time.Now().Sub(time.Unix(db.UpdateTime, 0)).Minutes() / 6)
+	db.CurrencyNum = alg.MinInt64(db.CurrencyNum+num, maxAp)
 }
 
 func GetItemDB(s *enter.Session, id int64) *proto.ItemDB {
@@ -304,6 +330,153 @@ func GetWeaponDB(s *enter.Session, characterId int64) *proto.WeaponDB {
 	}
 }
 
+func GetEquipmentInfoList(s *enter.Session) map[int64]*sro.EquipmentInfo {
+	bin := GetItemBin(s)
+	if bin == nil {
+		return nil
+	}
+	if bin.EquipmentInfoList == nil {
+		bin.EquipmentInfoList = make(map[int64]*sro.EquipmentInfo)
+	}
+	return bin.EquipmentInfoList
+}
+
+func GetEquipmentInfo(s *enter.Session, serverId int64) *sro.EquipmentInfo {
+	bin := GetEquipmentInfoList(s)
+	if bin == nil {
+		return nil
+	}
+	return bin[serverId]
+}
+
+// AddEquipment 传入装备id
+// 如果是非佩戴装备设置id为k，并返回装备id
+// 如果是佩戴装备，则设置唯一id为k，并返回唯一id/*
+func AddEquipment(s *enter.Session, equipmentId int64, num int64) []int64 {
+	bin := GetItemBin(s)
+	if bin == nil {
+		return nil
+	}
+	conf := gdconf.GetEquipmentExcelTable(equipmentId)
+	if conf == nil {
+		return nil
+	}
+	if bin.EquipmentInfoList == nil {
+		bin.EquipmentInfoList = make(map[int64]*sro.EquipmentInfo)
+	}
+	if bin.EquipmentItemHash == nil {
+		bin.EquipmentItemHash = make(map[int64]int64)
+	}
+	if conf.MaxLevel < 10 { // 装备材料
+		if info := bin.EquipmentInfoList[bin.EquipmentItemHash[equipmentId]]; info != nil {
+			info.StackCount += num
+			return []int64{info.ServerId}
+		} else {
+			sId := GetServerId(s)
+			bin.EquipmentItemHash[equipmentId] = sId
+			bin.EquipmentInfoList[sId] = &sro.EquipmentInfo{
+				UniqueId:   equipmentId,
+				ServerId:   sId,
+				StackCount: num,
+			}
+			return []int64{sId}
+		}
+	}
+	sIdLi := make([]int64, 0)
+	for i := 0; int64(i) < num; i++ {
+		sId := GetServerId(s)
+		bin.EquipmentInfoList[sId] = &sro.EquipmentInfo{
+			UniqueId:          equipmentId,
+			CharacterServerId: 0,
+			Level:             1,
+			Exp:               0,
+			ServerId:          sId,
+			Tier:              conf.TierInit,
+			StackCount:        1,
+			IsLocked:          false,
+		}
+		sIdLi = append(sIdLi, sId)
+	}
+	return sIdLi
+}
+
+func DelEquipment(s *enter.Session, serverId int64, num int64) (bool, int64) {
+	bin := GetItemBin(s)
+	if bin == nil {
+		return false, 0
+	}
+	info, ok := bin.EquipmentInfoList[serverId]
+	if !ok {
+		return false, 0
+	}
+	conf := gdconf.GetEquipmentExcelTable(info.UniqueId)
+	statConf := gdconf.GetEquipmentStatExcelTable(info.UniqueId)
+	if conf == nil || statConf == nil {
+		return false, 0
+	}
+	// 扣钱
+	UpCurrency(s, int64(proto.CurrencyTypes_value[statConf.LevelUpFeedCostCurrency]),
+		-(statConf.LevelUpFeedCostAmount * num))
+	if conf.MaxLevel < 10 { // 装备材料
+		info.StackCount -= num
+	} else {
+		delete(bin.EquipmentInfoList, info.ServerId)
+	}
+	return true, statConf.LevelUpFeedExp * num
+}
+
+func GetEquipmentItemServerId(s *enter.Session, uniqueId int64) int64 {
+	bin := GetItemBin(s)
+	if bin == nil {
+		return 0
+	}
+	if bin.EquipmentItemHash == nil {
+		bin.EquipmentItemHash = make(map[int64]int64)
+	}
+	return bin.EquipmentItemHash[uniqueId]
+}
+
+func GetEquipmentDBs(s *enter.Session) []*proto.EquipmentDB {
+	list := make([]*proto.EquipmentDB, 0)
+	for index, bin := range GetEquipmentInfoList(s) {
+		if conf := gdconf.GetEquipmentExcelTable(bin.UniqueId); conf == nil {
+			delete(GetEquipmentInfoList(s), index)
+			continue
+		}
+		list = append(list, &proto.EquipmentDB{
+			Type:                   proto.ParcelType_Equipment,
+			UniqueId:               bin.UniqueId,
+			Level:                  bin.Level,
+			Exp:                    bin.Exp,
+			StackCount:             bin.StackCount,
+			BoundCharacterServerId: bin.CharacterServerId,
+			Tier:                   bin.Tier,
+			ServerId:               bin.ServerId,
+			IsLocked:               bin.IsLocked,
+		})
+	}
+
+	return list
+}
+
+func GetEquipmentDB(s *enter.Session, serverId int64) *proto.EquipmentDB {
+	bin := GetEquipmentInfo(s, serverId)
+	if bin == nil {
+		return nil
+	}
+	return &proto.EquipmentDB{
+		Type:                   proto.ParcelType_Equipment,
+		UniqueId:               bin.UniqueId,
+		Level:                  bin.Level,
+		Exp:                    bin.Exp,
+		StackCount:             bin.StackCount,
+		BoundCharacterServerId: bin.CharacterServerId,
+		Tier:                   bin.Tier,
+		ServerId:               bin.ServerId,
+		IsLocked:               bin.IsLocked,
+	}
+}
+
 type ParcelResult struct {
 	ParcelType proto.ParcelType
 	ParcelId   int64
@@ -332,17 +505,18 @@ func GetParcelResultList(typeList []string, idList, numList []int64, isDel bool)
 
 func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.ParcelResultDB {
 	info := &proto.ParcelResultDB{
-		AccountDB:      GetAccountDB(s),
-		MemoryLobbyDBs: make([]*proto.MemoryLobbyDB, 0),
-		ItemDBs:        make(map[int64]*proto.ItemDB),
-		EmblemDBs:      make([]*proto.EmblemDB, 0),
-		CharacterDBs:   make([]*proto.CharacterDB, 0),
-		WeaponDBs:      make([]*proto.WeaponDB, 0),
+		AccountDB:         GetAccountDB(s),
+		AccountCurrencyDB: GetAccountCurrencyDB(s),
+		MemoryLobbyDBs:    make([]*proto.MemoryLobbyDB, 0),
+		ItemDBs:           make(map[int64]*proto.ItemDB),
+		EmblemDBs:         make([]*proto.EmblemDB, 0),
+		CharacterDBs:      make([]*proto.CharacterDB, 0),
+		WeaponDBs:         make([]*proto.WeaponDB, 0),
+		EquipmentDBs:      make(map[int64]*proto.EquipmentDB),
 
 		AcademyLocationDBs:              nil,
 		CostumeDBs:                      nil,
 		TSSCharacterDBs:                 nil,
-		EquipmentDBs:                    nil,
 		RemovedEquipmentIds:             nil,
 		RemovedItemIds:                  nil,
 		FurnitureDBs:                    nil,
@@ -376,10 +550,21 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 			serverId := AddItem(s, parcelResult.ParcelId, int32(parcelResult.Amount))
 			info.ItemDBs[serverId] = GetItemDB(s, parcelResult.ParcelId)
 		case proto.ParcelType_Character: // 角色
-			AddCharacter(s, parcelResult.ParcelId)
-			info.CharacterDBs = append(info.CharacterDBs, GetCharacterDB(s, parcelResult.ParcelId))
+			if !AddCharacter(s, parcelResult.ParcelId) { // 重复添加处理
+				for _, itemId := range RepeatAddCharacter(s, parcelResult.ParcelId) {
+					if itemInfo := GetItemDB(s, itemId); itemInfo != nil {
+						info.ItemDBs[itemInfo.ServerId] = itemInfo
+					}
+				}
+			} else {
+				info.CharacterDBs = append(info.CharacterDBs, GetCharacterDB(s, parcelResult.ParcelId))
+			}
 		case proto.ParcelType_CharacterWeapon: // 角色武器 仅同步
 			info.WeaponDBs = append(info.WeaponDBs, GetWeaponDB(s, parcelResult.ParcelId))
+		case proto.ParcelType_Equipment: // 装备 仅添加
+			for _, serverId := range AddEquipment(s, parcelResult.ParcelId, parcelResult.Amount) {
+				info.EquipmentDBs[serverId] = GetEquipmentDB(s, serverId)
+			}
 		default:
 			logger.Warn("没有处理的奖励类型 Unknown ParcelType:%s", parcelResult.ParcelType.String())
 		}

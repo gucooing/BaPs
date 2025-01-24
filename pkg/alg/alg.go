@@ -2,6 +2,7 @@ package alg
 
 import (
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/config"
@@ -56,9 +57,38 @@ func MaxInt64(a, b int64) int64 {
 	return b
 }
 
+func MinInt64(a, b int64) int64 {
+	if a > b {
+		return b
+	}
+	return a
+}
+
+func MaxInt32(a, b int32) int32 {
+	if a > b {
+		return a
+	}
+	return b
+}
+
 func MaxBool(a, b bool) bool {
 	if a {
 		return a
 	}
 	return b
+}
+
+func GetDay4() time.Time {
+	currentTime := time.Now()
+	nextExecution := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 4, 0, 0, 0, currentTime.Location())
+	return nextExecution
+}
+
+func GetEveryDay4() time.Duration {
+	currentTime := time.Now()
+	nextExecution := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 4, 0, 0, 0, currentTime.Location())
+	if currentTime.Hour() >= 4 {
+		nextExecution = nextExecution.AddDate(0, 0, 1)
+	}
+	return nextExecution.Sub(currentTime)
 }

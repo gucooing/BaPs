@@ -38,14 +38,14 @@ func NewCharacter(s *enter.Session) *sro.CharacterBin {
 	return bin
 }
 
-func NewCharacterEquipment(characterId int64) map[string]int64 {
+func NewCharacterEquipment(characterId int64) map[int32]int64 {
 	conf := gdconf.GetCharacterExcel(characterId)
 	if conf == nil {
 		return nil
 	}
-	list := make(map[string]int64)
-	for _, e := range conf.EquipmentSlot {
-		list[e] = 0
+	list := make(map[int32]int64)
+	for i := 0; i < len(conf.EquipmentSlot); i++ {
+		list[int32(i)] = 0
 	}
 	return list
 }
@@ -130,8 +130,13 @@ func GetCharacterDB(s *enter.Session, characterId int64) *proto.CharacterDB {
 		EquipmentServerIds:     make([]int64, 0),
 		PotentialStats:         make(map[int32]int32),
 	}
-	for _, e := range bin.EquipmentList {
-		info.EquipmentServerIds = append(info.EquipmentServerIds, e)
+	for i := 0; i < 3; i++ {
+		e, ok := bin.EquipmentList[int32(i)]
+		if ok || GetEquipmentInfo(s, e) == nil {
+			info.EquipmentServerIds = append(info.EquipmentServerIds, e)
+		} else {
+			info.EquipmentServerIds = append(info.EquipmentServerIds, 0)
+		}
 	}
 	for _, p := range []int32{1, 2, 3} {
 		info.PotentialStats[p] = 0
@@ -167,6 +172,21 @@ func AddCharacter(s *enter.Session, characterId int64) bool {
 	}
 	list[characterId] = info
 	return true
+}
+
+func RepeatAddCharacter(s *enter.Session, characterId int64) []int64 {
+	conf := gdconf.GetCharacterExcel(characterId)
+	if conf == nil {
+		return nil
+	}
+	list := make([]int64, 0)
+	// 添加秘石
+	AddItem(s, conf.SecretStoneItemId, conf.SecretStoneItemAmount)
+	list = append(list, conf.SecretStoneItemId)
+	// 添加碎片
+	AddItem(s, conf.CharacterPieceItemId, conf.CharacterPieceItemAmount)
+	list = append(list, conf.CharacterPieceItemId)
+	return list
 }
 
 func ServerIdsToCharacterIds(s *enter.Session, serverIdList []int64) []int64 {
@@ -208,4 +228,19 @@ var WeaponStarGradeMap = map[int32]int32{
 
 func GetWeaponUpStarGradeNum(starGrade int32) int32 {
 	return WeaponStarGradeMap[starGrade]
+}
+
+func SetCharacterEquipment(s *enter.Session, characterServerId int64, equipmentIdServerId int64, index int32) bool {
+	characterInfo := GetCharacterInfoByServerId(s, characterServerId)
+	equipmentInfo := GetEquipmentInfo(s, equipmentIdServerId)
+	if characterInfo == nil || equipmentInfo == nil {
+		return false
+	}
+	if len(characterInfo.EquipmentList) < 3 {
+		characterInfo.EquipmentList = NewCharacterEquipment(characterInfo.CharacterId)
+	}
+	// 不存在卸载的情况
+	characterInfo.EquipmentList[index] = equipmentIdServerId
+	equipmentInfo.CharacterServerId = characterServerId
+	return true
 }

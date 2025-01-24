@@ -80,6 +80,7 @@ func AccountLoginSync(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.AccountLoginSyncResponse)
 
 	rsp.FriendCode = "BNAGBIES"
+	rsp.FriendCount = int64(len(req.SyncProtocols))
 	rsp.StaticOpenConditions = game.GetStaticOpenConditions(s)
 
 	for _, cmdId := range req.SyncProtocols {

@@ -68,41 +68,6 @@ func CharacterUnlockWeapon(s *enter.Session, request, response mx.Message) {
 	rsp.WeaponDB = game.GetWeaponDB(s, characterInfo.CharacterId)
 }
 
-func CharacterWeaponTranscendence(s *enter.Session, request, response mx.Message) {
-	req := request.(*proto.CharacterWeaponTranscendenceRequest)
-	rsp := response.(*proto.CharacterWeaponTranscendenceResponse)
-
-	characterInfo := game.GetCharacterInfoByServerId(s, req.TargetCharacterServerId)
-	if characterInfo == nil {
-		return
-	}
-	waeponInfo := game.GetWeaponInfo(s, characterInfo.CharacterId)
-	if waeponInfo == nil || waeponInfo.StarGrade >= 3 {
-		return
-	}
-	num := game.GetWeaponUpStarGradeNum(waeponInfo.StarGrade)
-	itemInfo := game.GetItemInfo(s, characterInfo.CharacterId)
-	if itemInfo == nil || num == 0 {
-		return
-	}
-	if itemInfo.StackCount < num {
-		return
-	}
-	waeponInfo.StarGrade++
-	rsp.ParcelResultDB = game.ParcelResultDB(s, []*game.ParcelResult{
-		{
-			ParcelType: proto.ParcelType_Item,
-			ParcelId:   characterInfo.CharacterId,
-			Amount:     int64(-num),
-		},
-		{
-			ParcelType: proto.ParcelType_CharacterWeapon,
-			ParcelId:   characterInfo.CharacterId,
-			Amount:     0,
-		},
-	})
-}
-
 func CharacterSetFavorites(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.CharacterSetFavoritesRequest)
 	rsp := response.(*proto.CharacterSetFavoritesResponse)
@@ -217,4 +182,17 @@ func UpCharacterSkill(characterInfo *sro.CharacterInfo, reqLevel int32, skillSlo
 			return parcelResultList
 		}
 	}
+}
+
+func EquipmentEquip(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.EquipmentItemEquipRequest)
+	rsp := response.(*proto.EquipmentItemEquipResponse)
+
+	rsp.EquipmentDBs = make([]*proto.EquipmentDB, 0)
+	defer func() {
+		rsp.CharacterDB = game.GetCharacterDB(s,
+			game.ServerIdToCharacterId(s, req.CharacterServerId))
+		rsp.EquipmentDBs = append(rsp.EquipmentDBs, game.GetEquipmentDB(s, req.EquipmentServerId))
+	}()
+	game.SetCharacterEquipment(s, req.CharacterServerId, req.EquipmentServerId, req.SlotIndex)
 }

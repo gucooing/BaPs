@@ -81,3 +81,7 @@ func GetCharacterExcel(characterId int64) *sro.CharacterExcelTable {
 func GetCharacterExcelStruct() *CharacterExcel {
 	return GC.GetGPP().CharacterExcel
 }
+
+func GetCharacterMap() map[int64]*sro.CharacterExcelTable {
+	return GC.GetGPP().CharacterExcel.CharacterMap
+}

@@ -9,5 +9,5 @@ import (
 func RaidLogin(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.RaidLoginResponse)
 
-	rsp.SeasonType = proto.RaidSeasonType_Close
+	rsp.SeasonType = proto.RaidSeasonType_Settlement
 }

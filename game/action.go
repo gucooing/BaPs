@@ -37,5 +37,5 @@ func GetServerNotification(s *enter.Session) proto.ServerNotificationFlag {
 
 // DailyAction 每天4点
 func DailyAction(s *enter.Session) {
-	// 重置
+
 }
