@@ -123,9 +123,6 @@ func EquipmentBatchGrowth(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.EquipmentBatchGrowthRequest)
 	rsp := response.(*proto.EquipmentBatchGrowthResponse)
 
-	defer func() {
-		rsp.ParcelResultDB = game.ParcelResultDB(s, nil)
-	}()
 	rsp.EquipmentDBs = make([]*proto.EquipmentDB, 0)
 	consumeResultDB := &proto.ConsumeResultDB{
 		RemovedItemServerIds:                    make([]int64, 0),
@@ -136,6 +133,8 @@ func EquipmentBatchGrowth(s *enter.Session, request, response mx.Message) {
 		UsedFurnitureServerIdAndRemainingCounts: make(map[int64]int64),
 	}
 	rsp.ConsumeResultDB = consumeResultDB
+
+	// 装备升级
 	for _, equipmentBatch := range req.EquipmentBatchGrowthRequestDBs {
 		bin := game.GetEquipmentInfo(s, equipmentBatch.TargetServerId)
 		if bin == nil {
@@ -182,6 +181,43 @@ func EquipmentBatchGrowth(s *enter.Session, request, response mx.Message) {
 			bin.Tier++
 		}
 		rsp.EquipmentDBs = append(rsp.EquipmentDBs, game.GetEquipmentDB(s, equipmentBatch.TargetServerId))
+	}
+
+	// 爱用品升级
+	if reqGear := req.GearTierUpRequestDB; reqGear != nil {
+		defer func() {
+			rsp.GearDB = game.GetGearDB(s, reqGear.TargetServerId)
+		}()
+		bin := game.GetGearInfo(s, reqGear.TargetServerId)
+		if bin == nil {
+			return
+		}
+		conf := gdconf.GetCharacterGearExcel(bin.UniqueId)
+		if conf == nil {
+			return
+		}
+		recConf := gdconf.GetRecipeIngredientExcelTable(conf.RecipeId)
+		if recConf == nil {
+			return
+		}
+		// 根据配方计算需要的东西
+		parcelResultList := game.GetParcelResultList(recConf.CostParcelType,
+			recConf.CostId, recConf.CostAmount, true)
+		parcelResultList = append(parcelResultList, game.GetParcelResultList(recConf.IngredientParcelType,
+			recConf.IngredientId, recConf.IngredientAmount, true)...)
+		// 删物品
+		rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
+		// 构造回包 这步是没意义的一步浪费性能
+		for _, prInfo := range parcelResultList {
+			switch prInfo.ParcelType {
+			case proto.ParcelType_Item:
+				consumeResultDB.UsedItemServerIdAndRemainingCounts[prInfo.ParcelId] =
+					int64(game.GetItemInfo(s, prInfo.ParcelId).GetStackCount())
+			}
+		}
+		// 升级
+		bin.UniqueId = conf.NextTierEquipment
+		bin.Tier++
 	}
 }
 

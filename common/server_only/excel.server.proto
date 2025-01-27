@@ -39,6 +39,7 @@ message Excel {
   repeated IdCardBackgroundExcel IdCardBackgroundExcel = 30; // 账号背景配置
   repeated WeekDungeonRewardExcelTable WeekDungeonRewardExcelTable = 31; // 悬赏通缉关卡奖励配置
   repeated CharacterLevelExcelTable CharacterLevelExcelTable = 32; // 角色等级配置
+  repeated CharacterGearExcel CharacterGearExcel = 33; // 角色爱用品配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -636,4 +637,22 @@ message CharacterLevelExcelTable {
   int32 Level = 1;
   int64 Exp = 2;
   int64 TotalExp = 3;
+}
+
+message CharacterGearExcel {
+  int64 Id = 1;
+  int64 CharacterId = 2;
+  string StatLevelUpType = 3;
+  int32 Tier = 4;
+  int64 NextTierEquipment = 5;
+  int64 RecipeId = 6;
+  int64 OpenFavorLevel = 7;
+  int64 MaxLevel = 8;
+  string LearnSkillSlot = 9;
+  int64 StatTypeLength = 10;
+  int64 MinStatValueLength = 11;
+  int64 MaxStatValueLength = 12;
+  string Icon = 13;
+  int64 LocalizeEtcId = 14;
+  int64 TagsLength = 15;
 }

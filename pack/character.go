@@ -25,6 +25,9 @@ func CharacterGearList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.CharacterGearListResponse)
 
 	rsp.GearDBs = make([]*proto.GearDB, 0)
+	for serverId, _ := range game.GetGearInfoList(s) {
+		rsp.GearDBs = append(rsp.GearDBs, game.GetGearDB(s, serverId))
+	}
 }
 
 func CharacterTranscendence(s *enter.Session, request, response mx.Message) {
@@ -245,4 +248,35 @@ func CharacterExpGrowth(s *enter.Session, request, response mx.Message) {
 	}
 	characterInfo.Level = newLevel
 	characterInfo.Exp = newExp
+}
+
+func CharacterGearUnlock(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.CharacterGearUnlockRequest)
+	rsp := response.(*proto.CharacterGearUnlockResponse)
+
+	defer func() {
+		rsp.CharacterDB = game.GetCharacterDB(s, game.ServerIdToCharacterId(s, req.CharacterServerId))
+	}()
+
+	bin := game.GetGearInfoList(s)
+	characterInfo := game.GetCharacterInfoByServerId(s, req.CharacterServerId)
+	if bin == nil || characterInfo == nil {
+		return
+	}
+	conf := gdconf.GetUnlockCharacterGear(characterInfo.CharacterId)
+	if conf == nil {
+		return
+	}
+	sId := game.GetServerId(s)
+	bin[sId] = &sro.GearInfo{
+		UniqueId:          conf.Id,
+		CharacterServerId: characterInfo.ServerId,
+		Level:             1,
+		ServerId:          sId,
+		SlotIndex:         int64(req.SlotIndex),
+		Exp:               0,
+		Tier:              conf.Tier,
+	}
+
+	rsp.GearDB = game.GetGearDB(s, sId)
 }

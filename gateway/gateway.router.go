@@ -82,7 +82,7 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Character_WeaponTranscendence: pack.CharacterWeaponTranscendence, // 角色武器升星
 		mx.Protocol_Character_WeaponExpGrowth:     pack.CharacterWeaponExpGrowth,     // 角色武器升级
 		// 角色
-		mx.Protocol_CharacterGear_List:              pack.CharacterGearList,              // 获取角色??
+		mx.Protocol_CharacterGear_List:              pack.CharacterGearList,              // 获取角色爱用品
 		mx.Protocol_Character_List:                  pack.CharacterList,                  // 获取角色列表
 		mx.Protocol_Character_SetFavorites:          pack.CharacterSetFavorites,          // 标记角色
 		mx.Protocol_Character_UpdateSkillLevel:      pack.CharacterUpdateSkillLevel,      // 角色技能升级
@@ -91,6 +91,7 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Character_UnlockWeapon:          pack.CharacterUnlockWeapon,          // 角色解锁武器
 		mx.Protocol_Equipment_Equip:                 pack.EquipmentEquip,                 // 装备角色装备
 		mx.Protocol_Character_ExpGrowth:             pack.CharacterExpGrowth,             // 角色升级
+		mx.Protocol_CharacterGear_Unlock:            pack.CharacterGearUnlock,            // 角色解锁爱用品
 		// 队伍
 		mx.Protocol_Echelon_List:       pack.EchelonList,       // 获取队伍信息
 		mx.Protocol_Echelon_Save:       pack.EchelonSave,       // 保存/更新队伍

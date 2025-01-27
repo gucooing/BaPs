@@ -277,3 +277,41 @@ func SetCharacterEquipment(s *enter.Session, characterServerId int64, equipmentI
 	equipmentInfo.CharacterServerId = characterServerId
 	return true
 }
+
+func GetGearInfoList(s *enter.Session) map[int64]*sro.GearInfo {
+	bin := GetCharacterBin(s)
+	if bin == nil {
+		return nil
+	}
+	if bin.GearInfoList == nil {
+		bin.GearInfoList = make(map[int64]*sro.GearInfo)
+	}
+	return bin.GearInfoList
+}
+
+func GetGearInfo(s *enter.Session, serverId int64) *sro.GearInfo {
+	bin := GetGearInfoList(s)
+	if bin == nil {
+		return nil
+	}
+	return bin[serverId]
+}
+
+func GetGearDB(s *enter.Session, serverId int64) *proto.GearDB {
+	bin := GetGearInfo(s, serverId)
+	if bin == nil {
+		return nil
+	}
+	info := &proto.GearDB{
+		Type:                   proto.ParcelType_CharacterGear,
+		ServerId:               bin.ServerId,
+		UniqueId:               bin.UniqueId,
+		Level:                  bin.Level,
+		Exp:                    bin.Exp,
+		Tier:                   bin.Tier,
+		SlotIndex:              bin.SlotIndex,
+		BoundCharacterServerId: bin.CharacterServerId,
+	}
+
+	return info
+}
