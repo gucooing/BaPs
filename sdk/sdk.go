@@ -7,24 +7,19 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gucooing/BaPs/common/code"
 	"github.com/gucooing/BaPs/config"
-	"github.com/gucooing/BaPs/pkg/alg"
 )
 
 type SDK struct {
 	router *gin.Engine
-	code   *code.Code
 }
 
 func New(router *gin.Engine) *SDK {
 	s := &SDK{
 		router: router,
-		code:   code.NewCode(),
 	}
 
 	s.initRouter()
-	go s.code.CheckCodeTime()
 	return s
 }
 
@@ -41,11 +36,6 @@ func (s *SDK) initRouter() {
 	{
 		user.POST("/yostar_createlogin", s.YostarCreatelogin)
 		user.POST("/login", s.YostarLogin)
-	}
-
-	gucooingApi := s.router.Group("/gucooing/api", alg.AutoGucooingApi())
-	{
-		gucooingApi.GET("/ba/getEmailCode", s.getEmailCode)
 	}
 }
 

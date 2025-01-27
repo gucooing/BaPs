@@ -14,8 +14,10 @@ func NewCharacter(s *enter.Session) *sro.CharacterBin {
 	}
 	bin := &sro.CharacterBin{
 		CharacterInfoList: make(map[int64]*sro.CharacterInfo),
+		CharacterHash:     make(map[int64]int64),
 	}
 	for _, conf := range gdconf.GetDefaultCharacterExcelTable() {
+		sid := GetServerId(s)
 		infp := &sro.CharacterInfo{
 			CharacterId:            conf.CharacterId,
 			Level:                  conf.Level,
@@ -29,9 +31,10 @@ func NewCharacter(s *enter.Session) *sro.CharacterBin {
 			CommonSkillLevel:       conf.CommonSkillLevel,
 			LeaderSkillLevel:       conf.LeaderSkillLevel,
 			EquipmentList:          NewCharacterEquipment(conf.CharacterId),
-			ServerId:               GetServerId(s),
+			ServerId:               sid,
 			IsFavorite:             false,
 		}
+		bin.CharacterHash[sid] = conf.CharacterId
 		bin.CharacterInfoList[conf.CharacterId] = infp
 	}
 
@@ -69,6 +72,10 @@ func GetCharacterInfoList(s *enter.Session) map[int64]*sro.CharacterInfo {
 	return bin.GetCharacterInfoList()
 }
 
+func GetCharacterCount(s *enter.Session) int64 {
+	return int64(len(GetCharacterInfoList(s)))
+}
+
 func GetCharacterInfoListByServerId(s *enter.Session) map[int64]*sro.CharacterInfo {
 	list := make(map[int64]*sro.CharacterInfo)
 	for _, v := range GetCharacterInfoList(s) {
@@ -82,10 +89,30 @@ func GetCharacterInfo(s *enter.Session, characterId int64) *sro.CharacterInfo {
 	return bin[characterId]
 }
 
-// GetCharacterInfoByServerId 批量拉取不适合此方法
+func GetCharacterHash(s *enter.Session) map[int64]int64 {
+	bin := GetCharacterBin(s)
+	if bin == nil {
+		return nil
+	}
+	if bin.CharacterHash == nil {
+		bin.CharacterHash = make(map[int64]int64)
+	}
+	return bin.CharacterHash
+}
+
+func ServerIdToCharacterId(s *enter.Session, serverId int64) int64 {
+	if id, ok := GetCharacterHash(s)[serverId]; ok {
+		return id
+	}
+	return 0
+}
+
 func GetCharacterInfoByServerId(s *enter.Session, serverId int64) *sro.CharacterInfo {
-	list := GetCharacterInfoListByServerId(s)
-	return list[serverId]
+	hash := GetCharacterHash(s)
+	if hash == nil {
+		return nil
+	}
+	return GetCharacterInfo(s, hash[serverId])
 }
 
 func GetCharacterServerId(s *enter.Session, characterId int64) int64 {
@@ -130,6 +157,7 @@ func GetCharacterDB(s *enter.Session, characterId int64) *proto.CharacterDB {
 		EquipmentServerIds:     make([]int64, 0),
 		PotentialStats:         make(map[int32]int32),
 	}
+	info.FavorRank = 50 // 由于excel中没有好感度配置所以默认满级
 	for i := 0; i < 3; i++ {
 		e, ok := bin.EquipmentList[int32(i)]
 		if ok {
@@ -150,8 +178,17 @@ func GetCharacterDB(s *enter.Session, characterId int64) *proto.CharacterDB {
 }
 
 func AddCharacter(s *enter.Session, characterId int64) bool {
-	list := GetCharacterInfoList(s)
-	if _, ok := list[characterId]; ok {
+	bin := GetCharacterBin(s)
+	if bin == nil {
+		return false
+	}
+	if bin.CharacterInfoList == nil {
+		bin.CharacterInfoList = make(map[int64]*sro.CharacterInfo)
+	}
+	if bin.CharacterHash == nil {
+		bin.CharacterHash = make(map[int64]int64)
+	}
+	if _, ok := bin.CharacterInfoList[characterId]; ok {
 		return false
 	}
 	conf := gdconf.GetCharacterExcel(characterId)
@@ -159,6 +196,7 @@ func AddCharacter(s *enter.Session, characterId int64) bool {
 		logger.Error("[UID:%v]未知的角色添加调用,characterId:%v", s.AccountServerId, characterId)
 		return true
 	}
+	sId := GetServerId(s)
 	info := &sro.CharacterInfo{
 		CharacterId:            characterId,
 		Level:                  1,
@@ -172,9 +210,10 @@ func AddCharacter(s *enter.Session, characterId int64) bool {
 		CommonSkillLevel:       1,
 		LeaderSkillLevel:       1,
 		EquipmentList:          NewCharacterEquipment(characterId),
-		ServerId:               GetServerId(s),
+		ServerId:               sId,
 	}
-	list[characterId] = info
+	bin.CharacterHash[sId] = characterId
+	bin.CharacterInfoList[characterId] = info
 	return true
 }
 
@@ -195,23 +234,13 @@ func RepeatAddCharacter(s *enter.Session, characterId int64) []int64 {
 
 func ServerIdsToCharacterIds(s *enter.Session, serverIdList []int64) []int64 {
 	list := make([]int64, 0)
-	bin := GetCharacterInfoListByServerId(s)
 	for _, serverId := range serverIdList {
-		if db, ok := bin[serverId]; ok {
+		if db := GetCharacterInfoByServerId(s, serverId); db != nil {
 			list = append(list, db.CharacterId)
 		}
 	}
 
 	return list
-}
-
-func ServerIdToCharacterId(s *enter.Session, serverId int64) int64 {
-	bin := GetCharacterInfoListByServerId(s)
-	if db, ok := bin[serverId]; ok {
-		return db.CharacterId
-	}
-
-	return 0
 }
 
 var CharacterStarGradeMap = map[int32]int32{

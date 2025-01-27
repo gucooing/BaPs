@@ -32,6 +32,37 @@ func GetWeekDungeonStageInfoList(s *enter.Session) map[int64]*sro.WeekDungeonSta
 	return bin.WeekDungeonStageHistory
 }
 
+func GetWeekDungeonStageInfo(s *enter.Session, stageId int64) *sro.WeekDungeonStageInfo {
+	bin := GetWeekDungeonStageInfoList(s)
+	if bin == nil {
+		return nil
+	}
+	if bin[stageId] == nil {
+		bin[stageId] = &sro.WeekDungeonStageInfo{
+			StageId:        stageId,
+			StarGoalRecord: make(map[string]int64),
+		}
+	}
+	return bin[stageId]
+}
+
+func GetWeekDungeonStageHistoryDB(s *enter.Session, stageId int64) *proto.WeekDungeonStageHistoryDB {
+	bin := GetWeekDungeonStageInfo(s, stageId)
+	if bin == nil {
+		return nil
+	}
+	info := &proto.WeekDungeonStageHistoryDB{
+		AccountServerId: s.AccountServerId,
+		StageUniqueId:   bin.StageId,
+		StarGoalRecord:  make(map[proto.StarGoalType]int64),
+		IsCleardEver:    false,
+	}
+	for starGoalType, status := range bin.StarGoalRecord {
+		info.StarGoalRecord[proto.StarGoalType(starGoalType)] = status
+	}
+	return info
+}
+
 func GetSchoolDungeonStageInfoList(s *enter.Session) map[int64]*sro.SchoolDungeonStageInfo {
 	bin := GetDungeonBin(s)
 	if bin == nil {
@@ -69,4 +100,24 @@ func GetSchoolDungeonStageHistoryDB(s *enter.Session, stageId int64) *proto.Scho
 	info.StarFlags[1] = bin.IsSu
 	info.StarFlags[2] = bin.IsTime
 	return info
+}
+
+func BattleIsAllAlive(battleSummary *proto.BattleSummary) bool {
+	if battleSummary == nil {
+		return false
+	}
+	isSu := true
+	for _, heroes := range battleSummary.Group01Summary.Heroes {
+		if heroes.HPRateAfter == 0 {
+			isSu = false
+		}
+	}
+	return isSu
+}
+
+func BattleIsClearTimeInSec(battleSummary *proto.BattleSummary, realtime float64) bool {
+	if battleSummary == nil {
+		return false
+	}
+	return battleSummary.ElapsedRealtime < realtime
 }

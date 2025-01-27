@@ -24,7 +24,7 @@ message Excel {
   repeated CharacterWeaponExcelTable CharacterWeaponExcelTable = 15; // 角色武器配置
   repeated CharacterSkillListExcelTable CharacterSkillListExcelTable = 16; // 角色技能配置表
   repeated SkillExcelTable SkillExcelTable = 17; // 全部技能配置
-  repeated RecipeIngredientExcelTable RecipeIngredientExcelTable = 18; // 技能升级材料配置
+  repeated RecipeIngredientExcelTable RecipeIngredientExcelTable = 18; // 材料配置
   repeated CampaignStageExcelTable CampaignStageExcelTable = 19; // 任务关卡信息配置
   repeated CampaignUnitExcelTable CampaignUnitExcelTable = 20; // 任务关卡怪物信息
   repeated WeekDungeonExcelTable WeekDungeonExcelTable = 21; // 悬赏通缉关卡信息
@@ -33,6 +33,12 @@ message Excel {
   repeated EquipmentExcelTable EquipmentExcelTable = 24; // 装备配置表
   repeated EquipmentStatExcelTable EquipmentStatExcelTable = 25; // 装备详情表
   repeated EquipmentLevelExcelTable EquipmentLevelExcelTable = 26; // 装备等级配置
+  repeated FurnitureExcelTable FurnitureExcelTable = 27; // 家具配置
+  repeated CafeRankExcelTable CafeRankExcelTable = 28; // 咖啡厅等级配置
+  repeated CafeProductionExcelTable CafeProductionExcelTable = 29; // 咖啡厅生产配置
+  repeated IdCardBackgroundExcel IdCardBackgroundExcel = 30; // 账号背景配置
+  repeated WeekDungeonRewardExcelTable WeekDungeonRewardExcelTable = 31; // 悬赏通缉关卡奖励配置
+  repeated CharacterLevelExcelTable CharacterLevelExcelTable = 32; // 角色等级配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -453,7 +459,7 @@ message WeekDungeonExcelTable {
   repeated int64 StageEnterCostAmount = 8;
   int64 GroundId = 9;
   repeated string StarGoal = 10;
-  repeated int64 StarGoalAmount = 11;
+  repeated double StarGoalAmount = 11;
   string StageTopography = 12;
   int64 RecommandLevel = 13;
   int64 StageRewardId = 14;
@@ -535,4 +541,99 @@ message EquipmentLevelExcelTable {
   int32 Level = 1;
   repeated int64 TierLevelExp = 2;
   repeated int64 TotalExp = 3;
+}
+
+message FurnitureExcelTable {
+  int64 Id = 1;
+  string ProductionStep_ = 2;
+  string Rarity_ = 3;
+  string Category = 4;
+  string SubCategory = 5;
+  int64 LocalizeEtcId = 6;
+  int64 StarGradeInit = 7;
+  int64 Tier = 8;
+  string Icon = 9;
+  int64 SizeWidth = 10;
+  int64 SizeHeight = 11;
+  int64 OtherSize = 12;
+  int64 ExpandWidth = 13;
+  bool Enable = 14;
+  bool ReverseRotation = 15;
+  string Prefab = 16;
+  string PrefabExpand = 17;
+  string SubPrefab = 18;
+  string SubExpandPrefab = 19;
+  string CornerPrefab = 20;
+  int64 StackableMax = 21;
+  int64 RecipeCraftId = 22;
+  int64 SetGroudpId = 23;
+  int64 ComfortBonus = 24;
+  int64 VisitOperationType = 25;
+  int64 VisitBonusOperationType = 26;
+  repeated string Tags = 27;
+  int64 CraftQualityTier0 = 28;
+  int64 CraftQualityTier1 = 29;
+  int64 CraftQualityTier2 = 30;
+  int64 ShiftingCraftQuality = 31;
+  string FurnitureFunctionType_ = 32;
+  repeated int64 FurnitureFunctionParameter = 33;
+  int64 VideoId = 34;
+  int64 EventCollectionId = 35;
+  int64 FurnitureBubbleOffsetX = 36;
+  int64 FurnitureBubbleOffsetY = 37;
+  repeated string CafeCharacterStateReq = 38;
+  repeated string CafeCharacterStateAdd = 39;
+  repeated string CafeCharacterStateMake = 40;
+  repeated string CafeCharacterStateOnly = 41;
+}
+
+message CafeRankExcelTable {
+  int64 CafeId = 1;
+  int32 Rank = 2;
+  int64 RecipeId = 3;
+  int64 ComfortMax = 4;
+  int64 TagCountMax = 5;
+  int32 CharacterVisitMin = 6;
+  int32 CharacterVisitMax = 7;
+  int64 CafeVisitWeightBase = 8;
+  repeated int64 CafeVisitWeightTagBonusStep = 9;
+  repeated int64 CafeVisitWeightTagBonus = 10;
+}
+
+message CafeProductionExcelTable {
+  int64 CafeId = 1;
+  int32 Rank = 2;
+  string CafeProductionParcelType = 3;
+  int64 CafeProductionParcelId = 4;
+  float ParcelProductionCoefficient = 5;
+  float ParcelProductionCorrectionValue = 6;
+  int64 ParcelStorageMax = 7;
+}
+
+message IdCardBackgroundExcel {
+  int64 Id = 1;
+  string Rarity = 2;
+  int64 DisplayOrder = 3;
+  bool CollectionVisible = 4;
+  bool IsDefault = 5;
+  string BgPath = 6;
+  int64 LocalizeEtcId = 7;
+  string Icon = 8;
+}
+
+message WeekDungeonRewardExcelTable{
+  int64 GroupId = 1;
+  string DungeonType = 2;
+  string RewardParcelType = 3;
+  int64 RewardParcelId = 4;
+  int64 RewardParcelAmount = 5;
+  int64 RewardParcelProbability = 6;
+  bool IsDisplayed = 7;
+  string DropItemModelPrefabPath = 8;
+}
+
+message CharacterLevelExcelTable {
+  int32 Level = 1;
+  int64 Exp = 2;
+  int64 TotalExp = 3;
 }

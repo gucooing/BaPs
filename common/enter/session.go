@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -16,7 +17,7 @@ import (
 	pb "google.golang.org/protobuf/proto"
 )
 
-var MaxCachePlayerTime = 720 // 最大玩家缓存时间 单位:分钟
+var MaxCachePlayerTime = 120 // 最大玩家缓存时间 单位:分钟
 
 type Session struct {
 	AccountServerId int64
@@ -27,6 +28,7 @@ type Session struct {
 	PlayerBin       *sro.PlayerBin // 玩家数据
 	Actions         map[proto.ServerNotificationFlag]bool
 	GoroutinesSync  sync.Mutex
+	AccountFriend   *AccountFriend
 }
 
 // 定时检查一次是否有用户长时间离线
@@ -73,6 +75,41 @@ func GetSessionByAccountServerId(accountServerId int64) *Session {
 	return nil
 }
 
+// GetSessionByUid 此接口的用处是拉取玩家数据,包括在数据库中的
+func GetSessionByUid(uid int64) *Session {
+	if uid == 0 {
+		return nil
+	}
+	e := getEnterSet()
+	e.sessionSync.RLock()
+	info, ok := e.SessionMap[uid]
+	if ok {
+		e.sessionSync.RUnlock()
+		return info
+	}
+	e.sessionSync.RUnlock()
+	bin := db.GetYostarGameByAccountServerId(uid)
+	if bin == nil || bin.BinData == nil {
+		return nil
+	}
+	info = NewSession(uid)
+	info.AccountServerId = uid
+	info.EndTime = time.Now().Add(time.Duration(MaxCachePlayerTime) * time.Minute)
+	pb.Unmarshal(bin.BinData, info.PlayerBin)
+	AddSession(info)
+	return info
+}
+
+func NewSession(accountServerId int64) *Session {
+	return &Session{
+		AccountServerId: accountServerId,
+		Actions:         make(map[proto.ServerNotificationFlag]bool),
+		PlayerBin:       new(sro.PlayerBin),
+		GoroutinesSync:  sync.Mutex{},
+		AccountFriend:   GetAccountFriend(accountServerId),
+	}
+}
+
 // GetAllSession 获取全部在线玩家
 func GetAllSession() map[int64]*Session {
 	allSession := make(map[int64]*Session)
@@ -81,6 +118,17 @@ func GetAllSession() map[int64]*Session {
 	defer e.sessionSync.RUnlock()
 	for k, v := range e.SessionMap {
 		allSession[k] = v
+	}
+	return allSession
+}
+
+func GetAllSessionList() []*Session {
+	allSession := make([]*Session, 0)
+	e := getEnterSet()
+	e.sessionSync.RLock()
+	defer e.sessionSync.RUnlock()
+	for _, v := range e.SessionMap {
+		allSession = append(allSession, v)
 	}
 	return allSession
 }
@@ -122,8 +170,13 @@ func AddSession(x *Session) bool {
 
 // UpAllDate 保存全部玩家数据
 func UpAllDate() {
+	// 保存玩家主要数据
 	for _, info := range GetAllSession() {
 		info.UpDate()
+	}
+	// 保存玩家次要数据 (好友数据
+	for _, info := range GetAllAccountFriend() {
+		info.upDate()
 	}
 }
 
@@ -132,12 +185,13 @@ func (x *Session) UpDate() bool {
 	if x == nil {
 		return false
 	}
+	x.AccountFriend.upDate()
 	x.GoroutinesSync.Lock() // 唯一线程操作锁
 	var fin = true
 	defer func() {
 		x.GoroutinesSync.Unlock()
 		if !fin {
-			logger.Debug("玩家:%v,数据保存失败,数据保存将到服务端硬盘,将在下次启动时尝试写入数据库", x.AccountServerId)
+			logger.Debug("玩家:%v,数据保存失败,数据保存将保存到服务端硬盘,下次启动时将尝试写入数据库", x.AccountServerId)
 			if err := x.upDataDisk(); err != nil {
 				logger.Debug("玩家:%v,数据保存将到服务端硬盘失败,失败原因:%s", x.AccountServerId, err.Error())
 			}
@@ -181,7 +235,7 @@ func TaskUpDiskPlayerData() bool {
 			logger.Error("读取本地玩家数据失败:%s", err.Error())
 			return false
 		}
-		accountServerId := alg.S2I64(filepath.Base(file))
+		accountServerId := alg.S2I64(strings.TrimSuffix(filepath.Base(file), ".bin"))
 		if accountServerId == 0 {
 			logger.Error("本地玩家数据文件名错误,文件:%s", file)
 			return false
@@ -192,6 +246,9 @@ func TaskUpDiskPlayerData() bool {
 		}
 		if err = db.UpdateYostarGame(data); err != nil {
 			return false
+		}
+		if os.Remove(file) != nil {
+			logger.Warn("删除本地玩家数据文件失败,文件:%s,可能是权限不足导致的,请手动删除,避免下次启动时数据被覆盖", file)
 		}
 	}
 	logger.Info("保存本地玩家数据成功")

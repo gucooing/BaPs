@@ -37,7 +37,7 @@ func (g *GameConfig) gppRecipeIngredientExcelTable() {
 		g.GetGPP().RecipeIngredientExcel.RecipeIngredientExcelMap[v.Id] = v
 	}
 
-	logger.Info("处理技能升级材料配置完成,技能配置:%v个",
+	logger.Info("处理材料配置表完成,技能配置:%v个",
 		len(g.GetGPP().RecipeIngredientExcel.RecipeIngredientExcelMap))
 }
 

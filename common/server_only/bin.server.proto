@@ -34,6 +34,14 @@ message BasePlayer { // 此处仅留必要数据
   int64 lobby_student = 8; // 值日生
   int64 exp = 9; // 账号经验
   int32 days = 10; // 登录天数
+  int64 card_background_id = 11; // 账号背景
+  int64 represent_character_id = 12; // 看板角色
+  bool search_permission = 13;
+  bool show_account_level = 14;
+  bool show_friend_code = 15;
+  bool show_raid_ranking = 16;
+  bool show_arena_ranking = 17;
+  bool show_eliminate_raid_ranking = 18;
 }
 
 // 学院信息
@@ -46,19 +54,52 @@ message AcademyBin {
 
 message CafeBin { // 咖啡馆信息
   map<int64,CafeInfo> cafe_info_list = 1; // 咖啡馆集合
+  map<int64,FurnitureInfo> furniture_info_list = 2; // 已获得的家具 sid info
 }
 
 message CafeInfo { // 单独咖啡馆信息
   int64 cafe_id = 1; // 咖啡馆id
-  int64 lase_update_time = 2; // 最近一次更新时间
+  int64 server_id = 2; // 唯一id
   int32 cafe_rank = 3; // 等级
-  int64 production_applied_time = 4; // 生产开始时间？
+  map<int64,bool> furniture_list = 4; // 摆放的家具
+  int64 last_update = 5; // 上次更新时间
+  map<int64,VisitCharacterInfo> visit_character_list = 6; // 逛该学生
+  int64 summon_update = 7; // 上次召唤时间
+  int64 production_applied_time = 8; // 上次生产时间
+  map<int64,ProductionInfo> production_list = 9; // 产品
+  int64 comfort_value = 10; // 舒适度
+  int32 production_applied_num = 11; // 小时间隔
+  bool is_new = 12 ; // 学生是否刷新
+}
+
+message VisitCharacterInfo {
+  int64 character_id = 1;
+  int64 last_interact_time = 2;
+  bool is_summon = 3;
+}
+
+message ProductionInfo {
+    int64 parcel_id = 1;
+    int64 parcel_type = 2;
+    int64 amount = 3;
+}
+
+message FurnitureInfo { // 家具信息
+  int64 furniture_id = 1; // 家具id
+  int64 stack_count = 2; // 数量 1
+  int64 server_id = 3; // 唯一id
+  int64 cafe_server_id = 4; // 装备的咖啡馆唯一id
+  double position_x = 5; // 长?
+  double position_y = 6; // 宽?
+  double rotation = 7; // 旋转?
+  int32 location = 8; // 家具类型
 }
 
 // 角色信息
 
 message CharacterBin {
   map<int64,CharacterInfo> character_info_list = 1; // 角色数据
+  map<int64,int64> character_hash = 2; // 角色 字典
 }
 
 message CharacterInfo {
@@ -86,6 +127,8 @@ message ItemBin {
   map<int64,WeaponInfo> weapon_info_list = 3; // 角色武器
   map<int64,EquipmentInfo> equipment_info_list = 4; // 角色装备
   map<int64,int64> equipment_item_hash = 5; // 装备物品映射表 id sid
+  map<int64,IdCardBackgroundInfo> id_card_background_list = 6; // 背景列表
+  map<int64,int64> item_hash = 7; // item 字典
 }
 
 message ItemInfo {
@@ -118,6 +161,11 @@ message EquipmentInfo {
   int32 tier = 6;
   int64 stack_count = 7;
   bool is_locked = 8;
+}
+
+message IdCardBackgroundInfo {
+  int64 unique_id = 1;
+  int64 server_id = 2;
 }
 
 // 剧情信息
@@ -264,7 +312,7 @@ message DungeonBin {
 
 message WeekDungeonStageInfo {
   int64 stage_id = 1;
-  map<int32,int64> star_goal_record = 2;
+  map<string,int64> star_goal_record = 2;
 }
 
 message SchoolDungeonStageInfo {

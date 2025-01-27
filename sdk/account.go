@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gucooing/BaPs/common/code"
 	"github.com/gucooing/BaPs/config"
 	"github.com/gucooing/BaPs/db"
 	"github.com/gucooing/BaPs/pkg/alg"
@@ -41,11 +42,11 @@ func (s *SDK) YostarAuthRequest(c *gin.Context) {
 	}
 	logger.Debug("邮箱:%s,语言:%s,平台:%s 发起邮箱验证码登录", req.Account, req.AuthLang, req.Platform)
 	// 验证请求间隔是否过短
-	if code := s.code.GetCodeInfo(req.Account); code != nil {
-		logger.Debug("邮箱:%s,验证码还未过期/使用不刷新", req.Account)
+	if codeInfo := code.GetCodeInfo(req.Account); codeInfo != nil {
+		logger.Debug("邮箱:%s,验证码还 未过期/使用 不刷新", req.Account)
 	} else {
 		newCode := alg.RandCode()
-		if err := s.code.SetCode(req.Account, newCode); err != nil {
+		if err := code.SetCode(req.Account, newCode); err != nil {
 			logger.Debug("邮箱:%s,验证码添加失败:%s", req.Account, err.Error())
 			rsp.Result = 100302
 			return
@@ -80,18 +81,18 @@ func (s *SDK) YostarAuthSubmit(c *gin.Context) {
 		return
 	}
 	// 验证验证码是否有效
-	if code := s.code.GetCodeInfo(req.Account); code == nil ||
-		req.Code != code.Code {
+	if codeInfo := code.GetCodeInfo(req.Account); codeInfo == nil ||
+		req.Code != codeInfo.Code {
 		rsp.Result = 100306
 		logger.Debug("邮箱:%s,无验证码", req.Account)
 		return
-	} else if req.Code != code.Code {
+	} else if req.Code != codeInfo.Code {
 		rsp.Result = 100307
-		code.FialNum++
+		codeInfo.FialNum++
 		logger.Debug("邮箱:%s,验证码无效:%v", req.Account, req.Code)
 		return
 	}
-	s.code.DelCode(req.Account)
+	code.DelCode(req.Account)
 	// 通过邮箱拉取数据库账号信息
 	yostarAccount := db.GetYostarAccountByYostarAccount(req.Account)
 	if yostarAccount == nil {

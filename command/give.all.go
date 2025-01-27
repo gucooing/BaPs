@@ -37,6 +37,8 @@ func (c *Command) GiveAll(g *gin.Context) {
 		})
 		return
 	}
+	s.GoroutinesSync.Lock()
+	defer s.GoroutinesSync.Unlock()
 	parcelInfoList := GiveAllJsonToProtobuf(req)
 	if len(parcelInfoList) == 0 {
 		g.JSON(http.StatusOK, gin.H{
@@ -73,6 +75,10 @@ func GiveAllJsonToProtobuf(req *ApiGiveAll) []*sro.ParcelInfo {
 		return GiveAllCharacter(req)
 	case "Equipment": // 装备
 		return GiveAllEquipment(req)
+	case "Furniture": // 家具
+		return GiveAllFurniture(req)
+	case "Favor": // 礼物
+		return GiveAllFavor(req)
 	}
 	return nil
 }
@@ -123,6 +129,39 @@ func GiveAllEquipment(req *ApiGiveAll) []*sro.ParcelInfo {
 			Type: proto.ParcelType_Equipment,
 			Id:   conf.Id,
 			Num:  num,
+		})
+	}
+
+	return list
+}
+
+func GiveAllFurniture(req *ApiGiveAll) []*sro.ParcelInfo {
+	list := make([]*sro.ParcelInfo, 0)
+	for _, conf := range gdconf.GetFurnitureExcelTableMap() {
+		num := req.Num
+		if num <= 0 {
+			num = 2
+		}
+		list = append(list, &sro.ParcelInfo{
+			Type: proto.ParcelType_Furniture,
+			Id:   conf.Id,
+			Num:  num,
+		})
+	}
+
+	return list
+}
+
+func GiveAllFavor(req *ApiGiveAll) []*sro.ParcelInfo {
+	list := make([]*sro.ParcelInfo, 0)
+	if req.Num <= 0 {
+		req.Num = 999
+	}
+	for _, conf := range gdconf.GetItemExcelCategoryMap("Favor") {
+		list = append(list, &sro.ParcelInfo{
+			Type: proto.ParcelType_Item,
+			Id:   conf.Id,
+			Num:  req.Num,
 		})
 	}
 

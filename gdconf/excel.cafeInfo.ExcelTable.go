@@ -46,3 +46,7 @@ func GetCafeInfoExcelTables() map[int64]*sro.CafeInfoExcelTableInfo {
 		return g.CafeInfoExcel.CafeInfoExcelTableMap
 	}
 }
+
+func GetCafeInfoExcelTableInfo(id int64) *sro.CafeInfoExcelTableInfo {
+	return GC.GetGPP().CafeInfoExcel.CafeInfoExcelTableMap[id]
+}

@@ -16,15 +16,8 @@ func WeekDungeonList(s *enter.Session, request, response mx.Message) {
 	rsp.AdditionalStageIdList = make([]int64, 0)
 	rsp.WeekDungeonStageHistoryDBList = make([]*proto.WeekDungeonStageHistoryDB, 0)
 	for _, v := range game.GetWeekDungeonStageInfoList(s) {
-		info := &proto.WeekDungeonStageHistoryDB{
-			AccountServerId: s.AccountServerId,
-			StageUniqueId:   v.StageId,
-			StarGoalRecord:  make(map[proto.StarGoalType]int64),
-			IsCleardEver:    false,
-		}
-		for starGoalType, status := range v.StarGoalRecord {
-			info.StarGoalRecord[proto.StarGoalType(starGoalType)] = status
-		}
+		rsp.WeekDungeonStageHistoryDBList = append(
+			rsp.WeekDungeonStageHistoryDBList, game.GetWeekDungeonStageHistoryDB(s, v.StageId))
 	}
 }
 
@@ -45,21 +38,63 @@ func WeekDungeonBattleResult(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.WeekDungeonBattleResultRequest)
 	rsp := response.(*proto.WeekDungeonBattleResultResponse)
 
+	defer func() {
+		rsp.WeekDungeonStageHistoryDB = game.GetWeekDungeonStageHistoryDB(s, req.StageUniqueId)
+	}()
+
 	rsp.MissionProgressDBs = make([]*proto.MissionProgressDB, 0)
 	battleSummary := req.Summary
 	if battleSummary == nil {
 		return
 	}
-	if battleSummary.EndType != proto.BattleEndType_Clear { // 战败返还
-		rsp.ParcelResultDB = game.ParcelResultDB(s, []*game.ParcelResult{
-			{
-				ParcelType: proto.ParcelType_Currency,
-				ParcelId:   proto.CurrencyTypes_SchoolDungeonTotalTicket,
-				Amount:     1,
-			},
-		})
+	conf := gdconf.GetWeekDungeonExcelTable(req.StageUniqueId)
+	if conf == nil {
 		return
 	}
+	if battleSummary.EndType != proto.BattleEndType_Clear { // 战败返还 100%
+		parcelResult := game.GetParcelResultList(conf.StageEnterCostType,
+			conf.StageEnterCostId, conf.StageEnterCostAmount, false)
+		rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResult)
+		return
+	}
+	bin := game.GetWeekDungeonStageInfo(s, req.StageUniqueId)
+	if bin == nil {
+		return
+	}
+	if bin.StarGoalRecord == nil {
+		bin.StarGoalRecord = make(map[string]int64)
+	}
+	// 计算得分
+	for index, v := range conf.StarGoal {
+		status := bin.StarGoalRecord[v]
+		switch v {
+		case "Clear":
+			status = 1
+		case "AllAlive":
+			if game.BattleIsAllAlive(req.Summary) {
+				status = 1
+			}
+		case "ClearTimeInSec":
+			if game.BattleIsClearTimeInSec(req.Summary,
+				conf.StarGoalAmount[index]) {
+				status = 1
+			}
+		}
+		bin.StarGoalRecord[v] = status
+	}
+	// 发奖励！
+	parcelResultList := make([]*game.ParcelResult, 0)
+	for _, rewardConf := range gdconf.GetWeekDungeonRewardExcelList(req.StageUniqueId) {
+		if !rewardConf.IsDisplayed {
+			continue
+		}
+		parcelResultList = append(parcelResultList, &game.ParcelResult{
+			ParcelType: proto.ParcelType(proto.ParcelType_value[rewardConf.RewardParcelType]),
+			ParcelId:   rewardConf.RewardParcelId,
+			Amount:     rewardConf.RewardParcelAmount,
+		})
+	}
+	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
 }
 
 func SchoolDungeonList(s *enter.Session, request, response mx.Message) {
@@ -94,6 +129,11 @@ func SchoolDungeonEnterBattle(s *enter.Session, request, response mx.Message) {
 			ParcelId:   proto.CurrencyTypes_SchoolDungeonTotalTicket,
 			Amount:     -1,
 		},
+		{
+			ParcelType: proto.ParcelType_Currency,
+			ParcelId:   proto.CurrencyTypes_ActionPoint,
+			Amount:     -10,
+		},
 	})
 }
 
@@ -113,6 +153,11 @@ func SchoolDungeonBattleResult(s *enter.Session, request, response mx.Message) {
 				ParcelId:   proto.CurrencyTypes_SchoolDungeonTotalTicket,
 				Amount:     1,
 			},
+			{
+				ParcelType: proto.ParcelType_Currency,
+				ParcelId:   proto.CurrencyTypes_ActionPoint,
+				Amount:     8,
+			},
 		})
 		return
 	}
@@ -121,14 +166,9 @@ func SchoolDungeonBattleResult(s *enter.Session, request, response mx.Message) {
 		return
 	}
 	bin.IsWin = true
-	bin.IsTime = alg.MaxBool(bin.IsTime, battleSummary.ElapsedRealtime < 120)
-	isSu := true
-	for _, heroes := range battleSummary.Group01Summary.Heroes {
-		if heroes.HPRateAfter == 0 {
-			isSu = false
-		}
-	}
-	bin.IsSu = alg.MaxBool(bin.IsSu, isSu)
+	bin.IsTime = alg.MaxBool(bin.IsTime, game.BattleIsClearTimeInSec(req.Summary, 120))
+
+	bin.IsSu = alg.MaxBool(bin.IsSu, game.BattleIsAllAlive(req.Summary))
 	// 发奖励！
 
 	// 更新角色

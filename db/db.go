@@ -34,6 +34,7 @@ func NewPE(cfg *config.DB) {
 		&BlackDevice{},
 		&YostarGame{},
 		&YostarMail{},
+		&YostarFriend{},
 	)
 	logger.Info("数据库连接成功")
 }

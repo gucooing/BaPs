@@ -26,8 +26,16 @@ func S2I64(msg string) int64 {
 	if msg == "" {
 		return 0
 	}
-	ms, _ := strconv.ParseUint(msg, 10, 32)
-	return int64(ms)
+	ms, _ := strconv.ParseInt(msg, 10, 32)
+	return ms
+}
+
+func S2I32(msg string) int32 {
+	if msg == "" {
+		return 0
+	}
+	ms, _ := strconv.ParseInt(msg, 10, 32)
+	return int32(ms)
 }
 
 func AutoGucooingApi() gin.HandlerFunc {
@@ -48,6 +56,13 @@ func MaxInt(a, b int) int {
 		return a
 	}
 	return b
+}
+
+func MainInt(a, b int) int {
+	if a > b {
+		return b
+	}
+	return a
 }
 
 func MaxInt64(a, b int64) int64 {
@@ -91,4 +106,17 @@ func GetEveryDay4() time.Duration {
 		nextExecution = nextExecution.AddDate(0, 0, 1)
 	}
 	return nextExecution.Sub(currentTime)
+}
+
+func GetTimeHour4() time.Time {
+	currentTime := time.Now()
+	hour := currentTime.Hour()
+	if hour < 4 {
+		previousTwo := currentTime.Add(-24 * time.Hour)
+		return time.Date(previousTwo.Year(), previousTwo.Month(), previousTwo.Day(), 16, 0, 0, 0, previousTwo.Location())
+	} else if hour < 16 {
+		return time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 4, 0, 0, 0, currentTime.Location())
+	} else {
+		return time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 16, 0, 0, 0, currentTime.Location())
+	}
 }

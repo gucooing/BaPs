@@ -40,6 +40,8 @@ func (c *Command) Give(g *gin.Context) {
 		})
 		return
 	}
+	s.GoroutinesSync.Lock()
+	defer s.GoroutinesSync.Unlock()
 	mail := &sro.MailInfo{
 		Sender:         "gucooing",
 		Comment:        "请查收您的意外奖励",

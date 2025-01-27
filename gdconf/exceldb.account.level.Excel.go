@@ -45,7 +45,7 @@ func UpAccountLevel(level int32, exp int64) (int32, int64) {
 		newLevel := level + i
 		conf := GC.GetGPP().AccountLevel.AccountLevelExcelMap[newLevel]
 		if conf == nil {
-			return newLevel, exp
+			return newLevel - 1, exp
 		}
 		if exp >= conf.Exp {
 			exp -= conf.Exp

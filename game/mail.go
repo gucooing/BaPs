@@ -176,3 +176,7 @@ func GetMailParcelResultList(bin []*sro.ParcelInfo) []*ParcelResult {
 	}
 	return list
 }
+
+func GetMainTemplate() {
+
+}

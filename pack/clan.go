@@ -13,6 +13,7 @@ func ClanLogin(s *enter.Session, request, response mx.Message) {
 	rsp.AccountClanMemberDB = &proto.ClanMemberDB{ // 本人信息
 		AccountId: s.AccountServerId,
 	}
+	rsp.ClanAssistSlotDBs = make([]*proto.ClanAssistSlotDB, 0) // 援助信息
 }
 
 func ClanCheck(s *enter.Session, request, response mx.Message) {}

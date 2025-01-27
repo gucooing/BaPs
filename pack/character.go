@@ -172,7 +172,6 @@ func UpCharacterSkill(characterInfo *sro.CharacterInfo, reqLevel int32, skillSlo
 		if recConf == nil {
 			return parcelResultList
 		}
-		// TODO 验证材料是否有那么多！！！！！！！！！！！！
 		parcelResultList = append(parcelResultList, game.GetParcelResultList(recConf.CostParcelType,
 			recConf.CostId, recConf.CostAmount, true)...)
 		parcelResultList = append(parcelResultList, game.GetParcelResultList(recConf.IngredientParcelType,
@@ -195,4 +194,55 @@ func EquipmentEquip(s *enter.Session, request, response mx.Message) {
 		rsp.EquipmentDBs = append(rsp.EquipmentDBs, game.GetEquipmentDB(s, req.EquipmentServerId))
 	}()
 	game.SetCharacterEquipment(s, req.CharacterServerId, req.EquipmentServerId, req.SlotIndex)
+}
+
+func CharacterExpGrowth(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.CharacterExpGrowthRequest)
+	rsp := response.(*proto.CharacterExpGrowthResponse)
+
+	characterInfo := game.GetCharacterInfoByServerId(s, req.TargetCharacterServerId)
+	if characterInfo == nil {
+		return
+	}
+	defer func() {
+		rsp.AccountCurrencyDB = game.GetAccountCurrencyDB(s)
+		rsp.CharacterDB = game.GetCharacterDB(s, characterInfo.CharacterId)
+	}()
+	consumeResultDB := &proto.ConsumeResultDB{
+		UsedItemServerIdAndRemainingCounts: make(map[int64]int64),
+	}
+	rsp.ConsumeResultDB = consumeResultDB
+
+	// 计算可以获取多少经验
+	if req.ConsumeRequestDB == nil {
+		return
+	}
+	for itemServerId, itemNum := range req.ConsumeRequestDB.ConsumeItemServerIdAndCounts {
+		itemInfo := game.GetItemInfo(s, game.GetItemIdByServer(s, itemServerId))
+		if itemInfo == nil {
+			continue
+		}
+		itemConf := gdconf.GetItemExcelTable(itemInfo.UniqueId)
+		if itemConf == nil {
+			continue
+		}
+		if !game.RemoveItem(s, itemInfo.UniqueId, int32(itemNum)) {
+			continue
+		}
+		consumeResultDB.UsedItemServerIdAndRemainingCounts[itemServerId] = int64(itemInfo.StackCount)
+
+		characterInfo.Exp += itemConf.StackableFunction * itemNum
+	}
+	// 计算升级后的等级
+	newLevel, newExp := gdconf.UpCharacterLevel(characterInfo.Level, characterInfo.Exp)
+	if newLevel > game.GetAccountLevel(s) { // 避免高出账号等级
+		newLevel = game.GetAccountLevel(s)
+		conf := gdconf.GetCharacterLevelExcelTable(newLevel)
+		if conf == nil {
+			return
+		}
+		newExp = conf.Exp - 1
+	}
+	characterInfo.Level = newLevel
+	characterInfo.Exp = newExp
 }

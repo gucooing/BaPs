@@ -1,6 +1,7 @@
 package pack
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
@@ -79,7 +80,7 @@ func AccountLoginSync(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.AccountLoginSyncRequest)
 	rsp := response.(*proto.AccountLoginSyncResponse)
 
-	rsp.FriendCode = "BNAGBIES"
+	rsp.FriendCode = strconv.FormatInt(s.AccountServerId, 10)
 	rsp.FriendCount = int64(len(req.SyncProtocols))
 	rsp.StaticOpenConditions = game.GetStaticOpenConditions(s)
 

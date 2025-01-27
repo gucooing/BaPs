@@ -3,12 +3,10 @@ package gateway
 import (
 	"encoding/json"
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/common/enter"
-	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/db"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/pkg/alg"
@@ -82,13 +80,8 @@ func (g *Gateway) AccountCheckYostar(s *enter.Session, request, response mx.Mess
 				return
 			}
 		}
-		s = &enter.Session{
-			AccountServerId: tickInfo.AccountServerId,
-			YostarUID:       tickInfo.YostarUID,
-			PlayerBin:       new(sro.PlayerBin),
-			GoroutinesSync:  sync.Mutex{},
-			Actions:         make(map[proto.ServerNotificationFlag]bool),
-		}
+		s = enter.NewSession(tickInfo.AccountServerId)
+		s.YostarUID = tickInfo.YostarUID
 		if yostarGame.BinData != nil {
 			pb.Unmarshal(yostarGame.BinData, s.PlayerBin)
 		} else {

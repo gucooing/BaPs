@@ -33,6 +33,9 @@ func (g *GameConfig) gppWeekDungeonExcelTable() {
 	}
 
 	for _, v := range g.GetExcel().GetWeekDungeonExcelTable() {
+		if len(v.StarGoal) != len(v.StarGoalAmount) {
+			logger.Warn("WeekDungeonExcelTable.json StarGoal和StarGoalAmount不对应")
+		}
 		g.GetGPP().WeekDungeonExcel.WeekDungeonExcelMap[v.StageId] = v
 	}
 

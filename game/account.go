@@ -26,6 +26,17 @@ func GetAccountLevel(s *enter.Session) int32 {
 	return bin.GetLevel()
 }
 
+func SetAccountLevel(s *enter.Session, level int32) {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return
+	}
+	if level < 0 {
+		return
+	}
+	bin.Level = level
+}
+
 func GetNickname(s *enter.Session) string {
 	bin := GetBaseBin(s)
 	if bin == nil {
@@ -55,6 +66,9 @@ func GetEmblemUniqueId(s *enter.Session) int64 {
 	if bin == nil {
 		return 0
 	}
+	if bin.EmblemUniqueId == 0 {
+		return 1
+	}
 	return bin.GetEmblemUniqueId()
 }
 
@@ -76,7 +90,50 @@ func GetLobbyStudent(s *enter.Session) int64 {
 	if bin == nil {
 		return 0
 	}
+	if bin.LobbyStudent == 0 {
+		return 13010
+	}
 	return bin.GetLobbyStudent()
+}
+
+func GetCardBackgroundId(s *enter.Session) int64 {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return 0
+	}
+	if bin.CardBackgroundId == 0 {
+		return 1
+	}
+	return bin.GetCardBackgroundId()
+}
+
+func SetCardBackgroundId(s *enter.Session, id int64) bool {
+	bin := GetBaseBin(s)
+	if bin == nil || GetCardBackgroundIdInfo(s, id) == nil {
+		return false
+	}
+	bin.CardBackgroundId = id
+	return true
+}
+
+func GetRepresentCharacterUniqueId(s *enter.Session) int64 {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return 0
+	}
+	if bin.RepresentCharacterId == 0 {
+		return 13010
+	}
+	return bin.GetRepresentCharacterId()
+}
+
+func SetRepresentCharacterUniqueId(s *enter.Session, characterId int64) bool {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return false
+	}
+	bin.RepresentCharacterId = characterId
+	return true
 }
 
 func SetLobbyStudent(s *enter.Session, serverId int64) bool {
@@ -91,6 +148,108 @@ func SetLobbyStudent(s *enter.Session, serverId int64) bool {
 		bin.LobbyStudent = characterInfo.CharacterId
 		return true
 	}
+}
+
+func GetSearchPermission(s *enter.Session) bool {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return false
+	}
+	return bin.GetSearchPermission()
+}
+
+func SetSearchPermission(s *enter.Session, is bool) bool {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return false
+	}
+	bin.SearchPermission = is
+	return true
+}
+
+func GetShowAccountLevel(s *enter.Session) bool {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return false
+	}
+	return bin.GetShowAccountLevel()
+}
+
+func SetShowAccountLevel(s *enter.Session, is bool) bool {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return false
+	}
+	bin.ShowAccountLevel = is
+	return true
+}
+
+func GetShowFriendCode(s *enter.Session) bool {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return false
+	}
+	return bin.GetShowFriendCode()
+}
+
+func SetShowFriendCode(s *enter.Session, is bool) bool {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return false
+	}
+	bin.ShowFriendCode = is
+	return true
+}
+
+func GetShowRaidRanking(s *enter.Session) bool {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return false
+	}
+	return bin.GetShowRaidRanking()
+}
+
+func SetShowRaidRanking(s *enter.Session, is bool) bool {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return false
+	}
+	bin.ShowRaidRanking = is
+	return true
+}
+
+func GetShowArenaRanking(s *enter.Session) bool {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return false
+	}
+	return bin.GetShowArenaRanking()
+}
+
+func SetShowArenaRanking(s *enter.Session, is bool) bool {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return false
+	}
+	bin.ShowArenaRanking = is
+	return true
+}
+
+func GetShowEliminateRaidRanking(s *enter.Session) bool {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return false
+	}
+	return bin.GetShowEliminateRaidRanking()
+}
+
+func SetShowEliminateRaidRanking(s *enter.Session, is bool) bool {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return false
+	}
+	bin.ShowEliminateRaidRanking = is
+	return true
 }
 
 func GetAccountExp(s *enter.Session) int64 {

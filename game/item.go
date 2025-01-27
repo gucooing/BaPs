@@ -13,12 +13,21 @@ import (
 )
 
 func NewItemList(s *enter.Session) map[int64]*sro.ItemInfo {
+	bin := GetItemBin(s)
+	if bin == nil {
+		return nil
+	}
+	if bin.ItemHash == nil {
+		bin.ItemHash = make(map[int64]int64)
+	}
 	list := make(map[int64]*sro.ItemInfo)
+	sId := GetServerId(s)
 	list[2] = &sro.ItemInfo{
-		ServerId:   GetServerId(s),
+		ServerId:   sId,
 		UniqueId:   2,
 		StackCount: 5,
 	}
+	bin.ItemHash[sId] = 0
 	return list
 }
 
@@ -60,17 +69,33 @@ func AddItem(s *enter.Session, id int64, num int32) int64 {
 	if bin.ItemInfoList == nil {
 		bin.ItemInfoList = NewItemList(s)
 	}
+	if bin.ItemHash == nil {
+		bin.ItemHash = make(map[int64]int64)
+	}
 	if info, ok := bin.ItemInfoList[id]; ok {
 		info.StackCount += num
 		return info.ServerId
 	}
+	sId := GetServerId(s)
 	info := &sro.ItemInfo{
-		ServerId:   GetServerId(s),
+		ServerId:   sId,
 		UniqueId:   id,
 		StackCount: num,
 	}
 	bin.ItemInfoList[id] = info
+	bin.ItemHash[sId] = id
 	return info.ServerId
+}
+
+func GetItemIdByServer(s *enter.Session, serverId int64) int64 {
+	bin := GetItemBin(s)
+	if bin == nil {
+		return 0
+	}
+	if bin.ItemHash == nil {
+		bin.ItemHash = make(map[int64]int64)
+	}
+	return bin.ItemHash[serverId]
 }
 
 func RemoveItem(s *enter.Session, id int64, num int32) bool {
@@ -480,6 +505,86 @@ func GetEquipmentDB(s *enter.Session, serverId int64) *proto.EquipmentDB {
 	}
 }
 
+func NewIdCardBackgroundList(s *enter.Session) map[int64]*sro.IdCardBackgroundInfo {
+	list := make(map[int64]*sro.IdCardBackgroundInfo)
+	for _, conf := range gdconf.GetIdCardBackgroundExcelList() {
+		if conf.IsDefault {
+			list[conf.Id] = &sro.IdCardBackgroundInfo{
+				UniqueId: conf.Id,
+				ServerId: GetServerId(s),
+			}
+		}
+	}
+
+	return list
+}
+
+func GetCardBackgroundIdInfoList(s *enter.Session) map[int64]*sro.IdCardBackgroundInfo {
+	bin := GetItemBin(s)
+	if bin == nil {
+		return nil
+	}
+	if bin.IdCardBackgroundList == nil {
+		bin.IdCardBackgroundList = NewIdCardBackgroundList(s)
+	}
+	return bin.IdCardBackgroundList
+}
+
+func GetCardBackgroundIdInfo(s *enter.Session, backgroundId int64) *sro.IdCardBackgroundInfo {
+	bin := GetItemBin(s)
+	if bin == nil {
+		return nil
+	}
+	if bin.IdCardBackgroundList == nil {
+		bin.IdCardBackgroundList = NewIdCardBackgroundList(s)
+	}
+	return bin.IdCardBackgroundList[backgroundId]
+}
+
+func AddCardBackgroundId(s *enter.Session, backgroundId int64) int64 {
+	conf := gdconf.GetIdCardBackgroundExcel(backgroundId)
+	bin := GetItemBin(s)
+	if bin == nil || conf == nil {
+		return 0
+	}
+	if bin.IdCardBackgroundList == nil {
+		bin.IdCardBackgroundList = NewIdCardBackgroundList(s)
+	}
+	if v, ok := bin.IdCardBackgroundList[backgroundId]; ok {
+		return v.ServerId
+	}
+	bin.IdCardBackgroundList[backgroundId] = &sro.IdCardBackgroundInfo{
+		UniqueId: backgroundId,
+		ServerId: GetServerId(s),
+	}
+	return bin.IdCardBackgroundList[backgroundId].ServerId
+}
+
+func GetIdCardBackgroundDBs(s *enter.Session) []*proto.IdCardBackgroundDB {
+	list := make([]*proto.IdCardBackgroundDB, 0)
+	for _, v := range GetCardBackgroundIdInfoList(s) {
+		list = append(list, &proto.IdCardBackgroundDB{
+			Type:     proto.ParcelType_IdCardBackground,
+			ServerId: v.ServerId,
+			UniqueId: v.UniqueId,
+		})
+	}
+
+	return list
+}
+
+func GetIdCardBackgroundDB(s *enter.Session, backgroundId int64) *proto.IdCardBackgroundDB {
+	bin := GetCardBackgroundIdInfo(s, backgroundId)
+	if bin == nil {
+		return nil
+	}
+	return &proto.IdCardBackgroundDB{
+		Type:     proto.ParcelType_IdCardBackground,
+		ServerId: bin.ServerId,
+		UniqueId: bin.UniqueId,
+	}
+}
+
 type ParcelResult struct {
 	ParcelType proto.ParcelType
 	ParcelId   int64
@@ -508,23 +613,21 @@ func GetParcelResultList(typeList []string, idList, numList []int64, isDel bool)
 
 func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.ParcelResultDB {
 	info := &proto.ParcelResultDB{
-		AccountDB:         GetAccountDB(s),
-		AccountCurrencyDB: GetAccountCurrencyDB(s),
-		MemoryLobbyDBs:    make([]*proto.MemoryLobbyDB, 0),
-		ItemDBs:           make(map[int64]*proto.ItemDB),
-		EmblemDBs:         make([]*proto.EmblemDB, 0),
-		CharacterDBs:      make([]*proto.CharacterDB, 0),
-		WeaponDBs:         make([]*proto.WeaponDB, 0),
-		EquipmentDBs:      make(map[int64]*proto.EquipmentDB),
+		MemoryLobbyDBs:      make([]*proto.MemoryLobbyDB, 0),
+		ItemDBs:             make(map[int64]*proto.ItemDB),
+		EmblemDBs:           make([]*proto.EmblemDB, 0),
+		CharacterDBs:        make([]*proto.CharacterDB, 0),
+		WeaponDBs:           make([]*proto.WeaponDB, 0),
+		EquipmentDBs:        make(map[int64]*proto.EquipmentDB),
+		FurnitureDBs:        make(map[int64]*proto.FurnitureDB),
+		IdCardBackgroundDBs: make(map[int64]*proto.IdCardBackgroundDB),
 
 		AcademyLocationDBs:              nil,
 		CostumeDBs:                      nil,
 		TSSCharacterDBs:                 nil,
 		RemovedEquipmentIds:             nil,
 		RemovedItemIds:                  nil,
-		FurnitureDBs:                    nil,
 		RemovedFurnitureIds:             nil,
-		IdCardBackgroundDBs:             nil,
 		StickerDBs:                      nil,
 		CharacterNewUniqueIds:           nil,
 		SecretStoneCharacterIdAndCounts: nil,
@@ -535,6 +638,10 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 		AdditionalAccountExp:            0,
 		GachaResultCharacters:           nil,
 	}
+	defer func() {
+		info.AccountDB = GetAccountDB(s)
+		info.AccountCurrencyDB = GetAccountCurrencyDB(s)
+	}()
 
 	for _, parcelResult := range parcelResultList {
 		switch parcelResult.ParcelType {
@@ -568,6 +675,13 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 			for _, serverId := range AddEquipment(s, parcelResult.ParcelId, parcelResult.Amount) {
 				info.EquipmentDBs[serverId] = GetEquipmentDB(s, serverId)
 			}
+		case proto.ParcelType_Furniture: // 家具 仅添加
+			for _, serverId := range AddFurnitureInfo(s, parcelResult.ParcelId, parcelResult.Amount) {
+				info.FurnitureDBs[serverId] = GetFurnitureDB(s, serverId)
+			}
+		case proto.ParcelType_IdCardBackground: // 账号背景页 仅添加
+			serverid := AddCardBackgroundId(s, parcelResult.ParcelId)
+			info.IdCardBackgroundDBs[serverid] = GetIdCardBackgroundDB(s, parcelResult.ParcelId)
 		default:
 			logger.Warn("没有处理的奖励类型 Unknown ParcelType:%s", parcelResult.ParcelType.String())
 		}

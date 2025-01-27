@@ -2,6 +2,8 @@ package pack
 
 import (
 	"github.com/gucooing/BaPs/common/enter"
+	"github.com/gucooing/BaPs/game"
+	"github.com/gucooing/BaPs/pkg/logger"
 	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
@@ -96,4 +98,23 @@ func NotificationEventContentReddotCheck(s *enter.Session, request, response mx.
 
 func ContentLogUIOpenStatistics(s *enter.Session, request, response mx.Message) {
 
+}
+
+func ContentSweepRequest(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.ContentSweepRequest)
+	rsp := response.(*proto.ContentSweepResponse)
+
+	rsp.ClearParcels = make([][]*proto.ParcelInfo, 0)
+	rsp.BonusParcels = make([]*proto.ParcelInfo, 0)
+	rsp.EventContentBonusParcels = make([][]*proto.ParcelInfo, 0)
+
+	switch req.Content {
+	case proto.ContentType_WeekDungeon:
+		parcelResultList, clearParcels, bonusParcels := game.ContentSweepWeekDungeon(req.StageId, req.Count)
+		rsp.ParcelResult = game.ParcelResultDB(s, parcelResultList)
+		rsp.ClearParcels = clearParcels
+		rsp.BonusParcels = bonusParcels
+	default:
+		logger.Warn("未处理的扫荡类型:%s", req.Content.String())
+	}
 }

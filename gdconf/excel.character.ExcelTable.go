@@ -2,6 +2,7 @@ package gdconf
 
 import (
 	"encoding/json"
+	"math/rand"
 	"os"
 
 	sro "github.com/gucooing/BaPs/common/server_only"
@@ -26,6 +27,7 @@ func (g *GameConfig) loadCharacterExcelTable() {
 
 type CharacterExcel struct {
 	CharacterExcelTableMap map[int64]*sro.CharacterExcelTable
+	CharacterReleaseList   []*sro.CharacterExcelTable
 	CharacterMap           map[int64]*sro.CharacterExcelTable // 全部角色索引
 	CharacterRMap          []*sro.CharacterExcelTable
 	CharacterSRMap         []*sro.CharacterExcelTable
@@ -41,6 +43,7 @@ SSR 3
 func (g *GameConfig) gppCharacterExcelTable() {
 	info := &CharacterExcel{
 		CharacterExcelTableMap: make(map[int64]*sro.CharacterExcelTable),
+		CharacterReleaseList:   make([]*sro.CharacterExcelTable, 0),
 		CharacterMap:           make(map[int64]*sro.CharacterExcelTable),
 		CharacterRMap:          make([]*sro.CharacterExcelTable, 0),
 		CharacterSRMap:         make([]*sro.CharacterExcelTable, 0),
@@ -50,7 +53,8 @@ func (g *GameConfig) gppCharacterExcelTable() {
 	for _, v := range g.GetExcel().GetCharacterExcelTable() {
 		info.CharacterExcelTableMap[v.Id] = v
 		if v.IsPlayable && !v.IsNPC && v.IsPlayableCharacter &&
-			v.ProductionStep_ == "Release" {
+			v.ProductionStep_ == "Release" && v.Id == v.CharacterPieceItemId {
+			info.CharacterReleaseList = append(info.CharacterReleaseList, v)
 			info.CharacterMap[v.Id] = v
 			switch v.Rarity_ {
 			case "R":
@@ -84,4 +88,12 @@ func GetCharacterExcelStruct() *CharacterExcel {
 
 func GetCharacterMap() map[int64]*sro.CharacterExcelTable {
 	return GC.GetGPP().CharacterExcel.CharacterMap
+}
+
+func RandCharacter() int64 {
+	list := GC.GetGPP().CharacterExcel.CharacterReleaseList
+	if len(list) == 0 {
+		return 0
+	}
+	return list[rand.Intn(len(list))].Id
 }

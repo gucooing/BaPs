@@ -47,6 +47,8 @@ func (c *Command) DelMail(g *gin.Context, info *ApiMail) {
 			})
 			return
 		}
+		s.GoroutinesSync.Lock()
+		defer s.GoroutinesSync.Unlock()
 		if game.DelMail(s, info.MailId) {
 			g.JSON(http.StatusOK, gin.H{
 				"code": 0,

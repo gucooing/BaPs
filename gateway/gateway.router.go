@@ -18,12 +18,7 @@ type handlerFunc func(s *enter.Session, request, response mx.Message)
 
 func (g *Gateway) newFuncRouteMap() {
 	g.funcRouteMap = map[int32]handlerFunc{
-		mx.Protocol_Account_CheckYostar:                  g.AccountCheckYostar,                     // 验证EnterTicket
-		mx.Protocol_Account_Auth:                         pack.AccountAuth,                         // 账号验证
-		mx.Protocol_ProofToken_RequestQuestion:           pack.ProofTokenRequestQuestion,           // 验证登录token
 		mx.Protocol_Academy_GetInfo:                      pack.AcademyGetInfo,                      // 获取学院信息
-		mx.Protocol_Account_LoginSync:                    pack.AccountLoginSync,                    // 同步账号信息
-		mx.Protocol_Cafe_Get:                             pack.CafeGetInfo,                         // 获取咖啡馆信息
 		mx.Protocol_Arena_Login:                          pack.ArenaLogin,                          // 登录获取竞技场信息
 		mx.Protocol_EliminateRaid_Login:                  pack.EliminateRaidLogin,                  // 登录获取制约解除决战信息
 		mx.Protocol_Craft_List:                           pack.CraftInfoList,                       // 获取制造信息
@@ -39,6 +34,14 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Event_RewardIncrease:                 pack.EventRewardIncrease,                 // ???
 		mx.Protocol_Notification_EventContentReddotCheck: pack.NotificationEventContentReddotCheck, // 红点检查?
 		mx.Protocol_ContentLog_UIOpenStatistics:          pack.ContentLogUIOpenStatistics,          // 历史ui打开
+		// 基础
+		mx.Protocol_Account_CheckYostar:        g.AccountCheckYostar,           // 验证EnterTicket
+		mx.Protocol_Account_Auth:               pack.AccountAuth,               // 账号验证
+		mx.Protocol_ProofToken_RequestQuestion: pack.ProofTokenRequestQuestion, // 验证登录token
+		mx.Protocol_Account_LoginSync:          pack.AccountLoginSync,          // 同步账号信息
+		mx.Protocol_NetworkTime_Sync:           pack.NetworkTimeSync,           // 同步时间
+		mx.Protocol_OpenCondition_EventList:    pack.OpenConditionEventList,    // 获取开放事件
+		mx.Protocol_ContentSweep_Request:       pack.ContentSweepRequest,       // 战斗扫荡
 		// 玩家档案
 		mx.Protocol_Account_Nickname:                        pack.AccountNickname,                        // 设置/修改 昵称
 		mx.Protocol_Account_SetRepresentCharacterAndComment: pack.AccountSetRepresentCharacterAndComment, // 修改 签名/值日生
@@ -59,7 +62,16 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Mail_List:    pack.MailList,    // 获取邮件列表
 		mx.Protocol_Mail_Receive: pack.MailReceive, // 领取邮件
 		// 好友
-		mx.Protocol_Friend_Check: pack.FriendCheck, // 好友检查
+		mx.Protocol_Friend_Check:                 pack.FriendCheck,                 // 好友检查
+		mx.Protocol_Friend_List:                  pack.FriendList,                  // 获取好友详情
+		mx.Protocol_Friend_GetIdCard:             pack.FriendGetIdCard,             // 获取账号板
+		mx.Protocol_Friend_SetIdCard:             pack.FriendSetIdCard,             // 设置账号板
+		mx.Protocol_Friend_Search:                pack.FriendSearch,                // 获取附近的人
+		mx.Protocol_Friend_GetFriendDetailedInfo: pack.FriendGetFriendDetailedInfo, // 获取玩家详细信息
+		mx.Protocol_Friend_SendFriendRequest:     pack.FriendSendFriendRequest,     // 发送好友申请
+		mx.Protocol_Friend_AcceptFriendRequest:   pack.FriendAcceptFriendRequest,   // 同意好友申请
+		mx.Protocol_Friend_DeclineFriendRequest:  pack.FriendDeclineFriendRequest,  // 拒绝好友申请
+		mx.Protocol_Friend_Remove:                pack.FriendRemove,                // 删除好友
 		// 背包
 		mx.Protocol_Account_CurrencySync:          pack.AccountCurrencySync,          // 同步账号货币
 		mx.Protocol_Item_List:                     pack.ItemList,                     // 获取背包物品
@@ -78,13 +90,11 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Character_Transcendence:         pack.CharacterTranscendence,         // 角色升星
 		mx.Protocol_Character_UnlockWeapon:          pack.CharacterUnlockWeapon,          // 角色解锁武器
 		mx.Protocol_Equipment_Equip:                 pack.EquipmentEquip,                 // 装备角色装备
+		mx.Protocol_Character_ExpGrowth:             pack.CharacterExpGrowth,             // 角色升级
 		// 队伍
 		mx.Protocol_Echelon_List:       pack.EchelonList,       // 获取队伍信息
 		mx.Protocol_Echelon_Save:       pack.EchelonSave,       // 保存/更新队伍
 		mx.Protocol_Echelon_PresetList: pack.EchelonPresetList, // 获取预设队伍
-		// 基础
-		mx.Protocol_NetworkTime_Sync:        pack.NetworkTimeSync,        // 同步时间
-		mx.Protocol_OpenCondition_EventList: pack.OpenConditionEventList, // 获取开放事件
 		// 剧情/教程
 		mx.Protocol_Scenario_List:                  pack.ScenarioList,               // 获取场景剧情信息
 		mx.Protocol_Scenario_GroupHistoryUpdate:    pack.ScenarioGroupHistoryUpdate, // 完成场景剧情信息
@@ -96,6 +106,19 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Mission_GuideMissionSeasonList: pack.GuideMissionSeasonList,     // 获取指南任务信息
 		mx.Protocol_Scenario_Skip:                  pack.ScenarioSkip,               // 剧情跳过
 		mx.Protocol_Account_SetTutorial:            pack.AccountSetTutorial,         // 设置完成教程
+		// 咖啡馆
+		mx.Protocol_Cafe_Get:             pack.CafeGetInfo,         // 获取咖啡馆信息
+		mx.Protocol_Cafe_Ack:             pack.CafeAck,             // 确认咖啡馆
+		mx.Protocol_Cafe_Open:            pack.CafeOpen,            // 客户端主动解锁咖啡馆
+		mx.Protocol_Cafe_Remove:          pack.CafeRemove,          // 收纳部分家具
+		mx.Protocol_Cafe_RemoveAll:       pack.CafeRemoveAll,       // 收纳全部家具
+		mx.Protocol_Cafe_Deploy:          pack.CafeDeploy,          // 摆放家具
+		mx.Protocol_Cafe_Relocate:        pack.CafeRelocate,        // 移动家具
+		mx.Protocol_Cafe_Interact:        pack.CafeInteract,        // 摸摸头
+		mx.Protocol_Cafe_SummonCharacter: pack.CafeSummonCharacter, // 邀请角色
+		mx.Protocol_Cafe_RankUp:          pack.CafeRankUp,          // 升级咖啡馆
+		mx.Protocol_Cafe_ReceiveCurrency: pack.CafeReceiveCurrency, // 咖啡馆领取产物
+		mx.Protocol_Cafe_ListPreset:      pack.CafeListPreset,      // 获取蓝图列表
 		// 社团
 		mx.Protocol_Clan_Login: pack.ClanLogin, // 登录获取社团信息
 		mx.Protocol_Clan_Check: pack.ClanCheck, // 社团检查
@@ -153,13 +176,13 @@ func (g *Gateway) registerMessage(c *gin.Context, request mx.Message, base *mx.B
 	var s *enter.Session
 	if sessionKey == nil &&
 		request.GetProtocol() != mx.Protocol_Account_CheckYostar {
-		errBestHTTP(c) // TODO 异常请求
+		errTokenBestHTTP(c) // TODO 异常请求
 		logger.Debug("get request sessionKey nil")
 		return
 	} else if request.GetProtocol() != mx.Protocol_Account_CheckYostar {
 		s = enter.GetSessionBySessionKey(sessionKey)
 		if s == nil {
-			errBestHTTP(c)
+			errTokenBestHTTP(c) // TODO 异常请求
 			logger.Debug("get session nil,SessionKey:%s", sessionKey.String())
 			return
 		}
