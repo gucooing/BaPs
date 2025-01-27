@@ -40,6 +40,8 @@ message Excel {
   repeated WeekDungeonRewardExcelTable WeekDungeonRewardExcelTable = 31; // 悬赏通缉关卡奖励配置
   repeated CharacterLevelExcelTable CharacterLevelExcelTable = 32; // 角色等级配置
   repeated CharacterGearExcel CharacterGearExcel = 33; // 角色爱用品配置
+  repeated CharacterPotentialExcel CharacterPotentialExcel = 34; // 角色能力解放配置
+  repeated CharacterPotentialStatExcel CharacterPotentialStatExcel = 35; // 角色能力解放升级配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -655,4 +657,18 @@ message CharacterGearExcel {
   string Icon = 13;
   int64 LocalizeEtcId = 14;
   int64 TagsLength = 15;
+}
+
+message CharacterPotentialExcel {
+  int64 Id = 1;
+  int64 PotentialStatGroupId = 2;
+  string PotentialStatBonusRateType = 3;
+  bool IsUnnecessaryStat = 4;
+}
+
+message CharacterPotentialStatExcel {
+  int64 PotentialStatGroupId = 1;
+  int32 PotentialLevel = 2;
+  int64 RecipeId = 3;
+  int64 StatBonusRate = 4;
 }

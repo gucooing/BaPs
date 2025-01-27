@@ -280,3 +280,48 @@ func CharacterGearUnlock(s *enter.Session, request, response mx.Message) {
 
 	rsp.GearDB = game.GetGearDB(s, sId)
 }
+
+func CharacterPotentialGrowth(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.CharacterPotentialGrowthRequest)
+	rsp := response.(*proto.CharacterPotentialGrowthResponse)
+
+	characterInfo := game.GetCharacterInfoByServerId(s, req.TargetCharacterDBId)
+	if characterInfo == nil {
+		return
+	}
+	if characterInfo.PotentialStats == nil {
+		characterInfo.PotentialStats = game.NewPotentialStats()
+	}
+	defer func() {
+		rsp.CharacterDB = game.GetCharacterDB(s, characterInfo.CharacterId)
+	}()
+
+	parcelResultList := make([]*game.ParcelResult, 0)
+	for _, reqInfo := range req.PotentialGrowthRequestDBs {
+		oldLevel := characterInfo.PotentialStats[int32(reqInfo.Type)]
+		conf := gdconf.GetCharacterPotentialExcelType(characterInfo.CharacterId, reqInfo.Type.String())
+		if conf == nil {
+			continue
+		}
+
+	ty:
+		for ; oldLevel < reqInfo.Level; oldLevel++ {
+			statConf := gdconf.GetCharacterPotentialStatExcel(conf.PotentialStatGroupId, oldLevel)
+			if statConf == nil {
+				goto ty
+			}
+			recConf := gdconf.GetRecipeIngredientExcelTable(statConf.RecipeId)
+			if recConf == nil {
+				goto ty
+			}
+			// 根据配方计算需要的东西
+			parcelResultList = append(parcelResultList, game.GetParcelResultList(recConf.CostParcelType,
+				recConf.CostId, recConf.CostAmount, true)...)
+			parcelResultList = append(parcelResultList, game.GetParcelResultList(recConf.IngredientParcelType,
+				recConf.IngredientId, recConf.IngredientAmount, true)...)
+		}
+
+		characterInfo.PotentialStats[int32(reqInfo.Type)] = oldLevel
+	}
+	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
+}

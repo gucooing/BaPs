@@ -92,6 +92,7 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Equipment_Equip:                 pack.EquipmentEquip,                 // 装备角色装备
 		mx.Protocol_Character_ExpGrowth:             pack.CharacterExpGrowth,             // 角色升级
 		mx.Protocol_CharacterGear_Unlock:            pack.CharacterGearUnlock,            // 角色解锁爱用品
+		mx.Protocol_Character_PotentialGrowth:       pack.CharacterPotentialGrowth,       // 角色能力解放
 		// 队伍
 		mx.Protocol_Echelon_List:       pack.EchelonList,       // 获取队伍信息
 		mx.Protocol_Echelon_Save:       pack.EchelonSave,       // 保存/更新队伍

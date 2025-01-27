@@ -138,16 +138,11 @@ func SetRepresentCharacterUniqueId(s *enter.Session, characterId int64) bool {
 
 func SetLobbyStudent(s *enter.Session, serverId int64) bool {
 	bin := GetBaseBin(s)
-	list := GetCharacterInfoListByServerId(s)
-	if bin == nil || list == nil {
+	if bin == nil {
 		return false
 	}
-	if characterInfo := list[serverId]; characterInfo == nil {
-		return false
-	} else {
-		bin.LobbyStudent = characterInfo.CharacterId
-		return true
-	}
+	bin.LobbyStudent = GetCharacterInfoByServerId(s, serverId).GetCharacterId()
+	return true
 }
 
 func GetSearchPermission(s *enter.Session) bool {

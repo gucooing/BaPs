@@ -118,6 +118,7 @@ message CharacterInfo {
   map<int32,int64> equipment_list = 12; // 装备
   int64 server_id = 13; //  唯一id
   bool is_favorite = 14; // 是否标记
+  map<int32,int32> potential_stats = 15; // 能力解放
 }
 
 message GearInfo {

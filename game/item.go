@@ -685,19 +685,21 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 		default:
 			logger.Warn("没有处理的奖励类型 Unknown ParcelType:%s", parcelResult.ParcelType.String())
 		}
-		info.DisplaySequence = append(info.DisplaySequence, &proto.ParcelInfo{
-			Key: &proto.ParcelKeyPair{
-				Type: parcelResult.ParcelType,
-				Id:   parcelResult.ParcelId,
-			},
-			Amount: parcelResult.Amount,
-			Multiplier: &proto.BasisPoint{
-				RawValue: 10000,
-			},
-			Probability: &proto.BasisPoint{
-				RawValue: 10000,
-			},
-		})
+		if parcelResult.Amount >= 0 {
+			info.DisplaySequence = append(info.DisplaySequence, &proto.ParcelInfo{
+				Key: &proto.ParcelKeyPair{
+					Type: parcelResult.ParcelType,
+					Id:   parcelResult.ParcelId,
+				},
+				Amount: parcelResult.Amount,
+				Multiplier: &proto.BasisPoint{
+					RawValue: 10000,
+				},
+				Probability: &proto.BasisPoint{
+					RawValue: 10000,
+				},
+			})
+		}
 	}
 
 	return info

@@ -33,12 +33,21 @@ func NewCharacter(s *enter.Session) *sro.CharacterBin {
 			EquipmentList:          NewCharacterEquipment(conf.CharacterId),
 			ServerId:               sid,
 			IsFavorite:             false,
+			PotentialStats:         NewPotentialStats(),
 		}
 		bin.CharacterHash[sid] = conf.CharacterId
 		bin.CharacterInfoList[conf.CharacterId] = infp
 	}
 
 	return bin
+}
+
+func NewPotentialStats() map[int32]int32 {
+	list := make(map[int32]int32)
+	for _, p := range []int32{1, 2, 3} {
+		list[p] = 0
+	}
+	return list
 }
 
 func NewCharacterEquipment(characterId int64) map[int32]int64 {
@@ -74,14 +83,6 @@ func GetCharacterInfoList(s *enter.Session) map[int64]*sro.CharacterInfo {
 
 func GetCharacterCount(s *enter.Session) int64 {
 	return int64(len(GetCharacterInfoList(s)))
-}
-
-func GetCharacterInfoListByServerId(s *enter.Session) map[int64]*sro.CharacterInfo {
-	list := make(map[int64]*sro.CharacterInfo)
-	for _, v := range GetCharacterInfoList(s) {
-		list[v.ServerId] = v
-	}
-	return list
 }
 
 func GetCharacterInfo(s *enter.Session, characterId int64) *sro.CharacterInfo {
@@ -155,7 +156,7 @@ func GetCharacterDB(s *enter.Session, characterId int64) *proto.CharacterDB {
 		IsLocked:               false,
 		IsFavorite:             bin.IsFavorite,
 		EquipmentServerIds:     make([]int64, 0),
-		PotentialStats:         make(map[int32]int32),
+		PotentialStats:         bin.PotentialStats,
 	}
 	info.FavorRank = 50 // 由于excel中没有好感度配置所以默认满级
 	for i := 0; i < 3; i++ {
@@ -169,9 +170,6 @@ func GetCharacterDB(s *enter.Session, characterId int64) *proto.CharacterDB {
 		} else {
 			info.EquipmentServerIds = append(info.EquipmentServerIds, 0)
 		}
-	}
-	for _, p := range []int32{1, 2, 3} {
-		info.PotentialStats[p] = 0
 	}
 
 	return info
@@ -211,6 +209,7 @@ func AddCharacter(s *enter.Session, characterId int64) bool {
 		LeaderSkillLevel:       1,
 		EquipmentList:          NewCharacterEquipment(characterId),
 		ServerId:               sId,
+		PotentialStats:         NewPotentialStats(),
 	}
 	bin.CharacterHash[sId] = characterId
 	bin.CharacterInfoList[characterId] = info
