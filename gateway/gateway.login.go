@@ -18,7 +18,7 @@ import (
 
 func (g *Gateway) getEnterTicket(c *gin.Context) {
 	if !alg.CheckGateWay(c) {
-		errBestHTTP(c)
+		errTokenBestHTTP(c)
 		return
 	}
 	bin, err := mx.GetFormMx(c)

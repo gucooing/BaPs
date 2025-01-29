@@ -200,9 +200,9 @@ func CafeReceiveCurrency(s *enter.Session, request, response mx.Message) {
 			parcelResultList = append(parcelResultList, &game.ParcelResult{
 				ParcelType: proto.ParcelType(prodBin.ParcelType),
 				ParcelId:   prodBin.ParcelId,
-				Amount:     prodBin.Amount / 100,
+				Amount:     prodBin.Amount,
 			})
-			prodBin.Amount = 0
+			// prodBin.Amount = 0
 		}
 		bin.ProductionAppliedTime = time.Unix(bin.ProductionAppliedTime, 0).
 			Add(time.Duration(bin.ProductionAppliedNum) * time.Hour).Unix()
@@ -216,4 +216,54 @@ func CafeListPreset(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.CafeListPresetResponse)
 
 	rsp.CafePresetDBs = make([]*proto.CafePresetDB, 0)
+}
+
+func CafeTravel(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.CafeTravelRequest)
+	rsp := response.(*proto.CafeTravelResponse)
+
+	bin := game.GetFriendBin(s)
+	if bin == nil {
+		return
+	}
+	bin.SyncAf.Lock()
+	defer bin.SyncAf.Unlock()
+	if _, ok := bin.FriendList[req.TargetAccountId]; !ok {
+		return
+	}
+
+	friendS := enter.GetSessionByUid(req.TargetAccountId)
+	if friendS == nil {
+		return
+	}
+	friendS.GoroutinesSync.Lock()
+	defer friendS.GoroutinesSync.Unlock()
+
+	rsp.FriendDB = game.GetFriendDB(friendS)
+	rsp.CafeDBs = game.GetPbCafeDBs(friendS)
+}
+
+func CafeGiveGift(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.CafeGiveGiftRequest)
+	rsp := response.(*proto.CafeGiveGiftResponse)
+
+	parcelResultList := make([]*game.ParcelResult, 0)
+	parcelResultList = append(parcelResultList, &game.ParcelResult{
+		ParcelType: proto.ParcelType_Character,
+		ParcelId:   req.CharacterUniqueId,
+	})
+
+	defer func() {
+		rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
+	}()
+	consumeResultDB := &proto.ConsumeResultDB{
+		RemovedItemServerIds:                    make([]int64, 0),
+		RemovedEquipmentServerIds:               make([]int64, 0),
+		RemovedFurnitureServerIds:               make([]int64, 0),
+		UsedItemServerIdAndRemainingCounts:      make(map[int64]int64),
+		UsedEquipmentServerIdAndRemainingCounts: make(map[int64]int64),
+		UsedFurnitureServerIdAndRemainingCounts: make(map[int64]int64),
+	}
+	rsp.ConsumeResultDB = consumeResultDB
+
 }

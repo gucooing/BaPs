@@ -159,9 +159,9 @@ func UpCafeVisitCharacterDB(bin *sro.CafeInfo) {
 		base := produConf.ParcelProductionCorrectionValue / 10000
 		additional := float32(bin.ComfortValue/cafeRankConf.ComfortMax) * produConf.ParcelProductionCoefficient
 		if bin.CafeId == 1 {
-			prodBin.Amount = int64(base+(additional*0.45)*100) * int64(num)
+			prodBin.Amount = int64(base+additional*45) * int64(num)
 		} else {
-			prodBin.Amount = int64(base+(additional*0.42)*100) * int64(num)
+			prodBin.Amount = int64(base+additional*20) * int64(num)
 		}
 		prodBin.Amount = alg.MinInt64(prodBin.Amount, produConf.ParcelStorageMax*100) // 最大值限制
 	}

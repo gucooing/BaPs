@@ -121,6 +121,8 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Cafe_RankUp:          pack.CafeRankUp,          // 升级咖啡馆
 		mx.Protocol_Cafe_ReceiveCurrency: pack.CafeReceiveCurrency, // 咖啡馆领取产物
 		mx.Protocol_Cafe_ListPreset:      pack.CafeListPreset,      // 获取蓝图列表
+		mx.Protocol_Cafe_Travel:          pack.CafeTravel,          // 访问好友咖啡馆
+		mx.Protocol_Cafe_GiveGift:        pack.CafeGiveGift,        // 礼物赠送
 		// 社团
 		mx.Protocol_Clan_Login: pack.ClanLogin, // 登录获取社团信息
 		mx.Protocol_Clan_Check: pack.ClanCheck, // 社团检查
@@ -156,7 +158,7 @@ func (g *Gateway) registerMessage(c *gin.Context, request mx.Message, base *mx.B
 	// panic捕获
 	defer func() {
 		if err := recover(); err != nil {
-			errBestHTTP(c)
+			errBestHTTP(c, 15022)
 			logger.Error("@LogTag(player_panic)cmdId:%s json:%s\nerr:%s\nstack:%s", cmd.Get().GetCmdNameByCmdId(request.GetProtocol()),
 				request.String(), err, logger.Stack())
 			return
@@ -164,13 +166,13 @@ func (g *Gateway) registerMessage(c *gin.Context, request mx.Message, base *mx.B
 	}()
 	handler, ok := g.funcRouteMap[request.GetProtocol()]
 	if !ok {
-		errBestHTTP(c)
+		errBestHTTP(c, 15022)
 		logPlayerMsg(NoRoute, request)
 		return
 	}
 	response := cmd.Get().GetResponsePacketByCmdId(request.GetProtocol())
 	if response == nil {
-		errBestHTTP(c)
+		errBestHTTP(c, 15022)
 		logger.Debug("response unknown cmd id: %v\n", cmd.Get().GetCmdNameByCmdId(request.GetProtocol()))
 		return
 	}
@@ -200,6 +202,10 @@ func (g *Gateway) registerMessage(c *gin.Context, request mx.Message, base *mx.B
 	handler(s, request, response)
 	logPlayerMsg(Client, request)
 	logPlayerMsg(Server, response)
+	if base.ErrorCode != 0 {
+		errBestHTTP(c, base.ErrorCode)
+		return
+	}
 	g.send(c, response)
 	return
 }

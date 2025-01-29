@@ -660,15 +660,20 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 			serverId := AddItem(s, parcelResult.ParcelId, int32(parcelResult.Amount))
 			info.ItemDBs[serverId] = GetItemDB(s, parcelResult.ParcelId)
 		case proto.ParcelType_Character: // 角色
-			if !AddCharacter(s, parcelResult.ParcelId) { // 重复添加处理
-				for _, itemId := range RepeatAddCharacter(s, parcelResult.ParcelId) {
-					if itemInfo := GetItemDB(s, itemId); itemInfo != nil {
-						info.ItemDBs[itemInfo.ServerId] = itemInfo
+			if parcelResult.ParcelId > 0 {
+				if !AddCharacter(s, parcelResult.ParcelId) { // 重复添加处理
+					for _, itemId := range RepeatAddCharacter(s, parcelResult.ParcelId) {
+						if itemInfo := GetItemDB(s, itemId); itemInfo != nil {
+							info.ItemDBs[itemInfo.ServerId] = itemInfo
+						}
 					}
+				} else {
+					info.CharacterDBs = append(info.CharacterDBs, GetCharacterDB(s, parcelResult.ParcelId))
 				}
 			} else {
 				info.CharacterDBs = append(info.CharacterDBs, GetCharacterDB(s, parcelResult.ParcelId))
 			}
+
 		case proto.ParcelType_CharacterWeapon: // 角色武器 仅同步
 			info.WeaponDBs = append(info.WeaponDBs, GetWeaponDB(s, parcelResult.ParcelId))
 		case proto.ParcelType_Equipment: // 装备 仅添加

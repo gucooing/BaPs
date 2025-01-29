@@ -1,6 +1,8 @@
 package gateway
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/config"
@@ -45,29 +47,28 @@ func (g *Gateway) send(c *gin.Context, n mx.Message) {
 
 func (g *Gateway) gateWay(c *gin.Context) {
 	if !alg.CheckGateWay(c) {
-		errBestHTTP(c)
 		return
 	}
 	bin, err := mx.GetFormMx(c)
 	if err != nil {
-		errBestHTTP(c)
 		logger.Warn("get form mx error:", err)
 		return
 	}
 	packet, base, err := protocol.UnmarshalRequest(bin)
 	if err != nil {
-		errBestHTTP(c)
+		errBestHTTP(c, 15022)
 		logger.Debug("unmarshal c--->s err:%s,json:%s", err, string(bin))
 		return
 	}
 	g.registerMessage(c, packet, base)
 }
 
-func errBestHTTP(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"protocol": "Error",
-		"packet":   "{\"Protocol\":-1,\"ErrorCode\":15022}",
-	})
+func errBestHTTP(c *gin.Context, errorCode int32) {
+	msg := &protocol.NetworkProtocolResponse{
+		Packet:   fmt.Sprintf("{\"Protocol\":-1,\"ErrorCode\":%d}", errorCode),
+		Protocol: "Error",
+	}
+	c.JSON(200, msg)
 }
 
 func errTokenBestHTTP(c *gin.Context) {
