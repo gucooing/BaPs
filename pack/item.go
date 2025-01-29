@@ -115,8 +115,20 @@ func EquipmentTierUp(s *enter.Session, request, response mx.Message) {
 	if conf == nil || conf.NextTierEquipment == 0 {
 		return
 	}
+	// 升级蓝图扣除
+	recConf := gdconf.GetRecipeIngredientExcelTable(conf.RecipeId)
+	if recConf == nil {
+		return
+	}
+	// 根据配方计算需要的东西
+	parcelResultList := game.GetParcelResultList(recConf.CostParcelType,
+		recConf.CostId, recConf.CostAmount, true)
+	parcelResultList = append(parcelResultList, game.GetParcelResultList(recConf.IngredientParcelType,
+		recConf.IngredientId, recConf.IngredientAmount, true)...)
 	bin.UniqueId = conf.NextTierEquipment
 	bin.Tier++
+
+	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
 }
 
 func EquipmentBatchGrowth(s *enter.Session, request, response mx.Message) {
@@ -133,7 +145,7 @@ func EquipmentBatchGrowth(s *enter.Session, request, response mx.Message) {
 		UsedFurnitureServerIdAndRemainingCounts: make(map[int64]int64),
 	}
 	rsp.ConsumeResultDB = consumeResultDB
-
+	parcelResultList := make([]*game.ParcelResult, 0)
 	// 装备升级
 	for _, equipmentBatch := range req.EquipmentBatchGrowthRequestDBs {
 		bin := game.GetEquipmentInfo(s, equipmentBatch.TargetServerId)
@@ -158,6 +170,10 @@ func EquipmentBatchGrowth(s *enter.Session, request, response mx.Message) {
 					isUp = false
 					goto del
 				}
+				parcelResultList = append(parcelResultList, &game.ParcelResult{
+					ParcelType: proto.ParcelType_Equipment,
+					ParcelId:   equipInfo.UniqueId,
+				})
 				equipConf := gdconf.GetEquipmentExcelTable(equipInfo.UniqueId)
 				if equipConf.MaxLevel < 10 {
 					consumeResultDB.UsedEquipmentServerIdAndRemainingCounts[serverId] = equipInfo.StackCount
@@ -167,6 +183,7 @@ func EquipmentBatchGrowth(s *enter.Session, request, response mx.Message) {
 				}
 			}
 		}
+
 		if isUp {
 			bin.Level = int32(equipmentBatch.AfterLevel)
 			bin.Exp = equipmentBatch.AfterExp
@@ -174,9 +191,21 @@ func EquipmentBatchGrowth(s *enter.Session, request, response mx.Message) {
 		for {
 			newConf := gdconf.GetEquipmentExcelTable(bin.UniqueId)
 			if newConf == nil || newConf.NextTierEquipment == 0 ||
-				bin.Level < newConf.MaxLevel {
+				bin.Level < newConf.MaxLevel || int32(equipmentBatch.AfterTier) <= newConf.TierInit {
 				break
 			}
+
+			// 升级蓝图扣除
+			recConf := gdconf.GetRecipeIngredientExcelTable(newConf.RecipeId)
+			if recConf == nil {
+				break
+			}
+			// 根据配方计算需要的东西
+			parcelResultList = append(parcelResultList, game.GetParcelResultList(recConf.CostParcelType,
+				recConf.CostId, recConf.CostAmount, true)...)
+			parcelResultList = append(parcelResultList, game.GetParcelResultList(recConf.IngredientParcelType,
+				recConf.IngredientId, recConf.IngredientAmount, true)...)
+
 			bin.UniqueId = newConf.NextTierEquipment
 			bin.Tier++
 		}
@@ -201,12 +230,10 @@ func EquipmentBatchGrowth(s *enter.Session, request, response mx.Message) {
 			return
 		}
 		// 根据配方计算需要的东西
-		parcelResultList := game.GetParcelResultList(recConf.CostParcelType,
-			recConf.CostId, recConf.CostAmount, true)
+		parcelResultList = append(parcelResultList, game.GetParcelResultList(recConf.CostParcelType,
+			recConf.CostId, recConf.CostAmount, true)...)
 		parcelResultList = append(parcelResultList, game.GetParcelResultList(recConf.IngredientParcelType,
 			recConf.IngredientId, recConf.IngredientAmount, true)...)
-		// 删物品
-		rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
 		// 构造回包 这步是没意义的一步浪费性能
 		for _, prInfo := range parcelResultList {
 			switch prInfo.ParcelType {
@@ -219,6 +246,8 @@ func EquipmentBatchGrowth(s *enter.Session, request, response mx.Message) {
 		bin.UniqueId = conf.NextTierEquipment
 		bin.Tier++
 	}
+	// 删物品
+	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
 }
 
 func CharacterWeaponTranscendence(s *enter.Session, request, response mx.Message) {
