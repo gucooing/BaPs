@@ -6,7 +6,7 @@ option go_package = "./;proto";
 
 message PlayerBin {
     BasePlayer base_bin = 1; // 基础信息
-    AcademyBin academy_bin = 2; // 学院信息
+    AcademyBin academy_bin = 2; // 课程表信息
     CafeBin cafe_bin = 3; // 咖啡馆信息
     MailBin mail_bin = 4; // 邮箱配置
     CharacterBin character_bin = 5; // 角色信息
@@ -44,10 +44,24 @@ message BasePlayer { // 此处仅留必要数据
   bool show_eliminate_raid_ranking = 18;
 }
 
-// 学院信息
+// 课程表信息
 
 message AcademyBin {
+  map<int64,AcademyLocationInfo> academy_location_list = 1; // 学院信息
+  map<int64,AcademyZoneInfo> academy_zone_list = 2; // 教室信息
+  int64 last_up_data = 3; // 上次更新时间
+}
 
+message AcademyLocationInfo {
+  int64 location_id = 1;
+  int64 rank = 2;
+  int64 exp = 3;
+}
+
+message AcademyZoneInfo {
+  int64 zone_id = 1;
+  map<int64,bool> student_list = 2;
+  bool is_up = 3;
 }
 
 // 咖啡馆信息

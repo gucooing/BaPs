@@ -63,6 +63,11 @@ func (g *GameConfig) LoadExcel() {
 		g.loadCharacterGearExcel,
 		g.loadCharacterPotentialExcel,
 		g.loadCharacterPotentialStatExcel,
+		g.loadAcademyLocationExcelTable,
+		g.loadAcademyTicketExcelTable,
+		g.loadAcademyZoneExcelTable,
+		g.loadAcademyLocationRankExcelTable,
+		g.loadAcademyRewardExcelTable,
 	}
 
 	for _, fn := range g.loadFunc {

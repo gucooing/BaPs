@@ -121,7 +121,7 @@ var DefaultCurrencyNum = map[int32]int64{
 	proto.CurrencyTypes_GemBonus:                 600,   // 砖石
 	proto.CurrencyTypes_Gold:                     10000, // 金币
 	proto.CurrencyTypes_ActionPoint:              24,    // 体力
-	proto.CurrencyTypes_AcademyTicket:            3,
+	proto.CurrencyTypes_AcademyTicket:            3,     // 课程表
 	proto.CurrencyTypes_ArenaTicket:              5,
 	proto.CurrencyTypes_RaidTicket:               3,
 	proto.CurrencyTypes_WeekDungeonChaserATicket: 0,
@@ -231,7 +231,7 @@ func GetCurrencyInfo(s *enter.Session, currencyId int32) *sro.CurrencyInfo {
 func GetAccountCurrencyDB(s *enter.Session) *proto.AccountCurrencyDB {
 	accountCurrencyDB := &proto.AccountCurrencyDB{
 		AccountLevel:           int64(GetAccountLevel(s)),
-		AcademyLocationRankSum: 1,
+		AcademyLocationRankSum: GetAcademyLocationRankSum(s),
 		CurrencyDict:           make(map[proto.CurrencyTypes]int64),
 		UpdateTimeDict:         make(map[proto.CurrencyTypes]mx.MxTime),
 	}
@@ -241,6 +241,11 @@ func GetAccountCurrencyDB(s *enter.Session) *proto.AccountCurrencyDB {
 			id == proto.CurrencyTypes_SchoolDungeonTotalTicket) &&
 			!time.Unix(db.UpdateTime, 0).After(alg.GetDay4()) {
 			db.CurrencyNum = alg.MaxInt64(db.CurrencyNum, 6)
+			db.UpdateTime = time.Now().Unix()
+		}
+		if id == proto.CurrencyTypes_AcademyTicket &&
+			!time.Unix(db.UpdateTime, 0).After(alg.GetDay4()) {
+			db.CurrencyNum = alg.MaxInt64(db.CurrencyNum, GetMaxAcademyTicket(s))
 			db.UpdateTime = time.Now().Unix()
 		}
 		if id == proto.CurrencyTypes_ActionPoint {
@@ -602,7 +607,7 @@ func GetParcelResultList(typeList []string, idList, numList []int64, isDel bool)
 				num = -numList[index]
 			}
 			list = append(list, &ParcelResult{
-				ParcelType: proto.ParcelType(proto.ParcelType_value[rewardType]),
+				ParcelType: proto.GetParcelTypeValue(rewardType),
 				ParcelId:   idList[index],
 				Amount:     num,
 			})
@@ -621,8 +626,8 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 		EquipmentDBs:        make(map[int64]*proto.EquipmentDB),
 		FurnitureDBs:        make(map[int64]*proto.FurnitureDB),
 		IdCardBackgroundDBs: make(map[int64]*proto.IdCardBackgroundDB),
+		AcademyLocationDBs:  make([]*proto.AcademyLocationDB, 0),
 
-		AcademyLocationDBs:              nil,
 		CostumeDBs:                      nil,
 		TSSCharacterDBs:                 nil,
 		RemovedEquipmentIds:             nil,
@@ -642,6 +647,7 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 		info.AccountDB = GetAccountDB(s)
 		info.AccountCurrencyDB = GetAccountCurrencyDB(s)
 	}()
+	isParcelResult := true
 
 	for _, parcelResult := range parcelResultList {
 		switch parcelResult.ParcelType {
@@ -660,21 +666,20 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 			serverId := AddItem(s, parcelResult.ParcelId, int32(parcelResult.Amount))
 			info.ItemDBs[serverId] = GetItemDB(s, parcelResult.ParcelId)
 		case proto.ParcelType_Character: // 角色
-			if parcelResult.ParcelId > 0 {
-				if !AddCharacter(s, parcelResult.ParcelId) { // 重复添加处理
-					for _, itemId := range RepeatAddCharacter(s, parcelResult.ParcelId) {
-						if itemInfo := GetItemDB(s, itemId); itemInfo != nil {
-							info.ItemDBs[itemInfo.ServerId] = itemInfo
-						}
+			if !AddCharacter(s, parcelResult.ParcelId) { // 重复添加处理
+				for _, itemId := range RepeatAddCharacter(s, parcelResult.ParcelId) {
+					if itemInfo := GetItemDB(s, itemId); itemInfo != nil {
+						info.ItemDBs[itemInfo.ServerId] = itemInfo
 					}
-				} else {
-					info.CharacterDBs = append(info.CharacterDBs, GetCharacterDB(s, parcelResult.ParcelId))
 				}
 			} else {
 				info.CharacterDBs = append(info.CharacterDBs, GetCharacterDB(s, parcelResult.ParcelId))
 			}
-
+		case proto.ParcelType_FavorExp: // 角色好感度
+			isParcelResult = false
+			info.CharacterDBs = append(info.CharacterDBs, GetCharacterDB(s, parcelResult.ParcelId))
 		case proto.ParcelType_CharacterWeapon: // 角色武器 仅同步
+			isParcelResult = false
 			info.WeaponDBs = append(info.WeaponDBs, GetWeaponDB(s, parcelResult.ParcelId))
 		case proto.ParcelType_Equipment: // 装备 仅添加
 			for _, serverId := range AddEquipment(s, parcelResult.ParcelId, parcelResult.Amount) {
@@ -687,10 +692,13 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 		case proto.ParcelType_IdCardBackground: // 账号背景页 仅添加
 			serverid := AddCardBackgroundId(s, parcelResult.ParcelId)
 			info.IdCardBackgroundDBs[serverid] = GetIdCardBackgroundDB(s, parcelResult.ParcelId)
+		case proto.ParcelType_LocationExp: // 课程表经验更改
+			UpAcademyLocationExp(s, parcelResult.ParcelId, parcelResult.Amount)
+			info.AcademyLocationDBs = append(info.AcademyLocationDBs, GetAcademyLocationDB(s, parcelResult.ParcelId))
 		default:
 			logger.Warn("没有处理的奖励类型 Unknown ParcelType:%s", parcelResult.ParcelType.String())
 		}
-		if parcelResult.Amount >= 0 {
+		if parcelResult.Amount >= 0 && isParcelResult {
 			info.DisplaySequence = append(info.DisplaySequence, &proto.ParcelInfo{
 				Key: &proto.ParcelKeyPair{
 					Type: parcelResult.ParcelType,

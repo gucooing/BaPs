@@ -42,6 +42,11 @@ message Excel {
   repeated CharacterGearExcel CharacterGearExcel = 33; // 角色爱用品配置
   repeated CharacterPotentialExcel CharacterPotentialExcel = 34; // 角色能力解放配置
   repeated CharacterPotentialStatExcel CharacterPotentialStatExcel = 35; // 角色能力解放升级配置
+  repeated AcademyTicketExcelTable AcademyTicketExcelTable = 36; // 课程表最大票信息
+  repeated AcademyLocationExcelTable AcademyLocationExcelTable = 37; // 课程表学院信息
+  repeated AcademyZoneExcelTable AcademyZoneExcelTable = 38; // 课程表教室信息
+  repeated AcademyLocationRankExcelTable AcademyLocationRankExcelTable = 39; // 课程表等级配置
+  repeated AcademyRewardExcelTable AcademyRewardExcelTable = 40; // 课程表奖励配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -671,4 +676,58 @@ message CharacterPotentialStatExcel {
   int32 PotentialLevel = 2;
   int64 RecipeId = 3;
   int64 StatBonusRate = 4;
+}
+
+message AcademyTicketExcelTable {
+  int64 LocationRankSum = 1;
+  int64 ScheduleTicktetMax = 2;
+}
+
+message AcademyLocationExcelTable {
+  int64 Id = 1;
+  int64 LocalizeEtcId = 2;
+  repeated string OpenCondition = 3;
+  repeated int64 OpenConditionCount = 4;
+  string RewardParcelType = 5;
+  int64 RewardParcelId = 6;
+  int64 OpenTeacherRank = 7;
+}
+
+message AcademyZoneExcelTable {
+  int64 Id = 1;
+  int64 LocationId = 2;
+  int64 LocationRankForUnlock = 3;
+  int64 LocalizeEtcId = 4;
+  repeated int64 StudentVisitProb = 5;
+  int64 RewardGroupId = 6;
+  repeated string Tags = 7;
+}
+
+message AcademyLocationRankExcelTable {
+  int64 Rank = 1;
+  int64 RankExp = 2;
+  int64 TotalExp = 3;
+}
+
+message AcademyRewardExcelTable {
+  string Location = 1;
+  int64 ScheduleGroupId = 2;
+  int64 OrderInGroup = 3;
+  int64 Id = 4;
+  string ProgressTexture = 5;
+  int64 LocalizeEtcId = 6;
+  int64 LocationRank = 7;
+  int64 FavorExp = 8;
+  int64 SecretStoneAmount = 9;
+  int64 SecretStoneProb = 10;
+  int64 ExtraFavorExp = 11;
+  int64 ExtraFavorExpProb = 12;
+  repeated string ExtraRewardParcelType = 13;
+  repeated int64 ExtraRewardParcelId = 14;
+  repeated int64 ExtraRewardAmount = 15;
+  repeated int64 ExtraRewardProb = 16;
+  repeated bool IsExtraRewardDisplayed = 17;
+  repeated string RewardParcelType = 18;
+  repeated int64 RewardParcelId = 19;
+  repeated int64 RewardAmount = 20;
 }

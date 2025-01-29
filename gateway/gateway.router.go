@@ -18,7 +18,6 @@ type handlerFunc func(s *enter.Session, request, response mx.Message)
 
 func (g *Gateway) newFuncRouteMap() {
 	g.funcRouteMap = map[int32]handlerFunc{
-		mx.Protocol_Academy_GetInfo:                      pack.AcademyGetInfo,                      // 获取学院信息
 		mx.Protocol_Arena_Login:                          pack.ArenaLogin,                          // 登录获取竞技场信息
 		mx.Protocol_EliminateRaid_Login:                  pack.EliminateRaidLogin,                  // 登录获取制约解除决战信息
 		mx.Protocol_Craft_List:                           pack.CraftInfoList,                       // 获取制造信息
@@ -123,6 +122,9 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Cafe_ListPreset:      pack.CafeListPreset,      // 获取蓝图列表
 		mx.Protocol_Cafe_Travel:          pack.CafeTravel,          // 访问好友咖啡馆
 		mx.Protocol_Cafe_GiveGift:        pack.CafeGiveGift,        // 礼物赠送
+		// 课程表
+		mx.Protocol_Academy_GetInfo:        pack.AcademyGetInfo,        // 获取课程表信息
+		mx.Protocol_Academy_AttendSchedule: pack.AcademyAttendSchedule, // 上课
 		// 社团
 		mx.Protocol_Clan_Login: pack.ClanLogin, // 登录获取社团信息
 		mx.Protocol_Clan_Check: pack.ClanCheck, // 社团检查

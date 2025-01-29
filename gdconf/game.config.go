@@ -54,6 +54,11 @@ type GPP struct {
 	CharacterGear             *CharacterGear
 	CharacterPotential        *CharacterPotential
 	CharacterPotentialStat    *CharacterPotentialStat
+	AcademyLocationExcel      *AcademyLocationExcel
+	AcademyTicketExcel        *AcademyTicketExcel
+	AcademyZoneExcel          *AcademyZoneExcel
+	AcademyLocationRankExcel  *AcademyLocationRankExcel
+	AcademyRewardExcel        *AcademyRewardExcel
 }
 
 func LoadGameConfig(dataPath string, resPath string) *GameConfig {
@@ -107,6 +112,11 @@ func (g *GameConfig) gpp() {
 		g.gppCharacterGearExcel,
 		g.gppCharacterPotentialExcel,
 		g.gppCharacterPotentialStatExcel,
+		g.gppAcademyLocationExcelTable,
+		g.gppAcademyTicketExcelTable,
+		g.gppAcademyZoneExcelTable,
+		g.gppAcademyLocationRankExcelTable,
+		g.gppAcademyRewardExcelTable,
 	}
 
 	for _, fn := range g.gppFunc {
