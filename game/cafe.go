@@ -149,19 +149,19 @@ func UpCafeVisitCharacterDB(bin *sro.CafeInfo) {
 	if bin.ProductionList == nil {
 		bin.ProductionList = NewRroductionList(bin.CafeId)
 	}
-	// 公式 ParcelProductionCorrectionValue / 10000 + ComfortValue/MaxComfortValue * ParcelProductionCoefficient*(0.45,0.2)
+	// 公式 ParcelProductionCorrectionValue + ComfortValue/MaxComfortValue * ParcelProductionCoefficient*(0.45,0.2)
 	num := time.Now().Sub(time.Unix(bin.ProductionAppliedTime, 0)) / time.Hour
 	for _, prodBin := range bin.ProductionList {
 		produConf, ok := produConfList[prodBin.ParcelId]
 		if !ok {
 			continue
 		}
-		base := produConf.ParcelProductionCorrectionValue / 10000
+		base := produConf.ParcelProductionCorrectionValue / 100
 		additional := float32(bin.ComfortValue/cafeRankConf.ComfortMax) * produConf.ParcelProductionCoefficient
 		if bin.CafeId == 1 {
-			prodBin.Amount = int64(base+additional*45) * int64(num)
+			prodBin.Amount = int64((base + additional*45) * float32(num))
 		} else {
-			prodBin.Amount = int64(base+additional*20) * int64(num)
+			prodBin.Amount = int64((base + additional*20) * float32(num))
 		}
 		prodBin.Amount = alg.MinInt64(prodBin.Amount, produConf.ParcelStorageMax*100) // 最大值限制
 	}
@@ -302,7 +302,7 @@ func GetCafeDB(s *enter.Session, serverId int64) *proto.CafeDB {
 		ProductionDB:          nil,
 		LastUpdate:            mx.Unix(bin.LastUpdate, 0),
 		LastSummonDate:        mx.Unix(bin.SummonUpdate, 0),
-		ProductionAppliedTime: mx.Unix(bin.ProductionAppliedTime, 0),
+		ProductionAppliedTime: mx.Unix(bin.ProductionAppliedTime, 0).Add(time.Duration(bin.ProductionAppliedNum) * time.Hour),
 	}
 
 	for _, visitCharacterInfo := range bin.VisitCharacterList {
@@ -326,7 +326,7 @@ func GetCafeDB(s *enter.Session, serverId int64) *proto.CafeDB {
 	productionDB := &proto.CafeProductionDB{
 		CafeDBId:              bin.ServerId,
 		ComfortValue:          bin.ComfortValue,
-		AppliedDate:           mx.Unix(bin.ProductionAppliedTime, 0),
+		AppliedDate:           mx.Unix(bin.ProductionAppliedTime, 0).Add(time.Duration(bin.ProductionAppliedNum) * time.Hour),
 		ProductionParcelInfos: make([]*proto.CafeProductionParcelInfo, 0),
 	}
 	for _, productionBin := range bin.ProductionList {

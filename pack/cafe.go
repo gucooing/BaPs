@@ -196,11 +196,12 @@ func CafeReceiveCurrency(s *enter.Session, request, response mx.Message) {
 
 	parcelResultList := make([]*game.ParcelResult, 0)
 	for _, bin := range game.GetCafeInfoList(s) {
+		game.UpCafeVisitCharacterDB(bin)
 		for _, prodBin := range bin.ProductionList {
 			parcelResultList = append(parcelResultList, &game.ParcelResult{
 				ParcelType: proto.ParcelType(prodBin.ParcelType),
 				ParcelId:   prodBin.ParcelId,
-				Amount:     prodBin.Amount,
+				Amount:     prodBin.Amount / 100,
 			})
 			// prodBin.Amount = 0
 		}
