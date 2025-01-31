@@ -68,6 +68,7 @@ func (g *GameConfig) LoadExcel() {
 		g.loadAcademyZoneExcelTable,
 		g.loadAcademyLocationRankExcelTable,
 		g.loadAcademyRewardExcelTable,
+		g.loadSchoolDungeonRewardExcel,
 	}
 
 	for _, fn := range g.loadFunc {

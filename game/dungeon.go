@@ -10,6 +10,36 @@ func NewDungeonBin() *sro.DungeonBin {
 	return &sro.DungeonBin{}
 }
 
+func GetSchoolDungeonCost(isDel bool, count int64) []*ParcelResult {
+	if isDel {
+		return []*ParcelResult{
+			{
+				ParcelType: proto.ParcelType_Currency,
+				ParcelId:   proto.CurrencyTypes_SchoolDungeonTotalTicket,
+				Amount:     -1 * count,
+			},
+			{
+				ParcelType: proto.ParcelType_Currency,
+				ParcelId:   proto.CurrencyTypes_ActionPoint,
+				Amount:     -10 * count,
+			},
+		}
+	} else {
+		return []*ParcelResult{
+			{
+				ParcelType: proto.ParcelType_Currency,
+				ParcelId:   proto.CurrencyTypes_SchoolDungeonTotalTicket,
+				Amount:     1 * count,
+			},
+			{
+				ParcelType: proto.ParcelType_Currency,
+				ParcelId:   proto.CurrencyTypes_ActionPoint,
+				Amount:     8 * count,
+			},
+		}
+	}
+}
+
 func GetDungeonBin(s *enter.Session) *sro.DungeonBin {
 	bin := GetPlayerBin(s)
 	if bin == nil {
@@ -94,7 +124,12 @@ func GetSchoolDungeonStageHistoryDB(s *enter.Session, stageId int64) *proto.Scho
 	}
 	info := &proto.SchoolDungeonStageHistoryDB{
 		AccountServerId: s.AccountServerId,
+		StageUniqueId:   stageId,
 		StarFlags:       make([]bool, 3),
+		Star1Flag:       bin.IsWin,
+		Star2Flag:       bin.IsSu,
+		Star3Flag:       bin.IsTime,
+		IsClearedEver:   bin.IsWin,
 	}
 	info.StarFlags[0] = bin.IsWin
 	info.StarFlags[1] = bin.IsSu

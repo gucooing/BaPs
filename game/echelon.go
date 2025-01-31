@@ -5,6 +5,7 @@ import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -333,4 +334,109 @@ func GetEchelonPresetGroupDB(db *sro.EchelonInfo) *proto.EchelonPresetDB {
 	}
 
 	return info
+}
+
+const (
+	AssistTermRewardPeriodFromSec = 20
+	AssistRewardLimit             = 1000000000
+	AssistRentRewardDailyMaxCount = 20
+	AssistRentalFeeAmount         = 40000
+)
+
+func GetAssistList(s *enter.Session) map[int32]*sro.AssistList {
+	bin := GetEchelonBin(s)
+	if bin == nil {
+		return nil
+	}
+	if bin.AssistList == nil {
+		bin.AssistList = make(map[int32]*sro.AssistList)
+	}
+	return bin.AssistList
+}
+
+func GetClanAssistSlotDBs(s *enter.Session) []*proto.ClanAssistSlotDB {
+	list := make([]*proto.ClanAssistSlotDB, 0)
+	for _, assist := range GetAssistList(s) {
+		if assist.AssistInfoList == nil {
+			assist.AssistInfoList = make(map[int64]*sro.AssistInfo)
+		}
+		for slot, info := range assist.AssistInfoList {
+			clanAssistSlotDB := GetClanAssistSlotDB(s, info)
+			if clanAssistSlotDB == nil {
+				delete(assist.AssistInfoList, slot)
+				continue
+			}
+			list = append(list, clanAssistSlotDB)
+		}
+	}
+
+	return list
+}
+
+func GetClanAssistSlotDB(s *enter.Session, info *sro.AssistInfo) *proto.ClanAssistSlotDB {
+	characterInfo := GetCharacterInfo(s, info.CharacterId)
+	if characterInfo == nil {
+		return nil
+	}
+	return &proto.ClanAssistSlotDB{
+		EchelonType:      proto.EchelonType(info.EchelonType),
+		SlotNumber:       info.SlotNumber,
+		CharacterDBId:    characterInfo.ServerId,
+		DeployDate:       mx.Unix(info.DeployDate, 0),
+		TotalRentCount:   info.TotalRentCount,
+		CombatStyleIndex: 0,
+	}
+}
+
+func GetAssistCharacterDBs(s *enter.Session, assistRelation proto.AssistRelation) []*proto.AssistCharacterDB {
+	list := make([]*proto.AssistCharacterDB, 0)
+	for _, assist := range GetAssistList(s) {
+		for slot, info := range assist.AssistInfoList {
+			if assist.AssistInfoList == nil {
+				assist.AssistInfoList = make(map[int64]*sro.AssistInfo)
+			}
+			characterInfo := GetCharacterInfo(s, info.CharacterId)
+			if characterInfo == nil {
+				delete(assist.AssistInfoList, slot)
+				continue
+			}
+			assistCharacterDB := &proto.AssistCharacterDB{
+				EchelonType:             proto.EchelonType(info.EchelonType),
+				AccountId:               s.AccountServerId,
+				AssistRelation:          assistRelation,
+				AssistCharacterServerId: characterInfo.ServerId,
+				EquipmentDBs:            make([]*proto.EquipmentDB, 0),
+				ExSkillLevel:            characterInfo.ExSkillLevel,
+				Exp:                     characterInfo.Exp,
+				ExtraPassiveSkillLevel:  characterInfo.ExtraPassiveSkillLevel,
+				FavorRank:               characterInfo.FavorRank,
+				FavorExp:                characterInfo.FavorExp,
+				GearDB:                  GetGearDB(s, characterInfo.GearServerId),
+				LeaderSkillLevel:        characterInfo.LeaderSkillLevel,
+				Level:                   characterInfo.Level,
+				NickName:                GetNickname(s),
+				PassiveSkillLevel:       characterInfo.PassiveSkillLevel,
+				PotentialStats:          characterInfo.PotentialStats,
+				PublicSkillLevel:        characterInfo.CommonSkillLevel,
+				SlotNumber:              int32(info.SlotNumber),
+				StarGrade:               characterInfo.StarGrade,
+				Type:                    proto.ParcelType_Character,
+				UniqueId:                characterInfo.CharacterId,
+				WeaponDB:                GetWeaponDB(s, characterInfo.CharacterId),
+
+				CostumeId:        0,
+				CostumeDB:        nil,
+				IsMulligan:       false,
+				IsTSAInteraction: false,
+				CombatStyleIndex: 0,
+			}
+			for _, serverId := range characterInfo.EquipmentList {
+				assistCharacterDB.EquipmentDBs = append(assistCharacterDB.EquipmentDBs,
+					GetEquipmentDB(s, serverId))
+			}
+			list = append(list, assistCharacterDB)
+		}
+	}
+
+	return list
 }

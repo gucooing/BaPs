@@ -47,6 +47,7 @@ message Excel {
   repeated AcademyZoneExcelTable AcademyZoneExcelTable = 38; // 课程表教室信息
   repeated AcademyLocationRankExcelTable AcademyLocationRankExcelTable = 39; // 课程表等级配置
   repeated AcademyRewardExcelTable AcademyRewardExcelTable = 40; // 课程表奖励配置
+  repeated SchoolDungeonRewardExcel SchoolDungeonRewardExcel = 41; // 学院交流会奖励配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -730,4 +731,15 @@ message AcademyRewardExcelTable {
   repeated string RewardParcelType = 18;
   repeated int64 RewardParcelId = 19;
   repeated int64 RewardAmount = 20;
+}
+
+message SchoolDungeonRewardExcel {
+  int64 GroupId = 1;
+  string DungeonType = 2;
+  string RewardTag = 3;
+  string RewardParcelType = 4;
+  int64 RewardParcelId = 5;
+  int64 RewardParcelAmount = 6;
+  int64 RewardParcelProbability = 7;
+  bool IsDisplayed = 8;
 }

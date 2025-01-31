@@ -86,13 +86,6 @@ func MaxInt32(a, b int32) int32 {
 	return b
 }
 
-func MaxBool(a, b bool) bool {
-	if a {
-		return a
-	}
-	return b
-}
-
 func GetDay4() time.Time {
 	currentTime := time.Now()
 	nextExecution := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 4, 0, 0, 0, currentTime.Location())

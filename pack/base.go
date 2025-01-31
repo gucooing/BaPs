@@ -3,6 +3,7 @@ package pack
 import (
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
+	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
 	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
@@ -111,6 +112,26 @@ func ContentSweepRequest(s *enter.Session, request, response mx.Message) {
 	switch req.Content {
 	case proto.ContentType_WeekDungeon:
 		parcelResultList, clearParcels := game.ContentSweepWeekDungeon(req.StageId, req.Count)
+		// 扣钱
+		conf := gdconf.GetWeekDungeonExcelTable(req.StageId)
+		if conf != nil && (len(conf.StageEnterCostType) == len(conf.StageEnterCostId) &&
+			len(conf.StageEnterCostId) == len(conf.StageEnterCostAmount)) {
+			for index, rewardType := range conf.StageEnterCostType {
+				parcelType := proto.ParcelType(proto.ParcelType_value[rewardType])
+				parcelResultList = append(parcelResultList, &game.ParcelResult{
+					ParcelType: parcelType,
+					ParcelId:   conf.StageEnterCostId[index],
+					Amount:     -conf.StageEnterCostAmount[index] * req.Count,
+				})
+			}
+		}
+		rsp.ParcelResult = game.ParcelResultDB(s, parcelResultList)
+		rsp.ClearParcels = clearParcels
+	case proto.ContentType_SchoolDungeon:
+		parcelResultList, clearParcels := game.ContentSweepSchoolDungeon(req.StageId, req.Count)
+		// 扣钱
+		parcelResultList = append(parcelResultList,
+			game.GetSchoolDungeonCost(true, req.Count)...)
 		rsp.ParcelResult = game.ParcelResultDB(s, parcelResultList)
 		rsp.ClearParcels = clearParcels
 	default:
