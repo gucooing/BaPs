@@ -123,7 +123,7 @@ var DefaultCurrencyNum = map[int32]int64{
 	proto.CurrencyTypes_ActionPoint:              24,    // 体力
 	proto.CurrencyTypes_AcademyTicket:            3,     // 课程表
 	proto.CurrencyTypes_ArenaTicket:              5,
-	proto.CurrencyTypes_RaidTicket:               3,
+	proto.CurrencyTypes_RaidTicket:               6,
 	proto.CurrencyTypes_WeekDungeonChaserATicket: 0,
 	proto.CurrencyTypes_WeekDungeonChaserBTicket: 0,
 	proto.CurrencyTypes_WeekDungeonChaserCTicket: 0,
@@ -238,13 +238,14 @@ func GetAccountCurrencyDB(s *enter.Session) *proto.AccountCurrencyDB {
 	for id, db := range GetCurrencyList(s) {
 		// 特殊物品刷新查询
 		if (id == proto.CurrencyTypes_ChaserTotalTicket ||
-			id == proto.CurrencyTypes_SchoolDungeonTotalTicket) &&
-			!time.Unix(db.UpdateTime, 0).After(alg.GetDay4()) {
+			id == proto.CurrencyTypes_SchoolDungeonTotalTicket) ||
+			id == proto.CurrencyTypes_RaidTicket &&
+				!time.Unix(db.UpdateTime, 0).After(alg.GetTimeHour4()) {
 			db.CurrencyNum = alg.MaxInt64(db.CurrencyNum, 6)
 			db.UpdateTime = time.Now().Unix()
 		}
 		if id == proto.CurrencyTypes_AcademyTicket &&
-			!time.Unix(db.UpdateTime, 0).After(alg.GetDay4()) {
+			!time.Unix(db.UpdateTime, 0).After(alg.GetTimeHour4()) {
 			db.CurrencyNum = alg.MaxInt64(db.CurrencyNum, GetMaxAcademyTicket(s))
 			db.UpdateTime = time.Now().Unix()
 		}
