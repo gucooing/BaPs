@@ -19,6 +19,9 @@ type EnterSet struct {
 	mailSync       sync.RWMutex
 	FriendMap      map[int64]*AccountFriend // 全部玩家的好友关系
 	friendSync     sync.RWMutex
+	YostarClan     map[int64]*YostarClan // 全部缓存社团
+	YostarClanHash map[string]int64
+	ycSync         sync.RWMutex
 }
 
 func InitEnterSet() {
@@ -33,6 +36,7 @@ func getEnterSet() *EnterSet {
 			ticketSync:  sync.RWMutex{},
 			mailSync:    sync.RWMutex{},
 			friendSync:  sync.RWMutex{},
+			ycSync:      sync.RWMutex{},
 		}
 		go es.Check()
 	}
@@ -50,6 +54,7 @@ func (e *EnterSet) Check() {
 			e.checkMail()
 		case <-friendTicker.C:
 			e.checkAccountFriend()
+			e.checkYostarClan()
 			friendTicker.Reset(alg.GetEveryDay4())
 		}
 	}

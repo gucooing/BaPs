@@ -72,9 +72,7 @@ func FriendSearch(s *enter.Session, request, response mx.Message) {
 	// 搜索玩家
 	if uid := alg.S2I64(req.FriendCode); uid != 0 && uid != s.AccountServerId {
 		friendS := enter.GetSessionByUid(uid)
-		friendS.GoroutinesSync.Lock()
 		rsp.SearchResult = append(rsp.SearchResult, game.GetFriendDB(friendS))
-		friendS.GoroutinesSync.Unlock()
 		return
 	}
 
@@ -100,8 +98,6 @@ func FriendGetFriendDetailedInfo(s *enter.Session, request, response mx.Message)
 	if friendS == nil {
 		return
 	}
-	friendS.GoroutinesSync.Lock()
-	defer friendS.GoroutinesSync.Unlock()
 	rsp.AttachmentDB = game.GetAccountAttachmentDB(friendS)
 	rsp.DetailedAccountInfoDB = game.GetDetailedAccountInfoDB(friendS)
 }
@@ -130,10 +126,8 @@ func FriendSendFriendRequest(s *enter.Session, request, response mx.Message) {
 	if friendS == nil {
 		return
 	}
-	friendS.GoroutinesSync.Lock()
 	targetFriendBin := game.GetFriendBin(friendS)
 	if targetFriendBin == nil {
-		friendS.GoroutinesSync.Unlock()
 		logger.Warn("[UID:%v]好友信息拉取失败,请检查数据库连接情况", req.TargetAccountId)
 		return
 	}
@@ -144,7 +138,6 @@ func FriendSendFriendRequest(s *enter.Session, request, response mx.Message) {
 		targetFriendBin.AutoAcceptFriendRequest {
 		game.AddFriendByUid(friendS, s.AccountServerId)
 		game.AddFriendByUid(s, req.TargetAccountId)
-		friendS.GoroutinesSync.Unlock()
 		return
 	}
 	// 不是则添加到待录取列表中
@@ -156,7 +149,6 @@ func FriendSendFriendRequest(s *enter.Session, request, response mx.Message) {
 		targetFriendBin.ReceivedList = make(map[int64]bool)
 	}
 	targetFriendBin.ReceivedList[s.AccountServerId] = true
-	friendS.GoroutinesSync.Unlock()
 }
 
 func FriendAcceptFriendRequest(s *enter.Session, request, response mx.Message) {
@@ -181,10 +173,8 @@ func FriendAcceptFriendRequest(s *enter.Session, request, response mx.Message) {
 	if friendS == nil {
 		return
 	}
-	friendS.GoroutinesSync.Lock()
 	targetFriendBin := game.GetFriendBin(friendS)
 	if targetFriendBin == nil {
-		friendS.GoroutinesSync.Unlock()
 		logger.Warn("[UID:%v]好友信息拉取失败,请检查数据库连接情况", req.TargetAccountId)
 		return
 	}
@@ -192,7 +182,6 @@ func FriendAcceptFriendRequest(s *enter.Session, request, response mx.Message) {
 	defer targetFriendBin.SyncAf.Unlock()
 	game.AddFriendByUid(friendS, s.AccountServerId)
 	game.AddFriendByUid(s, req.TargetAccountId)
-	friendS.GoroutinesSync.Unlock()
 }
 
 func FriendDeclineFriendRequest(s *enter.Session, request, response mx.Message) {
@@ -216,10 +205,8 @@ func FriendDeclineFriendRequest(s *enter.Session, request, response mx.Message) 
 	if friendS == nil {
 		return
 	}
-	friendS.GoroutinesSync.Lock()
 	targetFriendBin := game.GetFriendBin(friendS)
 	if targetFriendBin == nil {
-		friendS.GoroutinesSync.Unlock()
 		logger.Warn("[UID:%v]好友信息拉取失败,请检查数据库连接情况", req.TargetAccountId)
 		return
 	}
@@ -234,7 +221,6 @@ func FriendDeclineFriendRequest(s *enter.Session, request, response mx.Message) 
 		targetFriendBin.ReceivedList = make(map[int64]bool)
 	}
 	delete(targetFriendBin.ReceivedList, s.AccountServerId)
-	friendS.GoroutinesSync.Unlock()
 }
 
 func FriendRemove(s *enter.Session, request, response mx.Message) {
@@ -258,10 +244,8 @@ func FriendRemove(s *enter.Session, request, response mx.Message) {
 	if friendS == nil {
 		return
 	}
-	friendS.GoroutinesSync.Lock()
 	targetFriendBin := game.GetFriendBin(friendS)
 	if targetFriendBin == nil {
-		friendS.GoroutinesSync.Unlock()
 		logger.Warn("[UID:%v]好友信息拉取失败,请检查数据库连接情况", req.TargetAccountId)
 		return
 	}
@@ -269,5 +253,4 @@ func FriendRemove(s *enter.Session, request, response mx.Message) {
 	defer targetFriendBin.SyncAf.Unlock()
 	game.RemoveFriendByUid(s, req.TargetAccountId)
 	game.RemoveFriendByUid(friendS, s.AccountServerId)
-	friendS.GoroutinesSync.Unlock()
 }

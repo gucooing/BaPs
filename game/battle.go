@@ -84,3 +84,15 @@ func GetParcelInfo(id, amount int64, v proto.ParcelType) *proto.ParcelInfo {
 		},
 	}
 }
+
+func GetClanAssistSlotDBs(s *enter.Session) []*proto.ClanAssistSlotDB {
+	list := make([]*proto.ClanAssistSlotDB, 0)
+
+	return list
+}
+
+func GetAssistCharacterDBs(s *enter.Session) []*proto.AssistCharacterDB {
+	list := make([]*proto.AssistCharacterDB, 0)
+
+	return list
+}

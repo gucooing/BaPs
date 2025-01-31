@@ -145,14 +145,14 @@ func GetFriendIdCardDB(s *enter.Session) *proto.FriendIdCardDB {
 		SearchPermission:            GetSearchPermission(s),
 		ShowAccountLevel:            GetShowAccountLevel(s),
 		ShowArenaRanking:            GetShowArenaRanking(s),
-		ArenaRanking:                1,
+		ArenaRanking:                0,
 		ShowEliminateRaidRanking:    GetShowEliminateRaidRanking(s),
-		EliminateRaidRanking:        2, // 前大决战排名
-		EliminateRaidTier:           3,
+		EliminateRaidRanking:        0, // 前大决战排名
+		EliminateRaidTier:           0,
 		ShowFriendCode:              GetShowFriendCode(s),
 		ShowRaidRanking:             GetShowRaidRanking(s),
-		RaidRanking:                 4, // 前总力战排名
-		RaidTier:                    5,
+		RaidRanking:                 0, // 前总力战排名
+		RaidTier:                    0,
 		RepresentCharacterCostumeId: 0,
 	}
 
@@ -171,16 +171,16 @@ func GetDetailedAccountInfoDB(s *enter.Session) *proto.DetailedAccountInfoDB {
 		FriendCount:                    GetFriendNum(s),
 		FriendCode:                     strconv.FormatInt(s.AccountServerId, 10),
 		RepresentCharacterUniqueId:     GetRepresentCharacterUniqueId(s),
-		ClanName:                       "",
+		ClanName:                       GetClanName(s),
 		CharacterCount:                 GetCharacterCount(s), // 学生数量
-		LastNormalCampaignClearStageId: 0,
-		LastHardCampaignClearStageId:   0,
-		ArenaRanking:                   1,
-		RaidRanking:                    4,
-		RaidTier:                       3,
-		EliminateRaidRanking:           2,
-		EliminateRaidTier:              3,
-		AssistCharacterDBs:             make([]*proto.AssistCharacterDB, 0),
+		AssistCharacterDBs:             GetAssistCharacterDBs(s),
+		LastNormalCampaignClearStageId: 1011101,
+		LastHardCampaignClearStageId:   1012101,
+		ArenaRanking:                   0,
+		RaidRanking:                    0,
+		RaidTier:                       0,
+		EliminateRaidRanking:           0,
+		EliminateRaidTier:              0,
 	}
 	return info
 }

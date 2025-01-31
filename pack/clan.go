@@ -2,6 +2,9 @@ package pack
 
 import (
 	"github.com/gucooing/BaPs/common/enter"
+	"github.com/gucooing/BaPs/game"
+	"github.com/gucooing/BaPs/pkg/alg"
+	"github.com/gucooing/BaPs/pkg/logger"
 	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
@@ -9,11 +12,259 @@ import (
 func ClanLogin(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.ClanLoginResponse)
 
-	rsp.AccountClanDB = nil                        // 社团简介
-	rsp.AccountClanMemberDB = &proto.ClanMemberDB{ // 本人信息
-		AccountId: s.AccountServerId,
-	}
-	rsp.ClanAssistSlotDBs = make([]*proto.ClanAssistSlotDB, 0) // 援助信息
+	rsp.AccountClanDB = game.GetClanDB(enter.GetYostarClanByServerId(game.GetClanServerId(s))) // 社团简介
+	rsp.AccountClanMemberDB = game.GetClanMemberDB(s)                                          // 本人信息
+	rsp.ClanAssistSlotDBs = make([]*proto.ClanAssistSlotDB, 0)                                 // 援助信息
 }
 
 func ClanCheck(s *enter.Session, request, response mx.Message) {}
+
+func ClanLobby(s *enter.Session, request, response mx.Message) {
+	rsp := response.(*proto.ClanLobbyResponse)
+
+	game.SetLastLoginTime(s)
+
+	clanInfo := enter.GetYostarClanByServerId(game.GetClanServerId(s))
+	rsp.IrcConfig = game.GetIrcServerConfig(s)
+	rsp.AccountClanMemberDB = game.GetClanMemberDB(s) // 本人信息
+	rsp.AccountClanDB = game.GetClanDB(clanInfo)
+	rsp.ClanMemberDBs = game.GetClanMemberDBs(clanInfo)
+	rsp.DefaultExposedClanDBs = game.GetDefaultExposedClanDBs(s)
+}
+
+func ClanSearch(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.ClanSearchRequest)
+	rsp := response.(*proto.ClanSearchResponse)
+
+	rsp.ClanDBs = make([]*proto.ClanDB, 0)
+	if clanInfo := enter.GetYostarClanByClanName(req.SearchString); clanInfo != nil {
+		rsp.ClanDBs = append(rsp.ClanDBs, game.GetClanDB(clanInfo))
+	}
+	if clanInfo := enter.GetYostarClanByServerId(alg.S2I64(req.ClanUniqueCode)); clanInfo != nil {
+		rsp.ClanDBs = append(rsp.ClanDBs, game.GetClanDB(clanInfo))
+	}
+	if len(rsp.ClanDBs) == 0 {
+		rsp.ClanDBs = game.GetDefaultExposedClanDBs(s)
+	}
+}
+
+func ClanCreate(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.ClanCreateRequest)
+	rsp := response.(*proto.ClanCreateResponse)
+
+	defer func() {
+		rsp.AccountCurrencyDB = game.GetAccountCurrencyDB(s)
+		rsp.ClanMemberDB = game.GetClanMemberDB(s)
+		rsp.ClanDB = game.GetClanDB(enter.GetYostarClanByServerId(game.GetClanServerId(s)))
+	}()
+
+	req.ErrorCode = game.NewClan(s, req.ClanNickName, req.ClanJoinOption)
+	if req.ErrorCode == 0 {
+		game.UpCurrency(s, proto.CurrencyTypes_GemBonus, -100)
+	}
+}
+
+func ClanMemberList(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.ClanMemberListRequest)
+	rsp := response.(*proto.ClanMemberListResponse)
+
+	clanInfo := enter.GetYostarClanByServerId(req.ClanDBId)
+	if clanInfo == nil {
+		rsp.ErrorCode = 0
+		return
+	}
+
+	rsp.ClanDB = game.GetClanDB(clanInfo)
+	rsp.ClanMemberDBs = game.GetClanMemberDBs(clanInfo)
+}
+
+func ClanJoin(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.ClanJoinRequest)
+	rsp := response.(*proto.ClanJoinResponse)
+
+	defer func() {
+		rsp.IrcConfig = game.GetIrcServerConfig(s)
+		rsp.ClanMemberDB = game.GetClanMemberDB(s)
+	}()
+
+	if enter.GetYostarClanByServerId(game.GetClanServerId(s)) != nil {
+		// 已有社团
+		return
+	}
+	clanInfo := enter.GetYostarClanByServerId(req.ClanDBId)
+	if clanInfo == nil {
+		return
+	}
+	rsp.ClanDB = game.GetClanDB(clanInfo)
+	if clanInfo.GetMemberCount() >= enter.ClanMaxMemberCount {
+		// 满人了
+		return
+	}
+	if clanInfo.JoinOption == proto.ClanJoinOption_Free {
+		// 自动加入
+		clanInfo.AddAccount(s.AccountServerId, proto.ClanSocialGrade_Member)
+		game.SetClanServerId(s, clanInfo.ServerId)
+		rsp.ClanMemberDB = game.GetClanMemberDB(s) // 本人信息
+		return
+	}
+	clanInfo.AddApplicantAccount(s.AccountServerId)
+}
+
+func ClanAutoJoin(s *enter.Session, request, response mx.Message) {
+	rsp := response.(*proto.ClanJoinResponse)
+
+	defer func() {
+		clanInfo := enter.GetYostarClanByServerId(game.GetClanServerId(s))
+		rsp.IrcConfig = game.GetIrcServerConfig(s)
+		rsp.ClanMemberDB = game.GetClanMemberDB(s) // 本人信息
+		rsp.ClanDB = game.GetClanDB(clanInfo)
+	}()
+	// 自动加入逻辑实现
+	for _, clanInfo := range enter.GetAllYostarClanList() {
+		if clanInfo.JoinOption == proto.ClanJoinOption_Free &&
+			clanInfo.GetMemberCount() < enter.ClanMaxMemberCount {
+			clanInfo.AddAccount(s.AccountServerId, proto.ClanSocialGrade_Member)
+			break
+		}
+	}
+}
+
+func ClanSetting(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.ClanSettingRequest)
+	rsp := response.(*proto.ClanSettingResponse)
+
+	clanInfo := enter.GetYostarClanByServerId(game.GetClanServerId(s))
+	defer func() {
+		rsp.ClanDB = game.GetClanDB(clanInfo)
+	}()
+
+	clanInfo.SetNotice(req.ChangedNotice)
+	clanInfo.SetJoinOption(int32(req.ClanJoinOption))
+	// name
+	if clanInfo.ClanName != req.ChangedClanName {
+		oldName := clanInfo.ClanName
+		clanInfo.ClanName = req.ChangedClanName
+		if clanInfo.UpDate() != nil {
+			logger.Debug("社团名称修改失败,应该是有重复的名称,ClanName:%s", clanInfo.ClanName)
+			clanInfo.ClanName = oldName
+		}
+	}
+}
+
+func ClanApplicant(s *enter.Session, request, response mx.Message) {
+	// req := request.(*proto.ClanApplicantRequest)
+	rsp := response.(*proto.ClanApplicantResponse)
+
+	rsp.ClanMemberDBs = make([]*proto.ClanMemberDB, 0)
+	clanInfo := enter.GetYostarClanByServerId(game.GetClanServerId(s))
+	for _, ca := range clanInfo.GetAllApplicantAccount() {
+		ps := enter.GetSessionByUid(ca.Uid)
+		rsp.ClanMemberDBs = append(rsp.ClanMemberDBs, &proto.ClanMemberDB{
+			AccountId:                   ps.AccountServerId,
+			AccountLevel:                int64(game.GetAccountLevel(ps)),
+			AccountNickName:             game.GetNickname(ps),
+			AttachmentDB:                game.GetAccountAttachmentDB(ps),
+			CafeComfortValue:            9000,
+			RepresentCharacterUniqueId:  game.GetRepresentCharacterUniqueId(ps),
+			GameLoginDate:               game.GetLastConnectTime(ps),
+			ClanDBId:                    clanInfo.ServerId,
+			RepresentCharacterCostumeId: 0,
+			ClanSocialGrade:             proto.ClanSocialGrade_Applicant,
+			AppliedDate:                 mx.Unix(ca.ApplicantTime, 0),
+		})
+	}
+}
+
+func ClanMember(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.ClanMemberRequest)
+	rsp := response.(*proto.ClanMemberResponse)
+
+	clanInfo := enter.GetYostarClanByServerId(req.ClanDBId)
+	rsp.ClanDB = game.GetClanDB(clanInfo)
+
+	ps := enter.GetSessionByUid(req.MemberAccountId)
+	rsp.ClanMemberDB = game.GetClanMemberDB(ps)
+	rsp.DetailedAccountInfoDB = game.GetDetailedAccountInfoDB(ps)
+}
+
+func ClanQuit(s *enter.Session, request, response mx.Message) {
+	clanInfo := enter.GetYostarClanByServerId(game.GetClanServerId(s))
+	if clanInfo == nil {
+		return
+	}
+	clanInfo.RemoveAccount(s.AccountServerId)
+	game.SetClanServerId(s, 0)
+}
+
+func ClanKick(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.ClanKickRequest)
+
+	clanInfo := enter.GetYostarClanByServerId(game.GetClanServerId(s))
+	if clanInfo == nil {
+		return
+	}
+	myAc := clanInfo.GetClanAccount(s.AccountServerId)
+	if myAc == nil ||
+		(myAc.SocialGrade != proto.ClanSocialGrade_President &&
+			myAc.SocialGrade != proto.ClanSocialGrade_Manager) {
+		return
+	}
+	ps := enter.GetSessionByUid(req.MemberAccountId)
+	clanInfo.RemoveAccount(req.MemberAccountId)
+	game.SetClanServerId(ps, 0)
+}
+
+func ClanConfer(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.ClanConferRequest)
+	rsp := response.(*proto.ClanConferResponse)
+
+	clanInfo := enter.GetYostarClanByServerId(game.GetClanServerId(s))
+	defer func() {
+		rsp.ClanDB = game.GetClanDB(clanInfo)
+		rsp.ClanMemberDB = game.GetClanMemberDB(s)
+	}()
+	myAc := clanInfo.GetClanAccount(s.AccountServerId)
+	fs := enter.GetSessionByUid(req.MemberAccountId)
+	if myAc == nil || fs == nil ||
+		myAc.SocialGrade > int32(req.ConferingGrade) {
+		return
+	}
+	rsp.AccountClanMemberDB = game.GetClanMemberDB(fs)
+	if clanInfo.GetClanAccount(req.MemberAccountId) == nil {
+		return
+	}
+	clanInfo.SetPresident(req.MemberAccountId)
+}
+
+func ClanPermit(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.ClanPermitRequest)
+	rsp := response.(*proto.ClanPermitResponse)
+
+	clanInfo := enter.GetYostarClanByServerId(game.GetClanServerId(s))
+	defer func() {
+		rsp.ClanDB = game.GetClanDB(clanInfo)
+	}()
+	myAc := clanInfo.GetClanAccount(s.AccountServerId)
+	if myAc == nil || myAc.SocialGrade > proto.ClanSocialGrade_Manager ||
+		myAc.SocialGrade == proto.ClanSocialGrade_None {
+		return
+	}
+	aacList := clanInfo.GetAllApplicantAccount()
+	fs := enter.GetSessionByUid(req.ApplicantAccountId)
+	if fs == nil || aacList[req.ApplicantAccountId] == nil ||
+		enter.GetYostarClanByServerId(game.GetClanServerId(fs)) != nil {
+		return
+	}
+	clanInfo.RemoveApplicantAccount(req.ApplicantAccountId)
+	if req.IsPerMit {
+		clanInfo.AddAccount(req.ApplicantAccountId, proto.ClanSocialGrade_Member)
+		game.SetClanServerId(fs, clanInfo.ServerId)
+	}
+	rsp.ClanMemberDB = game.GetClanMemberDB(fs)
+}
+
+func ClanMyAssistList(s *enter.Session, request, response mx.Message) {
+	rsp := response.(*proto.ClanMyAssistListResponse)
+
+	rsp.ClanAssistSlotDBs = game.GetClanAssistSlotDBs(s)
+}

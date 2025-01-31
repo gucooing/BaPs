@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"errors"
+	"log"
 	"os"
 )
 
@@ -15,6 +16,7 @@ type Config struct {
 	HttpNet          *HttpNet `json:"HttpNet"`
 	GateWay          *GateWay `json:"GateWay"`
 	DB               *DB      `json:"DB"`
+	Irc              *Irc     `json:"Irc"`
 }
 
 type GateWay struct {
@@ -22,8 +24,6 @@ type GateWay struct {
 	MaxCachePlayerTime int             `json:"MaxCachePlayerTime"`
 	BlackCmd           map[string]bool `json:"BlackCmd"`
 	IsLogMsgPlayer     bool            `json:"IsLogMsgPlayer"`
-	IsToken            bool            `json:"IsToken"`
-	GetTokenUrl        string          `json:"GetTokenUrl"`
 }
 
 type HttpNet struct {
@@ -41,26 +41,36 @@ type DB struct {
 	Dsn    string `json:"dsn"`
 }
 
+type Irc struct {
+	HostAddress string `json:"HostAddress"`
+	Port        int32  `json:"Port"`
+	Password    string `json:"Password"`
+}
+
 var CONF *Config = nil
 
 func SetDefaultConfig() {
+	log.Printf("config不存在,使用默认配置\n")
 	CONF = DefaultConfig
 }
 
 func GetConfig() *Config {
+	if CONF == nil {
+		SetDefaultConfig()
+	}
 	return CONF
 }
 
 func GetGucooingApiKey() string {
-	return CONF.GucooingApiKey
+	return GetConfig().GucooingApiKey
 }
 
 func GetAutoRegistration() bool {
-	return CONF.AutoRegistration
+	return GetConfig().AutoRegistration
 }
 
 func GetHttpNet() *HttpNet {
-	return CONF.HttpNet
+	return GetConfig().HttpNet
 }
 
 func GetGateWay() *GateWay {
@@ -68,11 +78,15 @@ func GetGateWay() *GateWay {
 }
 
 func GetIsLogMsgPlayer() bool {
-	return CONF.GateWay.IsLogMsgPlayer
+	return GetConfig().GateWay.IsLogMsgPlayer
 }
 
 func GetBlackCmd() map[string]bool {
-	return CONF.GateWay.BlackCmd
+	return GetConfig().GateWay.BlackCmd
+}
+
+func GetIrc() *Irc {
+	return GetConfig().Irc
 }
 
 var FileNotExist = errors.New("config file not found")
@@ -115,11 +129,14 @@ var DefaultConfig = &Config{
 		MaxCachePlayerTime: 720,
 		BlackCmd:           make(map[string]bool),
 		IsLogMsgPlayer:     false,
-		IsToken:            true,
-		GetTokenUrl:        "http://127.0.0.1:8080/gucooing/api/getToken/ba",
 	},
 	DB: &DB{
 		DbType: "sqlite",
 		Dsn:    "BaPs.db",
+	},
+	Irc: &Irc{
+		HostAddress: "127.0.0.1",
+		Port:        16666,
+		Password:    "mx123",
 	},
 }

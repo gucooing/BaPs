@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/gucooing/BaPs/common/check"
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/pkg/logger"
@@ -58,6 +59,9 @@ func AccountNickname(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.AccountNicknameRequest)
 	rsp := response.(*proto.AccountNicknameResponse)
 
+	if !check.CheckName(req.Nickname) {
+		logger.Warn("玩家昵称检查不通过,但未作拦截处理,仅通知")
+	}
 	game.SetAccountNickname(s, req.Nickname)
 	rsp.AccountDB = game.GetAccountDB(s)
 }

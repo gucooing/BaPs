@@ -178,6 +178,10 @@ func UpAllDate() {
 	for _, info := range GetAllAccountFriend() {
 		info.upDate()
 	}
+	// 保存社团数据
+	for _, info := range GetAllYostarClan() {
+		info.UpDate()
+	}
 }
 
 // UpDate 保存玩家数据

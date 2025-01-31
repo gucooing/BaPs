@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -132,4 +133,30 @@ func Run(appNet *config.HttpNet, server *http.Server) error {
 		return server.ListenAndServeTLS(appNet.CertFile, appNet.KeyFile)
 	}
 	return server.ListenAndServe()
+}
+
+func TestIrc() {
+	tCPListener, err := net.Listen("tcp", "0.0.0.0:16667")
+	if err != nil {
+		return
+	}
+	defer tCPListener.Close()
+	for {
+		conn, err := tCPListener.Accept()
+		if err != nil {
+			continue
+		}
+		go func() {
+			defer conn.Close()
+			for {
+				buf := make([]byte, 1024)
+				n, err := conn.Read(buf)
+				if err != nil {
+					return
+				}
+				bin := buf[:n]
+				logger.Info("irc:c->s:%s", string(bin))
+			}
+		}()
+	}
 }

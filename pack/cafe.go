@@ -229,7 +229,8 @@ func CafeTravel(s *enter.Session, request, response mx.Message) {
 	}
 	bin.SyncAf.Lock()
 	defer bin.SyncAf.Unlock()
-	if _, ok := bin.FriendList[req.TargetAccountId]; !ok {
+	if _, ok := bin.FriendList[req.TargetAccountId]; !ok &&
+		enter.GetYostarClanByServerId(game.GetServerId(s)).GetClanAccount(req.TargetAccountId) == nil {
 		return
 	}
 

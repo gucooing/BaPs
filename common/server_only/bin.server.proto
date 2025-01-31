@@ -42,6 +42,7 @@ message BasePlayer { // 此处仅留必要数据
   bool show_raid_ranking = 16;
   bool show_arena_ranking = 17;
   bool show_eliminate_raid_ranking = 18;
+  int64 clan_id = 19; // 加入的社团id
 }
 
 // 课程表信息

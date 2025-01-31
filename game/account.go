@@ -7,6 +7,7 @@ import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -272,6 +273,14 @@ func AddAccountExp(s *enter.Session, num int64) {
 	bin.Level = newLevel
 }
 
+func GetLastConnectTime(s *enter.Session) mx.MxTime {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return mx.MxTime{}
+	}
+	return mx.Unix(bin.GetLastConnectTime(), 0)
+}
+
 func GetAccountDays(s *enter.Session) int32 {
 	bin := GetBaseBin(s)
 	if bin == nil {
@@ -291,7 +300,7 @@ func GetAccountDB(s *enter.Session) *proto.AccountDB {
 		Nickname:                   GetNickname(s),
 		Level:                      GetAccountLevel(s),
 		Exp:                        GetAccountExp(s),
-		LastConnectTime:            time.Unix(baseBin.GetLastConnectTime(), 0),
+		LastConnectTime:            GetLastConnectTime(s),
 		CreateDate:                 time.Unix(baseBin.GetCreateDate(), 0),
 		VIPLevel:                   10,
 		State:                      s.AccountState,
