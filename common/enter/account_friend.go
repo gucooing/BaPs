@@ -102,3 +102,16 @@ func (x *AccountFriend) upDate() bool {
 	}
 	return true
 }
+
+func (x *AccountFriend) GetFriendList() map[int64]bool {
+	if x == nil {
+		return nil
+	}
+	x.SyncAf.RLock()
+	defer x.SyncAf.RUnlock()
+	friendList := make(map[int64]bool)
+	for k, v := range x.FriendList {
+		friendList[k] = v
+	}
+	return friendList
+}

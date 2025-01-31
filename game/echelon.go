@@ -354,6 +354,17 @@ func GetAssistList(s *enter.Session) map[int32]*sro.AssistList {
 	return bin.AssistList
 }
 
+func GetAssistListByEchelonType(s *enter.Session, echelonType proto.EchelonType) *sro.AssistList {
+	bin := GetEchelonBin(s)
+	if bin == nil {
+		return nil
+	}
+	if bin.AssistList == nil {
+		bin.AssistList = make(map[int32]*sro.AssistList)
+	}
+	return bin.AssistList[int32(echelonType)]
+}
+
 func GetClanAssistSlotDBs(s *enter.Session) []*proto.ClanAssistSlotDB {
 	list := make([]*proto.ClanAssistSlotDB, 0)
 	for _, assist := range GetAssistList(s) {
@@ -395,48 +406,61 @@ func GetAssistCharacterDBs(s *enter.Session, assistRelation proto.AssistRelation
 			if assist.AssistInfoList == nil {
 				assist.AssistInfoList = make(map[int64]*sro.AssistInfo)
 			}
-			characterInfo := GetCharacterInfo(s, info.CharacterId)
-			if characterInfo == nil {
+			assistCharacterDB := GetAssistCharacterDB(s, info, assistRelation)
+			if assistCharacterDB == nil {
 				delete(assist.AssistInfoList, slot)
 				continue
 			}
-			assistCharacterDB := &proto.AssistCharacterDB{
-				EchelonType:             proto.EchelonType(info.EchelonType),
-				AccountId:               s.AccountServerId,
-				AssistRelation:          assistRelation,
-				AssistCharacterServerId: characterInfo.ServerId,
-				EquipmentDBs:            make([]*proto.EquipmentDB, 0),
-				ExSkillLevel:            characterInfo.ExSkillLevel,
-				Exp:                     characterInfo.Exp,
-				ExtraPassiveSkillLevel:  characterInfo.ExtraPassiveSkillLevel,
-				FavorRank:               characterInfo.FavorRank,
-				FavorExp:                characterInfo.FavorExp,
-				GearDB:                  GetGearDB(s, characterInfo.GearServerId),
-				LeaderSkillLevel:        characterInfo.LeaderSkillLevel,
-				Level:                   characterInfo.Level,
-				NickName:                GetNickname(s),
-				PassiveSkillLevel:       characterInfo.PassiveSkillLevel,
-				PotentialStats:          characterInfo.PotentialStats,
-				PublicSkillLevel:        characterInfo.CommonSkillLevel,
-				SlotNumber:              int32(info.SlotNumber),
-				StarGrade:               characterInfo.StarGrade,
-				Type:                    proto.ParcelType_Character,
-				UniqueId:                characterInfo.CharacterId,
-				WeaponDB:                GetWeaponDB(s, characterInfo.CharacterId),
-
-				CostumeId:        0,
-				CostumeDB:        nil,
-				IsMulligan:       false,
-				IsTSAInteraction: false,
-				CombatStyleIndex: 0,
-			}
-			for _, serverId := range characterInfo.EquipmentList {
-				assistCharacterDB.EquipmentDBs = append(assistCharacterDB.EquipmentDBs,
-					GetEquipmentDB(s, serverId))
-			}
-			list = append(list, assistCharacterDB)
+			list = append(list)
 		}
 	}
 
 	return list
+}
+
+func GetAssistCharacterDB(s *enter.Session, info *sro.AssistInfo, assistRelation proto.AssistRelation) *proto.AssistCharacterDB {
+	if info == nil {
+		return nil
+	}
+	characterInfo := GetCharacterInfo(s, info.CharacterId)
+	if characterInfo == nil {
+		return nil
+	}
+	assistCharacterDB := &proto.AssistCharacterDB{
+		EchelonType:             proto.EchelonType(info.EchelonType),
+		AccountId:               s.AccountServerId,
+		AssistRelation:          assistRelation,
+		AssistCharacterServerId: characterInfo.ServerId,
+		EquipmentDBs:            make([]*proto.EquipmentDB, 0),
+		ExSkillLevel:            characterInfo.ExSkillLevel,
+		Exp:                     characterInfo.Exp,
+		ExtraPassiveSkillLevel:  characterInfo.ExtraPassiveSkillLevel,
+		FavorRank:               characterInfo.FavorRank,
+		FavorExp:                characterInfo.FavorExp,
+		GearDB:                  GetGearDB(s, characterInfo.GearServerId),
+		LeaderSkillLevel:        characterInfo.LeaderSkillLevel,
+		Level:                   characterInfo.Level,
+		NickName:                GetNickname(s),
+		PassiveSkillLevel:       characterInfo.PassiveSkillLevel,
+		PotentialStats:          characterInfo.PotentialStats,
+		PublicSkillLevel:        characterInfo.CommonSkillLevel,
+		SlotNumber:              int32(info.SlotNumber),
+		StarGrade:               characterInfo.StarGrade,
+		Type:                    proto.ParcelType_Character,
+		UniqueId:                characterInfo.CharacterId,
+		WeaponDB:                GetWeaponDB(s, characterInfo.CharacterId),
+
+		CostumeId:        0,
+		CostumeDB:        nil,
+		IsMulligan:       false,
+		IsTSAInteraction: false,
+		CombatStyleIndex: 0,
+	}
+	for _, serverId := range characterInfo.EquipmentList {
+		if equipmentDB := GetEquipmentDB(s, serverId); equipmentDB != nil {
+			assistCharacterDB.EquipmentDBs = append(assistCharacterDB.EquipmentDBs,
+				equipmentDB)
+		}
+	}
+	return assistCharacterDB
 }

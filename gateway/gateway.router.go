@@ -126,23 +126,24 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Academy_GetInfo:        pack.AcademyGetInfo,        // 获取课程表信息
 		mx.Protocol_Academy_AttendSchedule: pack.AcademyAttendSchedule, // 上课
 		// 社团
-		mx.Protocol_Clan_Login:        pack.ClanLogin,        // 登录获取社团信息
-		mx.Protocol_Clan_Check:        pack.ClanCheck,        // 社团检查
-		mx.Protocol_Clan_Lobby:        pack.ClanLobby,        // 获取社团大厅信息
-		mx.Protocol_Clan_Search:       pack.ClanSearch,       // 搜索社团
-		mx.Protocol_Clan_Create:       pack.ClanCreate,       // 创建社团
-		mx.Protocol_Clan_MemberList:   pack.ClanMemberList,   // 查看社团详情
-		mx.Protocol_Clan_Join:         pack.ClanJoin,         // 申请加入社团
-		mx.Protocol_Clan_AutoJoin:     pack.ClanAutoJoin,     // 自动加入社团
-		mx.Protocol_Clan_Setting:      pack.ClanSetting,      // 更新社团设置
-		mx.Protocol_Clan_Applicant:    pack.ClanApplicant,    // 查询社团申请
-		mx.Protocol_Clan_Member:       pack.ClanMember,       // 查询成员详情
-		mx.Protocol_Clan_Quit:         pack.ClanQuit,         // 退出社团
-		mx.Protocol_Clan_Kick:         pack.ClanKick,         // 管理员删除成员
-		mx.Protocol_Clan_Confer:       pack.ClanConfer,       // 授予职位
-		mx.Protocol_Clan_Permit:       pack.ClanPermit,       // 同意加入社团
-		mx.Protocol_Clan_MyAssistList: pack.ClanMyAssistList, //  获取自己的援助角色
-		mx.Protocol_Clan_SetAssist:    pack.ClanSetAssist,    // 设置援助角色
+		mx.Protocol_Clan_Login:         pack.ClanLogin,         // 登录获取社团信息
+		mx.Protocol_Clan_Check:         pack.ClanCheck,         // 社团检查
+		mx.Protocol_Clan_Lobby:         pack.ClanLobby,         // 获取社团大厅信息
+		mx.Protocol_Clan_Search:        pack.ClanSearch,        // 搜索社团
+		mx.Protocol_Clan_Create:        pack.ClanCreate,        // 创建社团
+		mx.Protocol_Clan_MemberList:    pack.ClanMemberList,    // 查看社团详情
+		mx.Protocol_Clan_Join:          pack.ClanJoin,          // 申请加入社团
+		mx.Protocol_Clan_AutoJoin:      pack.ClanAutoJoin,      // 自动加入社团
+		mx.Protocol_Clan_Setting:       pack.ClanSetting,       // 更新社团设置
+		mx.Protocol_Clan_Applicant:     pack.ClanApplicant,     // 查询社团申请
+		mx.Protocol_Clan_Member:        pack.ClanMember,        // 查询成员详情
+		mx.Protocol_Clan_Quit:          pack.ClanQuit,          // 退出社团
+		mx.Protocol_Clan_Kick:          pack.ClanKick,          // 管理员删除成员
+		mx.Protocol_Clan_Confer:        pack.ClanConfer,        // 授予职位
+		mx.Protocol_Clan_Permit:        pack.ClanPermit,        // 同意加入社团
+		mx.Protocol_Clan_MyAssistList:  pack.ClanMyAssistList,  //  获取自己的援助角色
+		mx.Protocol_Clan_SetAssist:     pack.ClanSetAssist,     // 设置援助角色
+		mx.Protocol_Clan_AllAssistList: pack.ClanAllAssistList, // 获取全部援助角色
 		// 商店
 		mx.Protocol_Shop_List:                  pack.ShopList,                  // 获取商店信息
 		mx.Protocol_Shop_BuyRefreshMerchandise: pack.ShopBuyRefreshMerchandise, // 每日刷新商店购买
@@ -167,7 +168,8 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_SchoolDungeon_EnterBattle:  pack.SchoolDungeonEnterBattle,  // 开始战斗
 		mx.Protocol_SchoolDungeon_BattleResult: pack.SchoolDungeonBattleResult, // 战斗结算
 		// 总力战
-		mx.Protocol_Raid_Login: pack.RaidLogin, // 登录获取总力站信息
+		mx.Protocol_Raid_Login: pack.RaidLogin, // 登录获取总力战开放信息
+		mx.Protocol_Raid_Lobby: pack.RaidLobby, // 获取总力战详情
 	}
 }
 

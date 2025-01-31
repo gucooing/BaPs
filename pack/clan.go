@@ -328,3 +328,60 @@ func ClanSetAssist(s *enter.Session, request, response mx.Message) {
 		Amount:     rentCount,
 	})
 }
+
+func ClanAllAssistList(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.ClanAllAssistListRequest)
+	rsp := response.(*proto.ClanAllAssistListResponse)
+
+	rsp.AssistCharacterDBs = make([]*proto.AssistCharacterDB, 0)
+	rsp.AssistCharacterRentHistoryDBs = make([]*proto.ClanAssistRentHistoryDB, 0)
+	rsp.ClanDBId = game.GetClanServerId(s)
+
+	addAssistCharacter := func(fs *enter.Session, assistRelation proto.AssistRelation) {
+		assist := game.GetAssistListByEchelonType(fs, req.EchelonType)
+		for _, info := range assist.GetAssistInfoList() {
+			if info == nil {
+				continue
+			}
+			characterInfo := game.GetCharacterInfo(fs, info.CharacterId)
+			if characterInfo == nil {
+				continue
+			}
+			rsp.AssistCharacterDBs = append(rsp.AssistCharacterDBs,
+				game.GetAssistCharacterDB(fs, info, assistRelation))
+			rsp.AssistCharacterRentHistoryDBs = append(rsp.AssistCharacterRentHistoryDBs,
+				&proto.ClanAssistRentHistoryDB{
+					AssistCharacterAccountId: fs.AccountServerId,
+					AssistCharacterDBId:      characterInfo.ServerId,
+					RentDate:                 mx.Unix(info.DeployDate, 0),
+					AssistCharacterId:        characterInfo.CharacterId,
+				})
+		}
+	}
+	addUid := make(map[int64]bool, 0)
+	// 添加好友的
+	for uid, _ := range game.GetFriendBin(s).GetFriendList() {
+		if uid == s.AccountServerId || addUid[uid] {
+			continue
+		}
+		fs := enter.GetSessionByUid(uid)
+		if fs == nil {
+			continue
+		}
+		addAssistCharacter(fs, proto.AssistRelation_Friend)
+		addUid[uid] = true
+	}
+	// 添加社团
+	clanInfo := enter.GetYostarClanByServerId(game.GetClanServerId(s))
+	for uid, _ := range clanInfo.GetAllAccount() {
+		if uid == s.AccountServerId || addUid[uid] {
+			continue
+		}
+		fs := enter.GetSessionByUid(uid)
+		if fs == nil {
+			continue
+		}
+		addAssistCharacter(fs, proto.AssistRelation_Clan)
+		addUid[uid] = true
+	}
+}
