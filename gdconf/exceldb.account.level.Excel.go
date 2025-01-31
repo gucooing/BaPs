@@ -49,6 +49,9 @@ func UpAccountLevel(level int32, exp int64) (int32, int64) {
 		}
 		if exp >= conf.Exp {
 			exp -= conf.Exp
+			if conf.Exp == 0 {
+				exp = 0 // 特殊处理，避免客户端出现超升级动画的神奇现象
+			}
 		} else {
 			return newLevel, exp
 		}
