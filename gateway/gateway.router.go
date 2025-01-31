@@ -142,6 +142,7 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Clan_Confer:       pack.ClanConfer,       // 授予职位
 		mx.Protocol_Clan_Permit:       pack.ClanPermit,       // 同意加入社团
 		mx.Protocol_Clan_MyAssistList: pack.ClanMyAssistList, //  获取自己的援助角色
+		mx.Protocol_Clan_SetAssist:    pack.ClanSetAssist,    // 设置援助角色
 		// 商店
 		mx.Protocol_Shop_List:                  pack.ShopList,                  // 获取商店信息
 		mx.Protocol_Shop_BuyRefreshMerchandise: pack.ShopBuyRefreshMerchandise, // 每日刷新商店购买

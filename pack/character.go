@@ -25,7 +25,11 @@ func CharacterGearList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.CharacterGearListResponse)
 
 	rsp.GearDBs = make([]*proto.GearDB, 0)
-	for serverId, _ := range game.GetGearInfoList(s) {
+	for serverId, info := range game.GetGearInfoList(s) {
+		characterInfo := game.GetCharacterInfoByServerId(s, info.CharacterServerId)
+		if characterInfo != nil {
+			characterInfo.GearServerId = serverId
+		}
 		rsp.GearDBs = append(rsp.GearDBs, game.GetGearDB(s, serverId))
 	}
 }
@@ -277,6 +281,7 @@ func CharacterGearUnlock(s *enter.Session, request, response mx.Message) {
 		Exp:               0,
 		Tier:              conf.Tier,
 	}
+	characterInfo.GearServerId = sId
 
 	rsp.GearDB = game.GetGearDB(s, sId)
 }

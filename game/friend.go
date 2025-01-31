@@ -159,7 +159,8 @@ func GetFriendIdCardDB(s *enter.Session) *proto.FriendIdCardDB {
 	return info
 }
 
-func GetDetailedAccountInfoDB(s *enter.Session) *proto.DetailedAccountInfoDB {
+func GetDetailedAccountInfoDB(s *enter.Session,
+	assistRelation proto.AssistRelation) *proto.DetailedAccountInfoDB {
 	if s == nil {
 		return nil
 	}
@@ -173,7 +174,7 @@ func GetDetailedAccountInfoDB(s *enter.Session) *proto.DetailedAccountInfoDB {
 		RepresentCharacterUniqueId:     GetRepresentCharacterUniqueId(s),
 		ClanName:                       GetClanName(s),
 		CharacterCount:                 GetCharacterCount(s), // 学生数量
-		AssistCharacterDBs:             GetAssistCharacterDBs(s),
+		AssistCharacterDBs:             GetAssistCharacterDBs(s, assistRelation),
 		LastNormalCampaignClearStageId: 1011101,
 		LastHardCampaignClearStageId:   1012101,
 		ArenaRanking:                   0,

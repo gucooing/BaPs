@@ -1,7 +1,10 @@
 package pack
 
 import (
+	"time"
+
 	"github.com/gucooing/BaPs/common/enter"
+	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
@@ -184,7 +187,7 @@ func ClanMember(s *enter.Session, request, response mx.Message) {
 
 	ps := enter.GetSessionByUid(req.MemberAccountId)
 	rsp.ClanMemberDB = game.GetClanMemberDB(ps)
-	rsp.DetailedAccountInfoDB = game.GetDetailedAccountInfoDB(ps)
+	rsp.DetailedAccountInfoDB = game.GetDetailedAccountInfoDB(ps, proto.AssistRelation_Clan)
 }
 
 func ClanQuit(s *enter.Session, request, response mx.Message) {
@@ -267,4 +270,61 @@ func ClanMyAssistList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.ClanMyAssistListResponse)
 
 	rsp.ClanAssistSlotDBs = game.GetClanAssistSlotDBs(s)
+}
+
+func ClanSetAssist(s *enter.Session, request, response mx.Message) {
+	req := request.(*proto.ClanSetAssistRequest)
+	rsp := response.(*proto.ClanSetAssistResponse)
+
+	rewardInfo := &proto.ClanAssistRewardInfo{
+		CharacterDBId:            0,
+		DeployDate:               mx.MxTime{},
+		CumultativeRewardParcels: make([]*proto.ParcelInfo, 0),
+	}
+	rsp.RewardInfo = rewardInfo
+	parcelResultList := make([]*game.ParcelResult, 0)
+	defer func() {
+		rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
+	}()
+
+	bin := game.GetAssistList(s)
+	characterInfo := game.GetCharacterInfoByServerId(s, req.CharacterDBId)
+	if bin == nil || characterInfo == nil {
+		return
+	}
+	if bin[int32(req.EchelonType)] == nil {
+		bin[int32(req.EchelonType)] = &sro.AssistList{
+			AssistInfoList: make(map[int64]*sro.AssistInfo),
+		}
+	}
+	assistList := bin[int32(req.EchelonType)]
+	if assistList.AssistInfoList == nil {
+		assistList.AssistInfoList = make(map[int64]*sro.AssistInfo)
+	}
+	info := &sro.AssistInfo{
+		EchelonType:    int32(req.EchelonType),
+		SlotNumber:     int64(req.SlotNumber),
+		CharacterId:    characterInfo.CharacterId,
+		DeployDate:     time.Now().Unix(),
+		TotalRentCount: 0,
+	}
+	old := assistList.AssistInfoList[int64(req.SlotNumber)]
+	assistList.AssistInfoList[int64(req.SlotNumber)] = info
+	rsp.ClanAssistSlotDB = game.GetClanAssistSlotDB(s, info)
+	if old == nil {
+		return
+	}
+	rewardInfo.CharacterDBId = game.GetCharacterInfo(s, old.CharacterId).GetServerId()
+	rewardInfo.DeployDate = mx.Unix(old.DeployDate, 0)
+	num := time.Now().Sub(time.Unix(old.DeployDate, 0)) / time.Minute
+	rentCount := alg.MinInt64(int64(num*game.AssistTermRewardPeriodFromSec)+
+		alg.MinInt64(old.TotalRentCount, game.AssistRentRewardDailyMaxCount)*game.AssistRentalFeeAmount,
+		game.AssistRewardLimit)
+	rewardInfo.CumultativeRewardParcels = append(rewardInfo.CumultativeRewardParcels,
+		game.GetParcelInfo(proto.CurrencyTypes_Gold, rentCount, proto.ParcelType_Currency))
+	parcelResultList = append(parcelResultList, &game.ParcelResult{
+		ParcelType: proto.ParcelType_Currency,
+		ParcelId:   proto.CurrencyTypes_Gold,
+		Amount:     rentCount,
+	})
 }

@@ -134,6 +134,7 @@ message CharacterInfo {
   int64 server_id = 13; //  唯一id
   bool is_favorite = 14; // 是否标记
   map<int32,int32> potential_stats = 15; // 能力解放
+  int64 gear_server_id = 16; // 爱用品唯一id
 }
 
 message GearInfo {
@@ -220,6 +221,7 @@ message ScenarioHistoryInfo {
 message EchelonBin {
   map<int32,EchelonTypeInfo> echelon_type_info_list = 1; // 队伍类型集合
   map<int32,EchelonTypeInfo> echelon_preset_guid_list = 2; // 预制队伍
+  map<int32,AssistList> assist_list = 3; // 援助角色
 }
 
 message EchelonTypeInfo {
@@ -236,6 +238,18 @@ message EchelonInfo {
   map<int32,int64> support_character_list = 6; // 支援角色
   map<int32,int64> skill_character_list = 7; // 优先释放技能角色
   int64 tss_id = 8;
+}
+
+message AssistList {
+  map<int64,AssistInfo> assist_info_list = 1;
+}
+
+message AssistInfo {
+  int32 echelon_type = 1;
+  int64 slot_number = 2;
+  int64 character_id = 3;
+  int64 deploy_date = 4;
+  int64 total_rent_count = 5; // 使用次数
 }
 
 // 抽卡记录

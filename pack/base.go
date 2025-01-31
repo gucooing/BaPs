@@ -110,10 +110,9 @@ func ContentSweepRequest(s *enter.Session, request, response mx.Message) {
 
 	switch req.Content {
 	case proto.ContentType_WeekDungeon:
-		parcelResultList, clearParcels, bonusParcels := game.ContentSweepWeekDungeon(req.StageId, req.Count)
+		parcelResultList, clearParcels := game.ContentSweepWeekDungeon(req.StageId, req.Count)
 		rsp.ParcelResult = game.ParcelResultDB(s, parcelResultList)
 		rsp.ClearParcels = clearParcels
-		rsp.BonusParcels = bonusParcels
 	default:
 		logger.Warn("未处理的扫荡类型:%s", req.Content.String())
 	}

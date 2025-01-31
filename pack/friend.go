@@ -99,7 +99,7 @@ func FriendGetFriendDetailedInfo(s *enter.Session, request, response mx.Message)
 		return
 	}
 	rsp.AttachmentDB = game.GetAccountAttachmentDB(friendS)
-	rsp.DetailedAccountInfoDB = game.GetDetailedAccountInfoDB(friendS)
+	rsp.DetailedAccountInfoDB = game.GetDetailedAccountInfoDB(friendS, proto.AssistRelation_Friend)
 }
 
 func FriendSendFriendRequest(s *enter.Session, request, response mx.Message) {
