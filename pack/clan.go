@@ -294,12 +294,12 @@ func ClanSetAssist(s *enter.Session, request, response mx.Message) {
 	}
 	if bin[int32(req.EchelonType)] == nil {
 		bin[int32(req.EchelonType)] = &sro.AssistList{
-			AssistInfoList: make(map[int64]*sro.AssistInfo),
+			AssistInfoList: make(map[int32]*sro.AssistInfo),
 		}
 	}
 	assistList := bin[int32(req.EchelonType)]
 	if assistList.AssistInfoList == nil {
-		assistList.AssistInfoList = make(map[int64]*sro.AssistInfo)
+		assistList.AssistInfoList = make(map[int32]*sro.AssistInfo)
 	}
 	info := &sro.AssistInfo{
 		EchelonType:    int32(req.EchelonType),
@@ -308,8 +308,8 @@ func ClanSetAssist(s *enter.Session, request, response mx.Message) {
 		DeployDate:     time.Now().Unix(),
 		TotalRentCount: 0,
 	}
-	old := assistList.AssistInfoList[int64(req.SlotNumber)]
-	assistList.AssistInfoList[int64(req.SlotNumber)] = info
+	old := assistList.AssistInfoList[req.SlotNumber]
+	assistList.AssistInfoList[req.SlotNumber] = info
 	rsp.ClanAssistSlotDB = game.GetClanAssistSlotDB(s, info)
 	if old == nil {
 		return

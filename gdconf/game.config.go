@@ -1,6 +1,8 @@
 package gdconf
 
 import (
+	"fmt"
+	"os"
 	"runtime"
 	"time"
 
@@ -60,6 +62,12 @@ type GPP struct {
 	AcademyLocationRankExcel  *AcademyLocationRankExcel
 	AcademyRewardExcel        *AcademyRewardExcel
 	SchoolDungeonReward       *SchoolDungeonReward
+	RaidSchedule              *RaidSchedule
+	RaidSeasonManageExcel     *RaidSeasonManageExcel
+	RaidRankingRewardExcel    *RaidRankingRewardExcel
+	RaidStageExcel            *RaidStageExcel
+	CharacterStatExcel        *CharacterStatExcel
+	RaidStageRewardExcel      *RaidStageRewardExcel
 }
 
 func LoadGameConfig(dataPath string, resPath string) *GameConfig {
@@ -78,6 +86,12 @@ func LoadGameConfig(dataPath string, resPath string) *GameConfig {
 }
 
 func (g *GameConfig) gpp() {
+	// 验证文件夹是否存在
+	if dirInfo, err := os.Stat(g.dataPath); err != nil || !dirInfo.IsDir() {
+		info := fmt.Sprintf("找不到文件夹:%s,err:%s", g.dataPath, err)
+		panic(info)
+	}
+	g.dataPath += "/"
 	g.GPP = &GPP{}
 
 	g.gppFunc = []func(){
@@ -119,6 +133,14 @@ func (g *GameConfig) gpp() {
 		g.gppAcademyLocationRankExcelTable,
 		g.gppAcademyRewardExcelTable,
 		g.gppSchoolDungeonRewardExcel,
+		g.gppRaidSeasonManageExcelTable,
+		g.gppRaidRankingRewardExcelTable,
+		g.gppRaidStageExcelTable,
+		g.gppCharacterStatExcelTable,
+		g.gppRaidStageRewardExcelTable,
+
+		// data
+		g.loadRaidSchedule,
 	}
 
 	for _, fn := range g.gppFunc {

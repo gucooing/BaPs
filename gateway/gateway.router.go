@@ -141,7 +141,7 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Clan_Kick:          pack.ClanKick,          // 管理员删除成员
 		mx.Protocol_Clan_Confer:        pack.ClanConfer,        // 授予职位
 		mx.Protocol_Clan_Permit:        pack.ClanPermit,        // 同意加入社团
-		mx.Protocol_Clan_MyAssistList:  pack.ClanMyAssistList,  //  获取自己的援助角色
+		mx.Protocol_Clan_MyAssistList:  pack.ClanMyAssistList,  // 获取自己的援助角色
 		mx.Protocol_Clan_SetAssist:     pack.ClanSetAssist,     // 设置援助角色
 		mx.Protocol_Clan_AllAssistList: pack.ClanAllAssistList, // 获取全部援助角色
 		// 商店
@@ -168,8 +168,14 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_SchoolDungeon_EnterBattle:  pack.SchoolDungeonEnterBattle,  // 开始战斗
 		mx.Protocol_SchoolDungeon_BattleResult: pack.SchoolDungeonBattleResult, // 战斗结算
 		// 总力战
-		mx.Protocol_Raid_Login: pack.RaidLogin, // 登录获取总力战开放信息
-		mx.Protocol_Raid_Lobby: pack.RaidLobby, // 获取总力战详情
+		mx.Protocol_Raid_Login:        pack.RaidLogin,        // 登录获取总力战开放信息
+		mx.Protocol_Raid_Lobby:        pack.RaidLobby,        // 获取总力战详情
+		mx.Protocol_Raid_OpponentList: pack.RaidOpponentList, // 获取总力战排行榜
+		mx.Protocol_Raid_GetBestTeam:  pack.RaidGetBestTeam,  // 查询玩家总力战参加队伍
+		mx.Protocol_Raid_CreateBattle: pack.RaidCreateBattle, // 开始总力战
+		mx.Protocol_Raid_EndBattle:    pack.RaidEndBattle,    // 战斗结算
+		mx.Protocol_Raid_EnterBattle:  pack.RaidEnterBattle,  // 再次进入战斗
+		mx.Protocol_Raid_GiveUp:       pack.RaidGiveUp,       // 主动结束总力战
 	}
 }
 
@@ -212,7 +218,7 @@ func (g *Gateway) registerMessage(c *gin.Context, request mx.Message, base *mx.B
 		s.EndTime = time.Now().Add(time.Duration(enter.MaxCachePlayerTime) * time.Minute)
 	}
 	base.ServerTimeTicks = game.GetServerTime()
-	base.ServerNotification = int32(game.GetServerNotification(s))
+	base.ServerNotification = game.GetServerNotification(s)
 	response.SetSessionKey(base) //  任何情况下都不要更改handler执行和SetSessionKey的顺序
 	if s != nil {                // 唯一线程操作锁
 		s.GoroutinesSync.Lock()

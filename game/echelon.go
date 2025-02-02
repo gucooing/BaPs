@@ -365,11 +365,19 @@ func GetAssistListByEchelonType(s *enter.Session, echelonType proto.EchelonType)
 	return bin.AssistList[int32(echelonType)]
 }
 
+func GetAssistInfo(s *enter.Session, echelonType proto.EchelonType, slot int32) *sro.AssistInfo {
+	bin := GetAssistListByEchelonType(s, echelonType)
+	if bin == nil {
+		return nil
+	}
+	return bin.AssistInfoList[slot]
+}
+
 func GetClanAssistSlotDBs(s *enter.Session) []*proto.ClanAssistSlotDB {
 	list := make([]*proto.ClanAssistSlotDB, 0)
 	for _, assist := range GetAssistList(s) {
 		if assist.AssistInfoList == nil {
-			assist.AssistInfoList = make(map[int64]*sro.AssistInfo)
+			assist.AssistInfoList = make(map[int32]*sro.AssistInfo)
 		}
 		for slot, info := range assist.AssistInfoList {
 			clanAssistSlotDB := GetClanAssistSlotDB(s, info)
@@ -404,7 +412,7 @@ func GetAssistCharacterDBs(s *enter.Session, assistRelation proto.AssistRelation
 	for _, assist := range GetAssistList(s) {
 		for slot, info := range assist.AssistInfoList {
 			if assist.AssistInfoList == nil {
-				assist.AssistInfoList = make(map[int64]*sro.AssistInfo)
+				assist.AssistInfoList = make(map[int32]*sro.AssistInfo)
 			}
 			assistCharacterDB := GetAssistCharacterDB(s, info, assistRelation)
 			if assistCharacterDB == nil {

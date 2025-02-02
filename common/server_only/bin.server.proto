@@ -19,6 +19,7 @@ message PlayerBin {
     AttachmentBin attachment_bin = 12; // 玩家档案
     MomoTalkBin momo_talk_bin = 13; // MomoTalk 信息
     DungeonBin dungeon_bin = 14; // 副本信息
+    RankBin rank_bin = 15; // 总力战/竞技场信息
 }
 
 // 基础信息
@@ -241,7 +242,7 @@ message EchelonInfo {
 }
 
 message AssistList {
-  map<int64,AssistInfo> assist_info_list = 1;
+  map<int32,AssistInfo> assist_info_list = 1;
 }
 
 message AssistInfo {
@@ -346,6 +347,8 @@ message MemoryLobbyInfo {
   int64 chosen_date = 2;
 }
 
+// 副本信息
+
 message DungeonBin {
   map<int64,WeekDungeonStageInfo> week_dungeon_stage_history = 1; // 悬赏通缉/特别依赖 通关信息
   map<int64,SchoolDungeonStageInfo> school_dungeon_stage_history = 2; // 学院交流会通关信息
@@ -363,4 +366,62 @@ message SchoolDungeonStageInfo {
   bool is_time = 4;
   bool is_first = 5;
   bool is_star = 6;
+}
+
+// 总力战/竞技场信息
+
+message RankBin {
+  RaidInfo cur_raid_info = 1;
+  RaidInfo last_raid_info = 2;
+  CurRaidBattleInfo cur_raid_battle_info = 3; // 当前战斗
+}
+
+message RaidInfo {
+  int64 season_id = 1; // 赛季
+  int64 ranking = 2; // 排名 历史用当期实时读取
+  int64 best_score = 3; // 最高分
+  int64 total_score = 4; // 总分数
+  map<int32,RaidTeamInfo> raid_team_list = 5; // 参赛队伍信息
+  int32 difficulty = 6; // 最高难度
+  int32 tier = 7; // 牌子 历史用当期实时读取
+}
+
+message RaidTeamInfo {
+  int64 leader_character = 1; // 队长
+  map<int32,RaidCharacterInfo> main_character_list = 2; // 主要角色
+  map<int32,RaidCharacterInfo> support_character_list = 3; // 支援角色
+  map<int32,int64> skill_character_list = 4; // 优先释放技能角色
+  int64 try_number = 5; // 序号
+}
+
+message RaidCharacterInfo {
+  int64 character_id = 1;
+  bool has_weapon = 2;
+  int32 level = 3;
+  int64 server_id = 4;
+  int32 star_grade = 5;
+  int32 weapon_star_grade = 6;
+  bool is_assist = 7;
+  int64 account_id = 8;
+}
+
+message CurRaidBattleInfo {
+  int64 raid_unique_id = 1; // 关卡id
+  bool is_practice = 2; // 是否模拟
+  map<int32,RaidTeamInfo> raid_team_list = 3; // 参赛队伍信息
+  int32 frame = 4; // 总时间帧
+  int64 begin = 5; // 开始时间
+  int64 max_hp = 14; // 最大血量
+  int64 season_id = 7; // 赛季
+  bool is_assist = 8; // 是否借人
+  bool is_close = 9; // 是否已经结算
+  int64 ai_phase = 10; // 当前boss阶段
+  int64 clear_time_point = 11; // 时间得分
+  int64 default_point = 12; // 基础得分
+  int64 hp_score_point = 13; // 血量得分
+  int64 boss_groggy_point = 15; // 不知道
+  int64 given_damage = 16; // 消耗血量
+  int32 index_damage = 17; // 序号
+  int64 server_id = 18; // 战斗次数
+  int32 warn_num = 19; // 警告等级
 }

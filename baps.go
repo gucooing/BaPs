@@ -17,6 +17,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/command"
 	"github.com/gucooing/BaPs/common/enter"
+	"github.com/gucooing/BaPs/common/rank"
 	"github.com/gucooing/BaPs/config"
 	"github.com/gucooing/BaPs/db"
 	"github.com/gucooing/BaPs/gateway"
@@ -70,8 +71,11 @@ func NewBaPs() {
 	command.NewCommand(router)
 	// 初始化资源文件
 	gdconf.LoadGameConfig(cfg.DataPath, cfg.ResourcesPath)
+	// 初始化排名数据
+	rankInfo := rank.NewRank()
 	// 启动服务器
 	go func() {
+		logger.Info("BaPs启动成功!")
 		if err = Run(cfg.HttpNet, server); err != nil {
 			if !errors.Is(http.ErrServerClosed, err) {
 				logger.Error("服务器错误:%s", err.Error())
@@ -86,6 +90,7 @@ func NewBaPs() {
 		defer cancel()
 		logger.Info("Max Close Time 5 Minute")
 		server.Close()
+		rankInfo.Close()
 		enter.UpAllDate()
 		logger.Info("BaPs Close")
 		logger.CloseLogger()

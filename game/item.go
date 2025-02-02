@@ -123,7 +123,7 @@ var DefaultCurrencyNum = map[int32]int64{
 	proto.CurrencyTypes_ActionPoint:              24,    // 体力
 	proto.CurrencyTypes_AcademyTicket:            3,     // 课程表
 	proto.CurrencyTypes_ArenaTicket:              5,
-	proto.CurrencyTypes_RaidTicket:               6,
+	proto.CurrencyTypes_RaidTicket:               6, // 总力战
 	proto.CurrencyTypes_WeekDungeonChaserATicket: 0,
 	proto.CurrencyTypes_WeekDungeonChaserBTicket: 0,
 	proto.CurrencyTypes_WeekDungeonChaserCTicket: 0,

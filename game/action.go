@@ -25,17 +25,12 @@ func SetServerNotification(s *enter.Session, flag proto.ServerNotificationFlag, 
 	s.Actions[flag] = ok
 }
 
-func GetServerNotification(s *enter.Session) proto.ServerNotificationFlag {
-	flagS := proto.ServerNotificationFlag_None
+func GetServerNotification(s *enter.Session) int32 {
+	flagS := int32(0)
 	for flag, ok := range GetActions(s) {
-		if ok && flagS < flag {
-			flagS = flag
+		if ok {
+			flagS += int32(flag)
 		}
 	}
 	return flagS
-}
-
-// DailyAction 每天4点
-func DailyAction(s *enter.Session) {
-
 }

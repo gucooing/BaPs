@@ -17,6 +17,7 @@ type Config struct {
 	GateWay          *GateWay `json:"GateWay"`
 	DB               *DB      `json:"DB"`
 	Irc              *Irc     `json:"Irc"`
+	RaidRankDB       *DB      `json:"RaidRankDB"`
 }
 
 type GateWay struct {
@@ -85,6 +86,10 @@ func GetBlackCmd() map[string]bool {
 	return GetConfig().GateWay.BlackCmd
 }
 
+func GetRaidRankDB() *DB {
+	return GetConfig().RaidRankDB
+}
+
 func GetIrc() *Irc {
 	return GetConfig().Irc
 }
@@ -133,6 +138,10 @@ var DefaultConfig = &Config{
 	DB: &DB{
 		DbType: "sqlite",
 		Dsn:    "BaPs.db",
+	},
+	RaidRankDB: &DB{
+		DbType: "sqlite",
+		Dsn:    "RaidRank.db",
 	},
 	Irc: &Irc{
 		HostAddress: "127.0.0.1",

@@ -48,6 +48,11 @@ message Excel {
   repeated AcademyLocationRankExcelTable AcademyLocationRankExcelTable = 39; // 课程表等级配置
   repeated AcademyRewardExcelTable AcademyRewardExcelTable = 40; // 课程表奖励配置
   repeated SchoolDungeonRewardExcel SchoolDungeonRewardExcel = 41; // 学院交流会奖励配置
+  repeated RaidSeasonManageExcelTable RaidSeasonManageExcelTable = 42; // 总力战赛季配置
+  repeated RaidRankingRewardExcelTable RaidRankingRewardExcelTable = 43; // 总力战结算奖励配置
+  repeated RaidStageExcelTable RaidStageExcelTable = 44; // 总力战关卡配置
+  repeated CharacterStatExcelTable CharacterStatExcelTable = 45; // 实体属性配置
+  repeated RaidStageRewardExcelTable RaidStageRewardExcelTable = 46; // 总力战关卡通过奖励配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -742,4 +747,161 @@ message SchoolDungeonRewardExcel {
   int64 RewardParcelAmount = 6;
   int64 RewardParcelProbability = 7;
   bool IsDisplayed = 8;
+}
+
+message RaidSeasonManageExcelTable {
+  int64 SeasonId = 1;
+  int64 SeasonDisplay = 2;
+  string SeasonStartData = 3;
+  string SeasonEndData = 4;
+  string SettlementEndDate = 5;
+  repeated string OpenRaidBossGroup = 6;
+  int64 RankingRewardGroupId = 7;
+  int64 MaxSeasonRewardGauage = 8;
+  repeated int64 StackedSeasonRewardGauge = 9;
+  repeated int64 SeasonRewardId = 10;
+}
+
+message RaidRankingRewardExcelTable {
+  int64 RankingRewardGroupId = 1;
+  int64 Id = 2;
+  int64 RankStart = 3;
+  int64 RankEnd = 4;
+  int64 PercentRankStart = 5;
+  int64 PercentRankEnd = 6;
+  int32 Tier = 7;
+  repeated string RewardParcelType = 8;
+  repeated int64 RewardParcelUniqueId = 9;
+  repeated string RewardParcelUniqueName = 10;
+  repeated int64 RewardParcelAmount = 11;
+}
+
+message RaidStageExcelTable {
+  int64 Id = 1;
+  bool UseBossIndex = 2;
+  bool UseBossAIPhaseSync = 3;
+  string RaidBossGroup = 4;
+  string PortraitPath = 5;
+  string BGPath = 6;
+  int64 RaidCharacterId = 7;
+  repeated int64 BossCharacterId = 8;
+  string Difficulty = 9;
+  bool DifficultyOpenCondition = 10;
+  int64 MaxPlayerCount = 11;
+  int64 RaidRoomLifeTime = 12;
+  int64 BattleDuration = 13;
+  int64 GroundId = 14;
+  string GroundDevName = 15;
+  string EnterTimeLine = 16;
+  string TacticEnvironment = 17;
+  int64 DefaultClearScore = 18;
+  int64 MaximumScore = 19;
+  int64 PerSecondMinusScore = 20;
+  int64 HPPercentScore = 21;
+  int64 MinimumAcquisitionScore = 22;
+  int64 MaximumAcquisitionScore = 23;
+  int64 RaidRewardGroupId = 24;
+  repeated string BattleReadyTimelinePath = 25;
+  repeated int64 BattleReadyTimelinePhaseStart = 26;
+  repeated int64 BattleReadyTimelinePhaseEnd = 27;
+  string VictoryTimelinePath = 28;
+  string PhaseChangeTimelinePath = 29;
+  int64 TimeLinePhase = 30;
+  int64 EnterScenarioKey = 31;
+  int64 ClearScenarioKey = 32;
+  bool ShowSkillCard = 33;
+  int64 BossBGInfoKey = 34;
+  string EchelonExtensionType = 35;
+}
+
+message CharacterStatExcelTable {
+  int64 CharacterId = 1;
+  int64 StabilityRate = 2;
+  int64 StabilityPoint = 3;
+  int64 AttackPower1 = 4;
+  int64 AttackPower100 = 5;
+  int64 MaxHP1 = 6;
+  int64 MaxHP100 = 7;
+  int64 DefensePower1 = 8;
+  int64 DefensePower100 = 9;
+  int64 HealPower1 = 10;
+  int64 HealPower100 = 11;
+  int64 DodgePoint = 12;
+  int64 AccuracyPoint = 13;
+  int64 CriticalPoint = 14;
+  int64 CriticalResistPoint = 15;
+  int64 CriticalDamageRate = 16;
+  int64 CriticalDamageResistRate = 17;
+  int64 BlockRate = 18;
+  int64 HealEffectivenessRate = 19;
+  int64 OppressionPower = 20;
+  int64 OppressionResist = 21;
+  int64 DefensePenetration1 = 22;
+  int64 DefensePenetration100 = 23;
+  int64 DefensePenetrationResist1 = 24;
+  int64 DefensePenetrationResist100 = 25;
+  int64 EnhanceExplosionRate = 26;
+  int64 EnhancePierceRate = 27;
+  int64 EnhanceMysticRate = 28;
+  int64 EnhanceSonicRate = 29;
+  int64 EnhanceSiegeRate = 30;
+  int64 EnhanceNormalRate = 31;
+  int64 EnhanceLightArmorRate = 32;
+  int64 EnhanceHeavyArmorRate = 33;
+  int64 EnhanceUnarmedRate = 34;
+  int64 EnhanceElasticArmorRate = 35;
+  int64 EnhanceStructureRate = 36;
+  int64 EnhanceNormalArmorRate = 37;
+  int64 ExtendBuffDuration = 38;
+  int64 ExtendDebuffDuration = 39;
+  int64 ExtendCrowdControlDuration = 40;
+  int64 AmmoCount = 41;
+  int64 AmmoCost = 42;
+  int64 IgnoreDelayCount = 43;
+  int64 NormalAttackSpeed = 44;
+  int64 Range = 45;
+  int64 InitialRangeRate = 46;
+  int64 MoveSpeed = 47;
+  int64 SightPoint = 48;
+  int64 ActiveGauge = 49;
+  int64 GroggyGauge = 50;
+  int64 GroggyTime = 51;
+  int64 StrategyMobility = 52;
+  int64 ActionCount = 53;
+  int64 StrategySightRange = 54;
+  int64 DamageRatio = 55;
+  int64 DamagedRatio = 56;
+  int64 DamageRatio2Increase = 57;
+  int64 DamageRatio2Decrease = 58;
+  int64 DamagedRatio2Increase = 59;
+  int64 DamagedRatio2Decrease = 60;
+  int64 ExDamagedRatioIncrease = 61;
+  int64 ExDamagedRatioDecrease = 62;
+  int64 EnhanceExDamageRate = 63;
+  int64 ReduceExDamagedRate = 64;
+  int64 HealRate = 65;
+  int64 HealLightArmorRate = 66;
+  int64 HealHeavyArmorRate = 67;
+  int64 HealUnarmedRate = 68;
+  int64 HealElasticArmorRate = 69;
+  int64 HealNormalArmorRate = 70;
+  int64 HealedExplosionRate = 71;
+  int64 HealedPierceRate = 72;
+  int64 HealedMysticRate = 73;
+  int64 HealedSonicRate = 74;
+  int64 HealedNormalRate = 75;
+  string StreetBattleAdaptation = 76;
+  string OutdoorBattleAdaptation = 77;
+  string IndoorBattleAdaptation = 78;
+  int64 RegenCost = 79;
+}
+
+message RaidStageRewardExcelTable {
+  int64 GroupId = 1;
+  bool IsClearStageRewardHideInfo = 2;
+  int64 ClearStageRewardProb = 3;
+  string ClearStageRewardParcelType = 4;
+  int64 ClearStageRewardParcelUniqueID = 5;
+  string ClearStageRewardParcelUniqueName = 6;
+  int64 ClearStageRewardAmount = 7;
 }

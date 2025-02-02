@@ -86,6 +86,13 @@ func MaxInt32(a, b int32) int32 {
 	return b
 }
 
+func MinInt32(a, b int32) int32 {
+	if a > b {
+		return b
+	}
+	return a
+}
+
 func GetDay4() time.Time {
 	currentTime := time.Now()
 	nextExecution := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 4, 0, 0, 0, currentTime.Location())
