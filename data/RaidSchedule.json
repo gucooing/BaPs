@@ -1,0 +1,152 @@
+{
+    "1":{
+        "SeasonId": 1,
+        "SeasonStartData":"2025-01-27 04:00:00",
+        "SeasonEndData":"2025-02-03 23:59:59",
+        "NextSeasonId": 2
+    },
+    "2":{
+        "SeasonId": 2,
+        "SeasonStartData":"2025-02-10 04:00:00",
+        "SeasonEndData":"2025-02-17 23:59:59",
+        "NextSeasonId": 3
+    },
+    "3":{
+        "SeasonId": 3,
+        "SeasonStartData":"2025-02-24 04:00:00",
+        "SeasonEndData":"2025-03-03 23:59:59",
+        "NextSeasonId": 4
+    },
+    "4":{
+        "SeasonId": 4,
+        "SeasonStartData":"2025-03-10 04:00:00",
+        "SeasonEndData":"2025-03-17 23:59:59",
+        "NextSeasonId": 5
+    },
+    "5":{
+        "SeasonId": 5,
+        "SeasonStartData":"2025-03-24 04:00:00",
+        "SeasonEndData":"2025-03-31 23:59:59",
+        "NextSeasonId": 6
+    },
+    "6":{
+        "SeasonId": 6,
+        "SeasonStartData":"2025-04-07 04:00:00",
+        "SeasonEndData":"2025-04-14 23:59:59",
+        "NextSeasonId": 7
+    },
+    "7":{
+        "SeasonId": 7,
+        "SeasonStartData":"2025-04-21 04:00:00",
+        "SeasonEndData":"2025-04-28 23:59:59",
+        "NextSeasonId": 8
+    },
+    "8":{
+        "SeasonId": 8,
+        "SeasonStartData":"2025-05-05 04:00:00",
+        "SeasonEndData":"2025-05-12 23:59:59",
+        "NextSeasonId": 9
+    },
+    "9":{
+        "SeasonId": 9,
+        "SeasonStartData":"2025-05-19 04:00:00",
+        "SeasonEndData":"2025-05-26 23:59:59",
+        "NextSeasonId": 10
+    },
+    "10":{
+        "SeasonId": 10,
+        "SeasonStartData":"2025-06-02 04:00:00",
+        "SeasonEndData":"2025-06-09 23:59:59",
+        "NextSeasonId": 11
+    },
+    "11":{
+        "SeasonId": 11,
+        "SeasonStartData":"2025-06-16 04:00:00",
+        "SeasonEndData":"2025-06-23 23:59:59",
+        "NextSeasonId": 12
+    },
+    "12":{
+        "SeasonId": 12,
+        "SeasonStartData":"2025-06-30 04:00:00",
+        "SeasonEndData":"2025-07-07 23:59:59",
+        "NextSeasonId": 13
+    },
+    "13":{
+        "SeasonId": 13,
+        "SeasonStartData":"2025-07-14 04:00:00",
+        "SeasonEndData":"2025-07-21 23:59:59",
+        "NextSeasonId": 14
+    },
+    "14":{
+        "SeasonId": 14,
+        "SeasonStartData":"2025-07-28 04:00:00",
+        "SeasonEndData":"2025-08-04 23:59:59",
+        "NextSeasonId": 15
+    },
+    "15":{
+        "SeasonId": 15,
+        "SeasonStartData":"2025-08-11 04:00:00",
+        "SeasonEndData":"2025-08-18 23:59:59",
+        "NextSeasonId": 16
+    },
+    "16":{
+        "SeasonId": 16,
+        "SeasonStartData":"2025-08-25 04:00:00",
+        "SeasonEndData":"2025-09-01 23:59:59",
+        "NextSeasonId": 17
+    },
+    "17":{
+        "SeasonId": 17,
+        "SeasonStartData":"2025-09-08 04:00:00",
+        "SeasonEndData":"2025-09-15 23:59:59",
+        "NextSeasonId": 18
+    },
+    "18":{
+        "SeasonId": 18,
+        "SeasonStartData":"2025-09-22 04:00:00",
+        "SeasonEndData":"2025-09-29 23:59:59",
+        "NextSeasonId": 19
+    },
+    "19":{
+        "SeasonId": 19,
+        "SeasonStartData":"2025-10-06 04:00:00",
+        "SeasonEndData":"2025-10-13 23:59:59",
+        "NextSeasonId": 20
+    },
+    "20":{
+        "SeasonId": 20,
+        "SeasonStartData":"2025-10-20 04:00:00",
+        "SeasonEndData":"2025-10-27 23:59:59",
+        "NextSeasonId": 21
+    },
+    "21":{
+        "SeasonId": 21,
+        "SeasonStartData":"2025-11-03 04:00:00",
+        "SeasonEndData":"2025-11-10 23:59:59",
+        "NextSeasonId": 22
+    },
+    "22":{
+        "SeasonId": 22,
+        "SeasonStartData":"2025-11-17 04:00:00",
+        "SeasonEndData":"2025-11-24 23:59:59",
+        "NextSeasonId": 23
+    },
+    "23":{
+        "SeasonId": 23,
+        "SeasonStartData":"2025-12-01 04:00:00",
+        "SeasonEndData":"2025-12-08 23:59:59",
+        "NextSeasonId": 24
+    },
+    "24":{
+        "SeasonId": 24,
+        "SeasonStartData":"2025-12-15 04:00:00",
+        "SeasonEndData":"2025-12-22 23:59:59",
+        "NextSeasonId": 25
+    },
+    "25":{
+        "SeasonId": 25,
+        "SeasonStartData":"2025-12-29 04:00:00",
+        "SeasonEndData":"2026-01-05 23:59:59",
+        "NextSeasonId": 0
+    }
+}
