@@ -18,6 +18,7 @@ import (
 )
 
 var MaxCachePlayerTime = 120 // 最大玩家缓存时间 单位:分钟
+var MaxPlayerNum int64 = 0   // 最大在线玩家
 
 type Session struct {
 	AccountServerId int64
@@ -131,6 +132,13 @@ func GetAllSessionList() []*Session {
 		allSession = append(allSession, v)
 	}
 	return allSession
+}
+
+func GetSessionNum() int64 {
+	e := getEnterSet()
+	e.sessionSync.RLock()
+	defer e.sessionSync.RUnlock()
+	return int64(len(e.SessionMap))
 }
 
 // DelSession 删除指定在线玩家

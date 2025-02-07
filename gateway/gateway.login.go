@@ -67,6 +67,12 @@ func (g *Gateway) AccountCheckYostar(s *enter.Session, request, response mx.Mess
 		logger.Debug("EnterTicket验证失败")
 		return
 	}
+	if enter.GetSessionNum() >= enter.MaxPlayerNum &&
+		enter.MaxPlayerNum > 0 {
+		rsp.ResultMessag = "在线玩家满"
+		logger.Debug("在线玩家满")
+		return
+	}
 	enter.DelEnterTicket(req.EnterTicket)
 	s = enter.GetSessionByAccountServerId(tickInfo.AccountServerId)
 	mxToken := mx.GetMxToken(tickInfo.AccountServerId, 64)

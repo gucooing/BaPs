@@ -22,6 +22,7 @@ func NewGateWay(router *gin.Engine) *Gateway {
 		router: router,
 	}
 	enter.MaxCachePlayerTime = alg.MaxInt(config.GetGateWay().MaxCachePlayerTime, 30)
+	enter.MaxPlayerNum = config.GetGateWay().MaxPlayerNum
 	g.initRouter()
 
 	return g
