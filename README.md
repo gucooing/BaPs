@@ -27,6 +27,7 @@
 16.社团
 17.战斗援助
 18.总力战
+19.彩奈登录奖励
 ```
 ## 代理方法:
 转代以下地址:其中 http://127.0.0.1:5000 为服务器地址
@@ -41,6 +42,52 @@ https://prod-game.bluearchiveyostar.com:5000/api/gateway http://127.0.0.1:5000/a
 如果你无法转代上面的地址可以添加下面的转代规则:
 ```
 https://yostar-serverinfo.bluearchiveyostar.com http://127.0.0.1:5000
+```
+
+## 使用方法
+#### 1.前往[Releases](./releases/latest)下载最新的发行版本并拷贝到运行目录
+#### 2.拷贝仓库的data文件夹到运行目录
+#### 3.直接运行一次将会自动生成config.json文件,打开并编辑config.json文件
+#### 4.运行
+
+# config.json
+需要注意的是,实际的json文件中不能存在注释
+```
+{
+  "LogLevel": "info",
+  "ResourcesPath": "./resources",
+  "DataPath": "./data",
+  "GucooingApiKey": "123456", // 使用api时验证身份的key
+  "AutoRegistration": true, // 是否自动注册
+  "HttpNet": {
+    "InnerAddr": "0.0.0.0", // 监听地址
+    "InnerPort": "5000", // 监听端口
+    "OuterAddr": "10.0.0.3", // 外网地址
+    "OuterPort": "5000", // 外网端口
+    "Tls": false, // 是否启用ssl
+    "CertFile": "./data/cert.pem",
+    "KeyFile":   "./data/key.pem"
+  },
+  "GateWay": {
+    "MaxPlayerNum": 0, // 最大在线玩家数
+    "MaxCachePlayerTime": 720, // 最大玩家缓存时间
+    "BlackCmd": {},
+    "IsLogMsgPlayer": true
+  },
+  "DB": {
+    "dbType": "sqlite", // 使用的数据库类型,支持sqlite和mysql
+    "dsn": "BaPs.db" // 数据库地址,如果是mysql请填写mysql url
+  },
+  "RaidRankDB": {
+    "dbType": "sqlite", // 使用的数据库类型,支持sqlite和mysql
+    "dsn": "RaidRank.db" // 数据库地址,如果是mysql请填写mysql url
+  },
+  "Irc": {
+    "HostAddress": "127.0.0.1", // 社团聊天服务器irc地址
+    "Port": 16666, // 社团聊天服务器irc端口
+    "Password": "mx123" // 社团聊天服务器irc密码
+  }
+}
 ```
 
 ## 我们欢迎所有想帮助我们的人加入

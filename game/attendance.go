@@ -31,11 +31,6 @@ func GetAttendanceList(s *enter.Session) map[int64]*sro.AttendanceInfo {
 		bin.AttendanceList = make(map[int64]*sro.AttendanceInfo)
 	}
 	for id, conf := range gdconf.GetAttendanceMap() {
-		// 已结束,删数据
-		if time.Now().After(conf.EndTime) {
-			delete(bin.AttendanceList, id)
-			continue
-		}
 		// 结束开始 不添加新的
 		if time.Now().After(conf.StartableEndTime) {
 			continue
@@ -65,12 +60,17 @@ func GetAttendanceInfo(s *enter.Session, attendanceId int64) *sro.AttendanceInfo
 		delete(bin, attendanceId)
 		return nil
 	}
-	if time.Unix(info.LastReward, 0).After(alg.GetDay4()) &&
-		int64(len(info.AttendedDay)) >= conf.BookSize {
+	if (time.Unix(info.LastReward, 0).After(alg.GetDay4()) &&
+		int64(len(info.AttendedDay)) >= conf.BookSize) || time.Now().After(conf.EndTime) {
 		if conf.Type == "Basic" {
 			info.AttendedDay = make(map[int64]int64)
 			info.LastReward = 0
+		} else {
+			info.Expired = true // 作用是延迟到一天以后处理
 		}
+	}
+	if info.Expired {
+		return nil
 	}
 
 	return info
@@ -157,7 +157,7 @@ func GetAttendanceHistoryDB(s *enter.Session, attendanceId int64) *proto.Attenda
 		AccountServerId:        s.AccountServerId,
 		AttendanceBookUniqueId: bin.AttendanceId,
 		AttendedDay:            make(map[int64]mx.MxTime),
-		Expired:                int64(len(bin.AttendedDay)) >= conf.BookSize,
+		Expired:                bin.Expired,
 	}
 	for day, data := range bin.AttendedDay {
 		info.AttendedDay[day] = mx.Unix(data, 0)

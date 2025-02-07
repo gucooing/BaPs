@@ -441,4 +441,5 @@ message AttendanceInfo {
   int64 server_id = 2;
   map<int64,int64> attended_day = 3;
   int64 last_reward = 4; // 上一次领取时间
+  bool expired = 5; // 是否结束
 }
