@@ -136,7 +136,7 @@ func GetFriendIdCardDB(s *enter.Session) *proto.FriendIdCardDB {
 	info := &proto.FriendIdCardDB{
 		Level:                       GetAccountLevel(s),
 		Comment:                     GetComment(s),
-		RepresentCharacterUniqueId:  GetRepresentCharacterUniqueId(s),
+		RepresentCharacterUniqueId:  GetCardRepresentCharacterUniqueId(s),
 		LastConnectTime:             mx.Unix(bin.LastConnectTime, 0),
 		FriendCode:                  strconv.FormatInt(s.AccountServerId, 10),
 		EmblemId:                    GetEmblemUniqueId(s),

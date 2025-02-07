@@ -102,6 +102,26 @@ func GetCurRaidBattleInfo(s *enter.Session) *sro.CurRaidBattleInfo {
 	return GetRankBin(s).GetCurRaidBattleInfo()
 }
 
+func RaidCheck(s *enter.Session) {
+	bin := GetCurRaidInfo(s)
+	if bin == nil {
+		return
+	}
+	// 检查总分奖励领取
+	seasonConf := gdconf.GetRaidSeasonManageExcelTable(bin.SeasonId)
+	if seasonConf == nil ||
+		len(seasonConf.StackedSeasonRewardGauge) != len(seasonConf.SeasonRewardId) {
+		return
+	}
+	for index, season := range seasonConf.StackedSeasonRewardGauge {
+		if _, ok := bin.ReceiveRewardIds[seasonConf.SeasonRewardId[index]]; !ok &&
+			bin.TotalScore >= season {
+			SetServerNotification(s, proto.ServerNotificationFlag_CanReceiveRaidReward, true)
+			break
+		}
+	}
+}
+
 func GetClearDifficulty(s *enter.Session) []proto.Difficulty {
 	list := []proto.Difficulty{
 		proto.Difficulty_Normal,
@@ -127,20 +147,32 @@ func GetPlayableHighestDifficulty(s *enter.Session) map[string]proto.Difficulty 
 	return list
 }
 
+func GetReceiveRewardIds(s *enter.Session) []int64 {
+	list := make([]int64, 0)
+	bin := GetCurRaidInfo(s)
+	for id, ok := range bin.GetReceiveRewardIds() {
+		if ok {
+			list = append(list, id)
+		}
+	}
+	return list
+}
+
 func GetRaidLobbyInfoDB(s *enter.Session) *proto.RaidLobbyInfoDB {
+	bin := GetCurRaidInfo(s)
 	info := &proto.RaidLobbyInfoDB{
 		PlayableHighestDifficulty:     GetPlayableHighestDifficulty(s),
 		ParticipateCharacterServerIds: make([]int64, 0),
 		TotalRankingPoint:             0, // 总分
 		PlayingRaidDB:                 GetRaidDB(s),
+		CanReceiveRankingReward:       false,
+		ReceiveRewardIds:              GetReceiveRewardIds(s),
+		ReceivedRankingRewardId:       bin.GetRankingRewardId(),
 
-		ReceiveRewardIds: make([]int64, 0),
 		RemainFailCompensation: map[int32]bool{
 			0: false,
 		},
 		SweepPointByRaidUniqueId: make(map[int64]int64),
-		ReceivedRankingRewardId:  0,
-		CanReceiveRankingReward:  false,
 		ReceiveLimitedRewardIds:  make([]int64, 0),
 		ClanAssistUseInfo:        nil,
 	}
@@ -150,9 +182,10 @@ func GetRaidLobbyInfoDB(s *enter.Session) *proto.RaidLobbyInfoDB {
 		info.SeasonEndDate = mx.MxTime(cur.EndTime)
 		info.SettlementEndDate = mx.MxTime(cur.EndTime)
 		info.Ranking = rank.GetRaidRank(cur.SeasonId, s.AccountServerId)
-		info.BestRankingPoint = GetCurRaidInfo(s).GetBestScore()
+		info.BestRankingPoint = bin.GetBestScore()
 		info.Tier = gdconf.GetRaidTier(cur.SeasonId, info.Ranking)
-		info.TotalRankingPoint = GetCurRaidInfo(s).GetTotalScore()
+		info.TotalRankingPoint = bin.GetTotalScore()
+		info.CanReceiveRankingReward = !(time.Now().After(cur.EndTime) && bin.GetIsRankingReward())
 	}
 	if next := gdconf.GetNextRaidSchedule(); next != nil {
 		info.NextSeasonId = next.SeasonId
@@ -462,7 +495,6 @@ func RaidClose(s *enter.Session) []*ParcelResult {
 					Amount:     rewardConf.ClearStageRewardAmount,
 				})
 			}
-
 		}
 	}
 	curBattle.IsClose = true

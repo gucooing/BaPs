@@ -158,7 +158,7 @@ func GetCharacterDB(s *enter.Session, characterId int64) *proto.CharacterDB {
 		EquipmentServerIds:     make([]int64, 0),
 		PotentialStats:         bin.PotentialStats,
 	}
-	info.FavorRank = 50 // 由于excel中没有好感度配置所以默认满级
+	info.FavorRank = 100 // TODO 由于excel中没有好感度配置所以默认满级
 	for i := 0; i < 3; i++ {
 		e, ok := bin.EquipmentList[int32(i)]
 		if ok {

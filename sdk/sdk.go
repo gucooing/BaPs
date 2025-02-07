@@ -27,6 +27,8 @@ func (s *SDK) initRouter() {
 	s.router.Any("/", handleIndex)
 	s.router.GET("/:url.json", s.connectionGroups)
 
+	s.router.GET("/prod/index.json", index)
+
 	account := s.router.Group("/account")
 	{
 		account.POST("/yostar_auth_request", s.YostarAuthRequest)

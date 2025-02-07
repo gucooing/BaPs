@@ -52,3 +52,11 @@ func GetRaidTier(seasonId, ranking int64) int32 {
 	}
 	return GetRaidRankingRewardExcelTable(conf.RankingRewardGroupId, ranking).GetTier()
 }
+
+func GetRaidRankingRewardExcelTableBySeasonId(seasonId, ranking int64) *sro.RaidRankingRewardExcelTable {
+	conf := GetRaidSeasonManageExcelTable(seasonId)
+	if conf == nil {
+		return nil
+	}
+	return GetRaidRankingRewardExcelTable(conf.RankingRewardGroupId, ranking)
+}

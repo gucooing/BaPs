@@ -384,6 +384,9 @@ message RaidInfo {
   map<int32,RaidTeamInfo> raid_team_list = 5; // 参赛队伍信息
   int32 difficulty = 6; // 最高难度
   int32 tier = 7; // 牌子 历史用当期实时读取
+  bool is_ranking_reward = 8; // 是否领取结算奖励
+  map<int64,bool> receive_reward_ids = 9; // 已领取的奖励
+  int64 ranking_reward_id = 10; // 领取的结算奖励
 }
 
 message RaidTeamInfo {

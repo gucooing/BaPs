@@ -52,7 +52,7 @@ func FriendSetIdCard(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.FriendSetIdCardRequest)
 
 	game.SetComment(s, req.Comment)
-	game.SetRepresentCharacterUniqueId(s, req.RepresentCharacterUniqueId)
+	game.SetCardRepresentCharacterUniqueId(s, req.RepresentCharacterUniqueId)
 	game.SetEmblemUniqueId(s, req.EmblemId)
 	game.SetCardBackgroundId(s, req.BackgroundId)
 	game.SetAutoAcceptFriendRequest(s, req.AutoAcceptFriendRequest)

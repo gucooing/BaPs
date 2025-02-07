@@ -69,7 +69,7 @@ func (g *Gateway) AccountCheckYostar(s *enter.Session, request, response mx.Mess
 	}
 	enter.DelEnterTicket(req.EnterTicket)
 	s = enter.GetSessionByAccountServerId(tickInfo.AccountServerId)
-	mxToken := fmt.Sprintf("%v%s", alg.GetSnow().GenId(), alg.RandStr(30))
+	mxToken := mx.GetMxToken(tickInfo.AccountServerId, 64)
 	if s == nil {
 		yostarGame := db.GetYostarGameByAccountServerId(tickInfo.AccountServerId)
 		if yostarGame == nil {

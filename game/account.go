@@ -86,7 +86,7 @@ func SetEmblemUniqueId(s *enter.Session, id int64) bool {
 	return true
 }
 
-func GetLobbyStudent(s *enter.Session) int64 {
+func GetRepresentCharacterUniqueId(s *enter.Session) int64 {
 	bin := GetBaseBin(s)
 	if bin == nil {
 		return 0
@@ -117,7 +117,7 @@ func SetCardBackgroundId(s *enter.Session, id int64) bool {
 	return true
 }
 
-func GetRepresentCharacterUniqueId(s *enter.Session) int64 {
+func GetCardRepresentCharacterUniqueId(s *enter.Session) int64 {
 	bin := GetBaseBin(s)
 	if bin == nil {
 		return 0
@@ -128,7 +128,7 @@ func GetRepresentCharacterUniqueId(s *enter.Session) int64 {
 	return bin.GetRepresentCharacterId()
 }
 
-func SetRepresentCharacterUniqueId(s *enter.Session, characterId int64) bool {
+func SetCardRepresentCharacterUniqueId(s *enter.Session, characterId int64) bool {
 	bin := GetBaseBin(s)
 	if bin == nil {
 		return false
@@ -305,7 +305,7 @@ func GetAccountDB(s *enter.Session) *proto.AccountDB {
 		VIPLevel:                   10,
 		State:                      s.AccountState,
 		Comment:                    GetComment(s),
-		RepresentCharacterServerId: GetCharacterServerId(s, GetLobbyStudent(s)),
+		RepresentCharacterServerId: GetCharacterServerId(s, GetRepresentCharacterUniqueId(s)),
 		PublisherAccountId:         s.YostarUID,
 		RetentionDays:              0,
 	}
@@ -314,7 +314,63 @@ func GetAccountDB(s *enter.Session) *proto.AccountDB {
 }
 
 func GetAttendanceBookRewards(s *enter.Session) []*proto.AttendanceBookReward {
-	return make([]*proto.AttendanceBookReward, 0)
+	list := make([]*proto.AttendanceBookReward, 0)
+	info := &proto.AttendanceBookReward{
+		UniqueId:       1,
+		AccountType:    proto.AccountState_Normal,
+		BookSize:       10,
+		MailType:       proto.MailType_Attendance,
+		Title:          "ATTENDANCEBOOK_NORMAL",
+		TitleImagePath: "Uis/01_Common/33_Attendance/ImageFont_Attend_1",
+		DailyRewards:   make(map[int64][]*proto.ParcelInfo),
+
+		StartDate:        "2020-11-01T00:00:00",
+		StartableEndDate: "2025-12-31T04:00:00",
+		EndDate:          "2025-12-31T04:00:00",
+
+		DisplayOrder:      0,
+		AccountLevelLimit: 0,
+		Type:              0,
+		CountRule:         0,
+		CountReset:        0,
+		ExpiryDate:        0,
+		DailyRewardIcons:  make(map[int64]string),
+	}
+
+	for _, id := range []int64{1, 2, 3, 4, 5, 6, 7, 8, 9, 10} {
+		reward := []*proto.ParcelInfo{
+			{
+				Key: &proto.ParcelKeyPair{
+					Type: proto.ParcelType_Currency,
+					Id:   1,
+				},
+				Amount: 999,
+				Multiplier: &proto.BasisPoint{
+					RawValue: 10000,
+				},
+				Probability: &proto.BasisPoint{
+					RawValue: 10000,
+				},
+			},
+		}
+		info.DailyRewards[id] = reward
+	}
+
+	list = append(list, info)
+	return list
+}
+
+func GetAttendanceHistoryDBs(s *enter.Session) []*proto.AttendanceHistoryDB {
+	list := make([]*proto.AttendanceHistoryDB, 0)
+	info := &proto.AttendanceHistoryDB{
+		ServerId:               1,
+		AccountServerId:        s.AccountServerId,
+		AttendanceBookUniqueId: 1,
+		AttendedDay:            make(map[int64]*time.Time),
+		Expired:                false,
+	}
+	list = append(list, info)
+	return list
 }
 
 func SetAccountNickname(s *enter.Session, nickname string) bool {

@@ -53,6 +53,8 @@ message Excel {
   repeated RaidStageExcelTable RaidStageExcelTable = 44; // 总力战关卡配置
   repeated CharacterStatExcelTable CharacterStatExcelTable = 45; // 实体属性配置
   repeated RaidStageRewardExcelTable RaidStageRewardExcelTable = 46; // 总力战关卡通过奖励配置
+  repeated MissionExcelTable MissionExcelTable = 47; // 任务配置
+  repeated RaidStageSeasonRewardExcelTable RaidStageSeasonRewardExcelTable = 48; // 总力战总分奖励配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -904,4 +906,43 @@ message RaidStageRewardExcelTable {
   int64 ClearStageRewardParcelUniqueID = 5;
   string ClearStageRewardParcelUniqueName = 6;
   int64 ClearStageRewardAmount = 7;
+}
+
+message MissionExcelTable {
+  int64 Id = 1;
+  string Category = 2;
+  int64 Description = 3;
+  string ResetType = 4;
+  string ToastDisplayType = 5;
+  string ToastImagePath = 6;
+  bool ViewFlag = 7;
+  bool Limit = 8;
+  string StartDate = 9;
+  string EndDate = 10;
+  int64 EndDay = 11;
+  string StartableEndDate = 12;
+  string DateAutoRefer = 13;
+  int64 DisplayOrder = 14;
+  repeated int64 PreMissionId = 15;
+  string AccountType = 16;
+  int64 AccountLevel = 17;
+  repeated string ContentTags = 18;
+  repeated string ShortcutUI = 19;
+  int64 ChallengeStageShortcut = 20;
+  string CompleteConditionType = 21;
+  int64 CompleteConditionCount = 22;
+  repeated int64 CompleteConditionParameter = 23;
+  repeated string CompleteConditionParameterTag = 24;
+  string RewardIcon = 25;
+  repeated string MissionRewardParcelType = 26;
+  repeated int64 MissionRewardParcelId = 27;
+  repeated int64 MissionRewardAmount = 28;
+}
+
+message RaidStageSeasonRewardExcelTable {
+  int64 SeasonRewardId = 1;
+  repeated string SeasonRewardParcelType = 2;
+  repeated int64 SeasonRewardParcelUniqueId = 3;
+  repeated string SeasonRewardParcelUniqueName = 4;
+  repeated int64 SeasonRewardAmount = 5;
 }

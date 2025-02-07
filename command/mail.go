@@ -33,8 +33,6 @@ func (c *Command) Mail(g *gin.Context) {
 		c.DelMail(g, req)
 		return
 	}
-	if req.Player {
-	}
 }
 
 func (c *Command) DelMail(g *gin.Context, info *ApiMail) {
@@ -62,4 +60,8 @@ func (c *Command) DelMail(g *gin.Context, info *ApiMail) {
 		})
 		return
 	}
+}
+
+func AddMail(g *gin.Context, info *ApiMail) {
+
 }

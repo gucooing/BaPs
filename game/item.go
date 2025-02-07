@@ -321,7 +321,7 @@ func AddWeapon(s *enter.Session, characterId int64) {
 		characterInfo.StarGrade < 5 {
 		return
 	}
-	bin.WeaponInfoList[characterId] = &sro.WeaponInfo{
+	info := &sro.WeaponInfo{
 		UniqueId:          characterId,
 		CharacterServerId: characterInfo.ServerId,
 		StarGrade:         1,
@@ -329,6 +329,9 @@ func AddWeapon(s *enter.Session, characterId int64) {
 		Exp:               0,
 		IsLocked:          false,
 	}
+	info.Level = 50 // TODO 没有表
+	info.StarGrade = 3
+	bin.WeaponInfoList[characterId] = info
 }
 
 func GetWeaponDBs(s *enter.Session) []*proto.WeaponDB {

@@ -79,6 +79,8 @@ func GiveAllJsonToProtobuf(req *ApiGiveAll) []*sro.ParcelInfo {
 		return GiveAllFurniture(req)
 	case "Favor": // 礼物
 		return GiveAllFavor(req)
+	case "Emblem": // 称号
+		return GiveAllEmblem(req)
 	}
 	return nil
 }
@@ -165,5 +167,16 @@ func GiveAllFavor(req *ApiGiveAll) []*sro.ParcelInfo {
 		})
 	}
 
+	return list
+}
+
+func GiveAllEmblem(req *ApiGiveAll) []*sro.ParcelInfo {
+	list := make([]*sro.ParcelInfo, 0)
+	for _, conf := range gdconf.GetEmblemExcelList() {
+		list = append(list, &sro.ParcelInfo{
+			Type: proto.ParcelType_Emblem,
+			Id:   conf.Id,
+		})
+	}
 	return list
 }

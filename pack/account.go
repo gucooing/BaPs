@@ -2,7 +2,6 @@ package pack
 
 import (
 	"strconv"
-	"time"
 
 	"github.com/gucooing/BaPs/common/check"
 	"github.com/gucooing/BaPs/common/enter"
@@ -22,22 +21,7 @@ func AccountAuth(s *enter.Session, request, response mx.Message) {
 	rsp.AccountDB = game.GetAccountDB(s)
 	rsp.StaticOpenConditions = game.GetStaticOpenConditions(s)
 	rsp.AttendanceBookRewards = game.GetAttendanceBookRewards(s)
-	rsp.AttendanceHistoryDBs = []*proto.AttendanceHistoryDB{
-		{
-			ServerId:               999,
-			AccountServerId:        s.AccountServerId,
-			AttendanceBookUniqueId: 1,
-			AttendedDay:            make(map[int64]*time.Time),
-			Expired:                false,
-		},
-		{
-			ServerId:               998,
-			AccountServerId:        s.AccountServerId,
-			AttendanceBookUniqueId: 22,
-			AttendedDay:            make(map[int64]*time.Time),
-			Expired:                false,
-		},
-	}
+	rsp.AttendanceHistoryDBs = game.GetAttendanceHistoryDBs(s)
 
 	rsp.IssueAlertInfos = make([]*proto.IssueAlertInfoDB, 0)
 	rsp.OpenConditions = make([]*proto.OpenConditionDB, 0)
@@ -194,7 +178,7 @@ func AccountSetRepresentCharacterAndComment(s *enter.Session, request, response 
 	game.SetComment(s, req.Comment)
 	game.SetLobbyStudent(s, req.RepresentCharacterServerId)
 	rsp.AccountDB = game.GetAccountDB(s)
-	rsp.RepresentCharacterDB = game.GetCharacterDB(s, game.GetLobbyStudent(s))
+	rsp.RepresentCharacterDB = game.GetCharacterDB(s, game.GetRepresentCharacterUniqueId(s))
 }
 
 func ScenarioAccountStudentChange(s *enter.Session, request, response mx.Message) {

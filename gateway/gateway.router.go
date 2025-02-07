@@ -168,14 +168,16 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_SchoolDungeon_EnterBattle:  pack.SchoolDungeonEnterBattle,  // 开始战斗
 		mx.Protocol_SchoolDungeon_BattleResult: pack.SchoolDungeonBattleResult, // 战斗结算
 		// 总力战
-		mx.Protocol_Raid_Login:        pack.RaidLogin,        // 登录获取总力战开放信息
-		mx.Protocol_Raid_Lobby:        pack.RaidLobby,        // 获取总力战详情
-		mx.Protocol_Raid_OpponentList: pack.RaidOpponentList, // 获取总力战排行榜
-		mx.Protocol_Raid_GetBestTeam:  pack.RaidGetBestTeam,  // 查询玩家总力战参加队伍
-		mx.Protocol_Raid_CreateBattle: pack.RaidCreateBattle, // 开始总力战
-		mx.Protocol_Raid_EndBattle:    pack.RaidEndBattle,    // 战斗结算
-		mx.Protocol_Raid_EnterBattle:  pack.RaidEnterBattle,  // 再次进入战斗
-		mx.Protocol_Raid_GiveUp:       pack.RaidGiveUp,       // 主动结束总力战
+		mx.Protocol_Raid_Login:         pack.RaidLogin,         // 登录获取总力战开放信息
+		mx.Protocol_Raid_Lobby:         pack.RaidLobby,         // 获取总力战详情
+		mx.Protocol_Raid_OpponentList:  pack.RaidOpponentList,  // 获取总力战排行榜
+		mx.Protocol_Raid_GetBestTeam:   pack.RaidGetBestTeam,   // 查询玩家总力战参加队伍
+		mx.Protocol_Raid_CreateBattle:  pack.RaidCreateBattle,  // 开始总力战
+		mx.Protocol_Raid_EndBattle:     pack.RaidEndBattle,     // 战斗结算
+		mx.Protocol_Raid_EnterBattle:   pack.RaidEnterBattle,   // 再次进入战斗
+		mx.Protocol_Raid_GiveUp:        pack.RaidGiveUp,        // 主动结束总力战
+		mx.Protocol_Raid_SeasonReward:  pack.RaidSeasonReward,  // 领取总分奖励
+		mx.Protocol_Raid_RankingReward: pack.RaidRankingReward, // 领取排名奖励
 	}
 }
 

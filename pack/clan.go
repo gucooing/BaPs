@@ -20,7 +20,9 @@ func ClanLogin(s *enter.Session, request, response mx.Message) {
 	rsp.ClanAssistSlotDBs = make([]*proto.ClanAssistSlotDB, 0)                                 // 援助信息
 }
 
-func ClanCheck(s *enter.Session, request, response mx.Message) {}
+func ClanCheck(s *enter.Session, request, response mx.Message) {
+
+}
 
 func ClanLobby(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.ClanLobbyResponse)
