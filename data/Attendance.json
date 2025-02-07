@@ -1,0 +1,69 @@
+{
+    "1": {
+        "Id": 1,
+        "Type": "Basic",
+        "AccountType": "Normal",
+        "AccountLevelLimit": 0,
+        "Title": "ATTENDANCEBOOK_NORMAL",
+        "TitleImagePath": "Uis/01_Common/33_Attendance/ImageFont_Attend_1",
+        "CountRule": "Accumulation",
+        "CountReset": "User",
+        "BookSize": 10,
+        "StartDate": "2020-11-01 04:00:00",
+        "StartableEndDate": "2025-12-31 04:00:00",
+        "EndDate": "2025-12-31 04:00:00",
+        "MailType": "Attendance",
+        "AttendanceReward": {
+            "1": {
+                "RewardParcelType": 2,
+                "RewardId": 1,
+                "RewardAmoun": 20000
+            },
+            "2": {
+                "RewardParcelType": 4,
+                "RewardId": 11,
+                "RewardAmoun": 3
+            },
+            "3": {
+                "RewardParcelType": 2,
+                "RewardId": 5,
+                "RewardAmoun": 50
+            },
+            "4": {
+                "RewardParcelType": 2,
+                "RewardId": 1,
+                "RewardAmoun": 20000
+            },
+            "5": {
+                "RewardParcelType": 2,
+                "RewardId": 3,
+                "RewardAmoun": 50
+            },
+            "6": {
+               "RewardParcelType": 2,
+                "RewardId": 1,
+                "RewardAmoun": 40000
+            },
+            "7": {
+                "RewardParcelType": 4,
+                "RewardId": 12,
+                "RewardAmoun": 1
+            },
+            "8": {
+                "RewardParcelType": 2,
+                "RewardId": 5,
+                "RewardAmoun": 100
+            },
+            "9": {
+                "RewardParcelType": 2,
+                "RewardId": 1,
+                "RewardAmoun": 40000
+            },
+            "10": {
+                "RewardParcelType": 2,
+                "RewardId": 3,
+                "RewardAmoun": 100
+            }
+        }
+    }
+}

@@ -70,6 +70,7 @@ type GPP struct {
 	RaidStageRewardExcel       *RaidStageRewardExcel
 	MissionExcel               *MissionExcel
 	RaidStageSeasonRewardExcel *RaidStageSeasonRewardExcel
+	Attendance                 *Attendance
 }
 
 func LoadGameConfig(dataPath string, resPath string) *GameConfig {
@@ -145,6 +146,7 @@ func (g *GameConfig) gpp() {
 
 		// data
 		g.loadRaidSchedule,
+		g.loadAttendance,
 	}
 
 	for _, fn := range g.gppFunc {

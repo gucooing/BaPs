@@ -114,6 +114,33 @@ func AddMail(s *enter.Session, info *sro.MailInfo) bool {
 	return true
 }
 
+var SystemMail = map[string]string{
+	"Attendance": "请查收每日登录奖励",
+}
+
+func AddMailBySystem(s *enter.Session, mailType string, parcelInfoList []*sro.ParcelInfo) bool {
+	bin := GetMailBin(s)
+	if bin == nil {
+		return false
+	}
+	if bin.MailInfoList == nil {
+		bin.MailInfoList = make(map[int64]*sro.MailInfo)
+	}
+	serverId := GetServerId(s)
+	mail := &sro.MailInfo{
+		Sender:         "gucooing",
+		ServerId:       serverId,
+		Comment:        SystemMail[mailType],
+		SendDate:       time.Now().Unix(),
+		ExpireDate:     time.Now().Add(7 * 24 * time.Hour).Unix(),
+		ParcelInfoList: parcelInfoList,
+	}
+
+	bin.MailInfoList[serverId] = mail
+	SetServerNotification(s, proto.ServerNotificationFlag_HasUnreadMail, true)
+	return true
+}
+
 func DelMail(s *enter.Session, id int64) bool {
 	bin := GetMailBin(s)
 	if bin == nil {
@@ -175,8 +202,4 @@ func GetMailParcelResultList(bin []*sro.ParcelInfo) []*ParcelResult {
 		})
 	}
 	return list
-}
-
-func GetMainTemplate() {
-
 }

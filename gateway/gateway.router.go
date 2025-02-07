@@ -50,6 +50,8 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Attachment_EmblemList:                   pack.AttachmentEmblemList,                   // 获取解锁的玩家称号
 		mx.Protocol_Attachment_EmblemAcquire:                pack.AttachmentEmblemAcquire,                // 客户端解锁称号
 		mx.Protocol_Attachment_EmblemAttach:                 pack.AttachmentEmblemAttach,                 // 装备称号
+		// 登录奖励
+		mx.Protocol_Attendance_Reward: pack.AttendanceReward, // 领取奖励
 		// MomoTalk
 		mx.Protocol_MemoryLobby_List:       pack.MemoryLobbyList,       // 获取记忆大厅列表
 		mx.Protocol_MomoTalk_OutLine:       pack.MomoTalkOutLine,       // 获取MomoTalk信息

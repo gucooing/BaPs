@@ -20,6 +20,7 @@ message PlayerBin {
     MomoTalkBin momo_talk_bin = 13; // MomoTalk 信息
     DungeonBin dungeon_bin = 14; // 副本信息
     RankBin rank_bin = 15; // 总力战/竞技场信息
+    AttendanceBin attendance_bin = 16; // 登录奖励
 }
 
 // 基础信息
@@ -427,4 +428,17 @@ message CurRaidBattleInfo {
   int32 index_damage = 17; // 序号
   int64 server_id = 18; // 战斗次数
   int32 warn_num = 19; // 警告等级
+}
+
+// 登录奖励
+
+message AttendanceBin {
+  map<int64,AttendanceInfo> attendance_list = 1;
+}
+
+message AttendanceInfo {
+  int64 attendance_id = 1;
+  int64 server_id = 2;
+  map<int64,int64> attended_day = 3;
+  int64 last_reward = 4; // 上一次领取时间
 }
