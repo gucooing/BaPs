@@ -5,11 +5,10 @@ import (
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func TimeAttackDungeonLogin(s *enter.Session, request, response mx.Message) {
+func TimeAttackDungeonLogin(s *enter.Session, request, response proto.Message) {
 	// rsp := response.(*proto.TimeAttackDungeonLoginResponse)
 	//
 	// rsp.PreviousRoomDB = &proto.TimeAttackDungeonRoomDB{
@@ -24,7 +23,7 @@ func TimeAttackDungeonLogin(s *enter.Session, request, response mx.Message) {
 	// }
 }
 
-func BillingPurchaseListByYostar(s *enter.Session, request, response mx.Message) {
+func BillingPurchaseListByYostar(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.BillingPurchaseListByYostarResponse)
 
 	rsp.CountList = make([]*proto.PurchaseCountDB, 0)
@@ -33,7 +32,7 @@ func BillingPurchaseListByYostar(s *enter.Session, request, response mx.Message)
 	rsp.BlockedProductDBs = make([]*proto.BlockedProductDB, 0)
 }
 
-func EventContentPermanentList(s *enter.Session, request, response mx.Message) {
+func EventContentPermanentList(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.EventContentPermanentListResponse)
 
 	rsp.PermanentDBs = make([]*proto.EventContentPermanentDB, 0)
@@ -47,7 +46,7 @@ func EventContentPermanentList(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func StickerLogin(s *enter.Session, request, response mx.Message) {
+func StickerLogin(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.StickerLoginResponse)
 
 	rsp.StickerBookDB = &proto.StickerBookDB{
@@ -57,13 +56,13 @@ func StickerLogin(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func EventRewardIncrease(s *enter.Session, request, response mx.Message) {
+func EventRewardIncrease(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.EventRewardIncreaseResponse)
 
 	rsp.EventRewardIncreaseDBs = make([]*proto.EventRewardIncreaseDB, 0)
 }
 
-func OpenConditionEventList(s *enter.Session, request, response mx.Message) {
+func OpenConditionEventList(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.OpenConditionEventListRequest)
 	rsp := response.(*proto.OpenConditionEventListResponse)
 
@@ -90,18 +89,18 @@ func OpenConditionEventList(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func NotificationEventContentReddotCheck(s *enter.Session, request, response mx.Message) {
+func NotificationEventContentReddotCheck(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.NotificationEventContentReddotResponse)
 
 	rsp.Reddots = make(map[int64][]proto.NotificationEventReddot)
 	rsp.EventContentUnlockCGDBs = make(map[int64][]*proto.EventContentCollectionDB)
 }
 
-func ContentLogUIOpenStatistics(s *enter.Session, request, response mx.Message) {
+func ContentLogUIOpenStatistics(s *enter.Session, request, response proto.Message) {
 
 }
 
-func ContentSweepRequest(s *enter.Session, request, response mx.Message) {
+func ContentSweepRequest(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ContentSweepRequest)
 	rsp := response.(*proto.ContentSweepResponse)
 

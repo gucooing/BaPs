@@ -8,11 +8,10 @@ import (
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func CharacterList(s *enter.Session, request, response mx.Message) {
+func CharacterList(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.CharacterListResponse)
 
 	rsp.TSSCharacterDBs = make([]*proto.CharacterDB, 0)
@@ -21,7 +20,7 @@ func CharacterList(s *enter.Session, request, response mx.Message) {
 	rsp.CharacterDBs = game.GetCharacterDBs(s)
 }
 
-func CharacterGearList(s *enter.Session, request, response mx.Message) {
+func CharacterGearList(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.CharacterGearListResponse)
 
 	rsp.GearDBs = make([]*proto.GearDB, 0)
@@ -34,7 +33,7 @@ func CharacterGearList(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func CharacterTranscendence(s *enter.Session, request, response mx.Message) {
+func CharacterTranscendence(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CharacterTranscendenceRequest)
 	rsp := response.(*proto.CharacterTranscendenceResponse)
 
@@ -63,7 +62,7 @@ func CharacterTranscendence(s *enter.Session, request, response mx.Message) {
 	characterInfo.StarGrade++
 }
 
-func CharacterUnlockWeapon(s *enter.Session, request, response mx.Message) {
+func CharacterUnlockWeapon(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CharacterUnlockWeaponRequest)
 	rsp := response.(*proto.CharacterUnlockWeaponResponse)
 
@@ -75,7 +74,7 @@ func CharacterUnlockWeapon(s *enter.Session, request, response mx.Message) {
 	rsp.WeaponDB = game.GetWeaponDB(s, characterInfo.CharacterId)
 }
 
-func CharacterSetFavorites(s *enter.Session, request, response mx.Message) {
+func CharacterSetFavorites(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CharacterSetFavoritesRequest)
 	rsp := response.(*proto.CharacterSetFavoritesResponse)
 
@@ -90,7 +89,7 @@ func CharacterSetFavorites(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func CharacterUpdateSkillLevel(s *enter.Session, request, response mx.Message) {
+func CharacterUpdateSkillLevel(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CharacterSkillLevelUpdateRequest)
 	rsp := response.(*proto.CharacterSkillLevelUpdateResponse)
 
@@ -105,7 +104,7 @@ func CharacterUpdateSkillLevel(s *enter.Session, request, response mx.Message) {
 	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
 }
 
-func CharacterBatchSkillLevelUpdate(s *enter.Session, request, response mx.Message) {
+func CharacterBatchSkillLevelUpdate(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CharacterBatchSkillLevelUpdateRequest)
 	rsp := response.(*proto.CharacterBatchSkillLevelUpdateResponse)
 
@@ -190,7 +189,7 @@ func UpCharacterSkill(characterInfo *sro.CharacterInfo, reqLevel int32, skillSlo
 	}
 }
 
-func EquipmentEquip(s *enter.Session, request, response mx.Message) {
+func EquipmentEquip(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.EquipmentItemEquipRequest)
 	rsp := response.(*proto.EquipmentItemEquipResponse)
 
@@ -203,7 +202,7 @@ func EquipmentEquip(s *enter.Session, request, response mx.Message) {
 	game.SetCharacterEquipment(s, req.CharacterServerId, req.EquipmentServerId, req.SlotIndex)
 }
 
-func CharacterExpGrowth(s *enter.Session, request, response mx.Message) {
+func CharacterExpGrowth(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CharacterExpGrowthRequest)
 	rsp := response.(*proto.CharacterExpGrowthResponse)
 
@@ -254,7 +253,7 @@ func CharacterExpGrowth(s *enter.Session, request, response mx.Message) {
 	characterInfo.Exp = newExp
 }
 
-func CharacterGearUnlock(s *enter.Session, request, response mx.Message) {
+func CharacterGearUnlock(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CharacterGearUnlockRequest)
 	rsp := response.(*proto.CharacterGearUnlockResponse)
 
@@ -286,7 +285,7 @@ func CharacterGearUnlock(s *enter.Session, request, response mx.Message) {
 	rsp.GearDB = game.GetGearDB(s, sId)
 }
 
-func CharacterPotentialGrowth(s *enter.Session, request, response mx.Message) {
+func CharacterPotentialGrowth(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CharacterPotentialGrowthRequest)
 	rsp := response.(*proto.CharacterPotentialGrowthResponse)
 

@@ -50,13 +50,13 @@ func (g *Gateway) getEnterTicket(c *gin.Context) {
 		return
 	}
 	rsp.EnterTicket = enterTicket
-	rsp.SetSessionKey(&mx.BasePacket{
+	rsp.SetSessionKey(&proto.BasePacket{
 		Protocol: req.Protocol,
 	})
 	logger.Debug("EnterTicket交换成功:%s", rsp.EnterTicket)
 }
 
-func (g *Gateway) AccountCheckYostar(s *enter.Session, request, response mx.Message) {
+func (g *Gateway) AccountCheckYostar(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.AccountCheckYostarRequest)
 	rsp := response.(*proto.AccountCheckYostarResponse)
 	var err error
@@ -104,8 +104,8 @@ func (g *Gateway) AccountCheckYostar(s *enter.Session, request, response mx.Mess
 		logger.Info("AccountServerId:%v,上线账号", tickInfo.AccountServerId)
 	}
 	rsp.ResultState = 1
-	base := &mx.BasePacket{
-		SessionKey: &mx.SessionKey{
+	base := &proto.BasePacket{
+		SessionKey: &proto.SessionKey{
 			AccountServerId: tickInfo.AccountServerId,
 			MxToken:         s.MxToken,
 		},

@@ -4,11 +4,10 @@ import (
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func ArenaLogin(s *enter.Session, request, response mx.Message) {
+func ArenaLogin(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.ArenaLoginResponse)
 
 	rsp.ArenaPlayerInfoDB = &proto.ArenaPlayerInfoDB{

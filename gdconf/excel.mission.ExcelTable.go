@@ -47,3 +47,7 @@ func (g *GameConfig) gppMissionExcelTable() {
 func GetMissionExcelTableCategoryList(category string) []*sro.MissionExcelTable {
 	return GC.GetGPP().MissionExcel.MissionExcelTableCategory[category]
 }
+
+func GetMissionExcelTable(id int64) *sro.MissionExcelTable {
+	return GC.GetGPP().MissionExcel.MissionExcelTableMap[id]
+}

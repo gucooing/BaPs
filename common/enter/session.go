@@ -12,7 +12,6 @@ import (
 	"github.com/gucooing/BaPs/db"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 	pb "google.golang.org/protobuf/proto"
 )
@@ -30,6 +29,7 @@ type Session struct {
 	Actions         map[proto.ServerNotificationFlag]bool
 	GoroutinesSync  sync.Mutex
 	AccountFriend   *AccountFriend
+	Mission         *Mission
 }
 
 // 定时检查一次是否有用户长时间离线
@@ -44,7 +44,7 @@ func (e *EnterSet) checkSession() {
 }
 
 // GetSessionBySessionKey 获取指定在线玩家
-func GetSessionBySessionKey(sessionKey *mx.SessionKey) *Session {
+func GetSessionBySessionKey(sessionKey *proto.SessionKey) *Session {
 	if sessionKey == nil ||
 		sessionKey.AccountServerId == 0 ||
 		sessionKey.MxToken == "" {

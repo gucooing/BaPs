@@ -7,11 +7,10 @@ import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func AttendanceReward(s *enter.Session, request, response mx.Message) {
+func AttendanceReward(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.AttendanceRewardRequest)
 	rsp := response.(*proto.AttendanceRewardResponse)
 

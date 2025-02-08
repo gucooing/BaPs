@@ -6,11 +6,10 @@ import (
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func ShopList(s *enter.Session, request, response mx.Message) {
+func ShopList(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ShopListRequest)
 	rsp := response.(*proto.ShopListResponse)
 
@@ -39,7 +38,7 @@ func ShopList(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func ShopBuyRefreshMerchandise(s *enter.Session, request, response mx.Message) {
+func ShopBuyRefreshMerchandise(s *enter.Session, request, response proto.Message) {
 	// req := request.(*proto.ShopBuyRefreshMerchandiseRequest)
 	// rsp := response.(*proto.ShopBuyRefreshMerchandiseResponse)
 }
@@ -52,6 +51,6 @@ func ShopBuyRefreshMerchandise(s *enter.Session, request, response mx.Message) {
 5
 */
 
-func ShopBuyEligma(s *enter.Session, request, response mx.Message) {
+func ShopBuyEligma(s *enter.Session, request, response proto.Message) {
 
 }

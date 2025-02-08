@@ -99,6 +99,12 @@ func GetDay4() time.Time {
 	return nextExecution
 }
 
+func GetDayH(h int) time.Time {
+	currentTime := time.Now()
+	nextExecution := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), h, 0, 0, 0, currentTime.Location())
+	return nextExecution
+}
+
 func GetEveryDay4() time.Duration {
 	currentTime := time.Now()
 	nextExecution := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 4, 0, 0, 0, currentTime.Location())

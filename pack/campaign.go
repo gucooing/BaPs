@@ -8,7 +8,7 @@ import (
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func CampaignList(s *enter.Session, request, response mx.Message) {
+func CampaignList(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.CampaignListResponse)
 
 	rsp.CampaignChapterClearRewardHistoryDBs = make([]*proto.CampaignChapterClearRewardHistoryDB, 0)
@@ -47,13 +47,13 @@ func CampaignList(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func CampaignEnterMainStage(s *enter.Session, request, response mx.Message) {
+func CampaignEnterMainStage(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CampaignEnterMainStageRequest)
 	rsp := response.(*proto.CampaignEnterMainStageResponse)
 
 	rsp.SaveDataDB = game.NewCampaignMainStageSaveDB(s, req.StageUniqueId)
 }
 
-func CampaignChapterClearReward(s *enter.Session, request, response mx.Message) {
+func CampaignChapterClearReward(s *enter.Session, request, response proto.Message) {
 
 }

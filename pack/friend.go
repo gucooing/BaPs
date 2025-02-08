@@ -7,11 +7,10 @@ import (
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func FriendCheck(s *enter.Session, request, response mx.Message) {
+func FriendCheck(s *enter.Session, request, response proto.Message) {
 	af := s.AccountFriend
 	if af == nil {
 		logger.Warn("[UID:%v]好友数据拉取失败,请查询数据库是否正常", s.AccountServerId)
@@ -24,7 +23,7 @@ func FriendCheck(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func FriendList(s *enter.Session, request, response mx.Message) {
+func FriendList(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.FriendListResponse)
 
 	bin := game.GetFriendBin(s)
@@ -42,13 +41,13 @@ func FriendList(s *enter.Session, request, response mx.Message) {
 	rsp.FriendIdCardDB = game.GetFriendIdCardDB(s)
 }
 
-func FriendGetIdCard(s *enter.Session, request, response mx.Message) {
+func FriendGetIdCard(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.FriendGetIdCardResponse)
 
 	rsp.FriendIdCardDB = game.GetFriendIdCardDB(s)
 }
 
-func FriendSetIdCard(s *enter.Session, request, response mx.Message) {
+func FriendSetIdCard(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.FriendSetIdCardRequest)
 
 	game.SetComment(s, req.Comment)
@@ -64,7 +63,7 @@ func FriendSetIdCard(s *enter.Session, request, response mx.Message) {
 	game.SetShowEliminateRaidRanking(s, req.ShowEliminateRaidRanking)
 }
 
-func FriendSearch(s *enter.Session, request, response mx.Message) {
+func FriendSearch(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.FriendSearchRequest)
 	rsp := response.(*proto.FriendSearchResponse)
 
@@ -90,7 +89,7 @@ func FriendSearch(s *enter.Session, request, response mx.Message) {
 	rsp.SearchResult = game.GetFriendDBs(s, uidlist)
 }
 
-func FriendGetFriendDetailedInfo(s *enter.Session, request, response mx.Message) {
+func FriendGetFriendDetailedInfo(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.FriendGetFriendDetailedInfoRequest)
 	rsp := response.(*proto.FriendGetFriendDetailedInfoResponse)
 
@@ -102,7 +101,7 @@ func FriendGetFriendDetailedInfo(s *enter.Session, request, response mx.Message)
 	rsp.DetailedAccountInfoDB = game.GetDetailedAccountInfoDB(friendS, proto.AssistRelation_Friend)
 }
 
-func FriendSendFriendRequest(s *enter.Session, request, response mx.Message) {
+func FriendSendFriendRequest(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.FriendSendFriendRequestRequest)
 	rsp := response.(*proto.FriendSendFriendRequestResponse)
 
@@ -151,7 +150,7 @@ func FriendSendFriendRequest(s *enter.Session, request, response mx.Message) {
 	targetFriendBin.ReceivedList[s.AccountServerId] = true
 }
 
-func FriendAcceptFriendRequest(s *enter.Session, request, response mx.Message) {
+func FriendAcceptFriendRequest(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.FriendAcceptFriendRequestRequest)
 	rsp := response.(*proto.FriendAcceptFriendRequestResponse)
 
@@ -184,7 +183,7 @@ func FriendAcceptFriendRequest(s *enter.Session, request, response mx.Message) {
 	game.AddFriendByUid(s, req.TargetAccountId)
 }
 
-func FriendDeclineFriendRequest(s *enter.Session, request, response mx.Message) {
+func FriendDeclineFriendRequest(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.FriendDeclineFriendRequestRequest)
 	rsp := response.(*proto.FriendDeclineFriendRequestResponse)
 
@@ -223,7 +222,7 @@ func FriendDeclineFriendRequest(s *enter.Session, request, response mx.Message) 
 	delete(targetFriendBin.ReceivedList, s.AccountServerId)
 }
 
-func FriendRemove(s *enter.Session, request, response mx.Message) {
+func FriendRemove(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.FriendRemoveRequest)
 	rsp := response.(*proto.FriendRemoveResponse)
 

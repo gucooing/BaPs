@@ -204,6 +204,7 @@ message MissionBin{
   map<int64,bool> tutorial_list = 1; // 已完成的教程
   map<int64,ScenarioGroupHistoryInfo> scenario_group_history_info_list = 2; // 场景剧情完成信息
   map<int64,ScenarioHistoryInfo> scenario_history_info_list = 3; // 剧情完成信息
+  map<string,CategoryMissionInfo> category_mission_info = 4;
 }
 
 message ScenarioGroupHistoryInfo {
@@ -216,6 +217,20 @@ message ScenarioGroupHistoryInfo {
 message ScenarioHistoryInfo {
   int64 scenario_unique_id = 1;
   int64 clear_date_time = 2;
+}
+
+message CategoryMissionInfo {
+  int64 last_mission = 1; // 上一次任务刷新时间
+  map<int64,MissionInfo> mission_list = 2; // 接取的任务列表
+}
+
+message MissionInfo {
+  int64 mission_id = 1; // 任务id
+  int64 start_time = 2; // 接取时间
+  bool complete = 3; // 是否完成
+  map<int64,int64>progress_parameters = 4; // 进度
+  bool finish = 5; // 是否已领取奖励
+  int64 complete_time = 6; // 完成时间
 }
 
 // 队伍信息

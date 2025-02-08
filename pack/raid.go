@@ -8,11 +8,10 @@ import (
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func RaidLogin(s *enter.Session, request, response mx.Message) {
+func RaidLogin(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.RaidLoginResponse)
 
 	game.RaidCheck(s) // 总力战检查
@@ -26,7 +25,7 @@ func RaidLogin(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func RaidLobby(s *enter.Session, request, response mx.Message) {
+func RaidLobby(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.RaidLobbyResponse)
 
 	game.RaidCheck(s) // 总力战检查
@@ -46,7 +45,7 @@ func RaidLobby(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func RaidOpponentList(s *enter.Session, request, response mx.Message) {
+func RaidOpponentList(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.RaidOpponentListRequest)
 	rsp := response.(*proto.RaidOpponentListResponse)
 
@@ -65,7 +64,7 @@ func RaidOpponentList(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func RaidGetBestTeam(s *enter.Session, request, response mx.Message) {
+func RaidGetBestTeam(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.RaidGetBestTeamRequest)
 	rsp := response.(*proto.RaidGetBestTeamResponse)
 
@@ -79,7 +78,7 @@ func RaidGetBestTeam(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func RaidCreateBattle(s *enter.Session, request, response mx.Message) {
+func RaidCreateBattle(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.RaidCreateBattleRequest)
 	rsp := response.(*proto.RaidCreateBattleResponse)
 
@@ -112,7 +111,7 @@ func RaidCreateBattle(s *enter.Session, request, response mx.Message) {
 	rsp.RaidDB = game.GetRaidDB(s)
 }
 
-func RaidEndBattle(s *enter.Session, request, response mx.Message) {
+func RaidEndBattle(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.RaidEndBattleRequest)
 	rsp := response.(*proto.RaidEndBattleResponse)
 
@@ -151,7 +150,7 @@ func RaidEndBattle(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func RaidEnterBattle(s *enter.Session, request, response mx.Message) {
+func RaidEnterBattle(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.RaidEnterBattleRequest)
 	rsp := response.(*proto.RaidEnterBattleResponse)
 
@@ -177,7 +176,7 @@ func RaidEnterBattle(s *enter.Session, request, response mx.Message) {
 	rsp.RaidDB = game.GetRaidDB(s)
 }
 
-func RaidGiveUp(s *enter.Session, request, response mx.Message) {
+func RaidGiveUp(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.RaidGiveUpRequest)
 	rsp := response.(*proto.RaidGiveUpResponse)
 
@@ -194,7 +193,7 @@ func RaidGiveUp(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func RaidSeasonReward(s *enter.Session, request, response mx.Message) {
+func RaidSeasonReward(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.RaidSeasonRewardResponse)
 
 	defer func() {
@@ -232,7 +231,7 @@ func RaidSeasonReward(s *enter.Session, request, response mx.Message) {
 	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
 }
 
-func RaidRankingReward(s *enter.Session, request, response mx.Message) {
+func RaidRankingReward(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.RaidRankingRewardResponse)
 
 	bin := game.GetCurRaidInfo(s)

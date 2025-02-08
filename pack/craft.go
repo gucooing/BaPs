@@ -2,11 +2,10 @@ package pack
 
 import (
 	"github.com/gucooing/BaPs/common/enter"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func CraftInfoList(s *enter.Session, request, response mx.Message) {
+func CraftInfoList(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.CraftInfoListResponse)
 
 	rsp.CraftInfos = make([]*proto.CraftInfoDB, 0)

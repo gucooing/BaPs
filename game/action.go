@@ -34,3 +34,15 @@ func GetServerNotification(s *enter.Session) int32 {
 	}
 	return flagS
 }
+
+func GetMissionProgressDBs(s *enter.Session) []*proto.MissionProgressDB {
+	list := make([]*proto.MissionProgressDB, 0)
+	for _, bin := range s.GetMissionSync() {
+		info := GetMissionProgressDB(s, bin.MissionId)
+		if info != nil {
+			list = append(list, info)
+		}
+	}
+	s.NewMissionSync()
+	return list
+}

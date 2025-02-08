@@ -10,6 +10,7 @@ import (
 	"github.com/gucooing/BaPs/pkg/logger"
 	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol"
+	"github.com/gucooing/BaPs/protocol/proto"
 )
 
 type Gateway struct {
@@ -37,7 +38,7 @@ func (g *Gateway) initRouter() {
 	}
 }
 
-func (g *Gateway) send(c *gin.Context, n mx.Message) {
+func (g *Gateway) send(c *gin.Context, n proto.Message) {
 	rsp, err := protocol.MarshalResponse(n)
 	if err != nil {
 		logger.Debug("marshal err:", err)

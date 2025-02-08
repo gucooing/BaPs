@@ -4,18 +4,17 @@ import (
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func AccountCurrencySync(s *enter.Session, request, response mx.Message) {
+func AccountCurrencySync(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.AccountCurrencySyncResponse)
 
 	rsp.AccountCurrencyDB = game.GetAccountCurrencyDB(s)
 	rsp.ExpiredCurrency = make(map[proto.CurrencyTypes]int64)
 }
 
-func ItemList(s *enter.Session, request, response mx.Message) {
+func ItemList(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.ItemListResponse)
 
 	rsp.ExpiryItemDBs = make([]*proto.ItemDB, 0)
@@ -35,13 +34,13 @@ func ItemList(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func EquipmentList(s *enter.Session, request, response mx.Message) {
+func EquipmentList(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.EquipmentItemListResponse)
 
 	rsp.EquipmentDBs = game.GetEquipmentDBs(s)
 }
 
-func EquipmentLevelUp(s *enter.Session, request, response mx.Message) {
+func EquipmentLevelUp(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.EquipmentItemLevelUpRequest)
 	rsp := response.(*proto.EquipmentItemLevelUpResponse)
 
@@ -100,7 +99,7 @@ func EquipmentLevelUp(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func EquipmentTierUp(s *enter.Session, request, response mx.Message) {
+func EquipmentTierUp(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.EquipmentItemTierUpRequest)
 	rsp := response.(*proto.EquipmentItemTierUpResponse)
 
@@ -131,7 +130,7 @@ func EquipmentTierUp(s *enter.Session, request, response mx.Message) {
 	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
 }
 
-func EquipmentBatchGrowth(s *enter.Session, request, response mx.Message) {
+func EquipmentBatchGrowth(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.EquipmentBatchGrowthRequest)
 	rsp := response.(*proto.EquipmentBatchGrowthResponse)
 
@@ -250,7 +249,7 @@ func EquipmentBatchGrowth(s *enter.Session, request, response mx.Message) {
 	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
 }
 
-func CharacterWeaponTranscendence(s *enter.Session, request, response mx.Message) {
+func CharacterWeaponTranscendence(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CharacterWeaponTranscendenceRequest)
 	rsp := response.(*proto.CharacterWeaponTranscendenceResponse)
 
@@ -285,7 +284,7 @@ func CharacterWeaponTranscendence(s *enter.Session, request, response mx.Message
 	})
 }
 
-func CharacterWeaponExpGrowth(s *enter.Session, request, response mx.Message) {
+func CharacterWeaponExpGrowth(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CharacterWeaponExpGrowthRequest)
 	rsp := response.(*proto.CharacterWeaponExpGrowthResponse)
 

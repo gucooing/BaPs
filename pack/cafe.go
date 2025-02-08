@@ -7,25 +7,24 @@ import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func CafeGetInfo(s *enter.Session, request, response mx.Message) {
+func CafeGetInfo(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.CafeGetInfoResponse)
 
 	rsp.CafeDBs = game.GetPbCafeDBs(s)
 	rsp.FurnitureDBs = game.GetFurnitureDBs(s) // 已获得家具数据
 }
 
-func CafeAck(s *enter.Session, request, response mx.Message) {
+func CafeAck(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CafeAckRequest)
 	rsp := response.(*proto.CafeAckResponse)
 
 	rsp.CafeDB = game.GetCafeDB(s, req.CafeDBId)
 }
 
-func CafeOpen(s *enter.Session, request, response mx.Message) {
+func CafeOpen(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CafeOpenRequest)
 	rsp := response.(*proto.CafeOpenResponse)
 
@@ -34,7 +33,7 @@ func CafeOpen(s *enter.Session, request, response mx.Message) {
 	rsp.FurnitureDBs = game.GetFurnitureDBs(s)
 }
 
-func CafeRemove(s *enter.Session, request, response mx.Message) {
+func CafeRemove(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CafeRemoveFurnitureRequest)
 	rsp := response.(*proto.CafeRemoveFurnitureResponse)
 
@@ -49,7 +48,7 @@ func CafeRemove(s *enter.Session, request, response mx.Message) {
 	game.UpCafeComfortValue(s, req.CafeDBId)
 }
 
-func CafeRemoveAll(s *enter.Session, request, response mx.Message) {
+func CafeRemoveAll(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CafeRemoveAllFurnitureRequest)
 	rsp := response.(*proto.CafeRemoveAllFurnitureResponse)
 
@@ -70,7 +69,7 @@ func CafeRemoveAll(s *enter.Session, request, response mx.Message) {
 	game.UpCafeComfortValue(s, req.CafeDBId)
 }
 
-func CafeDeploy(s *enter.Session, request, response mx.Message) {
+func CafeDeploy(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CafeDeployFurnitureRequest)
 	rsp := response.(*proto.CafeDeployFurnitureResponse)
 
@@ -87,7 +86,7 @@ func CafeDeploy(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func CafeRelocate(s *enter.Session, request, response mx.Message) {
+func CafeRelocate(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CafeRelocateFurnitureRequest)
 	rsp := response.(*proto.CafeRelocateFurnitureResponse)
 
@@ -102,7 +101,7 @@ func CafeRelocate(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func CafeInteract(s *enter.Session, request, response mx.Message) {
+func CafeInteract(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CafeInteractWithCharacterRequest)
 	rsp := response.(*proto.CafeInteractWithCharacterResponse)
 
@@ -121,7 +120,7 @@ func CafeInteract(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func CafeSummonCharacter(s *enter.Session, request, response mx.Message) {
+func CafeSummonCharacter(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CafeSummonCharacterRequest)
 	rsp := response.(*proto.CafeSummonCharacterResponse)
 
@@ -144,7 +143,7 @@ func CafeSummonCharacter(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func CafeRankUp(s *enter.Session, request, response mx.Message) {
+func CafeRankUp(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CafeRankUpRequest)
 	rsp := response.(*proto.CafeRankUpResponse)
 
@@ -191,7 +190,7 @@ func CafeRankUp(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func CafeReceiveCurrency(s *enter.Session, request, response mx.Message) {
+func CafeReceiveCurrency(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.CafeReceiveCurrencyResponse)
 
 	parcelResultList := make([]*game.ParcelResult, 0)
@@ -213,13 +212,13 @@ func CafeReceiveCurrency(s *enter.Session, request, response mx.Message) {
 	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
 }
 
-func CafeListPreset(s *enter.Session, request, response mx.Message) {
+func CafeListPreset(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.CafeListPresetResponse)
 
 	rsp.CafePresetDBs = make([]*proto.CafePresetDB, 0)
 }
 
-func CafeTravel(s *enter.Session, request, response mx.Message) {
+func CafeTravel(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CafeTravelRequest)
 	rsp := response.(*proto.CafeTravelResponse)
 
@@ -245,7 +244,7 @@ func CafeTravel(s *enter.Session, request, response mx.Message) {
 	rsp.CafeDBs = game.GetPbCafeDBs(friendS)
 }
 
-func CafeGiveGift(s *enter.Session, request, response mx.Message) {
+func CafeGiveGift(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CafeGiveGiftRequest)
 	rsp := response.(*proto.CafeGiveGiftResponse)
 

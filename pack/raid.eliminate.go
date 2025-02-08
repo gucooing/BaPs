@@ -2,17 +2,16 @@ package pack
 
 import (
 	"github.com/gucooing/BaPs/common/enter"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func EliminateRaidLogin(s *enter.Session, request, response mx.Message) {
+func EliminateRaidLogin(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.EliminateRaidLoginResponse)
 
 	rsp.SeasonType = proto.RaidSeasonType_Close
 }
 
-func MultiFloorRaidSync(s *enter.Session, request, response mx.Message) {
+func MultiFloorRaidSync(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.MultiFloorRaidSyncRequest)
 	rsp := response.(*proto.MultiFloorRaidSyncResponse)
 
@@ -26,7 +25,7 @@ func MultiFloorRaidSync(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func ContentSweepMultiSweepPresetList(s *enter.Session, request, response mx.Message) {
+func ContentSweepMultiSweepPresetList(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.ContentSweepMultiSweepPresetListResponse)
 
 	rsp.MultiSweepPresetDBs = make([]*proto.MultiSweepPresetDB, 0)

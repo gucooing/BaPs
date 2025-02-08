@@ -12,7 +12,7 @@ import (
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func ClanLogin(s *enter.Session, request, response mx.Message) {
+func ClanLogin(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.ClanLoginResponse)
 
 	rsp.AccountClanDB = game.GetClanDB(enter.GetYostarClanByServerId(game.GetClanServerId(s))) // 社团简介
@@ -20,11 +20,11 @@ func ClanLogin(s *enter.Session, request, response mx.Message) {
 	rsp.ClanAssistSlotDBs = make([]*proto.ClanAssistSlotDB, 0)                                 // 援助信息
 }
 
-func ClanCheck(s *enter.Session, request, response mx.Message) {
+func ClanCheck(s *enter.Session, request, response proto.Message) {
 
 }
 
-func ClanLobby(s *enter.Session, request, response mx.Message) {
+func ClanLobby(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.ClanLobbyResponse)
 
 	game.SetLastLoginTime(s)
@@ -37,7 +37,7 @@ func ClanLobby(s *enter.Session, request, response mx.Message) {
 	rsp.DefaultExposedClanDBs = game.GetDefaultExposedClanDBs(s)
 }
 
-func ClanSearch(s *enter.Session, request, response mx.Message) {
+func ClanSearch(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ClanSearchRequest)
 	rsp := response.(*proto.ClanSearchResponse)
 
@@ -53,7 +53,7 @@ func ClanSearch(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func ClanCreate(s *enter.Session, request, response mx.Message) {
+func ClanCreate(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ClanCreateRequest)
 	rsp := response.(*proto.ClanCreateResponse)
 
@@ -69,7 +69,7 @@ func ClanCreate(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func ClanMemberList(s *enter.Session, request, response mx.Message) {
+func ClanMemberList(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ClanMemberListRequest)
 	rsp := response.(*proto.ClanMemberListResponse)
 
@@ -83,7 +83,7 @@ func ClanMemberList(s *enter.Session, request, response mx.Message) {
 	rsp.ClanMemberDBs = game.GetClanMemberDBs(clanInfo)
 }
 
-func ClanJoin(s *enter.Session, request, response mx.Message) {
+func ClanJoin(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ClanJoinRequest)
 	rsp := response.(*proto.ClanJoinResponse)
 
@@ -115,7 +115,7 @@ func ClanJoin(s *enter.Session, request, response mx.Message) {
 	clanInfo.AddApplicantAccount(s.AccountServerId)
 }
 
-func ClanAutoJoin(s *enter.Session, request, response mx.Message) {
+func ClanAutoJoin(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.ClanJoinResponse)
 
 	defer func() {
@@ -134,7 +134,7 @@ func ClanAutoJoin(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func ClanSetting(s *enter.Session, request, response mx.Message) {
+func ClanSetting(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ClanSettingRequest)
 	rsp := response.(*proto.ClanSettingResponse)
 
@@ -156,7 +156,7 @@ func ClanSetting(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func ClanApplicant(s *enter.Session, request, response mx.Message) {
+func ClanApplicant(s *enter.Session, request, response proto.Message) {
 	// req := request.(*proto.ClanApplicantRequest)
 	rsp := response.(*proto.ClanApplicantResponse)
 
@@ -180,7 +180,7 @@ func ClanApplicant(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func ClanMember(s *enter.Session, request, response mx.Message) {
+func ClanMember(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ClanMemberRequest)
 	rsp := response.(*proto.ClanMemberResponse)
 
@@ -192,7 +192,7 @@ func ClanMember(s *enter.Session, request, response mx.Message) {
 	rsp.DetailedAccountInfoDB = game.GetDetailedAccountInfoDB(ps, proto.AssistRelation_Clan)
 }
 
-func ClanQuit(s *enter.Session, request, response mx.Message) {
+func ClanQuit(s *enter.Session, request, response proto.Message) {
 	clanInfo := enter.GetYostarClanByServerId(game.GetClanServerId(s))
 	if clanInfo == nil {
 		return
@@ -201,7 +201,7 @@ func ClanQuit(s *enter.Session, request, response mx.Message) {
 	game.SetClanServerId(s, 0)
 }
 
-func ClanKick(s *enter.Session, request, response mx.Message) {
+func ClanKick(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ClanKickRequest)
 
 	clanInfo := enter.GetYostarClanByServerId(game.GetClanServerId(s))
@@ -219,7 +219,7 @@ func ClanKick(s *enter.Session, request, response mx.Message) {
 	game.SetClanServerId(ps, 0)
 }
 
-func ClanConfer(s *enter.Session, request, response mx.Message) {
+func ClanConfer(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ClanConferRequest)
 	rsp := response.(*proto.ClanConferResponse)
 
@@ -241,7 +241,7 @@ func ClanConfer(s *enter.Session, request, response mx.Message) {
 	clanInfo.SetPresident(req.MemberAccountId)
 }
 
-func ClanPermit(s *enter.Session, request, response mx.Message) {
+func ClanPermit(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ClanPermitRequest)
 	rsp := response.(*proto.ClanPermitResponse)
 
@@ -268,13 +268,13 @@ func ClanPermit(s *enter.Session, request, response mx.Message) {
 	rsp.ClanMemberDB = game.GetClanMemberDB(fs)
 }
 
-func ClanMyAssistList(s *enter.Session, request, response mx.Message) {
+func ClanMyAssistList(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.ClanMyAssistListResponse)
 
 	rsp.ClanAssistSlotDBs = game.GetClanAssistSlotDBs(s)
 }
 
-func ClanSetAssist(s *enter.Session, request, response mx.Message) {
+func ClanSetAssist(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ClanSetAssistRequest)
 	rsp := response.(*proto.ClanSetAssistResponse)
 
@@ -331,7 +331,7 @@ func ClanSetAssist(s *enter.Session, request, response mx.Message) {
 	})
 }
 
-func ClanAllAssistList(s *enter.Session, request, response mx.Message) {
+func ClanAllAssistList(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ClanAllAssistListRequest)
 	rsp := response.(*proto.ClanAllAssistListResponse)
 

@@ -5,11 +5,10 @@ import (
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func WeekDungeonList(s *enter.Session, request, response mx.Message) {
+func WeekDungeonList(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.WeekDungeonListResponse)
 
 	rsp.AdditionalStageIdList = make([]int64, 0)
@@ -20,7 +19,7 @@ func WeekDungeonList(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func WeekDungeonEnterBattle(s *enter.Session, request, response mx.Message) {
+func WeekDungeonEnterBattle(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.WeekDungeonEnterBattleRequest)
 	rsp := response.(*proto.WeekDungeonEnterBattleResponse)
 
@@ -33,7 +32,7 @@ func WeekDungeonEnterBattle(s *enter.Session, request, response mx.Message) {
 	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResult)
 }
 
-func WeekDungeonBattleResult(s *enter.Session, request, response mx.Message) {
+func WeekDungeonBattleResult(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.WeekDungeonBattleResultRequest)
 	rsp := response.(*proto.WeekDungeonBattleResultResponse)
 
@@ -86,7 +85,7 @@ func WeekDungeonBattleResult(s *enter.Session, request, response mx.Message) {
 	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
 }
 
-func SchoolDungeonList(s *enter.Session, request, response mx.Message) {
+func SchoolDungeonList(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.SchoolDungeonListResponse)
 
 	rsp.SchoolDungeonStageHistoryDBList = make([]*proto.SchoolDungeonStageHistoryDB, 0)
@@ -96,7 +95,7 @@ func SchoolDungeonList(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func SchoolDungeonEnterBattle(s *enter.Session, request, response mx.Message) {
+func SchoolDungeonEnterBattle(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.SchoolDungeonEnterBattleRequest)
 	rsp := response.(*proto.SchoolDungeonEnterBattleResponse)
 
@@ -109,7 +108,7 @@ func SchoolDungeonEnterBattle(s *enter.Session, request, response mx.Message) {
 	rsp.ParcelResultDB = game.ParcelResultDB(s, game.GetSchoolDungeonCost(true, 1))
 }
 
-func SchoolDungeonBattleResult(s *enter.Session, request, response mx.Message) {
+func SchoolDungeonBattleResult(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.SchoolDungeonBattleResultRequest)
 	rsp := response.(*proto.SchoolDungeonBattleResultResponse)
 

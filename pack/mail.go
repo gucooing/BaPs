@@ -6,11 +6,10 @@ import (
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func MailCheck(s *enter.Session, request, response mx.Message) {
+func MailCheck(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.MailCheckResponse)
 
 	rsp.Count = game.GetMailCheckCount(s) // 未领取数量
@@ -21,7 +20,7 @@ func MailCheck(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func MailList(s *enter.Session, request, response mx.Message) {
+func MailList(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.MailListRequest)
 	rsp := response.(*proto.MailListResponse)
 
@@ -29,7 +28,7 @@ func MailList(s *enter.Session, request, response mx.Message) {
 	game.SetServerNotification(s, proto.ServerNotificationFlag_HasUnreadMail, false)
 }
 
-func MailReceive(s *enter.Session, request, response mx.Message) {
+func MailReceive(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.MailReceiveRequest)
 	rsp := response.(*proto.MailReceiveResponse)
 

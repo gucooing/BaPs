@@ -2,9 +2,11 @@ package gateway
 
 import (
 	"encoding/json"
+	"sync/atomic"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gucooing/BaPs/common/check"
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/config"
 	"github.com/gucooing/BaPs/game"
@@ -12,9 +14,10 @@ import (
 	"github.com/gucooing/BaPs/pkg/logger"
 	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/cmd"
+	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-type handlerFunc func(s *enter.Session, request, response mx.Message)
+type handlerFunc func(s *enter.Session, request, response proto.Message)
 
 func (g *Gateway) newFuncRouteMap() {
 	g.funcRouteMap = map[int32]handlerFunc{
@@ -99,16 +102,18 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Echelon_Save:       pack.EchelonSave,       // 保存/更新队伍
 		mx.Protocol_Echelon_PresetList: pack.EchelonPresetList, // 获取预设队伍
 		// 剧情/教程
-		mx.Protocol_Scenario_List:                  pack.ScenarioList,               // 获取场景剧情信息
-		mx.Protocol_Scenario_GroupHistoryUpdate:    pack.ScenarioGroupHistoryUpdate, // 完成场景剧情信息
-		mx.Protocol_Scenario_Clear:                 pack.ScenarioClear,              // 完成剧情
-		mx.Protocol_Scenario_Select:                pack.ScenarioSelect,             // 剧情选择
-		mx.Protocol_Account_GetTutorial:            pack.AccountGetTutorial,         // 获取教程
-		mx.Protocol_Mission_List:                   pack.MissionList,                // 获取 任务/成就 信息
-		mx.Protocol_Mission_Sync:                   pack.MissionSync,                // 同步任务/成就
-		mx.Protocol_Mission_GuideMissionSeasonList: pack.GuideMissionSeasonList,     // 获取指南任务信息
-		mx.Protocol_Scenario_Skip:                  pack.ScenarioSkip,               // 剧情跳过
-		mx.Protocol_Account_SetTutorial:            pack.AccountSetTutorial,         // 设置完成教程
+		mx.Protocol_Scenario_List:               pack.ScenarioList,               // 获取场景剧情信息
+		mx.Protocol_Scenario_GroupHistoryUpdate: pack.ScenarioGroupHistoryUpdate, // 完成场景剧情信息
+		mx.Protocol_Scenario_Clear:              pack.ScenarioClear,              // 完成剧情
+		mx.Protocol_Scenario_Select:             pack.ScenarioSelect,             // 剧情选择
+		mx.Protocol_Account_GetTutorial:         pack.AccountGetTutorial,         // 获取教程
+		mx.Protocol_Scenario_Skip:               pack.ScenarioSkip,               // 剧情跳过
+		mx.Protocol_Account_SetTutorial:         pack.AccountSetTutorial,         // 设置完成教程
+		// 任务/成就
+		mx.Protocol_Mission_List:                   pack.MissionList,            // 获取 任务/成就 信息
+		mx.Protocol_Mission_Sync:                   pack.MissionSync,            // 同步任务/成就
+		mx.Protocol_Mission_GuideMissionSeasonList: pack.GuideMissionSeasonList, // 获取成就信息
+		mx.Protocol_Mission_Reward:                 pack.MissionReward,          // 领取 任务/成就 奖励
 		// 咖啡馆
 		mx.Protocol_Cafe_Get:             pack.CafeGetInfo,         // 获取咖啡馆信息
 		mx.Protocol_Cafe_Ack:             pack.CafeAck,             // 确认咖啡馆
@@ -183,7 +188,7 @@ func (g *Gateway) newFuncRouteMap() {
 	}
 }
 
-func (g *Gateway) registerMessage(c *gin.Context, request mx.Message, base *mx.BasePacket) {
+func (g *Gateway) registerMessage(c *gin.Context, request proto.Message, base *proto.BasePacket) {
 	// panic捕获
 	defer func() {
 		if err := recover(); err != nil {
@@ -226,8 +231,16 @@ func (g *Gateway) registerMessage(c *gin.Context, request mx.Message, base *mx.B
 		s.GoroutinesSync.Lock()
 		defer s.GoroutinesSync.Unlock()
 	}
+
+	// 计时并执行函数
+	atomic.AddInt64(&check.TPS, 1)
+	time1 := time.Now()
 	handler(s, request, response)
+	atomic.AddInt64(&check.RT, int64(time.Now().Sub(time1)/time.Nanosecond))
+
+	// 函数执行完毕
 	base.ServerTimeTicks = game.GetServerTime()
+	base.MissionProgressDBs = game.GetMissionProgressDBs(s)
 	base.ServerNotification = game.GetServerNotification(s)
 	logPlayerMsg(Client, request)
 	logPlayerMsg(Server, response)
@@ -245,7 +258,7 @@ const (
 	NoRoute = 3
 )
 
-func logPlayerMsg(logType int, msg mx.Message) {
+func logPlayerMsg(logType int, msg proto.Message) {
 	if _, ok := config.GetBlackCmd()[mx.Protocol(msg.GetProtocol()).String()]; ok ||
 		!config.GetIsLogMsgPlayer() {
 		return

@@ -7,18 +7,17 @@ import (
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func ShopGachaRecruitList(s *enter.Session, request, response mx.Message) {
+func ShopGachaRecruitList(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.ShopGachaRecruitListResponse)
 
 	rsp.ShopRecruits = make([]*proto.ShopRecruitDB, 0)                         // 卡池数据
 	rsp.ShopFreeRecruitHistoryDBs = make([]*proto.ShopFreeRecruitHistoryDB, 0) // 免费抽卡历史数据
 }
 
-func ShopBeforehandGachaGet(s *enter.Session, request, response mx.Message) {
+func ShopBeforehandGachaGet(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.ShopBeforehandGachaGetResponse)
 
 	bin := game.GetBeforehandInfo(s)
@@ -29,7 +28,7 @@ func ShopBeforehandGachaGet(s *enter.Session, request, response mx.Message) {
 	rsp.AlreadyPicked = bin.AlreadyPicked
 }
 
-func ShopBeforehandGachaRun(s *enter.Session, request, response mx.Message) {
+func ShopBeforehandGachaRun(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ShopBeforehandGachaRunRequest)
 	rsp := response.(*proto.ShopBeforehandGachaRunResponse)
 
@@ -49,7 +48,7 @@ func ShopBeforehandGachaRun(s *enter.Session, request, response mx.Message) {
 	bin.LastIndex++
 }
 
-func ShopBeforehandGachaSave(s *enter.Session, request, response mx.Message) {
+func ShopBeforehandGachaSave(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ShopBeforehandGachaSaveRequest)
 	rsp := response.(*proto.ShopBeforehandGachaSaveResponse)
 
@@ -64,7 +63,7 @@ func ShopBeforehandGachaSave(s *enter.Session, request, response mx.Message) {
 	rsp.SelectGachaSnapshot = game.GetBeforehandGachaSnapshotDB(s)
 }
 
-func ShopBeforehandGachaPick(s *enter.Session, request, response mx.Message) {
+func ShopBeforehandGachaPick(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ShopBeforehandGachaPickRequest)
 	rsp := response.(*proto.ShopBeforehandGachaPickResponse)
 
@@ -101,7 +100,7 @@ func ShopBeforehandGachaPick(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func ShopBuyGacha3(s *enter.Session, request, response mx.Message) {
+func ShopBuyGacha3(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ShopBuyGacha3Request)
 	rsp := response.(*proto.ShopBuyGacha3Response)
 

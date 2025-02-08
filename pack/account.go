@@ -2,6 +2,7 @@ package pack
 
 import (
 	"strconv"
+	"time"
 
 	"github.com/gucooing/BaPs/common/check"
 	"github.com/gucooing/BaPs/common/enter"
@@ -12,7 +13,7 @@ import (
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func AccountAuth(s *enter.Session, request, response mx.Message) {
+func AccountAuth(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.AccountAuthRequest)
 	rsp := response.(*proto.AccountAuthResponse)
 
@@ -37,9 +38,14 @@ func AccountAuth(s *enter.Session, request, response mx.Message) {
 
 	s.AccountState = proto.AccountState_Normal
 	game.SetLastConnectTime(s)
+
+	// 任务二次处理
+	for _, info := range game.GetCategoryMissionInfo(s) {
+		s.AddMissionByCompleteConditionType(info)
+	}
 }
 
-func AccountNickname(s *enter.Session, request, response mx.Message) {
+func AccountNickname(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.AccountNicknameRequest)
 	rsp := response.(*proto.AccountNicknameResponse)
 
@@ -50,21 +56,21 @@ func AccountNickname(s *enter.Session, request, response mx.Message) {
 	rsp.AccountDB = game.GetAccountDB(s)
 }
 
-func ProofTokenRequestQuestion(s *enter.Session, request, response mx.Message) {
+func ProofTokenRequestQuestion(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.ProofTokenRequestQuestionResponse)
 
 	rsp.Question = "1"
 	rsp.Hint = 1
 }
 
-func NetworkTimeSync(s *enter.Session, request, response mx.Message) {
+func NetworkTimeSync(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.NetworkTimeSyncResponse)
 
 	rsp.ReceiveTick = game.GetServerTime()
 	rsp.EchoSendTick = game.GetServerTimeTick()
 }
 
-func AccountLoginSync(s *enter.Session, request, response mx.Message) {
+func AccountLoginSync(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.AccountLoginSyncRequest)
 	rsp := response.(*proto.AccountLoginSyncResponse)
 
@@ -163,15 +169,15 @@ func AccountLoginSync(s *enter.Session, request, response mx.Message) {
 	}
 }
 
-func ContentSaveGet(s *enter.Session, request, response mx.Message) {
+func ContentSaveGet(s *enter.Session, request, response proto.Message) {
 
 }
 
-func ProofTokenSubmit(s *enter.Session, request, response mx.Message) {
+func ProofTokenSubmit(s *enter.Session, request, response proto.Message) {
 
 }
 
-func AccountSetRepresentCharacterAndComment(s *enter.Session, request, response mx.Message) {
+func AccountSetRepresentCharacterAndComment(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.AccountSetRepresentCharacterAndCommentRequest)
 	rsp := response.(*proto.AccountSetRepresentCharacterAndCommentResponse)
 
@@ -181,10 +187,27 @@ func AccountSetRepresentCharacterAndComment(s *enter.Session, request, response 
 	rsp.RepresentCharacterDB = game.GetCharacterDB(s, game.GetRepresentCharacterUniqueId(s))
 }
 
-func ScenarioAccountStudentChange(s *enter.Session, request, response mx.Message) {
+func ScenarioAccountStudentChange(s *enter.Session, request, response proto.Message) {
 
 }
 
-func ScenarioLobbyStudentChange(s *enter.Session, request, response mx.Message) {
+func ScenarioLobbyStudentChange(s *enter.Session, request, response proto.Message) {
 	// 逆天玩意,纯本地你发服务端干什么?
+}
+
+func ToastList(s *enter.Session, request, response proto.Message) {
+	rsp := response.(*proto.ToastListResponse)
+
+	rsp.ToastDBs = []*proto.ToastDB{
+		{
+			UniqueId:     0,
+			Text:         "欢迎游玩BaPs,这是一个半开源的免费服务器",
+			LocalizeText: make(map[proto.Language]string),
+			ToastId:      "欢迎游玩BaPs,这是一个半开源的免费服务器-2",
+			BeginDate:    time.Now(),
+			EndDate:      time.Now().Add(time.Second * 10),
+			LifeTime:     3000, // ms
+			Delay:        0,
+		},
+	}
 }

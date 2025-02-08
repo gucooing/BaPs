@@ -16,6 +16,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/command"
+	"github.com/gucooing/BaPs/common/check"
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/common/rank"
 	"github.com/gucooing/BaPs/config"
@@ -63,6 +64,7 @@ func NewBaPs() {
 	enter.InitEnterSet()
 	// 初始化gin
 	router, server := newGin(cfg.HttpNet)
+	go check.GinNetInfo()
 	// 初始化sdk
 	sdk.New(router)
 	// 初始化gateWay

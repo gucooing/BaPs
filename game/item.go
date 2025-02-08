@@ -172,14 +172,29 @@ func UpCurrency(s *enter.Session, parcelId int64, num int64) *sro.CurrencyInfo {
 		info.UpdateTime = time.Now().Unix()
 	}
 
+	// 砖石特殊处理
 	gemBonus := GetCurrencyInfo(s, proto.CurrencyTypes_GemBonus)
 	gem := GetCurrencyInfo(s, proto.CurrencyTypes_Gem)
 	if gem != nil || gemBonus != nil {
 		gem.CurrencyNum = gemBonus.CurrencyNum
 	}
-	if parcelId == proto.CurrencyTypes_ActionPoint &&
-		num < 0 {
-		AddAccountExp(s, -num) // 如果是体力扣除,就触发账号经验处理
+
+	// 体力特殊处理
+	if parcelId == proto.CurrencyTypes_ActionPoint {
+		if info.CurrencyNum > 999 {
+			AddMailBySystem(s, "MaxActionPoint", []*sro.ParcelInfo{
+				{
+					Type: proto.ParcelType_Currency,
+					Id:   proto.CurrencyTypes_ActionPoint,
+					Num:  info.CurrencyNum - 999,
+				},
+			})
+			info.CurrencyNum = 999
+		}
+		info.CurrencyNum = alg.MaxInt64(info.CurrencyNum, 999)
+		if num < 0 {
+			AddAccountExp(s, -num) // 如果是体力扣除,就触发账号经验处理
+		}
 	}
 
 	return info
