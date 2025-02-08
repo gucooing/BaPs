@@ -236,6 +236,8 @@ func ServerIdsToCharacterIds(s *enter.Session, serverIdList []int64) []int64 {
 	for _, serverId := range serverIdList {
 		if db := GetCharacterInfoByServerId(s, serverId); db != nil {
 			list = append(list, db.CharacterId)
+		} else {
+			list = append(list, 0)
 		}
 	}
 

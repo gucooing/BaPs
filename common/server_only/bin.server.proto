@@ -252,6 +252,8 @@ message AssistInfo {
   int64 character_id = 3;
   int64 deploy_date = 4;
   int64 total_rent_count = 5; // 使用次数
+  bool is_mulligan = 6;
+  int32 combat_style_index = 7;
 }
 
 // 抽卡记录

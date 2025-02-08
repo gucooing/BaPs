@@ -19,7 +19,8 @@ func RaidLogin(s *enter.Session, request, response mx.Message) {
 	rsp.SeasonType = game.GetRaidSeasonType()
 	bin := game.GetCurRaidInfo(s)
 	if cur := gdconf.GetCurRaidSchedule(); cur != nil && bin != nil {
-		rsp.CanReceiveRankingReward = !(time.Now().After(cur.EndTime) && bin.GetIsRankingReward())
+		rsp.CanReceiveRankingReward = game.GetCanReceiveRankingReward(
+			time.Now().After(cur.EndTime), bin.GetIsRankingReward())
 		rsp.LastSettledRanking = game.GetLastRaidInfo(s).GetRanking()
 		rsp.LastSettledTier = game.GetLastRaidInfo(s).GetTier()
 	}
@@ -69,11 +70,11 @@ func RaidGetBestTeam(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.RaidGetBestTeamResponse)
 
 	rsp.RaidTeamSettingDBs = make([]*proto.RaidTeamSettingDB, 0)
-	as := enter.GetSessionByUid(req.AccountId)
+	as := enter.GetSessionByUid(req.SearchAccountId)
 	if as == nil {
 		return
 	}
-	for _, bin := range game.GetCurRaidTeamList(s) {
+	for _, bin := range game.GetCurRaidTeamList(as) {
 		rsp.RaidTeamSettingDBs = append(rsp.RaidTeamSettingDBs, game.GetRaidTeamSettingDB(as, bin))
 	}
 }
@@ -99,7 +100,7 @@ func RaidCreateBattle(s *enter.Session, request, response mx.Message) {
 	}
 	if assist := req.AssistUseInfo; assist != nil && !curBattle.IsAssist {
 		ac := enter.GetSessionByUid(assist.CharacterAccountId)
-		assistInfo := game.GetAssistInfo(ac, assist.EchelonType, assist.SlotNumber)
+		assistInfo := game.GetAssistInfoByClanAssistUseInfo(ac, assist)
 		rsp.AssistCharacterDB = game.GetAssistCharacterDB(ac, assistInfo, assist.AssistRelation)
 	}
 

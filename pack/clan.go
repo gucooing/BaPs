@@ -355,8 +355,8 @@ func ClanAllAssistList(s *enter.Session, request, response mx.Message) {
 				&proto.ClanAssistRentHistoryDB{
 					AssistCharacterAccountId: fs.AccountServerId,
 					AssistCharacterDBId:      characterInfo.ServerId,
-					RentDate:                 mx.Unix(info.DeployDate, 0),
-					AssistCharacterId:        characterInfo.CharacterId,
+					// RentDate:                 mx.Unix(info.DeployDate, 0), 是我的视角下什么时候借了人
+					AssistCharacterId: characterInfo.CharacterId,
 				})
 		}
 	}

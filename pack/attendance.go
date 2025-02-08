@@ -1,6 +1,8 @@
 package pack
 
 import (
+	"time"
+
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/game"
@@ -17,11 +19,15 @@ func AttendanceReward(s *enter.Session, request, response mx.Message) {
 	rsp.AttendanceHistoryDBs = make([]*proto.AttendanceHistoryDB, 0)
 	for id, day := range req.DayByBookUniqueId {
 		bin := game.GetAttendanceInfo(s, id)
-		if _, ok := bin.GetAttendedDay()[day]; ok {
+		conf := gdconf.GetAttendanceInfo(id)
+		if conf == nil || bin == nil {
 			continue
 		}
-		conf := gdconf.GetAttendanceInfo(id)
-		if conf == nil {
+		if bin.AttendedDay == nil {
+			bin.AttendedDay = make(map[int64]int64)
+		}
+		if _, ok := bin.AttendedDay[day]; ok ||
+			conf.AttendanceReward[day] == nil {
 			continue
 		}
 		if rewardConf, ok := conf.AttendanceReward[day]; ok {
@@ -35,6 +41,8 @@ func AttendanceReward(s *enter.Session, request, response mx.Message) {
 			game.AddMailBySystem(s, conf.MailType, parcelInfoList)
 		}
 
+		bin.AttendedDay[day] = time.Now().Unix()
+		bin.LastReward = time.Now().Unix()
 		rsp.AttendanceBookRewards = append(rsp.AttendanceBookRewards,
 			game.GetAttendanceBookReward(s, id))
 		rsp.AttendanceHistoryDBs = append(rsp.AttendanceHistoryDBs,

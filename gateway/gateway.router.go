@@ -221,14 +221,14 @@ func (g *Gateway) registerMessage(c *gin.Context, request mx.Message, base *mx.B
 		}
 		s.EndTime = time.Now().Add(time.Duration(enter.MaxCachePlayerTime) * time.Minute)
 	}
-	base.ServerTimeTicks = game.GetServerTime()
-	base.ServerNotification = game.GetServerNotification(s)
 	response.SetSessionKey(base) //  任何情况下都不要更改handler执行和SetSessionKey的顺序
 	if s != nil {                // 唯一线程操作锁
 		s.GoroutinesSync.Lock()
 		defer s.GoroutinesSync.Unlock()
 	}
 	handler(s, request, response)
+	base.ServerTimeTicks = game.GetServerTime()
+	base.ServerNotification = game.GetServerNotification(s)
 	logPlayerMsg(Client, request)
 	logPlayerMsg(Server, response)
 	if base.ErrorCode != 0 {

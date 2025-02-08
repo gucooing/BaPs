@@ -60,7 +60,7 @@ func GetAttendanceInfo(s *enter.Session, attendanceId int64) *sro.AttendanceInfo
 		delete(bin, attendanceId)
 		return nil
 	}
-	if (time.Unix(info.LastReward, 0).After(alg.GetDay4()) &&
+	if (time.Unix(info.LastReward, 0).Before(alg.GetDay4()) &&
 		int64(len(info.AttendedDay)) >= conf.BookSize) || time.Now().After(conf.EndTime) {
 		if conf.Type == "Basic" {
 			info.AttendedDay = make(map[int64]int64)
@@ -78,7 +78,10 @@ func GetAttendanceInfo(s *enter.Session, attendanceId int64) *sro.AttendanceInfo
 
 func GetAttendanceBookRewards(s *enter.Session) []*proto.AttendanceBookReward {
 	list := make([]*proto.AttendanceBookReward, 0)
-	for id, _ := range GetAttendanceList(s) {
+	for id, bin := range GetAttendanceList(s) {
+		if time.Unix(bin.LastReward, 0).After(alg.GetDay4()) {
+			continue
+		}
 		info := GetAttendanceBookReward(s, id)
 		if info == nil {
 			continue
@@ -135,7 +138,10 @@ func GetAttendanceBookReward(s *enter.Session, attendanceId int64) *proto.Attend
 
 func GetAttendanceHistoryDBs(s *enter.Session) []*proto.AttendanceHistoryDB {
 	list := make([]*proto.AttendanceHistoryDB, 0)
-	for id, _ := range GetAttendanceList(s) {
+	for id, bin := range GetAttendanceList(s) {
+		if time.Unix(bin.LastReward, 0).After(alg.GetDay4()) {
+			continue
+		}
 		info := GetAttendanceHistoryDB(s, id)
 		if info == nil {
 			continue

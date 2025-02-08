@@ -43,6 +43,7 @@ func GetCurRaidInfo(s *enter.Session) *sro.RaidInfo {
 		bin.CurRaidInfo.Tier = gdconf.GetRaidTier(bin.CurRaidInfo.SeasonId, bin.CurRaidInfo.Ranking)
 		bin.LastRaidInfo = bin.CurRaidInfo
 
+		bin.CurRaidBattleInfo = nil
 		bin.CurRaidInfo = &sro.RaidInfo{
 			SeasonId: cur.SeasonId,
 		}
@@ -158,6 +159,13 @@ func GetReceiveRewardIds(s *enter.Session) []int64 {
 	return list
 }
 
+func GetCanReceiveRankingReward(isTime, isReward bool) bool {
+	if isTime && !isReward {
+		return true
+	}
+	return false
+}
+
 func GetRaidLobbyInfoDB(s *enter.Session) *proto.RaidLobbyInfoDB {
 	bin := GetCurRaidInfo(s)
 	info := &proto.RaidLobbyInfoDB{
@@ -185,7 +193,8 @@ func GetRaidLobbyInfoDB(s *enter.Session) *proto.RaidLobbyInfoDB {
 		info.BestRankingPoint = bin.GetBestScore()
 		info.Tier = gdconf.GetRaidTier(cur.SeasonId, info.Ranking)
 		info.TotalRankingPoint = bin.GetTotalScore()
-		info.CanReceiveRankingReward = !(time.Now().After(cur.EndTime) && bin.GetIsRankingReward())
+		info.CanReceiveRankingReward = GetCanReceiveRankingReward(
+			time.Now().After(cur.EndTime), bin.GetIsRankingReward())
 	}
 	if next := gdconf.GetNextRaidSchedule(); next != nil {
 		info.NextSeasonId = next.SeasonId
@@ -442,6 +451,7 @@ func CheckRaidCharacter(s *enter.Session, echelonInfo *sro.EchelonInfo, summary 
 			if curBattle.IsAssist {
 				return false // 援助角色超限
 			}
+
 			curBattle.IsAssist = true
 		}
 		raidTeamInfo.MainCharacterList[int32(index)] = getRaidCharacterInfo(heroe)

@@ -373,6 +373,20 @@ func GetAssistInfo(s *enter.Session, echelonType proto.EchelonType, slot int32) 
 	return bin.AssistInfoList[slot]
 }
 
+func GetAssistInfoByClanAssistUseInfo(s *enter.Session, assist *proto.ClanAssistUseInfo) *sro.AssistInfo {
+	if assist == nil {
+		return nil
+	}
+	bin := GetAssistInfo(s, assist.EchelonType, assist.SlotNumber)
+	if bin == nil {
+		return nil
+	}
+	bin.IsMulligan = assist.IsMulligan
+	bin.CombatStyleIndex = assist.CombatStyleIndex
+	bin.TotalRentCount++
+	return bin
+}
+
 func GetClanAssistSlotDBs(s *enter.Session) []*proto.ClanAssistSlotDB {
 	list := make([]*proto.ClanAssistSlotDB, 0)
 	for _, assist := range GetAssistList(s) {
@@ -440,29 +454,17 @@ func GetAssistCharacterDB(s *enter.Session, info *sro.AssistInfo, assistRelation
 		AssistRelation:          assistRelation,
 		AssistCharacterServerId: characterInfo.ServerId,
 		EquipmentDBs:            make([]*proto.EquipmentDB, 0),
-		ExSkillLevel:            characterInfo.ExSkillLevel,
-		Exp:                     characterInfo.Exp,
-		ExtraPassiveSkillLevel:  characterInfo.ExtraPassiveSkillLevel,
-		FavorRank:               characterInfo.FavorRank,
-		FavorExp:                characterInfo.FavorExp,
 		GearDB:                  GetGearDB(s, characterInfo.GearServerId),
-		LeaderSkillLevel:        characterInfo.LeaderSkillLevel,
-		Level:                   characterInfo.Level,
 		NickName:                GetNickname(s),
-		PassiveSkillLevel:       characterInfo.PassiveSkillLevel,
-		PotentialStats:          characterInfo.PotentialStats,
-		PublicSkillLevel:        characterInfo.CommonSkillLevel,
 		SlotNumber:              int32(info.SlotNumber),
-		StarGrade:               characterInfo.StarGrade,
-		Type:                    proto.ParcelType_Character,
-		UniqueId:                characterInfo.CharacterId,
 		WeaponDB:                GetWeaponDB(s, characterInfo.CharacterId),
+		CharacterDB:             GetCharacterDB(s, characterInfo.CharacterId),
+		IsMulligan:              info.IsMulligan,
+		CombatStyleIndex:        info.CombatStyleIndex,
 
 		CostumeId:        0,
 		CostumeDB:        nil,
-		IsMulligan:       false,
 		IsTSAInteraction: false,
-		CombatStyleIndex: 0,
 	}
 	for _, serverId := range characterInfo.EquipmentList {
 		if equipmentDB := GetEquipmentDB(s, serverId); equipmentDB != nil {
