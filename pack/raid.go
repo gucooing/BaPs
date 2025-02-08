@@ -186,6 +186,7 @@ func RaidGiveUp(s *enter.Session, request, response mx.Message) {
 		req.IsPractice != curBattle.IsPractice {
 		return
 	}
+	curBattle.IsClose = true
 	parcelResult := game.RaidClose(s)
 	if !curBattle.IsPractice {
 		rsp.RaidGiveUpDB = game.GetRaidGiveUpDB(s)

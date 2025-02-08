@@ -486,8 +486,9 @@ func RaidClose(s *enter.Session) []*ParcelResult {
 	curBattle.DefaultPoint = conf.DefaultClearScore
 	curBattle.HpScorePoint = conf.HPPercentScore * curBattle.GivenDamage / curBattle.MaxHp
 	curBattle.ClearTimePoint = alg.MaxInt64(conf.MaximumScore-conf.PerSecondMinusScore/300*int64(curBattle.Frame), 0)
-	if !curBattle.IsPractice {
-		// 如果不是模拟
+
+	// 如果不是模拟,且战斗结束
+	if !curBattle.IsPractice && curBattle.IsClose && len(curBattle.RaidTeamList) > 0 {
 		rankingPoint := curBattle.ClearTimePoint + curBattle.HpScorePoint + curBattle.DefaultPoint
 		cur.TotalScore += rankingPoint // 累积分数
 		if cur.BestScore < rankingPoint {
@@ -496,15 +497,13 @@ func RaidClose(s *enter.Session) []*ParcelResult {
 			rank.SetRaidScore(curBattle.SeasonId, s.AccountServerId, float64(rankingPoint))
 		}
 		// 计算奖励
-		if curBattle.IsClose {
-			cur.Difficulty = alg.MaxInt32(cur.Difficulty, int32(proto.GetDifficultyByStr(conf.Difficulty)))
-			for _, rewardConf := range gdconf.GetRaidStageRewardExcelTable(conf.RaidRewardGroupId) {
-				list = append(list, &ParcelResult{
-					ParcelType: proto.GetParcelTypeValue(rewardConf.ClearStageRewardParcelType),
-					ParcelId:   rewardConf.ClearStageRewardParcelUniqueID,
-					Amount:     rewardConf.ClearStageRewardAmount,
-				})
-			}
+		cur.Difficulty = alg.MaxInt32(cur.Difficulty, int32(proto.GetDifficultyByStr(conf.Difficulty)))
+		for _, rewardConf := range gdconf.GetRaidStageRewardExcelTable(conf.RaidRewardGroupId) {
+			list = append(list, &ParcelResult{
+				ParcelType: proto.GetParcelTypeValue(rewardConf.ClearStageRewardParcelType),
+				ParcelId:   rewardConf.ClearStageRewardParcelUniqueID,
+				Amount:     rewardConf.ClearStageRewardAmount,
+			})
 		}
 	}
 	curBattle.IsClose = true
