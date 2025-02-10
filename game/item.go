@@ -655,8 +655,6 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 		StickerDBs:                      nil,
 		CharacterNewUniqueIds:           nil,
 		SecretStoneCharacterIdAndCounts: nil,
-		DisplaySequence:                 make([]*proto.ParcelInfo, 0),
-		ParcelForMission:                nil,
 		ParcelResultStepInfoList:        nil,
 		BaseAccountExp:                  0,
 		AdditionalAccountExp:            0,
@@ -666,9 +664,10 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 		info.AccountDB = GetAccountDB(s)
 		info.AccountCurrencyDB = GetAccountCurrencyDB(s)
 	}()
-	isParcelResult := true
+	parcelInfoList := make([]*proto.ParcelInfo, 0)
 
 	for _, parcelResult := range parcelResultList {
+		isParcelResult := true
 		switch parcelResult.ParcelType {
 		case proto.ParcelType_Currency: // 货币
 			UpCurrency(s, parcelResult.ParcelId, parcelResult.Amount)
@@ -718,7 +717,7 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 			logger.Warn("没有处理的奖励类型 Unknown ParcelType:%s", parcelResult.ParcelType.String())
 		}
 		if parcelResult.Amount >= 0 && isParcelResult {
-			info.DisplaySequence = append(info.DisplaySequence, &proto.ParcelInfo{
+			parcelInfoList = append(parcelInfoList, &proto.ParcelInfo{
 				Key: &proto.ParcelKeyPair{
 					Type: parcelResult.ParcelType,
 					Id:   parcelResult.ParcelId,
@@ -733,6 +732,8 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 			})
 		}
 	}
+	info.DisplaySequence = parcelInfoList
+	info.ParcelForMission = parcelInfoList
 
 	return info
 }

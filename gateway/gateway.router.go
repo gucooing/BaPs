@@ -22,13 +22,11 @@ type handlerFunc func(s *enter.Session, request, response proto.Message)
 func (g *Gateway) newFuncRouteMap() {
 	g.funcRouteMap = map[int32]handlerFunc{
 		mx.Protocol_Arena_Login:                          pack.ArenaLogin,                          // 登录获取竞技场信息
-		mx.Protocol_EliminateRaid_Login:                  pack.EliminateRaidLogin,                  // 登录获取制约解除决战信息
 		mx.Protocol_Craft_List:                           pack.CraftInfoList,                       // 获取制造信息
 		mx.Protocol_TimeAttackDungeon_Login:              pack.TimeAttackDungeonLogin,              // 登录获取限时战斗信息??
 		mx.Protocol_Billing_PurchaseListByYostar:         pack.BillingPurchaseListByYostar,         // Yostar采购清单??
 		mx.Protocol_EventContent_PermanentList:           pack.EventContentPermanentList,           // 获取永久时间列表?
 		mx.Protocol_Sticker_Login:                        pack.StickerLogin,                        // 登录获取贴纸信息??
-		mx.Protocol_MultiFloorRaid_Sync:                  pack.MultiFloorRaidSync,                  // 制约解除决战信息同步??
 		mx.Protocol_ContentSweep_MultiSweepPresetList:    pack.ContentSweepMultiSweepPresetList,    // ????
 		mx.Protocol_ContentSave_Get:                      pack.ContentSaveGet,                      // ???
 		mx.Protocol_ProofToken_Submit:                    pack.ProofTokenSubmit,                    // 密钥更新
@@ -185,6 +183,13 @@ func (g *Gateway) newFuncRouteMap() {
 		mx.Protocol_Raid_GiveUp:        pack.RaidGiveUp,        // 主动结束总力战
 		mx.Protocol_Raid_SeasonReward:  pack.RaidSeasonReward,  // 领取总分奖励
 		mx.Protocol_Raid_RankingReward: pack.RaidRankingReward, // 领取排名奖励
+		// 大决战
+		mx.Protocol_EliminateRaid_Login: pack.EliminateRaidLogin, // 登录获取大决战信息
+		// 制约解除决战
+		mx.Protocol_MultiFloorRaid_Sync:          pack.MultiFloorRaidSync,          // 制约解除决战信息同步
+		mx.Protocol_MultiFloorRaid_EnterBattle:   pack.MultiFloorRaidEnterBattle,   // 制约解除决战开始战斗
+		mx.Protocol_MultiFloorRaid_EndBattle:     pack.MultiFloorRaidEndBattle,     // 制约解除决战结束战斗
+		mx.Protocol_MultiFloorRaid_ReceiveReward: pack.MultiFloorRaidReceiveReward, // 制约解除决战领取奖励
 	}
 }
 

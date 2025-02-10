@@ -25,8 +25,19 @@ func GetRaidSeasonType() proto.RaidSeasonType {
 	return proto.RaidSeasonType_Settlement
 }
 
+func GetRaidBin(s *enter.Session) *sro.RaidBin {
+	bin := GetPlayerBin(s)
+	if bin == nil {
+		return nil
+	}
+	if bin.RaidBin == nil {
+		bin.RaidBin = &sro.RaidBin{}
+	}
+	return bin.RaidBin
+}
+
 func GetCurRaidInfo(s *enter.Session) *sro.RaidInfo {
-	bin := GetRankBin(s)
+	bin := GetRaidBin(s)
 	if bin == nil {
 		return nil
 	}
@@ -39,8 +50,20 @@ func GetCurRaidInfo(s *enter.Session) *sro.RaidInfo {
 			SeasonId: cur.SeasonId,
 		}
 	}
-	if bin.CurRaidInfo.SeasonId != cur.SeasonId {
+	// 如果赛季已经进入结算期
+	if time.Now().After(cur.EndTime) {
+		// 无效数据丢弃
+		if bin.CurRaidInfo.SeasonId != cur.SeasonId {
+			bin.CurRaidInfo = &sro.RaidInfo{
+				SeasonId: cur.SeasonId,
+			}
+		}
+		// 有效
+		bin.CurRaidInfo.Ranking = rank.GetRaidRank(cur.SeasonId, s.AccountServerId)
 		bin.CurRaidInfo.Tier = gdconf.GetRaidTier(bin.CurRaidInfo.SeasonId, bin.CurRaidInfo.Ranking)
+	}
+	// 如果进入了新赛季
+	if bin.CurRaidInfo.SeasonId != cur.SeasonId {
 		bin.LastRaidInfo = bin.CurRaidInfo
 
 		bin.CurRaidBattleInfo = nil
@@ -53,7 +76,7 @@ func GetCurRaidInfo(s *enter.Session) *sro.RaidInfo {
 
 func GetLastRaidInfo(s *enter.Session) *sro.RaidInfo {
 	GetCurRaidInfo(s)
-	bin := GetRankBin(s)
+	bin := GetRaidBin(s)
 	if bin == nil {
 		return nil
 	}
@@ -76,7 +99,7 @@ func GetCurRaidTeamList(s *enter.Session) map[int32]*sro.RaidTeamInfo {
 
 // NewCurRaidBattleInfo 创建新的总力战
 func NewCurRaidBattleInfo(s *enter.Session, raidUniqueId int64, isPractice bool) {
-	bin := GetRankBin(s)
+	bin := GetRaidBin(s)
 	conf := gdconf.GetRaidStageExcelTable(raidUniqueId)
 	if bin == nil || conf == nil {
 		logger.Debug("玩家实例不存在或总力战关卡不存在RaidUniqueId:%v", raidUniqueId)
@@ -100,7 +123,7 @@ func NewCurRaidBattleInfo(s *enter.Session, raidUniqueId int64, isPractice bool)
 }
 
 func GetCurRaidBattleInfo(s *enter.Session) *sro.CurRaidBattleInfo {
-	return GetRankBin(s).GetCurRaidBattleInfo()
+	return GetRaidBin(s).GetCurRaidBattleInfo()
 }
 
 func RaidCheck(s *enter.Session) {
@@ -160,10 +183,7 @@ func GetReceiveRewardIds(s *enter.Session) []int64 {
 }
 
 func GetCanReceiveRankingReward(isTime, isReward bool) bool {
-	if isTime && !isReward {
-		return true
-	}
-	return false
+	return isTime && isReward == false
 }
 
 func GetRaidLobbyInfoDB(s *enter.Session) *proto.RaidLobbyInfoDB {

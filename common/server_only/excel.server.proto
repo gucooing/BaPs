@@ -55,6 +55,9 @@ message Excel {
   repeated RaidStageRewardExcelTable RaidStageRewardExcelTable = 46; // 总力战关卡通过奖励配置
   repeated MissionExcelTable MissionExcelTable = 47; // 任务配置
   repeated RaidStageSeasonRewardExcelTable RaidStageSeasonRewardExcelTable = 48; // 总力战总分奖励配置
+  repeated MultiFloorRaidSeasonManageExcel MultiFloorRaidSeasonManageExcel = 49; // 制约解除决战赛季配置
+  repeated MultiFloorRaidStageExcel MultiFloorRaidStageExcel = 50; // 制约解除决战关卡
+  repeated MultiFloorRaidRewardExcel MultiFloorRaidRewardExcel = 51; // 制约解除决战关卡奖励
 }
 
 message CafeInfoExcelTableInfo {
@@ -945,4 +948,54 @@ message RaidStageSeasonRewardExcelTable {
   repeated int64 SeasonRewardParcelUniqueId = 3;
   repeated string SeasonRewardParcelUniqueName = 4;
   repeated int64 SeasonRewardAmount = 5;
+}
+
+message MultiFloorRaidSeasonManageExcel {
+  int64 SeasonId = 1;
+  int64 LobbyEnterScenario = 2;
+  bool ShowLobbyBanner = 3;
+  string SeasonStartDate = 4;
+  string SeasonEndDate = 5;
+  string SettlementEndDate = 6;
+  string OpenRaidBossGroupId = 7;
+  int64 EnterScenarioKey = 8;
+  string LobbyImgPath = 9;
+  string LevelImgPath = 10;
+  string PlayTip = 11;
+}
+
+message MultiFloorRaidStageExcel {
+  int64 Id = 1;
+  string EchelonExtensionType = 2;
+  string BossGroupId = 3;
+  int64 AssistSlot = 4;
+  int64 StageOpenCondition = 5;
+  bool FloorListSection = 6;
+  int64 FloorListSectionOpenCondition = 7;
+  int64 FloorListSectionLabel = 8;
+  int32 Difficulty = 9;
+  bool UseBossIndex = 10;
+  bool UseBossAIPhaseSync = 11;
+  string FloorListImgPath = 12;
+  string FloorImgPath = 13;
+  int64 RaidCharacterId = 14;
+  int64 BossCharacterIdLength = 15;
+  int64 StatChangeIdLength = 16;
+  int64 BattleDuration = 17;
+  int64 GroundId = 18;
+  int64 RecommendLevel = 19;
+  int64 RewardGroupId = 20;
+  int64 BattleReadyTimelinePathLength = 21;
+  int64 BattleReadyTimelinePhaseStartLength = 22;
+  int64 BattleReadyTimelinePhaseEndLength = 23;
+  string VictoryTimelinePath = 24;
+  bool ShowSkillCard = 25;
+}
+
+message MultiFloorRaidRewardExcel {
+  int64 RewardGroupId = 1;
+  int64 ClearStageRewardProb = 2;
+  string ClearStageRewardParcelType = 3;
+  int64 ClearStageRewardParcelUniqueID = 4;
+  int64 ClearStageRewardAmount = 5;
 }

@@ -211,3 +211,9 @@ func ToastList(s *enter.Session, request, response proto.Message) {
 		},
 	}
 }
+
+func ContentSweepMultiSweepPresetList(s *enter.Session, request, response proto.Message) {
+	rsp := response.(*proto.ContentSweepMultiSweepPresetListResponse)
+
+	rsp.MultiSweepPresetDBs = make([]*proto.MultiSweepPresetDB, 0)
+}

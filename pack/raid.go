@@ -238,8 +238,6 @@ func RaidRankingReward(s *enter.Session, request, response proto.Message) {
 	if bin == nil || bin.IsRankingReward {
 		return
 	}
-	// 拉取一次排名
-	bin.Ranking = rank.GetRaidRank(bin.SeasonId, s.AccountServerId)
 	conf := gdconf.GetRaidRankingRewardExcelTableBySeasonId(bin.SeasonId, bin.Ranking)
 	if conf == nil {
 		return

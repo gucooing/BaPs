@@ -149,7 +149,7 @@ func GetDayMissionInfo(s *enter.Session) *sro.CategoryMissionInfo {
 	}
 	info := bin["Daily"]
 	// 如果是超了时间就刷新
-	if alg.GetDay4().After(time.Unix(info.LastMission, 0)) {
+	if alg.GetLastDay4().After(time.Unix(info.LastMission, 0)) {
 		info.LastMission = time.Now().Unix()
 		info.MissionList = make(map[int64]*sro.MissionInfo)
 		for _, conf := range gdconf.GetMissionExcelTableCategoryList("Daily") {

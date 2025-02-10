@@ -79,7 +79,7 @@ func GetAttendanceInfo(s *enter.Session, attendanceId int64) *sro.AttendanceInfo
 func GetAttendanceBookRewards(s *enter.Session) []*proto.AttendanceBookReward {
 	list := make([]*proto.AttendanceBookReward, 0)
 	for id, bin := range GetAttendanceList(s) {
-		if time.Unix(bin.LastReward, 0).After(alg.GetDay4()) {
+		if time.Unix(bin.LastReward, 0).After(alg.GetLastDay4()) {
 			continue
 		}
 		info := GetAttendanceBookReward(s, id)
@@ -139,7 +139,7 @@ func GetAttendanceBookReward(s *enter.Session, attendanceId int64) *proto.Attend
 func GetAttendanceHistoryDBs(s *enter.Session) []*proto.AttendanceHistoryDB {
 	list := make([]*proto.AttendanceHistoryDB, 0)
 	for id, bin := range GetAttendanceList(s) {
-		if time.Unix(bin.LastReward, 0).After(alg.GetDay4()) {
+		if time.Unix(bin.LastReward, 0).After(alg.GetLastDay4()) {
 			continue
 		}
 		info := GetAttendanceHistoryDB(s, id)

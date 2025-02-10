@@ -71,6 +71,9 @@ type GPP struct {
 	MissionExcel               *MissionExcel
 	RaidStageSeasonRewardExcel *RaidStageSeasonRewardExcel
 	Attendance                 *Attendance
+	MultiFloorRaidReward       *MultiFloorRaidReward
+	MultiFloorRaidStage        *MultiFloorRaidStage
+	MultiFloorRaidSeasonManage *MultiFloorRaidSeasonManage
 }
 
 func LoadGameConfig(dataPath string, resPath string) *GameConfig {
@@ -143,6 +146,9 @@ func (g *GameConfig) gpp() {
 		g.gppRaidStageRewardExcelTable,
 		g.gppMissionExcelTable,
 		g.gppRaidStageSeasonRewardExcelTable,
+		g.gppMultiFloorRaidRewardExcel,
+		g.gppMultiFloorRaidStageExcel,
+		g.gppMultiFloorRaidSeasonManageExcel,
 
 		// data
 		g.loadRaidSchedule,

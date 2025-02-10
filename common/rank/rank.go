@@ -66,17 +66,22 @@ func (x *RankInfo) NewRaidRank(seasonId int64) {
 	for _, dbInfo := range db.GetAllYostarRank(x.SQL, seasonId) {
 		s.Set(dbInfo.Score, dbInfo.Uid)
 	}
-	if conf.EndTime.After(time.Now()) {
+	// 赛季结束
+	nextConf := gdconf.GetRaidScheduleInfo(conf.NextSeasonId)
+	if nextConf == nil {
+		logger.Warn("总力站缺少下一个赛季配置")
+		return
+	}
+	if conf.StartTime.After(time.Now()) {
 		go func() {
-			d := conf.EndTime.Add(1 * time.Hour).Sub(time.Now())
+			d := nextConf.StartTime.Add(1 * time.Hour).Sub(time.Now())
 			ticker := time.NewTimer(d)
-			logger.Debug("离总力战赛季结算还有:%s", d.String())
+			logger.Debug("离下一个总力战赛季开始还有:%s", d.String())
 			select {
 			case <-ticker.C:
 				x.SettlementRaid(conf.SeasonId)
 			}
 		}()
-
 	}
 }
 

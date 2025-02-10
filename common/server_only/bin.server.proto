@@ -19,8 +19,9 @@ message PlayerBin {
     AttachmentBin attachment_bin = 12; // 玩家档案
     MomoTalkBin momo_talk_bin = 13; // MomoTalk 信息
     DungeonBin dungeon_bin = 14; // 副本信息
-    RankBin rank_bin = 15; // 总力战/竞技场信息
+    RaidBin raid_bin = 15; // 总力战信息
     AttendanceBin attendance_bin = 16; // 登录奖励
+    RaidMultiFloorBin raid_multi_floor_bin = 17; // 制约解除决战信息
 }
 
 // 基础信息
@@ -386,9 +387,9 @@ message SchoolDungeonStageInfo {
   bool is_star = 6;
 }
 
-// 总力战/竞技场信息
+// 总力战
 
-message RankBin {
+message RaidBin {
   RaidInfo cur_raid_info = 1;
   RaidInfo last_raid_info = 2;
   CurRaidBattleInfo cur_raid_battle_info = 3; // 当前战斗
@@ -459,4 +460,19 @@ message AttendanceInfo {
   map<int64,int64> attended_day = 3;
   int64 last_reward = 4; // 上一次领取时间
   bool expired = 5; // 是否结束
+}
+
+// 制约解除决战信息
+
+message RaidMultiFloorBin {
+    RaidMultiFloorInfo cur_raid_multi_floor = 1;
+}
+
+message RaidMultiFloorInfo {
+  int64 season_id = 1; // 赛季id
+  int32 cleared_difficulty = 2; // 最高通关难度
+  int64 last_clear_date = 3; // 上次通关时间
+  int32 frame = 4; // 总时间帧
+  int64 last_reward_date = 5; // 上次领取奖励时间
+  int32 reward_difficulty = 6; // 最高奖励领取难度
 }

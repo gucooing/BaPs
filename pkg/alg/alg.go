@@ -105,6 +105,15 @@ func GetDayH(h int) time.Time {
 	return nextExecution
 }
 
+func GetLastDay4() time.Time {
+	currentTime := time.Now()
+	nextExecution := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 4, 0, 0, 0, currentTime.Location())
+	if currentTime.Hour() < 4 {
+		nextExecution = nextExecution.AddDate(0, 0, -1)
+	}
+	return nextExecution
+}
+
 func GetEveryDay4() time.Duration {
 	currentTime := time.Now()
 	nextExecution := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 4, 0, 0, 0, currentTime.Location())

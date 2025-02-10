@@ -1,7 +1,6 @@
 package rank
 
 import (
-	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/db"
 	"github.com/gucooing/BaPs/pkg/logger"
 	"github.com/gucooing/BaPs/pkg/zset"
@@ -9,7 +8,7 @@ import (
 
 // SettlementRaid 结算线程
 func (x *RankInfo) SettlementRaid(seasonId int64) {
-	logger.Info("总力战赛季结算开始,此时请勿关闭服务器,否则排行可能混乱")
+	logger.Info("新的总力战赛季开始,正在回收旧赛季数据,此时请勿关闭服务器,否则排行可能混乱")
 
 	x.raidSync.Lock()
 	s := x.raidRankZset[seasonId]
@@ -17,38 +16,18 @@ func (x *RankInfo) SettlementRaid(seasonId int64) {
 	x.raidSync.Unlock()
 
 	all := make([]*db.YostarRank, 0)
-	ranking := int64(0)
 	s.RevRange(0, -1, func(score float64, k int64) {
-		ranking++
 		all = append(all, &db.YostarRank{
 			SeasonId: seasonId,
 			Uid:      k,
 			Score:    score,
 		})
-		ac := enter.GetSessionByAccountServerId(k)
-		upAc := false
-		if ac == nil {
-			upAc = true
-			ac = enter.GetSessionByUid(k)
-		}
-		if ac == nil {
-			return
-		}
-		info := ac.PlayerBin.GetRankBin().GetCurRaidInfo()
-		if info == nil || info.SeasonId != seasonId {
-			return
-		}
-		info.Ranking = ranking
-		if upAc {
-			ac.UpDate()
-			enter.DelSession(k)
-		}
 	})
 	err := db.UpAllYostarRank(x.SQL, all, seasonId)
 	if err != nil {
-		logger.Error("总力战排名保存失败SeasonId:%v,err:%s", seasonId, err.Error())
+		logger.Error("旧赛季总力战排名保存失败SeasonId:%v,err:%s", seasonId, err.Error())
 	}
-	logger.Info("总力战赛季结算结束")
+	logger.Info("总力战旧赛季回收结束")
 }
 
 func GetRaidRankZset(seasonId int64) *zset.SortedSet[int64] {

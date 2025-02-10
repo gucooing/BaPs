@@ -42,14 +42,3 @@ func GetPlayerBin(s *enter.Session) *sro.PlayerBin {
 	}
 	return s.PlayerBin
 }
-
-func GetRankBin(s *enter.Session) *sro.RankBin {
-	bin := GetPlayerBin(s)
-	if bin == nil {
-		return nil
-	}
-	if bin.RankBin == nil {
-		bin.RankBin = &sro.RankBin{}
-	}
-	return bin.RankBin
-}
