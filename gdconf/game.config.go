@@ -24,56 +24,57 @@ type GameConfig struct {
 }
 
 type GPP struct {
-	CharacterExcel             *CharacterExcel
-	CafeInfoExcel              *CafeInfoExcel
-	ShopExcel                  *ShopExcel
-	ShopInfoExcel              *ShopInfoExcel
-	ItemExcel                  *ItemExcel
-	Emblem                     *Emblem
-	AcademyFavorScheduleExcel  *AcademyFavorScheduleExcel
-	AcademyMessangerExcel      *AcademyMessangerExcel
-	GuideMissionExcel          *GuideMissionExcel
-	ScenarioMode               *ScenarioMode
-	ScenarioModeReward         *ScenarioModeReward
-	CharacterWeaponExcel       *CharacterWeaponExcel
-	CharacterSkillListExcel    *CharacterSkillListExcel
-	SkillExcel                 *SkillExcel
-	RecipeIngredientExcel      *RecipeIngredientExcel
-	CampaignStageExcel         *CampaignStageExcel
-	CampaignUnitExcel          *CampaignUnitExcel
-	WeekDungeonExcel           *WeekDungeonExcel
-	SchoolDungeonStage         *SchoolDungeonStage
-	AccountLevel               *AccountLevel
-	EquipmentExcel             *EquipmentExcel
-	EquipmentStatExcel         *EquipmentStatExcel
-	EquipmentLevelExcel        *EquipmentLevelExcel
-	FurnitureExcel             *FurnitureExcel
-	CafeRankExcel              *CafeRankExcel
-	CafeProductionExcel        *CafeProductionExcel
-	IdCardBackground           *IdCardBackground
-	WeekDungeonRewardExcel     *WeekDungeonRewardExcel
-	CharacterLevelExcel        *CharacterLevelExcel
-	CharacterGear              *CharacterGear
-	CharacterPotential         *CharacterPotential
-	CharacterPotentialStat     *CharacterPotentialStat
-	AcademyLocationExcel       *AcademyLocationExcel
-	AcademyTicketExcel         *AcademyTicketExcel
-	AcademyZoneExcel           *AcademyZoneExcel
-	AcademyLocationRankExcel   *AcademyLocationRankExcel
-	AcademyRewardExcel         *AcademyRewardExcel
-	SchoolDungeonReward        *SchoolDungeonReward
-	RaidSchedule               *RaidSchedule
-	RaidSeasonManageExcel      *RaidSeasonManageExcel
-	RaidRankingRewardExcel     *RaidRankingRewardExcel
-	RaidStageExcel             *RaidStageExcel
-	CharacterStatExcel         *CharacterStatExcel
-	RaidStageRewardExcel       *RaidStageRewardExcel
-	MissionExcel               *MissionExcel
-	RaidStageSeasonRewardExcel *RaidStageSeasonRewardExcel
-	Attendance                 *Attendance
-	MultiFloorRaidReward       *MultiFloorRaidReward
-	MultiFloorRaidStage        *MultiFloorRaidStage
-	MultiFloorRaidSeasonManage *MultiFloorRaidSeasonManage
+	CharacterExcel                     *CharacterExcel
+	CafeInfoExcel                      *CafeInfoExcel
+	ShopExcel                          *ShopExcel
+	ShopInfoExcel                      *ShopInfoExcel
+	ItemExcel                          *ItemExcel
+	Emblem                             *Emblem
+	AcademyFavorScheduleExcel          *AcademyFavorScheduleExcel
+	AcademyMessangerExcel              *AcademyMessangerExcel
+	GuideMissionExcel                  *GuideMissionExcel
+	ScenarioMode                       *ScenarioMode
+	ScenarioModeReward                 *ScenarioModeReward
+	CharacterWeaponExcel               *CharacterWeaponExcel
+	CharacterSkillListExcel            *CharacterSkillListExcel
+	SkillExcel                         *SkillExcel
+	RecipeIngredientExcel              *RecipeIngredientExcel
+	CampaignStageExcel                 *CampaignStageExcel
+	CampaignUnitExcel                  *CampaignUnitExcel
+	WeekDungeonExcel                   *WeekDungeonExcel
+	SchoolDungeonStage                 *SchoolDungeonStage
+	AccountLevel                       *AccountLevel
+	EquipmentExcel                     *EquipmentExcel
+	EquipmentStatExcel                 *EquipmentStatExcel
+	EquipmentLevelExcel                *EquipmentLevelExcel
+	FurnitureExcel                     *FurnitureExcel
+	CafeRankExcel                      *CafeRankExcel
+	CafeProductionExcel                *CafeProductionExcel
+	IdCardBackground                   *IdCardBackground
+	WeekDungeonRewardExcel             *WeekDungeonRewardExcel
+	CharacterLevelExcel                *CharacterLevelExcel
+	CharacterGear                      *CharacterGear
+	CharacterPotential                 *CharacterPotential
+	CharacterPotentialStat             *CharacterPotentialStat
+	AcademyLocationExcel               *AcademyLocationExcel
+	AcademyTicketExcel                 *AcademyTicketExcel
+	AcademyZoneExcel                   *AcademyZoneExcel
+	AcademyLocationRankExcel           *AcademyLocationRankExcel
+	AcademyRewardExcel                 *AcademyRewardExcel
+	SchoolDungeonReward                *SchoolDungeonReward
+	RaidSchedule                       *RaidSchedule
+	RaidSeasonManageExcel              *RaidSeasonManageExcel
+	RaidRankingRewardExcel             *RaidRankingRewardExcel
+	RaidStageExcel                     *RaidStageExcel
+	CharacterStatExcel                 *CharacterStatExcel
+	RaidStageRewardExcel               *RaidStageRewardExcel
+	MissionExcel                       *MissionExcel
+	RaidStageSeasonRewardExcel         *RaidStageSeasonRewardExcel
+	Attendance                         *Attendance
+	MultiFloorRaidReward               *MultiFloorRaidReward
+	MultiFloorRaidStage                *MultiFloorRaidStage
+	MultiFloorRaidSeasonManage         *MultiFloorRaidSeasonManage
+	TimeAttackDungeonSeasonManageExcel *TimeAttackDungeonSeasonManageExcel
 }
 
 func LoadGameConfig(dataPath string, resPath string) *GameConfig {
@@ -149,6 +150,7 @@ func (g *GameConfig) gpp() {
 		g.gppMultiFloorRaidRewardExcel,
 		g.gppMultiFloorRaidStageExcel,
 		g.gppMultiFloorRaidSeasonManageExcel,
+		g.gppTimeAttackDungeonSeasonManageExcelTable,
 
 		// data
 		g.loadRaidSchedule,

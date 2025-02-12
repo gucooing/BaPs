@@ -7,6 +7,7 @@ require (
 	github.com/gin-gonic/contrib v0.0.0-20250113154928-93b827325fec
 	github.com/gin-gonic/gin v1.10.0
 	github.com/glebarez/sqlite v1.11.0
+	github.com/google/flatbuffers v25.2.10+incompatible
 	golang.org/x/sys v0.28.0
 	google.golang.org/protobuf v1.34.2
 	gorm.io/driver/mysql v1.5.7

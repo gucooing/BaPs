@@ -50,13 +50,16 @@ func (g *Gateway) getEnterTicket(c *gin.Context) {
 		return
 	}
 	rsp.EnterTicket = enterTicket
+	rsp.AllowedSequence = 10
+	rsp.RequiredSecondsPerUser = 10
+	rsp.Birth = "19000101" // 百岁老登玩ba不过分吧
 	rsp.SetSessionKey(&proto.BasePacket{
 		Protocol: req.Protocol,
 	})
 	logger.Debug("EnterTicket交换成功:%s", rsp.EnterTicket)
 }
 
-func (g *Gateway) AccountCheckYostar(s *enter.Session, request, response proto.Message) {
+func AccountCheckYostar(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.AccountCheckYostarRequest)
 	rsp := response.(*proto.AccountCheckYostarResponse)
 	var err error

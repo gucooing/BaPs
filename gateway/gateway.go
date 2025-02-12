@@ -14,8 +14,7 @@ import (
 )
 
 type Gateway struct {
-	router       *gin.Engine
-	funcRouteMap map[int32]handlerFunc
+	router *gin.Engine
 }
 
 func NewGateWay(router *gin.Engine) *Gateway {
@@ -30,7 +29,6 @@ func NewGateWay(router *gin.Engine) *Gateway {
 }
 
 func (g *Gateway) initRouter() {
-	g.newFuncRouteMap()
 	g.router.POST("/getEnterTicket/gateway", g.getEnterTicket)
 	api := g.router.Group("/api")
 	{

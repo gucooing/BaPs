@@ -371,6 +371,7 @@ message MemoryLobbyInfo {
 message DungeonBin {
   map<int64,WeekDungeonStageInfo> week_dungeon_stage_history = 1; // 悬赏通缉/特别依赖 通关信息
   map<int64,SchoolDungeonStageInfo> school_dungeon_stage_history = 2; // 学院交流会通关信息
+  TimeAttackBin time_attack_bin = 3; // 综合战术考试信息
 }
 
 message WeekDungeonStageInfo {
@@ -385,6 +386,28 @@ message SchoolDungeonStageInfo {
   bool is_time = 4;
   bool is_first = 5;
   bool is_star = 6;
+}
+
+message TimeAttackBin {
+  int64 season_id = 1;
+  int64 last_up_time = 2; // 上次更新时间
+  int64 previous_room = 3; // 最佳记录
+  map<int64,TimeAttackRoom> time_attack_room_list = 4;
+  int64 cur_room = 5; // 当前战斗房间
+}
+
+message TimeAttackRoom {
+  int64 season_id = 1;
+  int64 room_id = 2;
+  int64 start_time = 3; // 开始时间
+  bool is_practice = 4; // 是否实践
+  int64 reward_time = 5; // 奖励领取时间
+  repeated TimeAttackRoomBattleHistory battle_list = 6; // 成功战斗记录
+}
+
+message TimeAttackRoomBattleHistory {
+  int64 geas_id = 1; // 关卡id
+  int64 frame = 2; // 时间帧
 }
 
 // 总力战

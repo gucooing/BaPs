@@ -77,6 +77,28 @@ func GetAcademyZoneInfoList(s *enter.Session) map[int64]*sro.AcademyZoneInfo {
 	return bin.AcademyZoneList
 }
 
+func UpAcademyZoneInfoList(s *enter.Session) map[int64]*sro.AcademyZoneInfo {
+	list := make(map[int64]*sro.AcademyZoneInfo)
+	for _, conf := range gdconf.GetAcademyZoneExcelTableList() {
+		info := &sro.AcademyZoneInfo{
+			ZoneId:      conf.Id,
+			StudentList: make(map[int64]bool),
+			IsUp:        false,
+		}
+		for i := 0; i < len(conf.StudentVisitProb); i++ {
+			studentId := gdconf.RandCharacter()
+			if info.StudentList[studentId] {
+				i--
+				continue
+			}
+			info.StudentList[studentId] = true
+		}
+
+		list[conf.Id] = info
+	}
+	return list
+}
+
 func GetAcademyZoneInfo(s *enter.Session, zoneId int64) *sro.AcademyZoneInfo {
 	bin := GetAcademyZoneInfoList(s)
 	if bin == nil {
@@ -104,28 +126,6 @@ func UpAcademyLocationExp(s *enter.Session, locationId int64, exp int64) {
 		bin.Exp -= conf.RankExp
 		bin.Rank++
 	}
-}
-
-func UpAcademyZoneInfoList(s *enter.Session) map[int64]*sro.AcademyZoneInfo {
-	list := make(map[int64]*sro.AcademyZoneInfo)
-	for _, conf := range gdconf.GetAcademyZoneExcelTableList() {
-		info := &sro.AcademyZoneInfo{
-			ZoneId:      conf.Id,
-			StudentList: make(map[int64]bool),
-			IsUp:        false,
-		}
-		for i := 0; i < len(conf.StudentVisitProb); i++ {
-			studentId := gdconf.RandCharacter()
-			if info.StudentList[studentId] {
-				i--
-				continue
-			}
-			info.StudentList[studentId] = true
-		}
-
-		list[conf.Id] = info
-	}
-	return list
 }
 
 func GetAcademyDB(s *enter.Session) *proto.AcademyDB {

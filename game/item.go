@@ -116,31 +116,31 @@ func RemoveItem(s *enter.Session, id int64, num int32) bool {
 }
 
 var DefaultCurrencyNum = map[int32]int64{
-	proto.CurrencyTypes_Gem:                      600,
-	proto.CurrencyTypes_GemPaid:                  0,
-	proto.CurrencyTypes_GemBonus:                 600,   // 砖石
+	proto.CurrencyTypes_Gem:                      600,   // 肝的砖
+	proto.CurrencyTypes_GemPaid:                  0,     // 氪的砖
+	proto.CurrencyTypes_GemBonus:                 600,   // 总砖
 	proto.CurrencyTypes_Gold:                     10000, // 金币
 	proto.CurrencyTypes_ActionPoint:              24,    // 体力
 	proto.CurrencyTypes_AcademyTicket:            3,     // 课程表
-	proto.CurrencyTypes_ArenaTicket:              5,
-	proto.CurrencyTypes_RaidTicket:               6, // 总力战
+	proto.CurrencyTypes_ArenaTicket:              5,     // 竞技场
+	proto.CurrencyTypes_RaidTicket:               6,     // 总力战
 	proto.CurrencyTypes_WeekDungeonChaserATicket: 0,
 	proto.CurrencyTypes_WeekDungeonChaserBTicket: 0,
 	proto.CurrencyTypes_WeekDungeonChaserCTicket: 0,
 	proto.CurrencyTypes_SchoolDungeonATicket:     0,
 	proto.CurrencyTypes_SchoolDungeonBTicket:     0,
 	proto.CurrencyTypes_SchoolDungeonCTicket:     0,
-	proto.CurrencyTypes_TimeAttackDungeonTicket:  3,
+	proto.CurrencyTypes_TimeAttackDungeonTicket:  3, // 综合战术考试
 	proto.CurrencyTypes_MasterCoin:               0,
 	proto.CurrencyTypes_WorldRaidTicketA:         40,
 	proto.CurrencyTypes_WorldRaidTicketB:         40,
 	proto.CurrencyTypes_WorldRaidTicketC:         40,
 	proto.CurrencyTypes_ChaserTotalTicket:        6, // 悬赏通缉
 	proto.CurrencyTypes_SchoolDungeonTotalTicket: 6, // 学院交流会
-	proto.CurrencyTypes_EliminateTicketA:         3,
-	proto.CurrencyTypes_EliminateTicketB:         3,
-	proto.CurrencyTypes_EliminateTicketC:         3,
-	proto.CurrencyTypes_EliminateTicketD:         3,
+	proto.CurrencyTypes_EliminateTicketA:         7, // 大决战
+	proto.CurrencyTypes_EliminateTicketB:         7, // 大决战
+	proto.CurrencyTypes_EliminateTicketC:         7, // 大决战
+	proto.CurrencyTypes_EliminateTicketD:         7, // 大决战
 }
 
 func NewCurrencyInfo() map[int32]*sro.CurrencyInfo {
@@ -191,7 +191,6 @@ func UpCurrency(s *enter.Session, parcelId int64, num int64) *sro.CurrencyInfo {
 			})
 			info.CurrencyNum = 999
 		}
-		info.CurrencyNum = alg.MaxInt64(info.CurrencyNum, 999)
 		if num < 0 {
 			AddAccountExp(s, -num) // 如果是体力扣除,就触发账号经验处理
 		}
@@ -252,17 +251,28 @@ func GetAccountCurrencyDB(s *enter.Session) *proto.AccountCurrencyDB {
 	}
 	for id, db := range GetCurrencyList(s) {
 		// 特殊物品刷新查询
-		if (id == proto.CurrencyTypes_ChaserTotalTicket ||
-			id == proto.CurrencyTypes_SchoolDungeonTotalTicket ||
-			id == proto.CurrencyTypes_RaidTicket) &&
-			!time.Unix(db.UpdateTime, 0).After(alg.GetTimeHour4()) {
-			db.CurrencyNum = alg.MaxInt64(db.CurrencyNum, 6)
-			db.UpdateTime = time.Now().Unix()
-		}
-		if id == proto.CurrencyTypes_AcademyTicket &&
-			!time.Unix(db.UpdateTime, 0).After(alg.GetTimeHour4()) {
-			db.CurrencyNum = alg.MaxInt64(db.CurrencyNum, GetMaxAcademyTicket(s))
-			db.UpdateTime = time.Now().Unix()
+		if time.Unix(db.UpdateTime, 0).After(alg.GetTimeHour4()) {
+			switch id {
+			case proto.CurrencyTypes_ChaserTotalTicket,
+				proto.CurrencyTypes_SchoolDungeonTotalTicket,
+				proto.CurrencyTypes_RaidTicket:
+				db.CurrencyNum = alg.MaxInt64(db.CurrencyNum, 6)
+				db.UpdateTime = time.Now().Unix()
+			case proto.CurrencyTypes_ArenaTicket:
+				db.CurrencyNum = alg.MaxInt64(db.CurrencyNum, 5)
+				db.UpdateTime = time.Now().Unix()
+			case proto.CurrencyTypes_TimeAttackDungeonTicket:
+				db.CurrencyNum = alg.MaxInt64(db.CurrencyNum, 3)
+				db.UpdateTime = time.Now().Unix()
+			case proto.CurrencyTypes_EliminateTicketA,
+				proto.CurrencyTypes_EliminateTicketB,
+				proto.CurrencyTypes_EliminateTicketC,
+				proto.CurrencyTypes_EliminateTicketD:
+				logger.Warn("暂未实现大决战恢复")
+			case proto.CurrencyTypes_AcademyTicket:
+				db.CurrencyNum = alg.MaxInt64(db.CurrencyNum, GetMaxAcademyTicket(s))
+				db.UpdateTime = time.Now().Unix()
+			}
 		}
 		if id == proto.CurrencyTypes_ActionPoint {
 			RecoverActionPoint(s, db)

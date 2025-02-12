@@ -8,21 +8,6 @@ import (
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func TimeAttackDungeonLogin(s *enter.Session, request, response proto.Message) {
-	// rsp := response.(*proto.TimeAttackDungeonLoginResponse)
-	//
-	// rsp.PreviousRoomDB = &proto.TimeAttackDungeonRoomDB{
-	// 	AccountId:         s.AccountServerId,
-	// 	SeasonId:          0,
-	// 	RoomId:            0,
-	// 	CreateDate:        time.Time{},
-	// 	RewardDate:        time.Time{},
-	// 	IsPractice:        false,
-	// 	SweepHistoryDates: nil,
-	// 	BattleHistoryDBs:  nil,
-	// }
-}
-
 func BillingPurchaseListByYostar(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.BillingPurchaseListByYostarResponse)
 

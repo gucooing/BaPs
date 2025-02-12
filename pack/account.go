@@ -35,6 +35,7 @@ func AccountAuth(s *enter.Session, request, response proto.Message) {
 	rsp.WeeklyProductMail = make([]*proto.ParcelInfo, 0)
 	rsp.EncryptedUID = "1"
 	rsp.AccountRestrictionsDB = &proto.AccountRestrictionsDB{}
+	rsp.TTSCdnUri = "https://prod-voice.bluearchiveyostar.com/prod_new_2/version2/"
 
 	s.AccountState = proto.AccountState_Normal
 	game.SetLastConnectTime(s)
@@ -75,7 +76,7 @@ func AccountLoginSync(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.AccountLoginSyncResponse)
 
 	rsp.FriendCode = strconv.FormatInt(s.AccountServerId, 10)
-	rsp.FriendCount = int64(len(req.SyncProtocols))
+	rsp.FriendCount = game.GetFriendNum(s)
 	rsp.StaticOpenConditions = game.GetStaticOpenConditions(s)
 
 	for _, cmdId := range req.SyncProtocols {
@@ -89,7 +90,7 @@ func AccountLoginSync(s *enter.Session, request, response proto.Message) {
 			logger.Error("AccountLoginSync SyncProtocol Rsp failed:%v", cmdId)
 			continue
 		}
-		syncRsp.SetSessionKey(rsp.BasePacket)
+		// syncRsp.SetSessionKey(rsp.BasePacket)
 		switch cmdId {
 		case mx.Protocol_Cafe_Get:
 			CafeGetInfo(s, syncReq, syncRsp)

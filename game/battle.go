@@ -26,6 +26,26 @@ func BattleCheck(s *enter.Session, info *proto.BattleSummary) {
 	}
 }
 
+func BattleIsAllAlive(battleSummary *proto.BattleSummary) bool {
+	if battleSummary == nil {
+		return false
+	}
+	isSu := true
+	for _, heroes := range battleSummary.Group01Summary.Heroes {
+		if heroes.HPRateAfter == 0 {
+			isSu = false
+		}
+	}
+	return isSu
+}
+
+func BattleIsClearTimeInSec(battleSummary *proto.BattleSummary, realtime float64) bool {
+	if battleSummary == nil {
+		return false
+	}
+	return battleSummary.ElapsedRealtime < realtime
+}
+
 func GetParcelInfo(id, amount int64, v proto.ParcelType) *proto.ParcelInfo {
 	return &proto.ParcelInfo{
 		Key: &proto.ParcelKeyPair{
@@ -80,7 +100,7 @@ func ContentSweepSchoolDungeon(stageId int64, count int64) ([]*ParcelResult, [][
 		clearParcel := make([]*proto.ParcelInfo, 0)
 		for _, rewardConf := range gdconf.GetSchoolDungeonRewardExcelList(conf.StageRewardId) {
 			if !rewardConf.IsDisplayed ||
-				rewardConf.RewardTag != "Default" {
+				rewardConf.RewardTag_ != "Default" {
 				continue
 			}
 			parcelType := proto.GetParcelTypeValue(rewardConf.RewardParcelType)

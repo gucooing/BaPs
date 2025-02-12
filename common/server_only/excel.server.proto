@@ -58,6 +58,7 @@ message Excel {
   repeated MultiFloorRaidSeasonManageExcel MultiFloorRaidSeasonManageExcel = 49; // 制约解除决战赛季配置
   repeated MultiFloorRaidStageExcel MultiFloorRaidStageExcel = 50; // 制约解除决战关卡
   repeated MultiFloorRaidRewardExcel MultiFloorRaidRewardExcel = 51; // 制约解除决战关卡奖励
+  repeated TimeAttackDungeonSeasonManageExcelTable TimeAttackDungeonSeasonManageExcelTable = 52; // 综合战术考试排期表
 }
 
 message CafeInfoExcelTableInfo {
@@ -746,7 +747,7 @@ message AcademyRewardExcelTable {
 message SchoolDungeonRewardExcel {
   int64 GroupId = 1;
   string DungeonType = 2;
-  string RewardTag = 3;
+  string RewardTag_ = 3;
   string RewardParcelType = 4;
   int64 RewardParcelId = 5;
   int64 RewardParcelAmount = 6;
@@ -998,4 +999,15 @@ message MultiFloorRaidRewardExcel {
   string ClearStageRewardParcelType = 3;
   int64 ClearStageRewardParcelUniqueID = 4;
   int64 ClearStageRewardAmount = 5;
+}
+
+message TimeAttackDungeonSeasonManageExcelTable {
+  int64 Id = 1;
+  string StartDate = 2;
+  string EndDate = 3;
+  int64 Uislot = 4;
+  int64 DungeonId = 5;
+  repeated int64 DifficultyGeas = 6;
+  int64 TimeAttackDungeonRewardId = 7;
+  int64 RoomLifeTimeInSeconds = 8;
 }
