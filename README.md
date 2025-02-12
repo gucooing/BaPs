@@ -33,16 +33,10 @@
 ## 代理方法:
 转代以下地址:其中 http://127.0.0.1:5000 为服务器地址
 ```
-https://ba-jp-sdk.bluearchive.jp/account/yostar_auth_request http://127.0.0.1:5000/account/yostar_auth_request
-https://ba-jp-sdk.bluearchive.jp/account/yostar_auth_submit http://127.0.0.1:5000/account/yostar_auth_submit
-https://ba-jp-sdk.bluearchive.jp/user/yostar_createlogin http://127.0.0.1:5000/user/yostar_createlogin
-https://ba-jp-sdk.bluearchive.jp/user/login http://127.0.0.1:5000/user/login
+https://ba-jp-sdk.bluearchive.jp http://127.0.0.1:5000
 https://prod-gateway.bluearchiveyostar.com:5100/api/gateway http://127.0.0.1:5000/getEnterTicket/gateway
 https://prod-game.bluearchiveyostar.com:5000/api/gateway http://127.0.0.1:5000/api/gateway
-```
-如果你无法转代上面的地址可以添加下面的转代规则:
-```
-https://yostar-serverinfo.bluearchiveyostar.com http://127.0.0.1:5000
+https://prod-logcollector.bluearchiveyostar.com:5300 http://127.0.0.1:5000/game/log
 ```
 
 ## 使用方法
