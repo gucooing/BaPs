@@ -2,6 +2,8 @@ package db
 
 import (
 	"errors"
+
+	"gorm.io/gorm/clause"
 )
 
 type YostarGame struct {
@@ -36,4 +38,12 @@ func UpdateYostarGame(data *YostarGame) error {
 		return errors.New("YostarGame Nil")
 	}
 	return SQL.Model(&YostarGame{}).Where("account_server_id = ?", data.AccountServerId).Updates(data).Error
+}
+
+// UpAllYostarGame 批量覆盖保存账号数据
+func UpAllYostarGame(x []*YostarGame) error {
+	err := SQL.Clauses(clause.OnConflict{
+		UpdateAll: true, // 如果主键冲突,则更新所有字段
+	}).CreateInBatches(&x, 200).Error
+	return err
 }

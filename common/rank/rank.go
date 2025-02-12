@@ -3,7 +3,6 @@ package rank
 import (
 	"fmt"
 	"sync"
-	"time"
 
 	"github.com/gucooing/BaPs/config"
 	"github.com/gucooing/BaPs/db"
@@ -16,15 +15,21 @@ import (
 var RANKINFO *RankInfo
 
 type RankInfo struct {
+	SQL *gorm.DB
+	// 总力战
 	raidRankZset map[int64]*zset.SortedSet[int64] // 赛季
 	raidSync     sync.RWMutex
-	SQL          *gorm.DB
+	// 大决战
+	raidEliminateRankZset map[int64]*zset.SortedSet[int64] // 赛季
+	raidEliminateSync     sync.RWMutex
 }
 
 func NewRank() *RankInfo {
 	RANKINFO = &RankInfo{
-		raidRankZset: make(map[int64]*zset.SortedSet[int64]),
-		raidSync:     sync.RWMutex{},
+		raidRankZset:          make(map[int64]*zset.SortedSet[int64]),
+		raidSync:              sync.RWMutex{},
+		raidEliminateRankZset: make(map[int64]*zset.SortedSet[int64]),
+		raidEliminateSync:     sync.RWMutex{},
 	}
 	// 初始化数据库
 	RANKINFO.SQL = db.NewYostarRank(config.GetRaidRankDB())
@@ -47,42 +52,22 @@ func NewRank() *RankInfo {
 		logger.Warn("缺少总力战当期排期")
 	}
 	logger.Info("拉取当期总力战排名完成")
+	// 获取大决战信息
+	for _, conf := range gdconf.GetRaidEliminateScheduleMap() {
+		err := RANKINFO.SQL.Table(fmt.Sprintf("raid_eliminate_rank_%v", conf.SeasonId)).AutoMigrate(&db.YostarRank{})
+		if err != nil {
+			logger.Error(err.Error())
+		}
+	}
+	// 拉取当期大决战排名数据
+	logger.Info("开始拉取当期大决战排名")
+	if cur := gdconf.GetCurRaidEliminateSchedule(); cur != nil {
+		RANKINFO.NewRaidEliminateRank(cur.SeasonId)
+	} else {
+		logger.Warn("缺少大决战当期排期")
+	}
+	logger.Info("拉取当期大决战排名完成")
 	return RANKINFO
-}
-
-// NewRaidRank 此操作会将排名强制覆盖成冷数据中的排名，建议仅用于初始化这个赛季时拉取冷数据使用
-func (x *RankInfo) NewRaidRank(seasonId int64) {
-	conf := gdconf.GetRaidScheduleInfo(seasonId)
-	if x == nil || conf == nil {
-		return
-	}
-	x.raidSync.Lock()
-	if x.raidRankZset == nil {
-		x.raidRankZset = make(map[int64]*zset.SortedSet[int64])
-	}
-	s := zset.New[int64]()
-	x.raidRankZset[seasonId] = s
-	x.raidSync.Unlock()
-	for _, dbInfo := range db.GetAllYostarRank(x.SQL, seasonId) {
-		s.Set(dbInfo.Score, dbInfo.Uid)
-	}
-	// 赛季结束
-	nextConf := gdconf.GetRaidScheduleInfo(conf.NextSeasonId)
-	if nextConf == nil {
-		logger.Warn("总力站缺少下一个赛季配置")
-		return
-	}
-	if conf.StartTime.After(time.Now()) {
-		go func() {
-			d := nextConf.StartTime.Add(1 * time.Hour).Sub(time.Now())
-			ticker := time.NewTimer(d)
-			logger.Debug("离下一个总力战赛季开始还有:%s", d.String())
-			select {
-			case <-ticker.C:
-				x.SettlementRaid(conf.SeasonId)
-			}
-		}()
-	}
 }
 
 func (x *RankInfo) Close() {
@@ -90,7 +75,7 @@ func (x *RankInfo) Close() {
 		return
 	}
 	// 保存总力战数据
-	x.raidSync.RLock()
+	x.raidSync.Lock()
 	for seasonId, s := range x.raidRankZset {
 		all := make([]*db.YostarRank, 0)
 		s.RevRange(0, -1, func(score float64, uid int64) {
@@ -100,9 +85,26 @@ func (x *RankInfo) Close() {
 				Score:    score,
 			})
 		})
-		err := db.UpAllYostarRank(x.SQL, all, seasonId)
+		err := db.UpAllYostarRank(x.SQL, all, db.RaidUserTable(seasonId))
 		if err != nil {
 			logger.Error("总力战排名保存失败SeasonId:%v,err:%s", seasonId, err.Error())
 		}
 	}
+	// 保存大决战数据
+	x.raidEliminateSync.Lock()
+	for seasonId, s := range x.raidEliminateRankZset {
+		all := make([]*db.YostarRank, 0)
+		s.RevRange(0, -1, func(score float64, uid int64) {
+			all = append(all, &db.YostarRank{
+				SeasonId: seasonId,
+				Uid:      uid,
+				Score:    score,
+			})
+		})
+		err := db.UpAllYostarRank(x.SQL, all, db.RaidEliminateUserTable(seasonId))
+		if err != nil {
+			logger.Error("大决战排名保存失败SeasonId:%v,err:%s", seasonId, err.Error())
+		}
+	}
+	logger.Info("排名数据保存完毕")
 }

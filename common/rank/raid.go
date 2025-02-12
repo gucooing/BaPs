@@ -1,10 +1,48 @@
 package rank
 
 import (
+	"time"
+
 	"github.com/gucooing/BaPs/db"
+	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
 	"github.com/gucooing/BaPs/pkg/zset"
 )
+
+// NewRaidRank 此操作会将排名强制覆盖成冷数据中的排名，建议仅用于初始化这个赛季时拉取冷数据使用
+func (x *RankInfo) NewRaidRank(seasonId int64) {
+	conf := gdconf.GetRaidScheduleInfo(seasonId)
+	if x == nil || conf == nil {
+		return
+	}
+	x.raidSync.Lock()
+	if x.raidRankZset == nil {
+		x.raidRankZset = make(map[int64]*zset.SortedSet[int64])
+	}
+	s := zset.New[int64]()
+	x.raidRankZset[seasonId] = s
+	x.raidSync.Unlock()
+	for _, dbInfo := range db.GetAllYostarRank(x.SQL, db.RaidUserTable(seasonId)) {
+		s.Set(dbInfo.Score, dbInfo.Uid)
+	}
+	// 赛季结束
+	nextConf := gdconf.GetRaidScheduleInfo(conf.NextSeasonId)
+	if nextConf == nil {
+		logger.Warn("总力战缺少下一个赛季配置")
+		return
+	}
+	if conf.StartTime.After(time.Now()) {
+		go func() {
+			d := nextConf.StartTime.Add(1 * time.Hour).Sub(time.Now())
+			ticker := time.NewTimer(d)
+			logger.Debug("离下一个总力战赛季开始还有:%s", d.String())
+			select {
+			case <-ticker.C:
+				x.SettlementRaid(conf.SeasonId)
+			}
+		}()
+	}
+}
 
 // SettlementRaid 结算线程
 func (x *RankInfo) SettlementRaid(seasonId int64) {
@@ -23,7 +61,7 @@ func (x *RankInfo) SettlementRaid(seasonId int64) {
 			Score:    score,
 		})
 	})
-	err := db.UpAllYostarRank(x.SQL, all, seasonId)
+	err := db.UpAllYostarRank(x.SQL, all, db.RaidUserTable(seasonId))
 	if err != nil {
 		logger.Error("旧赛季总力战排名保存失败SeasonId:%v,err:%s", seasonId, err.Error())
 	}

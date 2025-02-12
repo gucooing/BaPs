@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type YostarFriend struct {
@@ -35,10 +36,18 @@ func AddYostarFriendByYostarUid(accountServerId int64) (*YostarFriend, error) {
 	return data, nil
 }
 
-// UpdateYostarFriend 更新账号数据
+// UpdateYostarFriend 更新好友数据
 func UpdateYostarFriend(data *YostarFriend) error {
 	if data == nil || data.AccountServerId == 0 {
 		return errors.New("YostarFriend Nil")
 	}
 	return SQL.Model(&YostarFriend{}).Where("account_server_id = ?", data.AccountServerId).Updates(data).Error
+}
+
+// UpAllYostarFriend 批量覆盖保存好友数据
+func UpAllYostarFriend(x []*YostarFriend) error {
+	err := SQL.Clauses(clause.OnConflict{
+		UpdateAll: true, // 如果主键冲突,则更新所有字段
+	}).CreateInBatches(&x, 200).Error
+	return err
 }

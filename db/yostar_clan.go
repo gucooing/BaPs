@@ -2,6 +2,8 @@ package db
 
 import (
 	"errors"
+
+	"gorm.io/gorm/clause"
 )
 
 type YostarClan struct {
@@ -47,4 +49,12 @@ func UpdateYostarClan(data *YostarClan) error {
 		return errors.New("YostarClan Nil")
 	}
 	return SQL.Model(&YostarClan{}).Where("server_id = ?", data.ServerId).Updates(data).Error
+}
+
+// UpAllYostarClan 批量覆盖保存社团数据
+func UpAllYostarClan(x []*YostarClan) error {
+	err := SQL.Clauses(clause.OnConflict{
+		UpdateAll: true, // 如果主键冲突,则更新所有字段
+	}).CreateInBatches(&x, 200).Error
+	return err
 }

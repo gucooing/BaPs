@@ -22,6 +22,7 @@ message PlayerBin {
     RaidBin raid_bin = 15; // 总力战信息
     AttendanceBin attendance_bin = 16; // 登录奖励
     RaidMultiFloorBin raid_multi_floor_bin = 17; // 制约解除决战信息
+    RaidEliminateBin raid_eliminate_bin = 18; // 大决战
 }
 
 // 基础信息
@@ -498,4 +499,10 @@ message RaidMultiFloorInfo {
   int32 frame = 4; // 总时间帧
   int64 last_reward_date = 5; // 上次领取奖励时间
   int32 reward_difficulty = 6; // 最高奖励领取难度
+}
+
+// 大决战
+
+message RaidEliminateBin {
+
 }

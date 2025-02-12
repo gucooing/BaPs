@@ -15,9 +15,15 @@ type YostarRank struct {
 	Score    float64 // 分数
 }
 
-func UserTable(x int64) func(tx *gorm.DB) *gorm.DB {
+func RaidUserTable(x int64) func(tx *gorm.DB) *gorm.DB {
 	return func(tx *gorm.DB) *gorm.DB {
 		return tx.Table(fmt.Sprintf("raid_rank_%v", x))
+	}
+}
+
+func RaidEliminateUserTable(x int64) func(tx *gorm.DB) *gorm.DB {
+	return func(tx *gorm.DB) *gorm.DB {
+		return tx.Table(fmt.Sprintf("raid_eliminate_rank_%v", x))
 	}
 }
 
@@ -35,16 +41,16 @@ func NewYostarRank(cfg *config.DB) *gorm.DB {
 }
 
 // UpAllYostarRank 批量覆盖保存排名数据
-func UpAllYostarRank(yostarRankSql *gorm.DB, x []*YostarRank, seasonId int64) error {
+func UpAllYostarRank(yostarRankSql *gorm.DB, x []*YostarRank, table func(tx *gorm.DB) *gorm.DB) error {
 	err := yostarRankSql.Clauses(clause.OnConflict{
 		UpdateAll: true, // 如果主键冲突,则更新所有字段
-	}).Scopes(UserTable(seasonId)).CreateInBatches(&x, 200).Error
+	}).Scopes(table).CreateInBatches(&x, 200).Error
 	return err
 }
 
 // GetAllYostarRank 拉取全部排名数据
-func GetAllYostarRank(yostarRankSql *gorm.DB, seasonId int64) []*YostarRank {
+func GetAllYostarRank(yostarRankSql *gorm.DB, table func(tx *gorm.DB) *gorm.DB) []*YostarRank {
 	r := make([]*YostarRank, 0)
-	yostarRankSql.Scopes(UserTable(seasonId)).Model(&YostarRank{}).Find(&r)
+	yostarRankSql.Scopes(table).Model(&YostarRank{}).Find(&r)
 	return r
 }

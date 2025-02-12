@@ -34,12 +34,21 @@ type Session struct {
 
 // 定时检查一次是否有用户长时间离线
 func (e *EnterSet) checkSession() {
+	yostarGameList := make([]*db.YostarGame, 0)
 	for accountServerId, info := range GetAllSession() {
 		if time.Now().After(info.EndTime) {
-			info.UpDate()
+			bin := info.GetYostarGame()
+			if bin != nil {
+				yostarGameList = append(yostarGameList, bin)
+			}
 			DelSession(accountServerId)
 			logger.Debug("AccountId:%v,超时离线", accountServerId)
 		}
+	}
+	if db.UpAllYostarGame(yostarGameList) != nil {
+		logger.Error("玩家数据保存失败")
+	} else {
+		logger.Info("玩家数据保存完毕")
 	}
 }
 
@@ -176,28 +185,54 @@ func AddSession(x *Session) bool {
 	return true
 }
 
-// UpAllDate 保存全部玩家数据
-func UpAllDate() {
+// Close 保存全部玩家数据
+func Close() {
 	// 保存玩家主要数据
+	yostarGameList := make([]*db.YostarGame, 0)
 	for _, info := range GetAllSession() {
-		info.UpDate()
+		bin := info.GetYostarGame()
+		if bin != nil {
+			yostarGameList = append(yostarGameList, bin)
+		}
+	}
+	if db.UpAllYostarGame(yostarGameList) != nil {
+		logger.Error("玩家数据保存失败")
+	} else {
+		logger.Info("玩家数据保存完毕")
 	}
 	// 保存玩家次要数据 (好友数据
+	yostarFriendList := make([]*db.YostarFriend, 0)
 	for _, info := range GetAllAccountFriend() {
-		info.upDate()
+		bin := info.GetYostarFriend()
+		if bin != nil {
+			yostarFriendList = append(yostarFriendList, bin)
+		}
+	}
+	if db.UpAllYostarFriend(yostarFriendList) != nil {
+		logger.Error("好友数据保存失败")
+	} else {
+		logger.Info("好友数据保存完毕")
 	}
 	// 保存社团数据
+	yostarClanList := make([]*db.YostarClan, 0)
 	for _, info := range GetAllYostarClan() {
-		info.UpDate()
+		bin := info.GetYostarClan()
+		if bin != nil {
+			yostarClanList = append(yostarClanList, bin)
+		}
+	}
+	if db.UpAllYostarClan(yostarClanList) != nil {
+		logger.Error("社团数据保存失败")
+	} else {
+		logger.Info("社团数据保存完毕")
 	}
 }
 
-// UpDate 保存玩家数据
-func (x *Session) UpDate() bool {
+// GetYostarGame 预处理db数据
+func (x *Session) GetYostarGame() *db.YostarGame {
 	if x == nil {
-		return false
+		return nil
 	}
-	x.AccountFriend.upDate()
 	x.GoroutinesSync.Lock() // 唯一线程操作锁
 	var fin = true
 	defer func() {
@@ -212,17 +247,14 @@ func (x *Session) UpDate() bool {
 	bin, err := pb.Marshal(x.PlayerBin)
 	if err != nil {
 		fin = false
-		return false
+		return nil
 	}
 	data := &db.YostarGame{
 		AccountServerId: x.AccountServerId,
 		BinData:         bin,
 	}
-	if err = db.UpdateYostarGame(data); err != nil {
-		fin = false
-		return false
-	}
-	return true
+
+	return data
 }
 
 func (x *Session) upDataDisk() error {

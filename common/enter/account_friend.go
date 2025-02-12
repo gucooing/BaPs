@@ -25,13 +25,22 @@ type AccountFriend struct {
 
 // 每天4点检查一次是否有用户长时间离线然后离线掉好友数据
 func (e *EnterSet) checkAccountFriend() {
+	yostarFriendList := make([]*db.YostarFriend, 0)
 	for accountServerId, info := range GetAllAccountFriend() {
 		if time.Now().After(time.Unix(info.UpTime, 0).
 			Add(time.Hour * time.Duration(MaxCacheAccountFriendTime))) {
-			info.upDate()
+			bin := info.GetYostarFriend()
+			if bin != nil {
+				yostarFriendList = append(yostarFriendList, bin)
+			}
 			DelSession(accountServerId)
 			logger.Debug("AccountId:%v,AccountFriend超时离线", accountServerId)
 		}
+	}
+	if db.UpAllYostarFriend(yostarFriendList) != nil {
+		logger.Error("好友数据保存失败")
+	} else {
+		logger.Info("好友数据保存完毕")
 	}
 }
 
@@ -83,24 +92,21 @@ func DbGetAccountFriend(uid int64) (*AccountFriend, error) {
 	return af, nil
 }
 
-// UpDate 将玩家数据保存到数据库
-func (x *AccountFriend) upDate() bool {
+// GetYostarFriend 预处理db数据
+func (x *AccountFriend) GetYostarFriend() *db.YostarFriend {
 	if x == nil {
-		return false
+		return nil
 	}
 	bin := &db.YostarFriend{
 		AccountServerId: x.Uid,
 	}
 	friendInfo, err := json.Marshal(x)
 	if err != nil {
-		return false
+		return nil
 	}
 	bin.FriendInfo = string(friendInfo)
-	err = db.UpdateYostarFriend(bin)
-	if err != nil {
-		return false
-	}
-	return true
+
+	return bin
 }
 
 func (x *AccountFriend) GetFriendList() map[int64]bool {

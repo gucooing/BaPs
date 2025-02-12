@@ -41,13 +41,22 @@ type ClanAccount struct {
 
 // 每天4点检查一次是否有用户长时间离线然后离线掉好友数据
 func (e *EnterSet) checkYostarClan() {
+	yostarClanList := make([]*db.YostarClan, 0)
 	for serverId, info := range GetAllYostarClan() {
 		if time.Now().After(time.Unix(info.UpTime, 0).
 			Add(time.Hour * time.Duration(MaxCacheYostarClanTime))) {
-			info.UpDate()
+			bin := info.GetYostarClan()
+			if bin != nil {
+				yostarClanList = append(yostarClanList, bin)
+			}
 			DelSession(serverId)
 			logger.Debug("YostarClan:%v,超时离线", serverId)
 		}
+	}
+	if db.UpAllYostarClan(yostarClanList) != nil {
+		logger.Error("社团数据保存失败")
+	} else {
+		logger.Info("社团数据保存完毕")
 	}
 }
 
@@ -158,6 +167,23 @@ func DbGetYostarClan(ycId int64) (*YostarClan, error) {
 	yc.UpTime = time.Now().Unix()
 	yc.SyncYC = sync.RWMutex{}
 	return yc, nil
+}
+
+// GetYostarClan 预处理db数据
+func (x *YostarClan) GetYostarClan() *db.YostarClan {
+	if x == nil {
+		return nil
+	}
+	bin := &db.YostarClan{
+		ServerId: x.ServerId,
+		ClanName: x.ClanName,
+	}
+	ycInfo, err := json.Marshal(x)
+	if err != nil {
+		return nil
+	}
+	bin.ClanInfo = string(ycInfo)
+	return bin
 }
 
 // UpDate 将玩家数据保存到数据库

@@ -38,6 +38,27 @@ func (s *SDK) initRouter() {
 	{
 		user.POST("/yostar_createlogin", s.YostarCreatelogin)
 		user.POST("/login", s.YostarLogin)
+		user.POST("/agreement", agreement)
+	}
+	hash := s.router.Group("/r76_d32k9xg20divs4806ybp_2")
+	{
+		hash.GET("/TableBundles/TableCatalog.hash", func(c *gin.Context) {
+			c.String(200, "4136508985")
+		})
+		hash.GET("/MediaResources/Catalog/MediaCatalog.hash", func(c *gin.Context) {
+			c.String(200, "2581543713")
+		})
+		hash.GET("/iOS/bundleDownloadInfo.hash", func(c *gin.Context) {
+			c.String(200, "970608301")
+		})
+		hash.GET("/iOS/catalog_iOS.hash", func(c *gin.Context) {
+			c.String(200, "a0d3861cb71f215d5d3033d3eee04172")
+		})
+	}
+	app := s.router.Group("/app")
+	{
+		app.Any("/getSettings", getSettings)
+		app.Any("/getCode", getCode)
 	}
 }
 
@@ -95,6 +116,9 @@ func (s *SDK) connectionGroups(c *gin.Context) {
 	for _, group := range data.ConnectionGroups {
 		group.ApiUrl = fmt.Sprintf("%s/api/", s.GetOuterAddr())
 		group.GatewayUrl = fmt.Sprintf("%s/getEnterTicket/", s.GetOuterAddr())
+		group.ManagementDataUrl = fmt.Sprintf("%s/prod/index.json", s.GetOuterAddr())
+		group.ProhibitedWordBlackListUri = "https://ba-oss.alsl.xyz/prod/ProhibitedWord/blacklist.csv"
+		group.ProhibitedWordWhiteListUri = "https://ba-oss.alsl.xyz/prod/ProhibitedWord/whitelist.csv"
 	}
 
 	c.JSON(200, data)

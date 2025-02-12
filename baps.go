@@ -93,7 +93,7 @@ func NewBaPs() {
 		logger.Info("Max Close Time 5 Minute")
 		server.Close()
 		rankInfo.Close()
-		enter.UpAllDate()
+		enter.Close()
 		logger.Info("BaPs Close")
 		logger.CloseLogger()
 		os.Exit(0)

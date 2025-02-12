@@ -2,6 +2,7 @@ package pack
 
 import (
 	"github.com/gucooing/BaPs/common/enter"
+	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
@@ -9,14 +10,14 @@ import (
 func EliminateRaidLogin(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.EliminateRaidLoginResponse)
 
-	rsp.SeasonType = proto.RaidSeasonType_Open
-	rsp.SweepPointByRaidUniqueId = make(map[int64]int64)
+	rsp.SeasonType = game.GetEliminateRaidSeasonType()
+	rsp.SweepPointByRaidUniqueId = make(map[int64]int64) // 扫荡信息
 }
 
 func EliminateRaidLobby(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.EliminateRaidLobbyResponse)
 
-	rsp.SeasonType = proto.RaidSeasonType_Open
+	rsp.SeasonType = game.GetEliminateRaidSeasonType()
 	// rsp.RaidGiveUpDB = &proto.RaidGiveUpDB{
 	// 	Ranking:          0,
 	// 	RankingPoint:     0,
