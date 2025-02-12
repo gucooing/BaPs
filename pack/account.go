@@ -41,7 +41,12 @@ func AccountAuth(s *enter.Session, request, response proto.Message) {
 	game.SetLastConnectTime(s)
 
 	// 任务二次处理
-	for _, info := range game.GetCategoryMissionInfo(s) {
+	mission := game.GetMissionBin(s)
+	for t, info := range mission.GetCategoryMissionInfo() {
+		if t == "" {
+			delete(mission.GetCategoryMissionInfo(), t)
+			continue
+		}
 		s.AddMissionByCompleteConditionType(info)
 	}
 }

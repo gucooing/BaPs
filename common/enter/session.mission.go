@@ -26,17 +26,23 @@ func (x *Session) GetMission() *Mission {
 }
 
 func (x *Session) AddMissionByCompleteConditionType(info *sro.CategoryMissionInfo) {
-	binMap := x.GetMissionByCompleteConditionType()
-	for id, bin := range info.GetMissionList() {
+	bin := x.GetMission()
+	if bin == nil {
+		return
+	}
+	if bin.MissionByCompleteConditionType == nil {
+		bin.MissionByCompleteConditionType = make(map[string]map[int64]*sro.MissionInfo)
+	}
+	for id, mission := range info.GetMissionList() {
 		conf := gdconf.GetMissionExcelTable(id)
 		if conf == nil {
 			continue
 		}
 		t := proto.GetMissionCompleteConditionType(conf.CompleteConditionType).String()
-		if binMap[t] == nil {
-			binMap[t] = make(map[int64]*sro.MissionInfo)
+		if bin.MissionByCompleteConditionType[t] == nil {
+			bin.MissionByCompleteConditionType[t] = make(map[int64]*sro.MissionInfo)
 		}
-		binMap[t][id] = bin
+		bin.MissionByCompleteConditionType[t][id] = mission
 	}
 }
 
