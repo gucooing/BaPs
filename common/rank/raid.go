@@ -73,10 +73,12 @@ func GetRaidRankZset(seasonId int64) *zset.SortedSet[int64] {
 		return nil
 	}
 	RANKINFO.raidSync.RLock()
-	defer RANKINFO.raidSync.RUnlock()
 	if _, ok := RANKINFO.raidRankZset[seasonId]; !ok {
+		RANKINFO.raidSync.RUnlock()
 		RANKINFO.NewRaidRank(seasonId)
+		RANKINFO.raidSync.RLock()
 	}
+	defer RANKINFO.raidSync.RUnlock()
 	return RANKINFO.raidRankZset[seasonId]
 }
 

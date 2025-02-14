@@ -316,3 +316,23 @@ func GetGearDB(s *enter.Session, serverId int64) *proto.GearDB {
 
 	return info
 }
+
+func MaxAllCharacter(s *enter.Session) {
+	for _, info := range GetCharacterInfoList(s) {
+		info.Level = 90
+		info.Exp = 0
+		info.StarGrade = 5
+		info.FavorRank = 100
+		info.FavorExp = 0
+		info.ExSkillLevel = 5
+		info.PassiveSkillLevel = 10
+		info.ExtraPassiveSkillLevel = 10
+		info.CommonSkillLevel = 10
+		info.LeaderSkillLevel = 10
+		info.PotentialStats = map[int32]int32{
+			1: 25,
+			2: 25,
+			3: 25,
+		}
+	}
+}

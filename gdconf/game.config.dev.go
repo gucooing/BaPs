@@ -80,6 +80,11 @@ func (g *GameConfig) LoadExcel() {
 		g.loadMultiFloorRaidStageExcel,
 		g.loadMultiFloorRaidSeasonManageExcel,
 		g.loadTimeAttackDungeonSeasonManageExcelTable,
+		g.loadEliminateRaidSeasonManageExcelTable,
+		g.loadEliminateRaidRankingRewardExcelTable,
+		g.loadEliminateRaidStageExcelTable,
+		g.loadEliminateRaidStageRewardExcelTable,
+		g.loadEliminateRaidStageSeasonRewardExcelTable,
 	}
 
 	for _, fn := range g.loadFunc {

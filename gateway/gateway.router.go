@@ -191,8 +191,16 @@ var funcRouteMap = map[int32]handlerFunc{
 	mx.Protocol_Raid_SeasonReward:  pack.RaidSeasonReward,  // 领取总分奖励
 	mx.Protocol_Raid_RankingReward: pack.RaidRankingReward, // 领取排名奖励
 	// 大决战
-	mx.Protocol_EliminateRaid_Login: pack.EliminateRaidLogin, // 登录获取大决战信息
-	mx.Protocol_EliminateRaid_Lobby: pack.EliminateRaidLobby, // 获取大决战详情
+	mx.Protocol_EliminateRaid_Login:         pack.EliminateRaidLogin,         // 登录获取大决战信息
+	mx.Protocol_EliminateRaid_Lobby:         pack.EliminateRaidLobby,         // 获取大决战详情
+	mx.Protocol_EliminateRaid_OpponentList:  pack.EliminateRaidOpponentList,  // 获取大决战排行榜
+	mx.Protocol_EliminateRaid_GetBestTeam:   pack.EliminateRaidGetBestTeam,   // 查询玩家大决战参加队伍
+	mx.Protocol_EliminateRaid_CreateBattle:  pack.EliminateRaidCreateBattle,  // 大决战开始战斗
+	mx.Protocol_EliminateRaid_EndBattle:     pack.EliminateRaidEndBattle,     // 大决战战斗结算
+	mx.Protocol_EliminateRaid_EnterBattle:   pack.EliminateRaidEnterBattle,   // 再次进入战斗
+	mx.Protocol_EliminateRaid_GiveUp:        pack.EliminateRaidGiveUp,        // 主动结算
+	mx.Protocol_EliminateRaid_SeasonReward:  pack.EliminateRaidSeasonReward,  // 领取总分奖励
+	mx.Protocol_EliminateRaid_RankingReward: pack.EliminateRaidRankingReward, // 领取排名奖励
 	// 制约解除决战
 	mx.Protocol_MultiFloorRaid_Sync:          pack.MultiFloorRaidSync,          // 制约解除决战信息同步
 	mx.Protocol_MultiFloorRaid_EnterBattle:   pack.MultiFloorRaidEnterBattle,   // 制约解除决战开始战斗

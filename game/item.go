@@ -251,11 +251,11 @@ func GetAccountCurrencyDB(s *enter.Session) *proto.AccountCurrencyDB {
 	}
 	for id, db := range GetCurrencyList(s) {
 		// 特殊物品刷新查询
-		if time.Unix(db.UpdateTime, 0).After(alg.GetTimeHour4()) {
+		if time.Unix(db.UpdateTime, 0).Before(alg.GetLastDay4()) {
 			switch id {
 			case proto.CurrencyTypes_ChaserTotalTicket,
 				proto.CurrencyTypes_SchoolDungeonTotalTicket,
-				proto.CurrencyTypes_RaidTicket:
+				proto.CurrencyTypes_RaidTicket: // 总力战
 				db.CurrencyNum = alg.MaxInt64(db.CurrencyNum, 6)
 				db.UpdateTime = time.Now().Unix()
 			case proto.CurrencyTypes_ArenaTicket:
@@ -268,7 +268,12 @@ func GetAccountCurrencyDB(s *enter.Session) *proto.AccountCurrencyDB {
 				proto.CurrencyTypes_EliminateTicketB,
 				proto.CurrencyTypes_EliminateTicketC,
 				proto.CurrencyTypes_EliminateTicketD:
-				logger.Warn("暂未实现大决战恢复")
+				if GetEliminateRaidSeasonType() == proto.RaidSeasonType_Open {
+					db.CurrencyNum = alg.MinInt64(db.CurrencyNum+1, 7)
+				} else {
+					db.CurrencyNum = 0
+				}
+				db.UpdateTime = time.Now().Unix()
 			case proto.CurrencyTypes_AcademyTicket:
 				db.CurrencyNum = alg.MaxInt64(db.CurrencyNum, GetMaxAcademyTicket(s))
 				db.UpdateTime = time.Now().Unix()

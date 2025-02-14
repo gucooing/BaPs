@@ -23,6 +23,7 @@ import (
 	"github.com/gucooing/BaPs/db"
 	"github.com/gucooing/BaPs/gateway"
 	"github.com/gucooing/BaPs/gdconf"
+	"github.com/gucooing/BaPs/pkg"
 	"github.com/gucooing/BaPs/pkg/logger"
 	"github.com/gucooing/BaPs/sdk"
 )
@@ -77,6 +78,8 @@ func NewBaPs() {
 	rankInfo := rank.NewRank()
 	// 启动服务器
 	go func() {
+		logger.Info("ClientVersion:%s", pkg.ClientVersion)
+		logger.Info("ServerVersion:%s", pkg.ServerVersion)
 		logger.Info("BaPs启动成功!")
 		if err = Run(cfg.HttpNet, server); err != nil {
 			if !errors.Is(http.ErrServerClosed, err) {
@@ -90,7 +93,7 @@ func NewBaPs() {
 	clo := func() {
 		_, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 		defer cancel()
-		logger.Info("Max Close Time 5 Minute")
+		logger.Info("正在关闭服务器")
 		server.Close()
 		rankInfo.Close()
 		enter.Close()

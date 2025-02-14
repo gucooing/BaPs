@@ -46,3 +46,32 @@ func GetMissionProgressDBs(s *enter.Session) []*proto.MissionProgressDB {
 	s.NewMissionSync()
 	return list
 }
+
+func GetToast(s *enter.Session) []string {
+	if s == nil {
+		return nil
+	}
+	if s.Toast == nil {
+		s.Toast = make([]string, 0)
+	}
+	return s.Toast
+}
+
+func AddToast(s *enter.Session, toast string) {
+	if s == nil {
+		return
+	}
+	if s.Toast == nil {
+		s.Toast = make([]string, 0)
+	}
+	s.Toast = append(s.Toast, toast)
+	SetServerNotification(s, proto.ServerNotificationFlag_NewToastDetected, true)
+}
+
+func DelToast(s *enter.Session) {
+	if s == nil {
+		return
+	}
+	s.Toast = make([]string, 0)
+	SetServerNotification(s, proto.ServerNotificationFlag_NewToastDetected, false)
+}

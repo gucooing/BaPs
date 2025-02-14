@@ -1,6 +1,7 @@
 package game
 
 import (
+	"strings"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
@@ -38,52 +39,31 @@ func GetRaidBin(s *enter.Session) *sro.RaidBin {
 
 func GetCurRaidInfo(s *enter.Session) *sro.RaidInfo {
 	bin := GetRaidBin(s)
-	if bin == nil {
+	conf := gdconf.GetCurRaidSchedule()
+	if bin == nil || conf == nil {
 		return nil
 	}
-	cur := gdconf.GetCurRaidSchedule()
-	if cur == nil {
-		return nil
-	}
-	if bin.CurRaidInfo == nil {
+	if bin.CurRaidInfo == nil ||
+		bin.GetCurRaidInfo().GetSeasonId() != conf.SeasonId {
 		bin.CurRaidInfo = &sro.RaidInfo{
-			SeasonId: cur.SeasonId,
+			SeasonId: conf.SeasonId,
 		}
 	}
 	// 如果赛季已经进入结算期
-	if time.Now().After(cur.EndTime) {
-		// 无效数据丢弃
-		if bin.CurRaidInfo.SeasonId != cur.SeasonId {
-			bin.CurRaidInfo = &sro.RaidInfo{
-				SeasonId: cur.SeasonId,
-			}
-		}
-		// 有效
-		bin.CurRaidInfo.Ranking = rank.GetRaidRank(cur.SeasonId, s.AccountServerId)
-		bin.CurRaidInfo.Tier = gdconf.GetRaidTier(bin.CurRaidInfo.SeasonId, bin.CurRaidInfo.Ranking)
+	if time.Now().After(conf.EndTime) {
+		bin.CurRaidInfo.Ranking = rank.GetRaidRank(conf.SeasonId, s.AccountServerId)
+		bin.CurRaidInfo.Tier = gdconf.GetRaidTier(bin.CurRaidInfo.SeasonId,
+			bin.CurRaidInfo.Ranking)
 	}
-	// 如果进入了新赛季
-	if bin.CurRaidInfo.SeasonId != cur.SeasonId {
-		bin.LastRaidInfo = bin.CurRaidInfo
 
-		bin.CurRaidBattleInfo = nil
-		bin.CurRaidInfo = &sro.RaidInfo{
-			SeasonId: cur.SeasonId,
-		}
-	}
 	return bin.CurRaidInfo
 }
 
+// GetLastRaidInfo 此处返回的可能是nil
 func GetLastRaidInfo(s *enter.Session) *sro.RaidInfo {
 	GetCurRaidInfo(s)
-	bin := GetRaidBin(s)
-	if bin == nil {
-		return nil
-	}
-	if bin.LastRaidInfo == nil {
-		bin.LastRaidInfo = &sro.RaidInfo{}
-	}
-	return bin.LastRaidInfo
+
+	return GetRaidBin(s).GetLastRaidInfo()
 }
 
 func GetCurRaidTeamList(s *enter.Session) map[int32]*sro.RaidTeamInfo {
@@ -119,6 +99,7 @@ func NewCurRaidBattleInfo(s *enter.Session, raidUniqueId int64, isPractice bool)
 		MaxHp:        chConf.MaxHP100,
 		SeasonId:     GetCurRaidInfo(s).SeasonId,
 		ServerId:     1,
+		ContentType:  proto.ContentType_Raid,
 	}
 }
 
@@ -171,10 +152,9 @@ func GetPlayableHighestDifficulty(s *enter.Session) map[string]proto.Difficulty 
 	return list
 }
 
-func GetReceiveRewardIds(s *enter.Session) []int64 {
+func GetReceiveRewardIds(bin map[int64]bool) []int64 {
 	list := make([]int64, 0)
-	bin := GetCurRaidInfo(s)
-	for id, ok := range bin.GetReceiveRewardIds() {
+	for id, ok := range bin {
 		if ok {
 			list = append(list, id)
 		}
@@ -189,13 +169,10 @@ func GetCanReceiveRankingReward(isTime, isReward bool) bool {
 func GetRaidLobbyInfoDB(s *enter.Session) *proto.RaidLobbyInfoDB {
 	bin := GetCurRaidInfo(s)
 	info := &proto.RaidLobbyInfoDB{
-		PlayableHighestDifficulty:     GetPlayableHighestDifficulty(s),
-		ParticipateCharacterServerIds: make([]int64, 0),
-		TotalRankingPoint:             0, // 总分
-		PlayingRaidDB:                 GetRaidDB(s),
-		CanReceiveRankingReward:       false,
-		ReceiveRewardIds:              GetReceiveRewardIds(s),
-		ReceivedRankingRewardId:       bin.GetRankingRewardId(),
+		PlayableHighestDifficulty: GetPlayableHighestDifficulty(s),
+		PlayingRaidDB:             GetRaidDB(s, GetCurRaidBattleInfo(s)),
+		ReceiveRewardIds:          GetReceiveRewardIds(bin.GetReceiveRewardIds()),
+		ReceivedRankingRewardId:   bin.GetRankingRewardId(),
 
 		RemainFailCompensation: map[int32]bool{
 			0: false,
@@ -212,7 +189,7 @@ func GetRaidLobbyInfoDB(s *enter.Session) *proto.RaidLobbyInfoDB {
 		info.Ranking = rank.GetRaidRank(cur.SeasonId, s.AccountServerId)
 		info.BestRankingPoint = bin.GetBestScore()
 		info.Tier = gdconf.GetRaidTier(cur.SeasonId, info.Ranking)
-		info.TotalRankingPoint = bin.GetTotalScore()
+		info.TotalRankingPoint = bin.GetTotalScore() // 总分
 		info.CanReceiveRankingReward = GetCanReceiveRankingReward(
 			time.Now().After(cur.EndTime), bin.GetIsRankingReward())
 	}
@@ -278,16 +255,15 @@ func GetRaidTeamSettingDB(s *enter.Session, teamInfo *sro.RaidTeamInfo) *proto.R
 	}
 	info := &proto.RaidTeamSettingDB{
 		AccountId:                     s.AccountServerId,
-		EchelonType:                   proto.EchelonType_Raid,
+		EchelonType:                   proto.EchelonType(teamInfo.EchelonType),
 		EchelonExtensionType:          proto.EchelonExtensionType_Base,
 		SkillCardMulliganCharacterIds: make([]int64, 0),
-		LeaderCharacterUniqueId:       0,
+		LeaderCharacterUniqueId:       teamInfo.LeaderCharacter,
 		MainCharacterDBs:              make([]*proto.RaidCharacterDB, 0),
 		SupportCharacterDBs:           make([]*proto.RaidCharacterDB, 0),
-		TSSInteractionUniqueId:        0,
 		TryNumber:                     teamInfo.TryNumber,
+		TSSInteractionUniqueId:        0,
 	}
-	info.LeaderCharacterUniqueId = teamInfo.LeaderCharacter
 	for _, cid := range teamInfo.SkillCharacterList {
 		info.SkillCardMulliganCharacterIds =
 			append(info.SkillCardMulliganCharacterIds, cid)
@@ -323,13 +299,12 @@ func GetRaidCharacterDB(bin *sro.RaidCharacterInfo, slot int32) *proto.RaidChara
 	return info
 }
 
-func GetRaidBattleDB(s *enter.Session) *proto.RaidBattleDB {
-	bin := GetCurRaidBattleInfo(s)
+func GetRaidBattleDB(s *enter.Session, bin *sro.CurRaidBattleInfo) *proto.RaidBattleDB {
 	if bin == nil || bin.IsClose {
 		return nil
 	}
 	info := &proto.RaidBattleDB{
-		ContentType:   proto.ContentType_Raid,
+		ContentType:   proto.ContentType(bin.ContentType),
 		CurrentBossHP: bin.MaxHp - bin.GivenDamage,
 		RaidMembers: []*proto.RaidMemberDescription{
 			{
@@ -358,15 +333,14 @@ func GetRaidBattleDB(s *enter.Session) *proto.RaidBattleDB {
 	return info
 }
 
-func GetRaidDB(s *enter.Session) *proto.RaidDB {
-	bin := GetCurRaidBattleInfo(s)
+func GetRaidDB(s *enter.Session, bin *sro.CurRaidBattleInfo) *proto.RaidDB {
 	if bin == nil || bin.IsClose {
 		return nil
 	}
 	info := &proto.RaidDB{
 		AccountLevelWhenCreateDB: int64(GetAccountLevel(s)),
 		Begin:                    mx.Unix(bin.Begin, 0),
-		ContentType:              proto.ContentType_Raid,
+		ContentType:              proto.ContentType(bin.ContentType),
 		End:                      mx.Unix(bin.Begin, 0).Add(1 * time.Hour),
 		Owner: &proto.RaidMemberDescription{
 			AccountId:   s.AccountServerId,
@@ -376,7 +350,7 @@ func GetRaidDB(s *enter.Session) *proto.RaidDB {
 		PlayerCount: 1,
 		RaidBossDBs: []*proto.RaidBossDB{
 			{
-				ContentType:     proto.ContentType_Raid,
+				ContentType:     proto.ContentType(bin.ContentType),
 				BossIndex:       0,
 				BossCurrentHP:   bin.MaxHp - bin.GivenDamage,
 				BossGroggyPoint: bin.BossGroggyPoint,
@@ -428,18 +402,43 @@ func GetRaidGiveUpDB(s *enter.Session) *proto.RaidGiveUpDB {
 }
 
 // CheckRaidCharacter 参战角色验证
-func CheckRaidCharacter(s *enter.Session, echelonInfo *sro.EchelonInfo, summary *proto.BattleSummary) bool {
-	curBattle := GetCurRaidBattleInfo(s)
+func CheckRaidCharacter(s *enter.Session, echelonId int64,
+	summary *proto.BattleSummary, curBattle *sro.CurRaidBattleInfo) bool {
+	if curBattle == nil {
+		return false
+	}
+	echelonType := int32(proto.EchelonType_Raid)
+	if curBattle.ContentType == proto.ContentType_EliminateRaid {
+		conf := gdconf.GetEliminateRaidStageExcelTable(curBattle.RaidUniqueId)
+		if conf == nil ||
+			len(conf.RaidBossGroup) < 13 {
+			return false
+		}
 
+		bossGroups := strings.Split(conf.RaidBossGroup, "_")
+		switch bossGroups[len(bossGroups)-1] {
+		case "LightArmor":
+			echelonType = proto.EchelonType_EliminateRaid01
+		case "HeavyArmor":
+			echelonType = proto.EchelonType_EliminateRaid02
+		case "Unarmed":
+			echelonType = proto.EchelonType_EliminateRaid03
+		default:
+			logger.Warn("未知的总力战boss类型")
+			return false
+		}
+	}
+	echelonInfo := GetEchelonInfo(s, echelonType, echelonId)
 	if curBattle.RaidTeamList == nil {
 		curBattle.RaidTeamList = make(map[int32]*sro.RaidTeamInfo)
 	}
 	raidTeamInfo := &sro.RaidTeamInfo{
-		LeaderCharacter:      0,
+		LeaderCharacter:      echelonInfo.LeaderCharacter,
 		MainCharacterList:    make(map[int32]*sro.RaidCharacterInfo),
 		SupportCharacterList: make(map[int32]*sro.RaidCharacterInfo),
-		SkillCharacterList:   make(map[int32]int64),
+		SkillCharacterList:   echelonInfo.SkillCharacterList,
 		TryNumber:            curBattle.ServerId,
+		EchelonType:          echelonInfo.EchelonType,
 	}
 
 	if len(summary.Group01Summary.Heroes) > 6 {
@@ -517,11 +516,11 @@ func RaidClose(s *enter.Session) []*ParcelResult {
 			rank.SetRaidScore(curBattle.SeasonId, s.AccountServerId, float64(rankingPoint))
 		}
 		// 计算奖励
-		cur.Difficulty = alg.MaxInt32(cur.Difficulty, int32(proto.GetDifficultyByStr(conf.Difficulty)))
+		cur.Difficulty = alg.MaxInt32(cur.Difficulty, int32(proto.GetDifficultyByStr(conf.Difficulty_)))
 		for _, rewardConf := range gdconf.GetRaidStageRewardExcelTable(conf.RaidRewardGroupId) {
 			list = append(list, &ParcelResult{
 				ParcelType: proto.GetParcelTypeValue(rewardConf.ClearStageRewardParcelType),
-				ParcelId:   rewardConf.ClearStageRewardParcelUniqueID,
+				ParcelId:   rewardConf.ClearStageRewardParcelUniqueId,
 				Amount:     rewardConf.ClearStageRewardAmount,
 			})
 		}

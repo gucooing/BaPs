@@ -438,6 +438,7 @@ message RaidTeamInfo {
   map<int32,RaidCharacterInfo> support_character_list = 3; // 支援角色
   map<int32,int64> skill_character_list = 4; // 优先释放技能角色
   int64 try_number = 5; // 序号
+  int32 echelon_type = 6; // 队伍类型
 }
 
 message RaidCharacterInfo {
@@ -470,6 +471,7 @@ message CurRaidBattleInfo {
   int32 index_damage = 17; // 序号
   int64 server_id = 18; // 战斗次数
   int32 warn_num = 19; // 警告等级
+  int32 content_type = 20; // 类型
 }
 
 // 登录奖励
@@ -504,5 +506,23 @@ message RaidMultiFloorInfo {
 // 大决战
 
 message RaidEliminateBin {
+  RaidEliminateInfo cur_raid_eliminate = 1;
+  RaidEliminateInfo last_raid_eliminate = 2;
+  CurRaidBattleInfo cur_raid_battle_info = 3; // 当前战斗
+}
 
+message RaidEliminateInfo {
+  int64 season_id = 1; // 赛季id
+  int64 ranking = 2; // 排名 历史用当期实时读取
+  int32 tier = 3; // 牌子 历史用当期实时读取
+  map<string,RaidEliminateBest>best_score_list = 4; // 最高分信息
+  int64 total_score = 5; // 总分数
+  bool is_ranking_reward = 6; // 是否领取结算奖励
+  map<int64,bool> receive_reward_ids = 7; // 已领取的奖励
+  int64 ranking_reward_id = 8; // 领取的结算奖励
+}
+
+message RaidEliminateBest {
+  int64 score = 1; // 分数
+  map<int32,RaidTeamInfo> raid_team_list = 2; // 参赛队伍信息
 }

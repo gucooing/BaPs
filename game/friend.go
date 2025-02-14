@@ -147,8 +147,8 @@ func GetFriendIdCardDB(s *enter.Session) *proto.FriendIdCardDB {
 		ShowArenaRanking:            GetShowArenaRanking(s),
 		ArenaRanking:                0,
 		ShowEliminateRaidRanking:    GetShowEliminateRaidRanking(s),
-		EliminateRaidRanking:        0, // 前大决战排名
-		EliminateRaidTier:           0,
+		EliminateRaidRanking:        GetLastRaidEliminateInfo(s).GetRanking(), // 前大决战排名
+		EliminateRaidTier:           GetLastRaidEliminateInfo(s).GetTier(),
 		ShowFriendCode:              GetShowFriendCode(s),
 		ShowRaidRanking:             GetShowRaidRanking(s),
 		RaidRanking:                 GetLastRaidInfo(s).GetRanking(), // 前总力战排名
@@ -180,8 +180,8 @@ func GetDetailedAccountInfoDB(s *enter.Session,
 		ArenaRanking:                   0,
 		RaidRanking:                    GetLastRaidInfo(s).GetRanking(),
 		RaidTier:                       GetLastRaidInfo(s).GetTier(),
-		EliminateRaidRanking:           0,
-		EliminateRaidTier:              0,
+		EliminateRaidRanking:           GetLastRaidEliminateInfo(s).GetRanking(),
+		EliminateRaidTier:              GetLastRaidEliminateInfo(s).GetTier(),
 	}
 	return info
 }

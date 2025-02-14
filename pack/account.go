@@ -40,6 +40,7 @@ func AccountAuth(s *enter.Session, request, response proto.Message) {
 	s.AccountState = proto.AccountState_Normal
 	game.SetLastConnectTime(s)
 
+	game.AddToast(s, "欢迎游玩BaPs,这是一个半开源的免费服务器")
 	// 任务二次处理
 	mission := game.GetMissionBin(s)
 	for t, info := range mission.GetCategoryMissionInfo() {
@@ -204,18 +205,18 @@ func ScenarioLobbyStudentChange(s *enter.Session, request, response proto.Messag
 func ToastList(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.ToastListResponse)
 
-	rsp.ToastDBs = []*proto.ToastDB{
-		{
+	for _, str := range game.GetToast(s) {
+		rsp.ToastDBs = append(rsp.ToastDBs, &proto.ToastDB{
 			UniqueId:     0,
-			Text:         "欢迎游玩BaPs,这是一个半开源的免费服务器",
+			Text:         str,
 			LocalizeText: make(map[proto.Language]string),
-			ToastId:      "欢迎游玩BaPs,这是一个半开源的免费服务器-2",
+			ToastId:      str,
 			BeginDate:    time.Now(),
 			EndDate:      time.Now().Add(time.Second * 10),
 			LifeTime:     3000, // ms
-			Delay:        0,
-		},
+			Delay:        0})
 	}
+	game.DelToast(s)
 }
 
 func ContentSweepMultiSweepPresetList(s *enter.Session, request, response proto.Message) {

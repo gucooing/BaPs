@@ -32,7 +32,7 @@ func NewRank() *RankInfo {
 		raidEliminateSync:     sync.RWMutex{},
 	}
 	// 初始化数据库
-	RANKINFO.SQL = db.NewYostarRank(config.GetRaidRankDB())
+	RANKINFO.SQL = db.NewYostarRank(config.GetRankDB())
 	if RANKINFO.SQL == nil {
 		logger.Error("YostarRank 数据库初始化失败")
 		return nil

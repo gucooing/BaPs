@@ -74,7 +74,8 @@ func RaidGetBestTeam(s *enter.Session, request, response proto.Message) {
 		return
 	}
 	for _, bin := range game.GetCurRaidTeamList(as) {
-		rsp.RaidTeamSettingDBs = append(rsp.RaidTeamSettingDBs, game.GetRaidTeamSettingDB(as, bin))
+		rsp.RaidTeamSettingDBs = append(rsp.RaidTeamSettingDBs,
+			game.GetRaidTeamSettingDB(as, bin))
 	}
 }
 
@@ -107,8 +108,8 @@ func RaidCreateBattle(s *enter.Session, request, response proto.Message) {
 		// 扣票
 		game.UpCurrency(s, proto.CurrencyTypes_RaidTicket, -1)
 	}
-	rsp.RaidBattleDB = game.GetRaidBattleDB(s)
-	rsp.RaidDB = game.GetRaidDB(s)
+	rsp.RaidBattleDB = game.GetRaidBattleDB(s, curBattle)
+	rsp.RaidDB = game.GetRaidDB(s, curBattle)
 }
 
 func RaidEndBattle(s *enter.Session, request, response proto.Message) {
@@ -122,9 +123,8 @@ func RaidEndBattle(s *enter.Session, request, response proto.Message) {
 		return
 	}
 	raidSummary := summary.RaidSummary
-	echelonInfo := game.GetEchelonInfo(s, proto.EchelonType_Raid, int64(req.EchelonId))
 	// 参战角色保存
-	if !game.CheckRaidCharacter(s, echelonInfo, summary) {
+	if !game.CheckRaidCharacter(s, int64(req.EchelonId), summary, curBattle) {
 		return
 	}
 	// 记录boss情况
@@ -172,8 +172,8 @@ func RaidEnterBattle(s *enter.Session, request, response proto.Message) {
 		rsp.AssistCharacterDB = game.GetAssistCharacterDB(ac, assistInfo, assist.AssistRelation)
 	}
 
-	rsp.RaidBattleDB = game.GetRaidBattleDB(s)
-	rsp.RaidDB = game.GetRaidDB(s)
+	rsp.RaidBattleDB = game.GetRaidBattleDB(s, curBattle)
+	rsp.RaidDB = game.GetRaidDB(s, curBattle)
 }
 
 func RaidGiveUp(s *enter.Session, request, response proto.Message) {
@@ -196,14 +196,14 @@ func RaidGiveUp(s *enter.Session, request, response proto.Message) {
 func RaidSeasonReward(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.RaidSeasonRewardResponse)
 
-	defer func() {
-		game.SetServerNotification(s, proto.ServerNotificationFlag_CanReceiveRaidReward, false)
-		rsp.ReceiveRewardIds = game.GetReceiveRewardIds(s)
-	}()
 	bin := game.GetCurRaidInfo(s)
 	if bin == nil {
 		return
 	}
+	defer func() {
+		game.SetServerNotification(s, proto.ServerNotificationFlag_CanReceiveRaidReward, false)
+		rsp.ReceiveRewardIds = game.GetReceiveRewardIds(bin.GetReceiveRewardIds())
+	}()
 	if bin.ReceiveRewardIds == nil {
 		bin.ReceiveRewardIds = make(map[int64]bool)
 	}

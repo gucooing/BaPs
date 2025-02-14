@@ -30,6 +30,7 @@ type Session struct {
 	GoroutinesSync  sync.Mutex
 	AccountFriend   *AccountFriend
 	Mission         *Mission
+	Toast           []string
 }
 
 // 定时检查一次是否有用户长时间离线
@@ -105,7 +106,10 @@ func GetSessionByUid(uid int64) *Session {
 	info = NewSession(uid)
 	info.AccountServerId = uid
 	info.EndTime = time.Now().Add(time.Duration(MaxCachePlayerTime) * time.Minute)
-	pb.Unmarshal(bin.BinData, info.PlayerBin)
+	err := pb.Unmarshal(bin.BinData, info.PlayerBin)
+	if err != nil || info.PlayerBin.GetBaseBin().GetAccountId() != uid {
+		return nil
+	}
 	AddSession(info)
 	return info
 }
