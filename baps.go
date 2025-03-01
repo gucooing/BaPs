@@ -3,6 +3,7 @@ package BaPs
 import (
 	"context"
 	"crypto/tls"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -14,6 +15,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/arl/statsviz"
+	example "github.com/arl/statsviz/_example"
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/command"
 	"github.com/gucooing/BaPs/common/check"
@@ -76,6 +80,8 @@ func NewBaPs() {
 	gdconf.LoadGameConfig(cfg.DataPath, cfg.ResourcesPath)
 	// 初始化排名数据
 	rankInfo := rank.NewRank()
+	// go TestIrc()
+	// go status(router)
 	// 启动服务器
 	go func() {
 		logger.Info("ClientVersion:%s", pkg.ClientVersion)
@@ -146,7 +152,7 @@ func Run(appNet *config.HttpNet, server *http.Server) error {
 }
 
 func TestIrc() {
-	tCPListener, err := net.Listen("tcp", "0.0.0.0:16667")
+	tCPListener, err := net.Listen("tcp", "0.0.0.0:16666")
 	if err != nil {
 		return
 	}
@@ -165,8 +171,22 @@ func TestIrc() {
 					return
 				}
 				bin := buf[:n]
-				logger.Info("irc:c->s:%s", string(bin))
+
+				logger.Info("irc:c->s:%s", hex.EncodeToString(bin))
 			}
 		}()
 	}
+}
+
+func status(router *gin.Engine) {
+	go example.Work()
+	pprof.Register(router, "pprof")
+	srv, _ := statsviz.NewServer()
+	router.GET("/debug/statsviz/*filepath", func(context *gin.Context) {
+		if context.Param("filepath") == "/ws" {
+			srv.Ws()(context.Writer, context.Request)
+			return
+		}
+		srv.Index()(context.Writer, context.Request)
+	})
 }
