@@ -1,12 +1,8 @@
 package pack
 
 import (
-	"strings"
-
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
-	"github.com/gucooing/BaPs/gdconf"
-	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
 	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
@@ -41,8 +37,19 @@ func ShopBeforehandGachaRun(s *enter.Session, request, response proto.Message) {
 	bin.GoodsId = req.GoodsId
 	bin.ShopUniqueId = req.ShopUniqueId
 
+	genLastResults := func(results []*game.ParcelResult) []int64 {
+		list := make([]int64, 0)
+		for _, result := range results {
+			if result.ParcelType == proto.ParcelType_Currency {
+				list = append(list, result.ParcelId)
+			}
+		}
+		return list
+	}
+
 	if bin.LastIndex < 10 {
-		bin.LastResults = game.GachaRun(10, true, true)
+		// 抽卡生成
+		bin.LastResults = genLastResults(game.GenGachaResults(req.GoodsId))
 	} else {
 		bin.LastIndex-- // 避免傻子客户端溢出
 	}
@@ -85,8 +92,20 @@ func ShopBeforehandGachaPick(s *enter.Session, request, response proto.Message) 
 		return
 	}
 
+	gen := func(results []int64) []*game.ParcelResult {
+		list := make([]*game.ParcelResult, 0)
+		for _, result := range results {
+			list = append(list, &game.ParcelResult{
+				ParcelType: proto.ParcelType_Character,
+				ParcelId:   result,
+				Amount:     1,
+			})
+		}
+		return list
+	}
+
 	bin.AlreadyPicked = true
-	list, addItemList := game.SaveGachaResults(s, results)
+	list, addItemList := game.SaveGachaResults(s, gen(results))
 	rsp.GachaResults = list
 	for id, _ := range addItemList {
 		itemInfo := game.GetItemInfo(s, id)
@@ -106,15 +125,12 @@ func ShopBuyGacha3(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ShopBuyGacha3Request)
 	rsp := response.(*proto.ShopBuyGacha3Response)
 
-	rsp.GachaResults = make([]*proto.GachaResult, 0)
 	rsp.AcquiredItems = make([]*proto.ItemDB, 0)
 	// 成本计算
-	itemDBs, gachaNum, isUp := GenGachaCost(s, req.Cost)
-	rsp.ConsumedItems = itemDBs
+	rsp.ConsumedItems = GenGachaCost(s, req.Cost)
 
 	// 抽卡生成
-	var results []int64
-	results = game.GachaRun(gachaNum, isUp, false)
+	results := game.GenGachaResults(req.GoodsId)
 
 	// 生成回包
 	list, addItemList := game.SaveGachaResults(s, results)
@@ -131,31 +147,17 @@ func ShopBuyGacha3(s *enter.Session, request, response proto.Message) {
 }
 
 // GenGachaCost 生成抽卡成本
-func GenGachaCost(s *enter.Session, cost *proto.ParcelCost) ([]*proto.ItemDB, int64, bool) {
+func GenGachaCost(s *enter.Session, cost *proto.ParcelCost) []*proto.ItemDB {
 	itemLisl := make([]*proto.ItemDB, 0)
-	gachaNum := int64(0)
-	isUp := false
 	for _, pi := range cost.ParcelInfos {
 		switch pi.Key.Type {
 		case proto.ParcelType_Item: // 物品
-			conf := gdconf.GetItemExcelTable(pi.Key.Id)
-			if conf == nil {
-				continue
-			}
-			names := strings.Split(conf.SpriteName, "_")
-			if len(names) >= 2 && game.RemoveItem(s, pi.Key.Id, int32(pi.Amount)) {
-				gachaNum += alg.S2I64(names[len(names)-1])
-				itemLisl = append(itemLisl, game.GetItemDB(s, pi.Key.Id))
-			}
-			if names[len(names)-2] == "3Star" {
-				isUp = true
-			}
+			game.RemoveItem(s, pi.Key.Id, int32(pi.Amount))
+			itemLisl = append(itemLisl, game.GetItemDB(s, pi.Key.Id))
 		case proto.ParcelType_Currency: // 代币
-			if game.UpCurrency(s, pi.Key.Id, -pi.Amount) != nil {
-				gachaNum += pi.Amount / 120
-			}
+			game.UpCurrency(s, pi.Key.Id, -pi.Amount)
 		}
 	}
 
-	return itemLisl, gachaNum, isUp
+	return itemLisl
 }

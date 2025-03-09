@@ -24,22 +24,33 @@ func (g *GameConfig) loadGachaElementExcelTable() {
 }
 
 type GachaElementExcel struct {
-	GachaElementExcelMap  map[int64]*sro.GachaElementExcelTable
-	GachaElementExcelList map[int64][]*sro.GachaElementExcelTable // GroupId
+	GachaElementExcelMap    map[int64]*sro.GachaElementExcelTable
+	GachaElementGroupIdList map[int64]*GachaElementGroupId // GroupId
+}
+
+type GachaElementGroupId struct {
+	GachaGroupId          int64
+	Rarity                string
+	GachaElementExcelList []*sro.GachaElementExcelTable
 }
 
 func (g *GameConfig) gppGachaElementExcelTable() {
 	g.GetGPP().GachaElementExcel = &GachaElementExcel{
-		GachaElementExcelMap:  make(map[int64]*sro.GachaElementExcelTable),
-		GachaElementExcelList: make(map[int64][]*sro.GachaElementExcelTable),
+		GachaElementExcelMap:    make(map[int64]*sro.GachaElementExcelTable),
+		GachaElementGroupIdList: make(map[int64]*GachaElementGroupId),
 	}
 	for _, v := range g.GetExcel().GetGachaElementExcelTable() {
 		g.GetGPP().GachaElementExcel.GachaElementExcelMap[v.Id] = v
-		if g.GetGPP().GachaElementExcel.GachaElementExcelList[v.GachaGroupId] == nil {
-			g.GetGPP().GachaElementExcel.GachaElementExcelList[v.GachaGroupId] = make([]*sro.GachaElementExcelTable, 0)
+
+		if g.GetGPP().GachaElementExcel.GachaElementGroupIdList[v.GachaGroupId] == nil {
+			g.GetGPP().GachaElementExcel.GachaElementGroupIdList[v.GachaGroupId] = &GachaElementGroupId{
+				GachaGroupId:          v.GachaGroupId,
+				Rarity:                v.Rarity_,
+				GachaElementExcelList: make([]*sro.GachaElementExcelTable, 0),
+			}
 		}
-		g.GetGPP().GachaElementExcel.GachaElementExcelList[v.GachaGroupId] = append(
-			g.GetGPP().GachaElementExcel.GachaElementExcelList[v.GachaGroupId],
+		g.GetGPP().GachaElementExcel.GachaElementGroupIdList[v.GachaGroupId].GachaElementExcelList = append(
+			g.GetGPP().GachaElementExcel.GachaElementGroupIdList[v.GachaGroupId].GachaElementExcelList,
 			v,
 		)
 	}
@@ -50,4 +61,8 @@ func (g *GameConfig) gppGachaElementExcelTable() {
 
 func GetGachaElementExcelTable(id int64) *sro.GachaElementExcelTable {
 	return GC.GetGPP().GachaElementExcel.GachaElementExcelMap[id]
+}
+
+func GetGachaElementGroupIdByGachaGroupId(gachaGroupId int64) *GachaElementGroupId {
+	return GC.GetGPP().GachaElementExcel.GachaElementGroupIdList[gachaGroupId]
 }

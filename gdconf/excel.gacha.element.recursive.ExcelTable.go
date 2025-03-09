@@ -51,3 +51,17 @@ func (g *GameConfig) gppGachaElementRecursiveExcelTable() {
 func GetGachaElementRecursiveExcelTable(id int64) *sro.GachaElementRecursiveExcelTable {
 	return GC.GetGPP().GachaElementRecursiveExcel.GachaElementRecursiveExcelMap[id]
 }
+
+func GetGachaElementExcelTableByGachaGroupId(gachaGroupId int64) []*GachaElementGroupId {
+	list := make([]*GachaElementGroupId, 0)
+	recursiveList := GC.GetGPP().GachaElementRecursiveExcel.GachaElementRecursiveExcelList[gachaGroupId]
+	if len(recursiveList) == 0 {
+		list = append(list, GetGachaElementGroupIdByGachaGroupId(gachaGroupId))
+	} else {
+		for _, info := range recursiveList {
+			list = append(list, GetGachaElementGroupIdByGachaGroupId(info.ParcelId))
+			// conf := GetGachaElementGroupIdByGachaGroupId(info.ParcelId)
+		}
+	}
+	return list
+}

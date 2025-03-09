@@ -29,9 +29,9 @@ type CharacterExcel struct {
 	CharacterExcelTableMap map[int64]*sro.CharacterExcelTable
 	CharacterReleaseList   []*sro.CharacterExcelTable
 	CharacterMap           map[int64]*sro.CharacterExcelTable // 全部角色索引
-	CharacterRMap          []*sro.CharacterExcelTable
-	CharacterSRMap         []*sro.CharacterExcelTable
-	CharacterSSRMap        []*sro.CharacterExcelTable
+	// CharacterRMap          []*sro.CharacterExcelTable
+	// CharacterSRMap         []*sro.CharacterExcelTable
+	// CharacterSSRMap        []*sro.CharacterExcelTable
 }
 
 /*
@@ -45,9 +45,9 @@ func (g *GameConfig) gppCharacterExcelTable() {
 		CharacterExcelTableMap: make(map[int64]*sro.CharacterExcelTable),
 		CharacterReleaseList:   make([]*sro.CharacterExcelTable, 0),
 		CharacterMap:           make(map[int64]*sro.CharacterExcelTable),
-		CharacterRMap:          make([]*sro.CharacterExcelTable, 0),
-		CharacterSRMap:         make([]*sro.CharacterExcelTable, 0),
-		CharacterSSRMap:        make([]*sro.CharacterExcelTable, 0),
+		// CharacterRMap:          make([]*sro.CharacterExcelTable, 0),
+		// CharacterSRMap:         make([]*sro.CharacterExcelTable, 0),
+		// CharacterSSRMap:        make([]*sro.CharacterExcelTable, 0),
 	}
 
 	for _, v := range g.GetExcel().GetCharacterExcelTable() {
@@ -56,22 +56,22 @@ func (g *GameConfig) gppCharacterExcelTable() {
 			v.ProductionStep_ == "Release" && v.Id == v.CharacterPieceItemId {
 			info.CharacterReleaseList = append(info.CharacterReleaseList, v)
 			info.CharacterMap[v.Id] = v
-			switch v.Rarity_ {
-			case "R":
-				info.CharacterRMap = append(info.CharacterRMap, v)
-			case "SR":
-				info.CharacterSRMap = append(info.CharacterSRMap, v)
-			case "SSR":
-				info.CharacterSSRMap = append(info.CharacterSSRMap, v)
-			default:
-				logger.Debug("未知的角色星级|角色id:%v Rarity:%s", v.Id, v.Rarity_)
-			}
+			// switch v.Rarity_ {
+			// case "R":
+			// 	info.CharacterRMap = append(info.CharacterRMap, v)
+			// case "SR":
+			// 	info.CharacterSRMap = append(info.CharacterSRMap, v)
+			// case "SSR":
+			// 	info.CharacterSSRMap = append(info.CharacterSSRMap, v)
+			// default:
+			// 	logger.Debug("未知的角色星级|角色id:%v Rarity:%s", v.Id, v.Rarity_)
+			// }
 		}
 	}
 
 	g.GetGPP().CharacterExcel = info
-	logger.Info("处理角色完成,三星角色:%v个,二星角色:%v个,一星角色:%v个",
-		len(info.CharacterSSRMap), len(info.CharacterSRMap), len(info.CharacterRMap))
+	logger.Info("处理角色完成,角色数量:%v个",
+		len(info.CharacterReleaseList))
 }
 
 func GetCharacterExcel(characterId int64) *sro.CharacterExcelTable {
