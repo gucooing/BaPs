@@ -13,7 +13,7 @@ export CGO_ENABLED=0
 
 PLATFORMS="linux/amd64 linux/arm64 windows/amd64 windows/arm64"
 OUT_DIR=./bin
-MAIN_PATH=.\\cmd\\BaPs\\BaPs.go
+MAIN_PATH=./cmd/BaPs/BaPs.go
 NAME="BaPs"
 
   for platform in $PLATFORMS; do
