@@ -22,7 +22,7 @@ jobs:
     - name: Build Proto
       run: |
           cd ./common/server_only
-          bash ./build_proto.sh
+          ./protoc --proto_path=. --go_out=. *.proto
 
     - name: Build
       run: bash build.sh
