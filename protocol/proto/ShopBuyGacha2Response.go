@@ -4,7 +4,6 @@ package proto
 
 import (
 	"encoding/json"
-	"time"
 
 	"github.com/gucooing/BaPs/pkg/mx"
 )
@@ -13,7 +12,7 @@ type ShopBuyGacha2Response struct{
 	message ProtoMessage
 	ResponsePacket
 
-    UpdateTime time.Time
+    UpdateTime mx.MxTime
     GemBonusRemain int64
     GemPaidRemain int64
     ConsumedItems []*ItemDB

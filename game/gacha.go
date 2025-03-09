@@ -52,7 +52,7 @@ func GetBeforehandGachaSnapshotDB(s *enter.Session) *proto.BeforehandGachaSnapsh
 1 0.785 -> 78500
 */
 
-func GachaRun(num int, ssr bool, sr bool) []int64 {
+func GachaRun(num int64, ssr bool, sr bool) []int64 {
 	results := make([]int64, 0)
 	fn := func(conf []*sro.CharacterExcelTable) int64 {
 		index := rand.Intn(len(conf))
@@ -61,12 +61,14 @@ func GachaRun(num int, ssr bool, sr bool) []int64 {
 	conf := gdconf.GetCharacterExcelStruct()
 
 	isSr := false
-	for i := 0; i < num; i++ {
+	for i := int64(0); i < num; i++ {
 		index := rand.Intn(100000) + 1
 		var result int64
 		if ssr && (num == 1 || i == num-2) { // 服务端控制是否必出ssr
+			ssr = false
 			result = fn(conf.CharacterSSRMap)
 		} else if sr && (num == 1 || i == num-1) { // 服务端控制是否必出sr
+			sr = false
 			result = fn(conf.CharacterSRMap)
 		} else if num == 10 && i == 9 && !isSr { // 保底四星
 			isSr = true

@@ -85,6 +85,9 @@ func (g *GameConfig) LoadExcel() {
 		g.loadEliminateRaidStageExcelTable,
 		g.loadEliminateRaidStageRewardExcelTable,
 		g.loadEliminateRaidStageSeasonRewardExcelTable,
+		g.loadGachaElementRecursiveExcelTable,
+		g.loadGachaElementExcelTable,
+		g.loadGoodsExcelTable,
 	}
 
 	for _, fn := range g.loadFunc {

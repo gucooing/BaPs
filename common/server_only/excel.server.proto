@@ -64,6 +64,9 @@ message Excel {
   repeated EliminateRaidStageExcelTable EliminateRaidStageExcelTable = 55; // 大决战关卡配置
   repeated EliminateRaidStageRewardExcelTable EliminateRaidStageRewardExcelTable = 56; // 大决战关卡奖励配置
   repeated EliminateRaidStageSeasonRewardExcelTable EliminateRaidStageSeasonRewardExcelTable = 57; // 大决战总分奖励配置
+  repeated GachaElementRecursiveExcelTable GachaElementRecursiveExcelTable = 58; // 随机组配置
+  repeated GachaElementExcelTable GachaElementExcelTable = 59; // 随机组池配置
+  repeated GoodsExcelTable GoodsExcelTable = 60; // 商品配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -1113,4 +1116,48 @@ message EliminateRaidStageSeasonRewardExcelTable {
   repeated int64 SeasonRewardParcelUniqueId = 3;
   repeated string SeasonRewardParcelUniqueName = 4;
   repeated int64 SeasonRewardAmount = 5;
+}
+
+message GachaElementRecursiveExcelTable {
+  int64 Id = 1;
+  int64 GachaGroupId = 2;
+  string ParcelType_ = 3;
+  int64 ParcelId = 4;
+  int64 ParcelAmountMin = 5;
+  int64 ParcelAmountMax = 6;
+  int64 Prob = 7;
+  int64 State = 8;
+}
+
+message GachaElementExcelTable {
+  int64 Id = 1;
+  int64 GachaGroupId = 2;
+  string ParcelType_ = 3;
+  int64 ParcelId = 4;
+  string Rarity_ = 5;
+  int64 ParcelAmountMin = 6;
+  int64 ParcelAmountMax = 7;
+  int64 Prob = 8;
+  int64 State = 9;
+}
+
+message GoodsExcelTable {
+  int64 Id = 1;
+  int64 Type = 2;
+  string Rarity_ = 3;
+  string IconPath = 4;
+  repeated string ConsumeParcelType = 5;
+  repeated int64 ConsumeParcelId = 6;
+  repeated int64 ConsumeParcelAmount = 7;
+  repeated string ConsumeCondition_ = 8;
+  string ConsumeGachaTicketType = 9;
+  int64 ConsumeGachaTicketTypeAmount = 10;
+  int64 ProductIdAos = 11;
+  int64 ProductIdiOs = 12;
+  repeated int64 ConsumeExtraStep = 13;
+  repeated int64 ConsumeExtraAmount = 14;
+  int64 State = 15;
+  repeated string ParcelType_ = 16;
+  repeated int64 ParcelId = 17;
+  repeated int64 ParcelAmount = 18;
 }

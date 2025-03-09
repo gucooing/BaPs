@@ -26,7 +26,7 @@ func (g *GameConfig) LoadExcel() {
 		logger.Error("Excel.bin 读取失败,err:%s", err)
 		return
 	}
-	bin, err := mx.DeExcelBytes(file)
+	bin, err := mx.DeExcelBytes(file, 1618496251562615)
 	if err != nil {
 		logger.Error("解析Excel失败")
 		return

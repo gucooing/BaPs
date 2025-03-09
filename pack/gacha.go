@@ -1,12 +1,14 @@
 package pack
 
 import (
-	"time"
+	"strings"
 
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
+	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -107,49 +109,53 @@ func ShopBuyGacha3(s *enter.Session, request, response proto.Message) {
 	rsp.GachaResults = make([]*proto.GachaResult, 0)
 	rsp.AcquiredItems = make([]*proto.ItemDB, 0)
 	// 成本计算
-	if game.UpCurrency(s, proto.CurrencyTypes_GemBonus, -req.Cost.Currency.Gem) != nil {
-		num := req.Cost.Currency.Gem / 120
+	itemDBs, gachaNum, isUp := GenGachaCost(s, req.Cost)
+	rsp.ConsumedItems = itemDBs
 
-		isDu := false
-		for _, itemDB := range req.Cost.ItemDBs {
-			conf := gdconf.GetRecruitCoin()
-			if conf == nil || conf.Id != itemDB.UniqueId {
-				continue
-			}
-			itemInfo := game.GetItemInfo(s, itemDB.UniqueId)
-			if itemInfo != nil &&
-				itemDB.StackCount == 200 && itemInfo.UniqueId == itemDB.UniqueId &&
-				game.RemoveItem(s, itemDB.UniqueId, itemDB.StackCount) {
-				isDu = true
-			}
-		}
+	// 抽卡生成
+	var results []int64
+	results = game.GachaRun(gachaNum, isUp, false)
 
-		var results []int64
-		if isDu {
-			results = game.GachaRun(1, true, false)
-		} else {
-			results = game.GachaRun(int(num), false, false)
-		}
-
-		list, addItemList := game.SaveGachaResults(s, results)
-		rsp.GachaResults = list
-		for id, _ := range addItemList {
-			itemInfo := game.GetItemInfo(s, id)
-			if itemInfo == nil {
-				continue
-			}
-			rsp.AcquiredItems = append(rsp.AcquiredItems, &proto.ItemDB{
-				Type:       proto.ParcelType_Item,
-				ServerId:   itemInfo.ServerId,
-				UniqueId:   itemInfo.UniqueId,
-				StackCount: itemInfo.StackCount,
-			})
-		}
+	// 生成回包
+	list, addItemList := game.SaveGachaResults(s, results)
+	rsp.GachaResults = list
+	for id, _ := range addItemList {
+		rsp.AcquiredItems = append(rsp.AcquiredItems, game.GetItemDB(s, id))
 	}
 
 	info := game.GetCurrencyInfo(s, proto.CurrencyTypes_GemBonus)
 	if info != nil {
 		rsp.GemBonusRemain = info.CurrencyNum
-		rsp.UpdateTime = time.Unix(info.UpdateTime, 0)
+		rsp.UpdateTime = mx.Unix(info.UpdateTime, 0)
 	}
+}
+
+// GenGachaCost 生成抽卡成本
+func GenGachaCost(s *enter.Session, cost *proto.ParcelCost) ([]*proto.ItemDB, int64, bool) {
+	itemLisl := make([]*proto.ItemDB, 0)
+	gachaNum := int64(0)
+	isUp := false
+	for _, pi := range cost.ParcelInfos {
+		switch pi.Key.Type {
+		case proto.ParcelType_Item: // 物品
+			conf := gdconf.GetItemExcelTable(pi.Key.Id)
+			if conf == nil {
+				continue
+			}
+			names := strings.Split(conf.SpriteName, "_")
+			if len(names) >= 2 && game.RemoveItem(s, pi.Key.Id, int32(pi.Amount)) {
+				gachaNum += alg.S2I64(names[len(names)-1])
+				itemLisl = append(itemLisl, game.GetItemDB(s, pi.Key.Id))
+			}
+			if names[len(names)-2] == "3Star" {
+				isUp = true
+			}
+		case proto.ParcelType_Currency: // 代币
+			if game.UpCurrency(s, pi.Key.Id, -pi.Amount) != nil {
+				gachaNum += pi.Amount / 120
+			}
+		}
+	}
+
+	return itemLisl, gachaNum, isUp
 }

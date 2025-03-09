@@ -81,6 +81,9 @@ type GPP struct {
 	EliminateRaidStageExcel             *EliminateRaidStageExcel
 	EliminateRaidStageRewardExcel       *EliminateRaidStageRewardExcel
 	EliminateRaidStageSeasonRewardExcel *EliminateRaidStageSeasonRewardExcel
+	GachaElementExcel                   *GachaElementExcel
+	GachaElementRecursiveExcel          *GachaElementRecursiveExcel
+	GoodsExcel                          *GoodsExcel
 }
 
 func LoadGameConfig(dataPath string, resPath string) *GameConfig {
@@ -89,12 +92,12 @@ func LoadGameConfig(dataPath string, resPath string) *GameConfig {
 	gc.dataPath = dataPath
 	gc.resPath = resPath
 	logger.Info("开始读取资源文件")
-	startTime := time.Now().Unix()
+	startTime := time.Now()
 	gc.LoadExcel()
 	gc.gpp()
-	endTime := time.Now().Unix()
+	endTime := time.Now()
 	runtime.GC()
-	logger.Info("读取资源完成,用时:%v秒", endTime-startTime)
+	logger.Info("读取资源完成,用时:%s秒", endTime.Sub(startTime))
 	return gc
 }
 
@@ -162,6 +165,9 @@ func (g *GameConfig) gpp() {
 		g.gppEliminateRaidStageExcelTable,
 		g.gppEliminateRaidStageRewardExcelTable,
 		g.gppEliminateRaidStageSeasonRewardExcelTable,
+		g.gppGachaElementExcelTable,
+		g.gppGachaElementRecursiveExcelTable,
+		g.gppGoodsExcelTable,
 
 		// data
 		g.loadRaidSchedule,

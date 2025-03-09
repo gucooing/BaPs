@@ -650,6 +650,7 @@ func GetParcelResultList(typeList []string, idList, numList []int64, isDel bool)
 	return list
 }
 
+// ParcelResultDB TODO 没有验证是否能被消耗
 func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.ParcelResultDB {
 	info := &proto.ParcelResultDB{
 		MemoryLobbyDBs:      make([]*proto.MemoryLobbyDB, 0),
