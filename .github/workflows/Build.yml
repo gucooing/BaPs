@@ -19,6 +19,11 @@ jobs:
         go-version: "1.23.2"
         check-latest: true
 
+    - name: Build Proto
+      run: |
+          cd ./common/server_only
+          bash ./build_proto.sh
+
     - name: Build
       run: bash build.sh
 
