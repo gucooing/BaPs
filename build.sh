@@ -24,5 +24,5 @@ NAME="BaPs"
         OUTPUT_NAME="$OUTPUT_NAME.exe"
       fi
       echo "Building $OUTPUT_NAME..."
-      go build -ldflags="-s -w" -o $OUT_DIR/$OUTPUT_NAME $MAIN_PATH
+      go build -ldflags="-s -w"  -tags "rel" -o $OUT_DIR/$OUTPUT_NAME $MAIN_PATH
     done

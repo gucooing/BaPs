@@ -1,0 +1,65 @@
+name: Build
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Sync BaPs
+      uses: actions/checkout@v3
+      with:
+        repository: gucooing/BaPs
+        ref: "main"
+        fetch-depth: 0
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: "1.23.2"
+        check-latest: true
+
+    - name: Build
+      run: bash build.sh
+
+    - name: Upload data
+      uses: actions/upload-artifact@v4
+      with:
+        name: data.zip
+        path: data/*
+
+#    - name: Upload docs
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: docs.zip
+#        path: docs/*
+
+#    - name: Upload linux-amd64
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: linux-amd64.zip
+#        path: bin/linux-amd64/*
+#
+#    - name: Upload linux-arm64
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: linux-arm64.zip
+#        path: build/linux-arm64/*
+#
+#    - name: Upload windows-amd64
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: windows-amd64.zip
+#        path: build/windows-amd64/*
+#
+#    - name: Upload windows-arm64
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: windows-arm64.zip
+#        path: build/windows-arm64/*
+
+    - name: Upload Bin
+      uses: actions/upload-artifact@v4
+      with:
+        name: Bin.zip
+        path: bin/*

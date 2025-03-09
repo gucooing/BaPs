@@ -1,0 +1,41 @@
+name: Docker BaPs
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Sync BaPs
+        uses: actions/checkout@v3
+        with:
+          repository: gucooing/BaPs
+          ref: "main"
+          fetch-depth: 0
+
+      #      - name: Docker login
+      #        uses: docker/login-action@v1.8.0
+      #        with:
+      #          username: "${{ secrets.DOCKERHUB_USERNAME }}"
+      #          password: "${{ secrets.DOCKERHUB_PASSWORD }}"
+      #
+      #      - name: Build the Docker image
+      #        run: |
+      #          SHA=${{ github.sha }}
+      #          docker build -t gucooing/hkrpg-go-pe-beta:latest -t gucooing/hkrpg-go-pe-beta:$SHA -f docker/hkrpg-go/Dockerfile .
+      #          docker push gucooing/hkrpg-go-pe-beta:$SHA
+      #          docker push gucooing/hkrpg-go-pe-beta:latest
+
+      - name: github docker login
+        run: echo ${{ secrets.TOKEN }} | docker login ghcr.io -u gucooing --password-stdin
+
+      - name: Build the Docker image
+        run: |
+          SHA=${{ github.sha }}
+          docker build -t ghcr.io/bantersr/hkrpg-go-beta:latest -t ghcr.io/bantersr/hkrpg-go-pe-beta:v2.6.5x -f docker/hkrpg-go/Dockerfile .
+          docker push ghcr.io/bantersr/hkrpg-go-pe-beta:v2.6.5x
+          docker push ghcr.io/bantersr/hkrpg-go-beta:latest
