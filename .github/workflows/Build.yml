@@ -22,9 +22,9 @@ jobs:
     - name: Build Proto
       run: |
           cd ./common/server_only
-          echo "$(pwd)" >> $GITHUB_PATH
+#          echo "$(pwd)" >> $GITHUB_PATH
           chmod 777 ./protoc ./protoc-gen-go
-          ./protoc --proto_path=. --go_out=. *.proto
+          ./protoc --proto_path=. --plugin=protoc-gen-go=./protoc-gen-go --go_out=. *.proto
 
     - name: Build
       run: bash build.sh
