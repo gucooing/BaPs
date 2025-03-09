@@ -38,6 +38,14 @@ func S2I32(msg string) int32 {
 	return int32(ms)
 }
 
+func S2U64(msg string) uint64 {
+	if msg == "" {
+		return 0
+	}
+	ms, _ := strconv.ParseInt(msg, 10, 64)
+	return uint64(ms)
+}
+
 func AutoGucooingApi() gin.HandlerFunc {
 	if config.GetGucooingApiKey() == "" {
 		return func(c *gin.Context) {}
