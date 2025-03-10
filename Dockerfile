@@ -6,12 +6,8 @@ RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 WORKDIR /app
 COPY . .
 
-#ARG EXCEL_GO_SECRET
-#RUN mkdir -p ./pkg/mx && \
-#    printf "%s" "$EXCEL_GO_SECRET" | base64 -d > ./pkg/mx/excel.go
-
-RUN --mount=type=secret,id=EXCEL_URL \
-    wget EXCEL_URL > ./pkg/mx/excel.go
+RUN export EXCEL_URL=$(cat /run/secrets/excel_url) && \
+    wget $EXCEL_URL -O ./pkg/mx/excel.go
 
 RUN cd ./common/server_only && \
     protoc --proto_path=. --go_out=. --go_opt=paths=source_relative *.proto && \

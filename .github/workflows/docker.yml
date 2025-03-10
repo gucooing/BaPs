@@ -37,13 +37,11 @@ jobs:
 
       - name: Build and push
         uses: docker/build-push-action@v6
-        env:
-          EXCEL_URL: ${{ secrets.EXCEL_URL }}
         with:
           context: .
           file: ./Dockerfile
           secrets: |
-            EXCEL_URL=$EXCEL_URL
+            excel_url=${{ secrets.EXCEL_URL }}
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/gucooing/baps:latest
