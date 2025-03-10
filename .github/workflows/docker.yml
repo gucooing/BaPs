@@ -3,6 +3,10 @@ name: Docker BaPs
 on:
   workflow_dispatch:
 
+  push:
+    branches:
+      - main
+
 jobs:
 
   build:

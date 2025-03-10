@@ -97,7 +97,7 @@ func GetIrc() *Irc {
 var FileNotExist = errors.New("config file not found")
 
 func LoadConfig() error {
-	filePath := "./config.json"
+	filePath := "./config/config.json"
 	f, err := os.Open(filePath)
 	if err != nil {
 		return FileNotExist
@@ -126,8 +126,8 @@ var DefaultConfig = &Config{
 		OuterAddr: "127.0.0.1",
 		OuterPort: "5000",
 		Tls:       false,
-		CertFile:  "./data/cert.pem",
-		KeyFile:   "./data/key.pem",
+		CertFile:  "./config/cert.pem",
+		KeyFile:   "./config/key.pem",
 	},
 	GateWay: &GateWay{
 		MaxPlayerNum:       0,
@@ -137,11 +137,11 @@ var DefaultConfig = &Config{
 	},
 	DB: &DB{
 		DbType: "sqlite",
-		Dsn:    "BaPs.db",
+		Dsn:    "./config/BaPs.db",
 	},
 	RankDB: &DB{
 		DbType: "sqlite",
-		Dsn:    "Rank.db",
+		Dsn:    "./config/Rank.db",
 	},
 	Irc: &Irc{
 		HostAddress: "127.0.0.1",

@@ -16,7 +16,7 @@ func NewCommand(router *gin.Engine) {
 	ginApi := cdq.NewGinApi(command.c)
 	ginApi.SetRouter(router)
 	ginApi.SetApiKey(config.GetGucooingApiKey())
-	command.c.AddCommandRun(cdq.NewShell(command.c), ginApi)
+	command.c.AddCommandRun(ginApi)
 	// 注册指令
 
 	command.ApplicationCommandGiveAll()
