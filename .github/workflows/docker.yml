@@ -33,8 +33,14 @@ jobs:
       - name: github docker login
         run: echo ${{ secrets.TOKEN }} | docker login ghcr.io -u gucooing --password-stdin
 
-      - name: Build the Docker image
+      - name: Build and push Docker image
         run: |
           SHA=${{ github.sha }}
-          docker build --platform linux/amd64,linux/arm64 -t ghcr.io/gucooing/baps:latest -f Dockerfile .
-          docker push ghcr.io/gucooing/baps:latest
+          docker buildx create --use --name multi-platform-builder --driver docker-container
+          docker run --rm --privileged tonistiigi/binfmt:latest --install all
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            -t ghcr.io/gucooing/baps:latest \
+            -t ghcr.io/gucooing/baps:$SHA \
+            --push \
+            .
