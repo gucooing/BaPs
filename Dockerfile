@@ -7,8 +7,7 @@ WORKDIR /app
 COPY . .
 
 RUN --mount=type=secret,id=excel_url,env=EXCEL_URL
-RUN mkdir -p ./pkg/mx && \
-    wget -O ./pkg/mx/excel.go $EXCEL_URL
+RUN wget $EXCEL_URL -O ./pkg/mx/excel.go
 
 RUN cd ./common/server_only && \
     protoc --proto_path=. --go_out=. --go_opt=paths=source_relative *.proto && \
