@@ -21,6 +21,8 @@ func NewCommand(router *gin.Engine) {
 
 	command.ApplicationCommandGiveAll()
 	command.ApplicationCommandGive()
+	command.ApplicationCommandGetPlayer()
+	command.ApplicationCommandGetEmailCode()
 }
 
 var playerOptions = []*cdq.CommandOption{

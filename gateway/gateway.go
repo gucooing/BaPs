@@ -25,6 +25,8 @@ func NewGateWay(router *gin.Engine) *Gateway {
 	enter.MaxPlayerNum = config.GetGateWay().MaxPlayerNum
 	g.initRouter()
 
+	go status(router)
+
 	return g
 }
 

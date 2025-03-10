@@ -46,6 +46,9 @@ func (e *EnterSet) checkSession() {
 			logger.Debug("AccountId:%v,超时离线", accountServerId)
 		}
 	}
+	if len(yostarGameList) == 0 {
+		return
+	}
 	if db.UpAllYostarGame(yostarGameList) != nil {
 		logger.Error("玩家数据保存失败")
 	} else {
@@ -230,6 +233,14 @@ func Close() {
 	} else {
 		logger.Info("社团数据保存完毕")
 	}
+}
+
+func (x *Session) GetBinData() []byte {
+	bin, err := pb.Marshal(x.PlayerBin)
+	if err != nil {
+		return nil
+	}
+	return bin
 }
 
 // GetYostarGame 预处理db数据

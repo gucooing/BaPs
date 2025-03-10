@@ -3,11 +3,9 @@ package BaPs
 import (
 	"context"
 	"crypto/tls"
-	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -15,9 +13,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/arl/statsviz"
-	example "github.com/arl/statsviz/_example"
-	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/command"
 	"github.com/gucooing/BaPs/common/check"
@@ -80,8 +75,6 @@ func NewBaPs() {
 	gdconf.LoadGameConfig(cfg.DataPath, cfg.ResourcesPath)
 	// 初始化排名数据
 	rankInfo := rank.NewRank()
-	// go TestIrc()
-	// go status(router)
 	// 启动服务器
 	go func() {
 		logger.Info("ClientVersion:%s", pkg.ClientVersion)
@@ -149,44 +142,4 @@ func Run(appNet *config.HttpNet, server *http.Server) error {
 		return server.ListenAndServeTLS(appNet.CertFile, appNet.KeyFile)
 	}
 	return server.ListenAndServe()
-}
-
-func TestIrc() {
-	tCPListener, err := net.Listen("tcp", "0.0.0.0:16666")
-	if err != nil {
-		return
-	}
-	defer tCPListener.Close()
-	for {
-		conn, err := tCPListener.Accept()
-		if err != nil {
-			continue
-		}
-		go func() {
-			defer conn.Close()
-			for {
-				buf := make([]byte, 1024)
-				n, err := conn.Read(buf)
-				if err != nil {
-					return
-				}
-				bin := buf[:n]
-
-				logger.Info("irc:c->s:%s", hex.EncodeToString(bin))
-			}
-		}()
-	}
-}
-
-func status(router *gin.Engine) {
-	go example.Work()
-	pprof.Register(router, "pprof")
-	srv, _ := statsviz.NewServer()
-	router.GET("/debug/statsviz/*filepath", func(context *gin.Context) {
-		if context.Param("filepath") == "/ws" {
-			srv.Ws()(context.Writer, context.Request)
-			return
-		}
-		srv.Index()(context.Writer, context.Request)
-	})
 }
