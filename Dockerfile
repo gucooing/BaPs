@@ -7,7 +7,8 @@ WORKDIR /app
 COPY . .
 
 ARG EXCEL_GO_SECRET
-RUN mkdir -p ./pkg/mx && echo "$EXCEL_GO_SECRET" > ./pkg/mx/excel.go
+RUN mkdir -p ./pkg/mx && \
+    echo "$EXCEL_GO_SECRET" > ./pkg/mx/excel.go
 RUN cd ./common/server_only && \
     protoc --proto_path=. --go_out=. --go_opt=paths=source_relative *.proto && \
     cd ../../
