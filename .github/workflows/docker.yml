@@ -8,8 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
-      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+      EXCEL_GO_SECRET: ${{ secrets.EXCEL_GO_SECRET }}
 
     steps:
       - name: Sync BaPs
@@ -43,12 +42,8 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          secrets: |
-            R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}
-            R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }}
           build-args: |
-            R2_ENDPOINT=${{ env.R2_ENDPOINT }}
-            R2_BUCKET=${{ env.R2_BUCKET }}
+            EXCEL_GO_SECRET=${{ secrets.EXCEL_GO_SECRET }}
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/gucooing/baps:latest
