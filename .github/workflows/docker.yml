@@ -6,8 +6,10 @@ on:
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
+    env:
+      R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
 
     steps:
       - name: Sync BaPs
@@ -17,30 +19,44 @@ jobs:
           ref: "main"
           fetch-depth: 0
 
-      #      - name: Docker login
-      #        uses: docker/login-action@v1.8.0
-      #        with:
-      #          username: "${{ secrets.DOCKERHUB_USERNAME }}"
-      #          password: "${{ secrets.DOCKERHUB_PASSWORD }}"
-      #
-      #      - name: Build the Docker image
-      #        run: |
-      #          SHA=${{ github.sha }}
-      #          docker build -t gucooing/hkrpg-go-pe-beta:latest -t gucooing/hkrpg-go-pe-beta:$SHA -f docker/hkrpg-go/Dockerfile .
-      #          docker push gucooing/hkrpg-go-pe-beta:$SHA
-      #          docker push gucooing/hkrpg-go-pe-beta:latest
+#      - name: github docker login
+#        run: echo ${{ secrets.TOKEN }} | docker login ghcr.io -u gucooing --password-stdin
+#
+#      - name: Build and push Docker image
+#        run: |
+#          docker buildx create --use --name multi-platform-builder --driver docker-container
+#          docker run --rm --privileged tonistiigi/binfmt:latest --install all
+#          docker buildx build \
+#            --platform linux/amd64,linux/arm64 \
+#            -t ghcr.io/gucooing/baps:latest \
+#            --push \
+#            Dockerfile .
 
-      - name: github docker login
-        run: echo ${{ secrets.TOKEN }} | docker login ghcr.io -u gucooing --password-stdin
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: gucooing
+          password: ${{ secrets.TOKEN }}
 
-      - name: Build and push Docker image
-        run: |
-          SHA=${{ github.sha }}
-          docker buildx create --use --name multi-platform-builder --driver docker-container
-          docker run --rm --privileged tonistiigi/binfmt:latest --install all
-          docker buildx build \
-            --platform linux/amd64,linux/arm64 \
-            -t ghcr.io/gucooing/baps:latest \
-            -t ghcr.io/gucooing/baps:$SHA \
-            --push \
-            .
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          secrets: |
+            R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}
+            R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }}
+          build-args: |
+            R2_ENDPOINT=${{ env.R2_ENDPOINT }}
+            R2_BUCKET=${{ env.R2_BUCKET }}
+          platforms:
+            - linux/amd64
+            - linux/arm64
+          push: true
+          tags: ghcr.io/gucooing/baps:latest
