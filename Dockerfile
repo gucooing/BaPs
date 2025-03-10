@@ -7,6 +7,10 @@ ADD go.mod .
 ADD go.sum .
 RUN go mod download && go mod verify
 COPY . .
+RUN cd ./common/server_only
+RUN chmod 777 ./protoc ./protoc-gen-go
+RUN ./protoc --proto_path=. --plugin=protoc-gen-go=./protoc-gen-go --go_out=. *.proto
+RUN cd ../../
 RUN go build -ldflags="-s -w" -tags "rel" -o /app/BaPs ./cmd/BaPs/BaPs.go
 
 # 最终镜像
