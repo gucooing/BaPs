@@ -98,6 +98,9 @@ var FileNotExist = errors.New("config file not found")
 
 func LoadConfig() error {
 	filePath := "./config/config.json"
+	if _, err := os.Stat("./config"); os.IsNotExist(err) {
+		os.MkdirAll("./config", 0644)
+	}
 	f, err := os.Open(filePath)
 	if err != nil {
 		return FileNotExist
