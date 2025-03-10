@@ -10,9 +10,9 @@ COPY . .
 #RUN mkdir -p ./pkg/mx && \
 #    printf "%s" "$EXCEL_GO_SECRET" | base64 -d > ./pkg/mx/excel.go
 
-RUN --mount=type=secret,id=EXCEL_GO_SECRET \
+RUN --mount=type=secret,id=excel_go,env=EXCEL_GO_SECRET \
     mkdir -p ./pkg/mx && \
-    cat /run/secrets/EXCEL_GO_SECRET > ./pkg/mx/excel.go
+    cat /run/secrets/excel_go > ./pkg/mx/excel.go
 
 RUN cd ./common/server_only && \
     protoc --proto_path=. --go_out=. --go_opt=paths=source_relative *.proto && \
