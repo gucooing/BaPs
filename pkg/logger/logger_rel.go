@@ -3,6 +3,6 @@
 
 package logger
 
-func (l *Logger) getLineFunc() (fileName string, line int, funcName string) {
-	return "", 0, ""
+func (l *Logger) getLineFunc(logInfo *LogInfo) {
+	logInfo.TrackLine = false
 }

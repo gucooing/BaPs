@@ -42,7 +42,7 @@ https://prod-logcollector.bluearchiveyostar.com:5300 http://127.0.0.1:5000/game/
 ```
 
 ## 使用方法
-#### 1.前往[Releases](./releases/latest)下载最新的发行版本并拷贝到运行目录
+#### 1.前往[Releases](./releases)下载最新的发行版本并拷贝到运行目录
 #### 2.拷贝仓库的data文件夹到运行目录
 #### 3.直接运行一次将会自动生成config.json文件,打开并编辑config.json文件
 #### 4.运行
@@ -52,7 +52,7 @@ https://prod-logcollector.bluearchiveyostar.com:5300 http://127.0.0.1:5000/game/
 ```
 {
   "LogLevel": "info",
-  "ResourcesPath": "./resources",
+  "ResourcesPath": "./resources", // 发行版无用
   "DataPath": "./data",
   "GucooingApiKey": "123456", // 使用api时验证身份的key
   "AutoRegistration": true, // 是否自动注册
@@ -68,8 +68,8 @@ https://prod-logcollector.bluearchiveyostar.com:5300 http://127.0.0.1:5000/game/
   "GateWay": {
     "MaxPlayerNum": 0, // 最大在线玩家数
     "MaxCachePlayerTime": 720, // 最大玩家缓存时间
-    "BlackCmd": {},
-    "IsLogMsgPlayer": true
+    "BlackCmd": {}, // 发行版无用
+    "IsLogMsgPlayer": true // 发行版无用
   },
   "DB": {
     "dbType": "sqlite", // 使用的数据库类型,支持sqlite和mysql
@@ -79,7 +79,7 @@ https://prod-logcollector.bluearchiveyostar.com:5300 http://127.0.0.1:5000/game/
     "dbType": "sqlite", // 使用的数据库类型,支持sqlite和mysql
     "dsn": "RaidRank.db" // 数据库地址,如果是mysql请填写mysql url
   },
-  "Irc": {
+  "Irc": { // 可使用通用irc服务器地址
     "HostAddress": "127.0.0.1", // 社团聊天服务器irc地址
     "Port": 16666, // 社团聊天服务器irc端口
     "Password": "mx123" // 社团聊天服务器irc密码

@@ -9,19 +9,21 @@ import (
 	"strings"
 )
 
-func (l *Logger) getLineFunc() (fileName string, line int, funcName string) {
+func (l *Logger) getLineFunc(logInfo *LogInfo) {
 	var pc uintptr
 	var file string
+	var line int
 	var ok bool
 	pc, file, line, ok = runtime.Caller(3)
 	if !ok {
-		return "???", -1, "???"
+		return
 	}
-	fileName = path.Base(file)
-	funcName = runtime.FuncForPC(pc).Name()
+	fileName := path.Base(file)
+	funcName := runtime.FuncForPC(pc).Name()
 	split := strings.Split(funcName, ".")
 	if len(split) != 0 {
 		funcName = split[len(split)-1]
 	}
-	return fileName, line, funcName
+	logInfo.TrackLine = true
+	logInfo.FileName, logInfo.Line, logInfo.FuncName = fileName, line, funcName
 }

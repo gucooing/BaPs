@@ -371,8 +371,7 @@ func formatLog(level int, msg string, param []any) {
 	*buf = fmt.Appendf(*buf, newMsg)
 	logInfo.Msg = buf
 	if config.TrackLine || logFlag.LogLine == "true" {
-		logInfo.FileName, logInfo.Line, logInfo.FuncName = logger.getLineFunc()
-		logInfo.TrackLine = true
+		logger.getLineFunc(logInfo)
 	}
 	if config.TrackThread || logFlag.LogThread == "true" {
 		logInfo.GoroutineId = logger.getGoroutineId()
