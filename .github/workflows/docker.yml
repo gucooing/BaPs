@@ -55,8 +55,6 @@ jobs:
           build-args: |
             R2_ENDPOINT=${{ env.R2_ENDPOINT }}
             R2_BUCKET=${{ env.R2_BUCKET }}
-          platforms:
-            - linux/amd64
-            - linux/arm64
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/gucooing/baps:latest
