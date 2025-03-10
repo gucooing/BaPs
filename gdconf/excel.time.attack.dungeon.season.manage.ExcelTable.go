@@ -48,14 +48,15 @@ func GetCurTimeAttackDungeonSeasonManageExcelTable() *sro.TimeAttackDungeonSeaso
 	}
 
 	getCur := func() {
-		for _, v := range conf.TimeAttackDungeonSeasonManageExcelMap {
+		for _, v := range GC.GetExcel().GetTimeAttackDungeonSeasonManageExcelTable() { // 读取原始文件,保证顺序
 			startTime, err := time.Parse("2006-01-02 15:04:05", v.StartDate)
 			endTime, err := time.Parse("2006-01-02 15:04:05", v.EndDate)
 			if err != nil {
 				logger.Error("综合战术考试排期表时间格式错误")
 				return
 			}
-			if time.Now().After(startTime) && time.Now().Before(endTime) {
+			if time.Now().After(startTime) && time.Now().Before(endTime) || // 当期开始且未结束
+				time.Now().After(endTime) { // 上期结束且下期未开启
 				conf.Cur = v
 				return
 			}
