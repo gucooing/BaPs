@@ -7,7 +7,7 @@ ADD go.mod .
 ADD go.sum .
 RUN go mod download && go mod verify
 COPY . .
-RUN go build -tags "rel" netgo -o /app/BaPs ./cmd/BaPs/BaPs.go
+RUN go build -ldflags="-s -w" -tags "rel" -o /app/BaPs ./cmd/BaPs/BaPs.go
 
 # 最终镜像
 FROM alpine:latest
