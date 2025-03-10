@@ -12,7 +12,7 @@ COPY . .
 
 RUN --mount=type=secret,id=EXCEL_GO_SECRET \
     mkdir -p ./pkg/mx && \
-    cat /run/secrets/EXCEL_GO_SECRET | base64 -di > ./pkg/mx/excel.go
+    cat /run/secrets/EXCEL_GO_SECRET > ./pkg/mx/excel.go
 
 RUN cd ./common/server_only && \
     protoc --proto_path=. --go_out=. --go_opt=paths=source_relative *.proto && \
