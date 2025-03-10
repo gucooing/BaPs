@@ -308,7 +308,7 @@ func CharacterWeaponExpGrowth(s *enter.Session, request, response proto.Message)
 			continue
 		}
 		parcelResult = append(parcelResult, &game.ParcelResult{
-			ParcelType: proto.ParcelType_CharacterWeapon,
+			ParcelType: proto.ParcelType_Equipment,
 			ParcelId:   id,
 		})
 		waeponInfo.Exp += feedExp

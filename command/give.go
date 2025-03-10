@@ -86,7 +86,7 @@ func (c *Command) give(options map[string]*cdq.CommandOption) (string, error) {
 		},
 	}
 	if game.AddMail(s, mail) {
-		return "执行give 成功,请查询游戏内邮箱获取结果", nil
+		return "请查询游戏内邮箱获取结果", nil
 	}
 	return "", errors.New("执行give 失败,游戏邮箱错误")
 }

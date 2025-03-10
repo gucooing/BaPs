@@ -86,9 +86,9 @@ func (c *Command) giveALL(options map[string]*cdq.CommandOption) (string, error)
 		ParcelInfoList: parcelInfoList,
 	}
 	if game.AddMail(s, mail) {
-		return "执行give all 成功,请查询游戏内邮箱获取结果", nil
+		return "请查询游戏内邮箱获取结果", nil
 	}
-	return "", errors.New("执行give all 失败,游戏邮箱错误")
+	return "", errors.New("游戏邮箱错误")
 }
 
 func GiveAllJsonToProtobuf(req *ApiGiveAll) []*sro.ParcelInfo {
