@@ -1,7 +1,11 @@
 FROM --platform=$BUILDPLATFORM golang:1.23.2-alpine AS builder
 LABEL authors="gucooing"
-RUN apk add --no-cache bash protoc protobuf-dev curl python3 py3-pip
-RUN pip install awscli
+RUN apk add --no-cache bash protoc protobuf-dev curl python3 py3-pip \
+    gcc musl-dev libffi-dev openssl-dev
+
+RUN python3 -m pip install --upgrade pip && \
+    pip install awscli \
+    
 RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 WORKDIR /app
 COPY . .
