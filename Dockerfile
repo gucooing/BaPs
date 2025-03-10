@@ -6,8 +6,9 @@ RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 WORKDIR /app
 COPY . .
 
-RUN --mount=type=secret,id=excel_url,env=EXCEL_URL
-RUN wget $EXCEL_URL -O ./pkg/mx/excel.go
+RUN --mount=type=secret,id=excel_url,env=EXCEL_URL \
+    wget "$EXCEL_URL" -O ./pkg/mx/excel.go || \
+    (echo "Failed to download $EXCEL_URL" && exit 1)
 
 RUN cd ./common/server_only && \
     protoc --proto_path=. --go_out=. --go_opt=paths=source_relative *.proto && \
