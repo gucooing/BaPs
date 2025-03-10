@@ -1,16 +1,12 @@
 FROM --platform=$BUILDPLATFORM golang:1.23.2-alpine AS builder
 LABEL authors="gucooing"
-
-RUN apk add --no-cache bash
+RUN apk add --no-cache bash protoc protobuf-dev
+RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 WORKDIR /app
-ADD go.mod .
-ADD go.sum .
-RUN go mod download && go mod verify
 COPY . .
-RUN cd ./common/server_only
-RUN chmod 777 ./protoc ./protoc-gen-go
-RUN ./protoc --proto_path=. --plugin=protoc-gen-go=./protoc-gen-go --go_out=. *.proto
-RUN cd ../../
+RUN cd ./common/server_only && \
+    protoc --proto_path=. --go_out=. --go_opt=paths=source_relative *.proto && \
+    cd ../../
 RUN go build -ldflags="-s -w" -tags "rel" -o /app/BaPs ./cmd/BaPs/BaPs.go
 
 # 最终镜像
