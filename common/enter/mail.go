@@ -17,7 +17,7 @@ func (e *EnterSet) checkMail() {
 			bin.ParcelInfoList = make([]*db.ParcelInfo, 0)
 			if err := json.Unmarshal([]byte(bin.ParcelInfoListSql),
 				&bin.ParcelInfoList); err != nil {
-				logger.Warn("解析邮件附件失败,请检查邮件配置index:%v", bin.Index)
+				logger.Warn("解析邮件附件失败,请检查邮件配置index:%v", bin.MailIndex)
 			}
 			for _, info := range bin.ParcelInfoList {
 				if _, ok := proto.ParcelType_name[info.Type]; !ok {
@@ -26,7 +26,7 @@ func (e *EnterSet) checkMail() {
 				}
 			}
 		}
-		e.MailMap[bin.Index] = bin
+		e.MailMap[bin.MailIndex] = bin
 	}
 }
 
@@ -39,4 +39,25 @@ func GetYostarMail() map[int64]*db.YostarMail {
 		list[k] = v
 	}
 	return list
+}
+
+func AddYostarMail(mail *db.YostarMail) bool {
+	e := getEnterSet()
+	bin, err := db.AddYostarMailBySender(mail.Sender)
+	if err != nil {
+		return false
+	}
+	mail.MailIndex = bin.MailIndex
+	parcelInfoListSql, _ := json.Marshal(mail.ParcelInfoList)
+	mail.ParcelInfoListSql = string(parcelInfoListSql)
+	if err := db.UpdateYostarMail(mail); err != nil {
+		return false
+	}
+	e.mailSync.RLock()
+	defer e.mailSync.RUnlock()
+	if e.MailMap == nil {
+		e.MailMap = make(map[int64]*db.YostarMail)
+	}
+	e.MailMap[mail.MailIndex] = mail
+	return true
 }

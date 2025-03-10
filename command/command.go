@@ -23,6 +23,7 @@ func NewCommand(router *gin.Engine) {
 	command.ApplicationCommandGive()
 	command.ApplicationCommandGetPlayer()
 	command.ApplicationCommandGetEmailCode()
+	command.ApplicationCommandMail()
 }
 
 var playerOptions = []*cdq.CommandOption{
