@@ -7,8 +7,6 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-#    env:
-#      EXCEL_GO_SECRET: ${{ secrets.EXCEL_GO_SECRET }}
 
     steps:
       - name: Sync BaPs
@@ -39,11 +37,13 @@ jobs:
 
       - name: Build and push
         uses: docker/build-push-action@v6
+        env:
+          EXCEL_GO_SECRET: ${{ secrets.EXCEL_GO_SECRET }}
         with:
           context: .
           file: ./Dockerfile
-          build-args: |
-            EXCEL_GO_SECRET=${{ secrets.EXCEL_GO_SECRET }}
+          secrets: |
+            EXCEL_GO_SECRET=$EXCEL_GO_SECRET
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/gucooing/baps:latest
