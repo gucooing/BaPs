@@ -7,7 +7,8 @@ WORKDIR /app
 COPY . .
 
 RUN export EXCEL_URL=$(cat /run/secrets/excel_url) && \
-    wget $EXCEL_URL -O ./pkg/mx/excel.go
+    echo "EXCEL_URL is: $EXCEL_URL" && \
+    curl -fL $EXCEL_URL -o ./pkg/mx/excel.go || { echo "Download failed"; exit 1; }
 
 RUN cd ./common/server_only && \
     protoc --proto_path=. --go_out=. --go_opt=paths=source_relative *.proto && \
