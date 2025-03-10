@@ -109,8 +109,8 @@ func (c *Command) mail(options map[string]*cdq.CommandOption) (string, error) {
 		sendMail := &db.YostarMail{
 			Sender:         senderOption.Option,
 			Comment:        commentOption.Option,
-			SendDate:       sql.NullTime{Time: time.Unix(alg.S2I64(sendDateOption.Option), 0)},
-			ExpireDate:     sql.NullTime{Time: time.Unix(alg.S2I64(expireDateOption.Option), 0)},
+			SendDate:       sql.NullTime{Time: time.Unix(alg.S2I64(sendDateOption.Option), 0), Valid: true},
+			ExpireDate:     sql.NullTime{Time: time.Unix(alg.S2I64(expireDateOption.Option), 0), Valid: true},
 			ParcelInfoList: parcelInfoList,
 		}
 		if enter.AddYostarMail(sendMail) {
