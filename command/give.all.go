@@ -1,16 +1,17 @@
 package command
 
 import (
-	"net/http"
+	"errors"
+	"fmt"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/protocol/proto"
+	"github.com/gucooing/cdq"
 )
 
 type ApiGiveAll struct {
@@ -19,34 +20,64 @@ type ApiGiveAll struct {
 	Num  int64  `json:"num"`
 }
 
-func (c *Command) GiveAll(g *gin.Context) {
-	req := new(ApiGiveAll)
-	err := g.BindJSON(req)
-	if err != nil {
-		g.JSON(http.StatusOK, gin.H{
-			"code": 1,
-			"msg":  "ApiGiveAll 解析错误",
-		})
-		return
+func (c *Command) ApplicationCommandGiveAll() {
+	giveAll := &cdq.Command{
+		Name:        "giveall",
+		AliasList:   []string{"giveall", "ga"},
+		Description: "获取某个类型的全部物品",
+		Permissions: cdq.User,
+		Options: append(playerOptions, []*cdq.CommandOption{
+			{
+				Name:        "t",
+				Description: "需要给予物品的类型",
+				Required:    true,
+			},
+			{
+				Name:        "num",
+				Description: "需要给予物品的数量 默认值:1",
+				Required:    false,
+			},
+		}...),
+		CommandFunc: c.giveALL,
 	}
-	s := enter.GetSessionByAccountServerId(req.Uid)
+
+	c.c.ApplicationCommand(giveAll)
+}
+
+func (c *Command) giveALL(options map[string]*cdq.CommandOption) (string, error) {
+	uidOption, ok := options["uid"]
+	if !ok {
+		return "", errors.New("缺少参数 uid")
+	}
+	typeOption, ok := options["t"]
+	if !ok {
+		return "", errors.New("缺少参数 t")
+	}
+	num := int64(1)
+	itemNum, ok := options["num"]
+	if ok {
+		num = alg.MaxInt64(alg.S2I64(itemNum.Option), 1)
+	}
+
+	// 玩家验证
+	uid := alg.S2I64(uidOption.Option)
+	s := enter.GetSessionByAccountServerId(uid)
 	if s == nil {
-		g.JSON(http.StatusOK, gin.H{
-			"code": 2,
-			"msg":  "玩家不在线",
-		})
-		return
+		return "", errors.New(fmt.Sprintf("玩家不在线或未注册 UID:%v", uid))
 	}
+
+	// 执行
 	s.GoroutinesSync.Lock()
 	defer s.GoroutinesSync.Unlock()
-	parcelInfoList := GiveAllJsonToProtobuf(req)
+	parcelInfoList := GiveAllJsonToProtobuf(&ApiGiveAll{
+		Uid:  uid,
+		Type: typeOption.Option,
+		Num:  num,
+	})
 	if len(parcelInfoList) == 0 {
-		g.JSON(http.StatusOK, gin.H{
-			"code": 3,
-			"msg":  "不存在此物品类型",
-		})
-		return
+		return "", errors.New(fmt.Sprintf("不存在此物品类型 Type:%s", typeOption.Option))
 	}
+
 	mail := &sro.MailInfo{
 		Sender:         "gucooing",
 		Comment:        "请查收您的意外奖励",
@@ -55,16 +86,9 @@ func (c *Command) GiveAll(g *gin.Context) {
 		ParcelInfoList: parcelInfoList,
 	}
 	if game.AddMail(s, mail) {
-		g.JSON(http.StatusOK, gin.H{
-			"code": 0,
-			"msg":  "发送成功",
-		})
-		return
+		return "执行give all 成功,请查询游戏内邮箱获取结果", nil
 	}
-	g.JSON(http.StatusOK, gin.H{
-		"code": 4,
-		"msg":  "邮件发送失败",
-	})
+	return "", errors.New("执行give all 失败,游戏邮箱错误")
 }
 
 func GiveAllJsonToProtobuf(req *ApiGiveAll) []*sro.ParcelInfo {

@@ -12,6 +12,7 @@ const (
     Difficulty_Extreme = 4
     Difficulty_Insane = 5
     Difficulty_Torment = 6
+    Difficulty_Lunatic = 7
 )
 
 var (
@@ -23,6 +24,7 @@ var (
       4 : "Extreme",
       5 : "Insane",
       6 : "Torment",
+      7: "Lunatic",
    }
     Difficulty_value = map[string]int32{
       "Normal" : 0,
@@ -32,6 +34,7 @@ var (
       "Extreme" : 4,
       "Insane" : 5,
       "Torment" : 6,
+      "Lunatic" : 7,
    }
 )
 

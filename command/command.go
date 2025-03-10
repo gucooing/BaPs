@@ -2,31 +2,31 @@ package command
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/gucooing/BaPs/pkg/alg"
+	"github.com/gucooing/BaPs/config"
+	"github.com/gucooing/cdq"
 )
 
 type Command struct {
-	router *gin.Engine
+	c *cdq.CDQ
 }
 
 func NewCommand(router *gin.Engine) {
-	c := &Command{
-		router: router,
-	}
-	c.Router()
+	command := new(Command)
+	command.c = cdq.New(nil)
+	ginApi := cdq.NewGinApi(command.c)
+	ginApi.SetRouter(router)
+	ginApi.SetApiKey(config.GetGucooingApiKey())
+	command.c.AddCommandRun(cdq.NewShell(command.c), ginApi)
+	// 注册指令
+
+	command.ApplicationCommandGiveAll()
+	command.ApplicationCommandGive()
 }
 
-func (c *Command) Router() {
-	if c == nil {
-		return
-	}
-	gucooingApi := c.router.Group("/gucooing/api", alg.AutoGucooingApi())
+var playerOptions = []*cdq.CommandOption{
 	{
-		gucooingApi.GET("/ba/getEmailCode", c.getEmailCode)
-		gucooingApi.POST("/give", c.Give)
-		gucooingApi.POST("/give_all", c.GiveAll)
-		gucooingApi.GET("/getPlayerBin", c.getPlayerBin)
-		gucooingApi.POST("/mail", c.Mail)
-		gucooingApi.POST("/set", c.Set)
-	}
+		Name:        "uid",
+		Description: "玩家游戏id",
+		Required:    true,
+	},
 }

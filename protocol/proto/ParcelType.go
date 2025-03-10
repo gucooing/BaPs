@@ -90,6 +90,10 @@ func (x ParcelType) String() string {
   return ParcelType_name[int32(x)]
 }
 
+func (x ParcelType) Value() int32 {
+    return int32(x)
+}
+
 func GetParcelTypeValue(st string) ParcelType  {
     return ParcelType(ParcelType_value[st])
 }

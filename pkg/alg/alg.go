@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gucooing/BaPs/config"
 )
 
 func Xor(data []byte, key []byte) {
@@ -44,19 +43,6 @@ func S2U64(msg string) uint64 {
 	}
 	ms, _ := strconv.ParseInt(msg, 10, 64)
 	return uint64(ms)
-}
-
-func AutoGucooingApi() gin.HandlerFunc {
-	if config.GetGucooingApiKey() == "" {
-		return func(c *gin.Context) {}
-	} else {
-		return func(c *gin.Context) {
-			if c.GetHeader("Authorization-Gucooing") != config.GetGucooingApiKey() {
-				c.String(401, "Unauthorized")
-				c.Abort()
-			}
-		}
-	}
 }
 
 func MaxInt(a, b int) int {

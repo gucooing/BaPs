@@ -136,6 +136,7 @@ func GetClearDifficulty(s *enter.Session) []proto.Difficulty {
 		proto.Difficulty_Extreme,
 		proto.Difficulty_Insane,
 		proto.Difficulty_Torment,
+		proto.Difficulty_Lunatic,
 	}
 
 	return list
@@ -146,7 +147,7 @@ func GetPlayableHighestDifficulty(s *enter.Session) map[string]proto.Difficulty 
 	if cur := gdconf.GetCurRaidSchedule(); cur != nil {
 		conf := gdconf.GetRaidSeasonManageExcelTable(cur.SeasonId)
 		for _, name := range conf.OpenRaidBossGroup {
-			list[name] = proto.Difficulty(alg.MinInt32(GetCurRaidInfo(s).GetDifficulty()+1, proto.Difficulty_Torment))
+			list[name] = proto.Difficulty(alg.MinInt32(GetCurRaidInfo(s).GetDifficulty()+1, proto.Difficulty_Lunatic))
 		}
 	}
 	return list

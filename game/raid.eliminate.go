@@ -133,9 +133,9 @@ func GetEliminateRaidLobbyInfoDB(s *enter.Session) *proto.EliminateRaidLobbyInfo
 		RaidLobbyInfoDB: &proto.RaidLobbyInfoDB{
 			PlayingRaidDB: GetRaidDB(s, GetCurRaidEliminateBattleInfo(s)),
 			PlayableHighestDifficulty: map[string]proto.Difficulty{
-				conf.OpenRaidBossGroup01: proto.Difficulty_Torment,
-				conf.OpenRaidBossGroup02: proto.Difficulty_Torment,
-				conf.OpenRaidBossGroup03: proto.Difficulty_Torment,
+				conf.OpenRaidBossGroup01: proto.Difficulty_Lunatic,
+				conf.OpenRaidBossGroup02: proto.Difficulty_Lunatic,
+				conf.OpenRaidBossGroup03: proto.Difficulty_Lunatic,
 			},
 			ReceivedRankingRewardId: bin.GetRankingRewardId(),
 			ReceiveRewardIds:        GetReceiveRewardIds(bin.GetReceiveRewardIds()),
