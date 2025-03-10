@@ -156,7 +156,7 @@ func index(c *gin.Context) {
 		GachaProbabilityDisplay: make([]*GachaProbabilityDisplay, 0),
 		GuidePopup:              make([]*GuidePopup, 0),
 		Issues:                  make([]interface{}, 0),
-		LatestClientVersion:     "1.53.322553",
+		LatestClientVersion:     "1.54.327262",
 		Maintenance: &Maintenance{
 			StartDate: "2025-02-02T11:00:00",
 			EndDate:   "2025-02-02T17:00:00",
