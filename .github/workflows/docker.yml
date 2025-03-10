@@ -41,7 +41,7 @@ jobs:
           context: .
           file: ./Dockerfile
           secrets: |
-            "excel_go = ${{ secrets.EXCEL_GO_SECRET }}"
+            "excel_go=${{ secrets.EXCEL_GO_SECRET }}"
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/gucooing/baps:latest
