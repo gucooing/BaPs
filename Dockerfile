@@ -9,7 +9,7 @@ RUN go mod download && go mod verify
 COPY . .
 ARG TARGETOS
 ARG TARGETARCH
-RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -tags "rel" netgo -o /app/BaPs ./cmd/BaPs/BaPs.go
+RUN go build -tags "rel" netgo -o /app/BaPs ./cmd/BaPs/BaPs.go
 
 # 最终镜像
 FROM alpine:latest
