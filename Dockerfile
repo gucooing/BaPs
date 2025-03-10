@@ -7,8 +7,6 @@ ADD go.mod .
 ADD go.sum .
 RUN go mod download && go mod verify
 COPY . .
-ARG TARGETOS
-ARG TARGETARCH
 RUN go build -tags "rel" netgo -o /app/BaPs ./cmd/BaPs/BaPs.go
 
 # 最终镜像
