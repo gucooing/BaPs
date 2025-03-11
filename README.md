@@ -47,6 +47,28 @@ https://prod-logcollector.bluearchiveyostar.com:5300 http://127.0.0.1:5000/game/
 #### 3.直接运行一次将会自动生成config.json文件,打开并编辑config.json文件
 #### 4.运行
 
+## Docker运行
+
+```
+docker run -d \
+  -p 5000:5000 \
+  -v /data/baps/config.json:/usr/ba/config.json \
+  -v /data/baps/sqlite:/usr/ba/sqlite \
+  ghcr.io/gucooing/baps:latest
+```
+
+<p hidden> 
+可用的镜像加速
+```
+docker run -d \
+  -p 5000:5000 \
+  -v /data/baps/config.json:/usr/ba/config.json \
+  -v /data/baps/sqlite:/usr/ba/sqlite \
+  ghcr.nju.edu.cn/gucooing/baps:latest
+```
+</p>
+
+
 # config.json
 需要注意的是,实际的json文件中不能存在注释
 ```
