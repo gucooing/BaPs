@@ -124,6 +124,7 @@ func newGin(appNet *config.HttpNet) (*gin.Engine, *http.Server) {
 		router = gin.New()
 	}
 	router.Use(gin.Recovery())
+	router.Use(Cors())
 	addr := fmt.Sprintf("%s:%s", appNet.InnerAddr, appNet.InnerPort)
 	if appNet.Tls {
 		logger.Info("监听地址: https://%s", addr)
@@ -142,4 +143,22 @@ func Run(appNet *config.HttpNet, server *http.Server) error {
 		return server.ListenAndServeTLS(appNet.CertFile, appNet.KeyFile)
 	}
 	return server.ListenAndServe()
+}
+
+func Cors() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		method := c.Request.Method
+		origin := c.Request.Header.Get("Origin")
+		if origin != "" {
+			c.Header("Access-Control-Allow-Origin", "*")
+			c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE")
+			c.Header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
+			c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Cache-Control, Content-Language, Content-Type")
+			c.Header("Access-Control-Allow-Credentials", "true")
+		}
+		if method == "OPTIONS" {
+			c.AbortWithStatus(http.StatusNoContent)
+		}
+		c.Next()
+	}
 }
