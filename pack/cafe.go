@@ -127,7 +127,7 @@ func CafeSummonCharacter(s *enter.Session, request, response proto.Message) {
 	defer func() {
 		rsp.CafeDBs = game.GetPbCafeDBs(s)
 	}()
-	characterInfo := game.GetCharacterInfoByServerId(s, req.CharacterServerId)
+	characterInfo := s.GetCharacterByKeyId(req.CharacterServerId)
 	cafeInfo := game.GetCafeInfo(s, req.CafeDBId)
 	if cafeInfo == nil || characterInfo == nil {
 		return

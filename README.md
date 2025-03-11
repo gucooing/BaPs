@@ -42,7 +42,7 @@ https://prod-logcollector.bluearchiveyostar.com:5300 http://127.0.0.1:5000/game/
 ```
 
 ## 使用方法
-#### 1.前往[Releases](./releases)下载最新的发行版本并拷贝到运行目录
+#### 1.前往[Releases](https://github.com/gucooing/BaPs/releases/latest)下载最新的发行版本并拷贝到运行目录
 #### 2.拷贝仓库的data文件夹到运行目录
 #### 3.直接运行一次将会自动生成config.json文件,打开并编辑config.json文件
 #### 4.运行
@@ -57,8 +57,9 @@ docker run -d \
   ghcr.io/gucooing/baps:latest
 ```
 
-<p hidden> 
-可用的镜像加速
+<details>
+你展开了一个可用的镜像加速,这个镜像加速站来源于网络
+
 ```
 docker run -d \
   -p 5000:5000 \
@@ -66,7 +67,7 @@ docker run -d \
   -v /data/baps/sqlite:/usr/ba/sqlite \
   ghcr.nju.edu.cn/gucooing/baps:latest
 ```
-</p>
+</details>
 
 
 # config.json

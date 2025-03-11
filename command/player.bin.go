@@ -49,6 +49,6 @@ func (c *Command) getPlayer(options map[string]*cdq.CommandOption) (string, erro
 	if isBin == 0 {
 		return session.PlayerBin.String(), nil
 	} else {
-		return hex.EncodeToString(session.GetBinData()), nil
+		return hex.EncodeToString(session.GetPbBinData()), nil
 	}
 }

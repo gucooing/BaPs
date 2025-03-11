@@ -7,7 +7,11 @@ import (
 )
 
 func RandCode() int32 {
-	return int32(rand.Intn(900000) + 100000)
+	return rand.Int31n(900000) + 100000
+}
+
+func RandCodeInt64() int64 {
+	return rand.Int63n(90000000) + 100000
 }
 
 func RandStr(length int) string {

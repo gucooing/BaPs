@@ -188,8 +188,8 @@ func GetRaidLobbyInfoDB(s *enter.Session) *proto.RaidLobbyInfoDB {
 		info.SeasonEndDate = mx.MxTime(cur.EndTime)
 		info.SettlementEndDate = mx.MxTime(cur.EndTime)
 		info.Ranking = rank.GetRaidRank(cur.SeasonId, s.AccountServerId)
-		info.BestRankingPoint = bin.GetBestScore()
 		info.Tier = gdconf.GetRaidTier(cur.SeasonId, info.Ranking)
+		info.BestRankingPoint = bin.GetBestScore()   // 最高分
 		info.TotalRankingPoint = bin.GetTotalScore() // 总分
 		info.CanReceiveRankingReward = GetCanReceiveRankingReward(
 			time.Now().After(cur.EndTime), bin.GetIsRankingReward())

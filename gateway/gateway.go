@@ -31,7 +31,7 @@ func NewGateWay(router *gin.Engine) *Gateway {
 }
 
 func (g *Gateway) initRouter() {
-	g.router.POST("/getEnterTicket/gateway", g.getEnterTicket)
+	g.router.POST("/getEnterTicket/gateway", g.getEnterTicket) // 这个地方要加个限速器,不然会被dos
 	api := g.router.Group("/api")
 	{
 		api.POST("/gateway", g.gateWay)

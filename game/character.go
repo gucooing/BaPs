@@ -14,11 +14,10 @@ func NewCharacter(s *enter.Session) *sro.CharacterBin {
 	}
 	bin := &sro.CharacterBin{
 		CharacterInfoList: make(map[int64]*sro.CharacterInfo),
-		CharacterHash:     make(map[int64]int64),
 	}
 	for _, conf := range gdconf.GetDefaultCharacterExcelTable() {
 		sid := GetServerId(s)
-		infp := &sro.CharacterInfo{
+		info := &sro.CharacterInfo{
 			CharacterId:            conf.CharacterId,
 			Level:                  conf.Level,
 			Exp:                    conf.Exp,
@@ -35,8 +34,9 @@ func NewCharacter(s *enter.Session) *sro.CharacterBin {
 			IsFavorite:             false,
 			PotentialStats:         NewPotentialStats(),
 		}
-		bin.CharacterHash[sid] = conf.CharacterId
-		bin.CharacterInfoList[conf.CharacterId] = infp
+		bin.CharacterInfoList[conf.CharacterId] = info
+
+		s.AddPlayerHash(sid, info)
 	}
 
 	return bin
@@ -90,38 +90,24 @@ func GetCharacterInfo(s *enter.Session, characterId int64) *sro.CharacterInfo {
 	return bin[characterId]
 }
 
-func GetCharacterHash(s *enter.Session) map[int64]int64 {
-	bin := GetCharacterBin(s)
-	if bin == nil {
-		return nil
-	}
-	if bin.CharacterHash == nil {
-		bin.CharacterHash = make(map[int64]int64)
-	}
-	return bin.CharacterHash
-}
-
 func ServerIdToCharacterId(s *enter.Session, serverId int64) int64 {
-	if id, ok := GetCharacterHash(s)[serverId]; ok {
-		return id
+	if info := s.GetCharacterByKeyId(serverId); info != nil {
+		return info.CharacterId
 	}
 	return 0
 }
 
-func GetCharacterInfoByServerId(s *enter.Session, serverId int64) *sro.CharacterInfo {
-	hash := GetCharacterHash(s)
-	if hash == nil {
-		return nil
+func ServerIdsToCharacterIds(s *enter.Session, serverIdList []int64) []int64 {
+	list := make([]int64, 0)
+	for _, serverId := range serverIdList {
+		list = append(list, s.GetCharacterByKeyId(serverId).GetCharacterId())
 	}
-	return GetCharacterInfo(s, hash[serverId])
+
+	return list
 }
 
 func GetCharacterServerId(s *enter.Session, characterId int64) int64 {
-	bin := GetCharacterInfo(s, characterId)
-	if bin == nil {
-		return 0
-	}
-	return bin.ServerId
+	return GetCharacterInfo(s, characterId).GetServerId()
 }
 
 func GetCharacterDBs(s *enter.Session) []*proto.CharacterDB {
@@ -183,9 +169,6 @@ func AddCharacter(s *enter.Session, characterId int64) bool {
 	if bin.CharacterInfoList == nil {
 		bin.CharacterInfoList = make(map[int64]*sro.CharacterInfo)
 	}
-	if bin.CharacterHash == nil {
-		bin.CharacterHash = make(map[int64]int64)
-	}
 	if _, ok := bin.CharacterInfoList[characterId]; ok {
 		return false
 	}
@@ -194,7 +177,7 @@ func AddCharacter(s *enter.Session, characterId int64) bool {
 		logger.Error("[UID:%v]未知的角色添加调用,characterId:%v", s.AccountServerId, characterId)
 		return true
 	}
-	sId := GetServerId(s)
+	sid := GetServerId(s)
 	info := &sro.CharacterInfo{
 		CharacterId:            characterId,
 		Level:                  1,
@@ -208,11 +191,12 @@ func AddCharacter(s *enter.Session, characterId int64) bool {
 		CommonSkillLevel:       1,
 		LeaderSkillLevel:       1,
 		EquipmentList:          NewCharacterEquipment(characterId),
-		ServerId:               sId,
+		ServerId:               sid,
 		PotentialStats:         NewPotentialStats(),
 	}
-	bin.CharacterHash[sId] = characterId
 	bin.CharacterInfoList[characterId] = info
+
+	s.AddPlayerHash(sid, info)
 	return true
 }
 
@@ -228,19 +212,6 @@ func RepeatAddCharacter(s *enter.Session, characterId int64) []int64 {
 	// 添加碎片
 	AddItem(s, conf.CharacterPieceItemId, conf.CharacterPieceItemAmount)
 	list = append(list, conf.CharacterPieceItemId)
-	return list
-}
-
-func ServerIdsToCharacterIds(s *enter.Session, serverIdList []int64) []int64 {
-	list := make([]int64, 0)
-	for _, serverId := range serverIdList {
-		if db := GetCharacterInfoByServerId(s, serverId); db != nil {
-			list = append(list, db.CharacterId)
-		} else {
-			list = append(list, 0)
-		}
-	}
-
 	return list
 }
 
@@ -265,7 +236,7 @@ func GetWeaponUpStarGradeNum(starGrade int32) int32 {
 }
 
 func SetCharacterEquipment(s *enter.Session, characterServerId int64, equipmentIdServerId int64, index int32) bool {
-	characterInfo := GetCharacterInfoByServerId(s, characterServerId)
+	characterInfo := s.GetCharacterByKeyId(characterServerId)
 	equipmentInfo := GetEquipmentInfo(s, equipmentIdServerId)
 	if characterInfo == nil || equipmentInfo == nil {
 		return false
@@ -335,4 +306,26 @@ func MaxAllCharacter(s *enter.Session) {
 			3: 25,
 		}
 	}
+}
+
+// SetCharacterLevel 设置角色等级
+func SetCharacterLevel(s *enter.Session, characterId int64, level int32) bool {
+	info := GetCharacterInfo(s, characterId)
+	if info == nil ||
+		level <= 0 || 90 <= level {
+		return false
+	}
+	info.Level = level
+	return false
+}
+
+// SetCharacterStarGrade 设置角色星级
+func SetCharacterStarGrade(s *enter.Session, characterId int64, starGrade int32) bool {
+	info := GetCharacterInfo(s, characterId)
+	if info == nil ||
+		starGrade <= 0 || 6 <= starGrade {
+		return false
+	}
+	info.StarGrade = starGrade
+	return false
 }

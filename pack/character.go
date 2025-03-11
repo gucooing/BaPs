@@ -25,7 +25,7 @@ func CharacterGearList(s *enter.Session, request, response proto.Message) {
 
 	rsp.GearDBs = make([]*proto.GearDB, 0)
 	for serverId, info := range game.GetGearInfoList(s) {
-		characterInfo := game.GetCharacterInfoByServerId(s, info.CharacterServerId)
+		characterInfo := s.GetCharacterByKeyId(info.CharacterServerId)
 		if characterInfo != nil {
 			characterInfo.GearServerId = serverId
 		}
@@ -37,7 +37,7 @@ func CharacterTranscendence(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CharacterTranscendenceRequest)
 	rsp := response.(*proto.CharacterTranscendenceResponse)
 
-	characterInfo := game.GetCharacterInfoByServerId(s, req.TargetCharacterServerId)
+	characterInfo := s.GetCharacterByKeyId(req.TargetCharacterServerId)
 	if characterInfo == nil {
 		return
 	}
@@ -66,7 +66,7 @@ func CharacterUnlockWeapon(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CharacterUnlockWeaponRequest)
 	rsp := response.(*proto.CharacterUnlockWeaponResponse)
 
-	characterInfo := game.GetCharacterInfoByServerId(s, req.TargetCharacterServerId)
+	characterInfo := s.GetCharacterByKeyId(req.TargetCharacterServerId)
 	if characterInfo == nil {
 		return
 	}
@@ -80,7 +80,7 @@ func CharacterSetFavorites(s *enter.Session, request, response proto.Message) {
 
 	rsp.CharacterDBs = make([]*proto.CharacterDB, 0)
 	for sid, ok := range req.ActivateByServerIds {
-		characterInfo := game.GetCharacterInfoByServerId(s, sid)
+		characterInfo := s.GetCharacterByKeyId(sid)
 		if characterInfo == nil {
 			continue
 		}
@@ -93,7 +93,7 @@ func CharacterUpdateSkillLevel(s *enter.Session, request, response proto.Message
 	req := request.(*proto.CharacterSkillLevelUpdateRequest)
 	rsp := response.(*proto.CharacterSkillLevelUpdateResponse)
 
-	characterInfo := game.GetCharacterInfoByServerId(s, req.TargetCharacterDBId)
+	characterInfo := s.GetCharacterByKeyId(req.TargetCharacterDBId)
 	if characterInfo == nil {
 		return
 	}
@@ -108,7 +108,7 @@ func CharacterBatchSkillLevelUpdate(s *enter.Session, request, response proto.Me
 	req := request.(*proto.CharacterBatchSkillLevelUpdateRequest)
 	rsp := response.(*proto.CharacterBatchSkillLevelUpdateResponse)
 
-	characterInfo := game.GetCharacterInfoByServerId(s, req.TargetCharacterDBId)
+	characterInfo := s.GetCharacterByKeyId(req.TargetCharacterDBId)
 	if characterInfo == nil {
 		return
 	}
@@ -196,7 +196,7 @@ func EquipmentEquip(s *enter.Session, request, response proto.Message) {
 	rsp.EquipmentDBs = make([]*proto.EquipmentDB, 0)
 	defer func() {
 		rsp.CharacterDB = game.GetCharacterDB(s,
-			game.ServerIdToCharacterId(s, req.CharacterServerId))
+			s.GetCharacterByKeyId(req.CharacterServerId).GetCharacterId())
 		rsp.EquipmentDBs = append(rsp.EquipmentDBs, game.GetEquipmentDB(s, req.EquipmentServerId))
 	}()
 	game.SetCharacterEquipment(s, req.CharacterServerId, req.EquipmentServerId, req.SlotIndex)
@@ -206,7 +206,7 @@ func CharacterExpGrowth(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CharacterExpGrowthRequest)
 	rsp := response.(*proto.CharacterExpGrowthResponse)
 
-	characterInfo := game.GetCharacterInfoByServerId(s, req.TargetCharacterServerId)
+	characterInfo := s.GetCharacterByKeyId(req.TargetCharacterServerId)
 	if characterInfo == nil {
 		return
 	}
@@ -257,15 +257,15 @@ func CharacterGearUnlock(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CharacterGearUnlockRequest)
 	rsp := response.(*proto.CharacterGearUnlockResponse)
 
-	defer func() {
-		rsp.CharacterDB = game.GetCharacterDB(s, game.ServerIdToCharacterId(s, req.CharacterServerId))
-	}()
-
 	bin := game.GetGearInfoList(s)
-	characterInfo := game.GetCharacterInfoByServerId(s, req.CharacterServerId)
+	characterInfo := s.GetCharacterByKeyId(req.CharacterServerId)
 	if bin == nil || characterInfo == nil {
 		return
 	}
+	defer func() {
+		rsp.CharacterDB = game.GetCharacterDB(s, characterInfo.CharacterId)
+	}()
+
 	conf := gdconf.GetUnlockCharacterGear(characterInfo.CharacterId)
 	if conf == nil {
 		return
@@ -289,7 +289,7 @@ func CharacterPotentialGrowth(s *enter.Session, request, response proto.Message)
 	req := request.(*proto.CharacterPotentialGrowthRequest)
 	rsp := response.(*proto.CharacterPotentialGrowthResponse)
 
-	characterInfo := game.GetCharacterInfoByServerId(s, req.TargetCharacterDBId)
+	characterInfo := s.GetCharacterByKeyId(req.TargetCharacterDBId)
 	if characterInfo == nil {
 		return
 	}

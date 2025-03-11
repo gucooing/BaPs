@@ -82,16 +82,18 @@ func UpAcademyZoneInfoList(s *enter.Session) map[int64]*sro.AcademyZoneInfo {
 	for _, conf := range gdconf.GetAcademyZoneExcelTableList() {
 		info := &sro.AcademyZoneInfo{
 			ZoneId:      conf.Id,
-			StudentList: make(map[int64]bool),
+			StudentList: make([]int64, 0),
 			IsUp:        false,
 		}
 		for i := 0; i < len(conf.StudentVisitProb); i++ {
 			studentId := gdconf.RandCharacter()
-			if info.StudentList[studentId] {
-				i--
-				continue
+			for _, cid := range info.StudentList {
+				if cid == studentId {
+					i--
+					continue
+				}
 			}
-			info.StudentList[studentId] = true
+			info.StudentList = append(info.StudentList, studentId)
 		}
 
 		list[conf.Id] = info
@@ -145,7 +147,7 @@ func GetAcademyDB(s *enter.Session) *proto.AcademyDB {
 			info.ZoneScheduleGroupRecords[bin.ZoneId] = rewardGroupIdList
 		}
 		visit := make([]*proto.VisitingCharacterDB, 0)
-		for characterId, _ := range bin.StudentList {
+		for _, characterId := range bin.StudentList {
 			visit = append(visit, &proto.VisitingCharacterDB{
 				UniqueId: characterId,
 				ServerId: GetCharacterServerId(s, characterId),

@@ -253,7 +253,7 @@ func CharacterWeaponTranscendence(s *enter.Session, request, response proto.Mess
 	req := request.(*proto.CharacterWeaponTranscendenceRequest)
 	rsp := response.(*proto.CharacterWeaponTranscendenceResponse)
 
-	characterInfo := game.GetCharacterInfoByServerId(s, req.TargetCharacterServerId)
+	characterInfo := s.GetCharacterByKeyId(req.TargetCharacterServerId)
 	if characterInfo == nil {
 		return
 	}
@@ -288,7 +288,7 @@ func CharacterWeaponExpGrowth(s *enter.Session, request, response proto.Message)
 	req := request.(*proto.CharacterWeaponExpGrowthRequest)
 	rsp := response.(*proto.CharacterWeaponExpGrowthResponse)
 
-	characterInfo := game.GetCharacterInfoByServerId(s, req.TargetCharacterServerId)
+	characterInfo := s.GetCharacterByKeyId(req.TargetCharacterServerId)
 	if characterInfo == nil {
 		return
 	}

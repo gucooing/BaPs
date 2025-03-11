@@ -65,7 +65,7 @@ message AcademyLocationInfo {
 
 message AcademyZoneInfo {
   int64 zone_id = 1;
-  map<int64,bool> student_list = 2;
+  repeated int64 student_list = 2;
   bool is_up = 3;
 }
 
@@ -118,7 +118,6 @@ message FurnitureInfo { // 家具信息
 
 message CharacterBin {
   map<int64,CharacterInfo> character_info_list = 1; // 角色数据
-  map<int64,int64> character_hash = 2; // 角色 字典
   map<int64,GearInfo> gear_info_list = 3; // 爱用品 // sid info
 }
 

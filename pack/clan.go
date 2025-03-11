@@ -290,7 +290,7 @@ func ClanSetAssist(s *enter.Session, request, response proto.Message) {
 	}()
 
 	bin := game.GetAssistList(s)
-	characterInfo := game.GetCharacterInfoByServerId(s, req.CharacterDBId)
+	characterInfo := s.GetCharacterByKeyId(req.CharacterDBId)
 	if bin == nil || characterInfo == nil {
 		return
 	}

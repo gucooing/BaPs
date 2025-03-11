@@ -51,7 +51,7 @@ func AcademyAttendSchedule(s *enter.Session, request, response proto.Message) {
 		Amount:     -1,
 	})
 	// 添加学生好感度
-	for studentId, _ := range zoneInfo.StudentList {
+	for _, studentId := range zoneInfo.StudentList {
 		if game.GetCharacterInfo(s, studentId) != nil {
 			parcelResultList = append(parcelResultList, &game.ParcelResult{
 				ParcelType: proto.ParcelType_FavorExp,

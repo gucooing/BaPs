@@ -142,7 +142,7 @@ func SetLobbyStudent(s *enter.Session, serverId int64) bool {
 	if bin == nil {
 		return false
 	}
-	bin.LobbyStudent = GetCharacterInfoByServerId(s, serverId).GetCharacterId()
+	bin.LobbyStudent = s.GetCharacterByKeyId(serverId).GetCharacterId()
 	return true
 }
 

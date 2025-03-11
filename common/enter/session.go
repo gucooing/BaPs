@@ -31,6 +31,7 @@ type Session struct {
 	AccountFriend   *AccountFriend
 	Mission         *Mission
 	Toast           []string
+	PlayerHash      map[int64]any
 }
 
 // 定时检查一次是否有用户长时间离线
@@ -139,6 +140,7 @@ func GetAllSession() map[int64]*Session {
 	return allSession
 }
 
+// GetAllSessionList 获取全部在线玩家-列表
 func GetAllSessionList() []*Session {
 	allSession := make([]*Session, 0)
 	e := getEnterSet()
@@ -150,6 +152,7 @@ func GetAllSessionList() []*Session {
 	return allSession
 }
 
+// GetSessionNum 获取在线玩家数量
 func GetSessionNum() int64 {
 	e := getEnterSet()
 	e.sessionSync.RLock()
@@ -235,7 +238,8 @@ func Close() {
 	}
 }
 
-func (x *Session) GetBinData() []byte {
+// GetPbBinData 将玩家pb数据转二进制数据
+func (x *Session) GetPbBinData() []byte {
 	bin, err := pb.Marshal(x.PlayerBin)
 	if err != nil {
 		return nil
@@ -243,7 +247,7 @@ func (x *Session) GetBinData() []byte {
 	return bin
 }
 
-// GetYostarGame 预处理db数据
+// GetYostarGame 将玩家数据转成数据库格式
 func (x *Session) GetYostarGame() *db.YostarGame {
 	if x == nil {
 		return nil
@@ -272,6 +276,7 @@ func (x *Session) GetYostarGame() *db.YostarGame {
 	return data
 }
 
+// 将玩家二进制数据写入磁盘中
 func (x *Session) upDataDisk() error {
 	bin, err := pb.Marshal(x.PlayerBin)
 	if err != nil {
@@ -281,7 +286,7 @@ func (x *Session) upDataDisk() error {
 	return err
 }
 
-// TaskUpDiskPlayerData 保存上次保存失败的数据到数据库中
+// TaskUpDiskPlayerData 将磁盘中的二进制玩家数据写入数据库中
 func TaskUpDiskPlayerData() bool {
 	files, err := filepath.Glob(filepath.Join("./player/", "*.bin"))
 	if err != nil {
@@ -312,4 +317,36 @@ func TaskUpDiskPlayerData() bool {
 	}
 	logger.Info("保存本地玩家数据成功")
 	return true
+}
+
+func (x *Session) getPlayerHash() map[int64]any {
+	if x.PlayerHash == nil {
+		x.PlayerHash = make(map[int64]any)
+	}
+	return x.PlayerHash
+}
+
+// AddPlayerHash 写入数据到哈希表中
+func (x *Session) AddPlayerHash(k int64, v any) bool {
+	list := x.getPlayerHash()
+	if _, ok := list[k]; ok {
+		return false
+	}
+	list[k] = v
+	return true
+}
+
+func (x *Session) getPlayerHashByKeyId(k int64) any {
+	list := x.getPlayerHash()
+	return list[k]
+}
+
+func (x *Session) GetCharacterByKeyId(k int64) *sro.CharacterInfo {
+	v := x.getPlayerHashByKeyId(k)
+	switch info := v.(type) {
+	case *sro.CharacterInfo:
+		return info
+	default:
+		return nil
+	}
 }

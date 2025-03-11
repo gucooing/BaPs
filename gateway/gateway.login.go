@@ -2,7 +2,8 @@ package gateway
 
 import (
 	"encoding/json"
-	"fmt"
+	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,38 @@ import (
 	"github.com/gucooing/BaPs/protocol/proto"
 	pb "google.golang.org/protobuf/proto"
 )
+
+var loginNum int64              // 登录玩家数量
+var loginUidMap map[int64]int64 // 登录map
+var upLoginNum int64            // 成功登录玩家数量
+var loginSync sync.Mutex
+
+func GetAllowedSequence(uid int64) int64 {
+	loginSync.Lock()
+	defer loginSync.Unlock()
+	if loginUidMap == nil {
+		loginUidMap = make(map[int64]int64)
+	}
+	if sep, ok := loginUidMap[uid]; ok {
+		return atomic.LoadInt64(&loginNum) - sep
+	}
+	sep := atomic.AddInt64(&loginNum, 1)
+	loginUidMap[uid] = sep
+	return atomic.LoadInt64(&loginNum) - sep
+}
+
+func DelAllowedSequence(uid int64) {
+	loginSync.Lock()
+	defer loginSync.Unlock()
+	if _, ok := loginUidMap[uid]; ok {
+		delete(loginUidMap, uid)
+		atomic.AddInt64(&upLoginNum, 1)
+	}
+}
+
+func GetTicketSequence() int64 {
+	return atomic.LoadInt64(&loginNum) - atomic.LoadInt64(&upLoginNum)
+}
 
 func (g *Gateway) getEnterTicket(c *gin.Context) {
 	if !alg.CheckGateWay(c) {
@@ -33,6 +66,16 @@ func (g *Gateway) getEnterTicket(c *gin.Context) {
 		logger.Debug("request err:%s c--->s:%s", err.Error(), string(bin))
 		return
 	}
+
+	rsp.RequiredSecondsPerUser = 1
+	if enter.GetSessionNum() >= enter.MaxPlayerNum &&
+		enter.MaxPlayerNum > 0 {
+		rsp.TicketSequence = GetTicketSequence()                // 排队的玩家数量
+		rsp.AllowedSequence = GetAllowedSequence(req.YostarUID) // 你的顺序-倒序
+		logger.Debug("在线玩家满")
+		return
+	}
+
 	yoStarUserLogin := db.GetYoStarUserLoginByYostarUid(req.YostarUID)
 	if yoStarUserLogin == nil {
 		return
@@ -45,18 +88,17 @@ func (g *Gateway) getEnterTicket(c *gin.Context) {
 	if err = db.UpdateYoStarUserLogin(yoStarUserLogin); err != nil {
 		return
 	}
-	enterTicket := fmt.Sprintf("%v%s", alg.GetSnow().GenId(), alg.RandStr(10))
+	enterTicket := mx.GetMxToken(alg.RandCodeInt64(), 15)
 	if !enter.AddEnterTicket(yoStarUserLogin.AccountServerId, req.YostarUID, enterTicket) {
 		return
 	}
 	rsp.EnterTicket = enterTicket
-	rsp.AllowedSequence = 10
-	rsp.RequiredSecondsPerUser = 10
 	rsp.Birth = "19000101" // 百岁老登玩ba不过分吧
 	rsp.SetSessionKey(&proto.BasePacket{
 		Protocol: req.Protocol,
 	})
 	logger.Debug("EnterTicket交换成功:%s", rsp.EnterTicket)
+	DelAllowedSequence(req.YostarUID)
 }
 
 func AccountCheckYostar(s *enter.Session, request, response proto.Message) {
@@ -68,12 +110,6 @@ func AccountCheckYostar(s *enter.Session, request, response proto.Message) {
 	if tickInfo == nil {
 		rsp.ResultMessag = "EnterTicket验证失败"
 		logger.Debug("EnterTicket验证失败")
-		return
-	}
-	if enter.GetSessionNum() >= enter.MaxPlayerNum &&
-		enter.MaxPlayerNum > 0 {
-		rsp.ResultMessag = "在线玩家满"
-		logger.Debug("在线玩家满")
 		return
 	}
 	enter.DelEnterTicket(req.EnterTicket)
@@ -118,4 +154,15 @@ func AccountCheckYostar(s *enter.Session, request, response proto.Message) {
 		ServerTimeTicks:    game.GetServerTime(),
 	}
 	response.SetSessionKey(base)
+	// 初始化玩家数据
+
+	newPlayerHash(s)
+}
+
+// NewPlayerHash 初始化哈希表
+func newPlayerHash(s *enter.Session) {
+	// 初始化角色哈希表
+	for _, info := range game.GetCharacterInfoList(s) {
+		s.AddPlayerHash(info.GetServerId(), info)
+	}
 }
