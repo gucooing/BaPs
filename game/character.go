@@ -273,44 +273,51 @@ func GetGearDB(s *enter.Session, serverId int64) *proto.GearDB {
 	return info
 }
 
-func MaxAllCharacter(s *enter.Session) {
-	for _, info := range GetCharacterInfoList(s) {
-		info.Level = 90
-		info.Exp = 0
-		info.StarGrade = 5
-		info.FavorRank = 100
-		info.FavorExp = 0
-		info.ExSkillLevel = 5
-		info.PassiveSkillLevel = 10
-		info.ExtraPassiveSkillLevel = 10
-		info.CommonSkillLevel = 10
-		info.LeaderSkillLevel = 10
-		info.PotentialStats = map[int32]int32{
-			1: 25,
-			2: 25,
-			3: 25,
-		}
-	}
-}
-
 // SetCharacterLevel 设置角色等级
-func SetCharacterLevel(s *enter.Session, characterId int64, level int32) bool {
-	info := GetCharacterInfo(s, characterId)
+func SetCharacterLevel(info *sro.CharacterInfo, level int32) bool {
 	if info == nil ||
-		level <= 0 || 90 <= level {
+		level <= 0 || 90 < level {
 		return false
 	}
 	info.Level = level
-	return false
+	return true
 }
 
 // SetCharacterStarGrade 设置角色星级
-func SetCharacterStarGrade(s *enter.Session, characterId int64, starGrade int32) bool {
-	info := GetCharacterInfo(s, characterId)
+func SetCharacterStarGrade(info *sro.CharacterInfo, starGrade int32) bool {
 	if info == nil ||
-		starGrade <= 0 || 6 <= starGrade {
+		starGrade <= 0 || 5 < starGrade {
 		return false
 	}
 	info.StarGrade = starGrade
-	return false
+	return true
+}
+
+// SetCharacterFavorRank 设置角色好感度等级
+func SetCharacterFavorRank(info *sro.CharacterInfo, favorRank int32) bool {
+	if info == nil ||
+		favorRank <= 0 || 200 < favorRank {
+		return false
+	}
+	info.FavorRank = favorRank
+	return true
+}
+
+func SetMaxCharacter(info *sro.CharacterInfo) bool {
+	info.Level = 90
+	info.Exp = 0
+	info.StarGrade = 5
+	info.FavorRank = 100
+	info.FavorExp = 0
+	info.ExSkillLevel = 5
+	info.PassiveSkillLevel = 10
+	info.ExtraPassiveSkillLevel = 10
+	info.CommonSkillLevel = 10
+	info.LeaderSkillLevel = 10
+	info.PotentialStats = map[int32]int32{
+		1: 25,
+		2: 25,
+		3: 25,
+	}
+	return true
 }

@@ -31,3 +31,4 @@ go.work.sum
 /mx/prototemp
 /bin
 pkg/mx/excel.go
+/.vscode
