@@ -133,7 +133,7 @@ message CharacterInfo {
   int32 extra_passive_skillLevel = 9;
   int32 common_skill_level = 10; // 基本技能
   int32 leader_skill_level = 11;
-  map<int32,int64> equipment_list = 12; // 装备
+  repeated int64 equipment_list = 12; // 装备
   int64 server_id = 13; //  唯一id
   bool is_favorite = 14; // 是否标记
   map<int32,int32> potential_stats = 15; // 能力解放
@@ -157,9 +157,7 @@ message ItemBin {
   map<int32,CurrencyInfo> currency_info_list = 2; // 货币
   map<int64,WeaponInfo> weapon_info_list = 3; // 角色武器
   map<int64,EquipmentInfo> equipment_info_list = 4; // 角色装备
-  map<int64,int64> equipment_item_hash = 5; // 装备物品映射表 id sid
   map<int64,IdCardBackgroundInfo> id_card_background_list = 6; // 背景列表
-  map<int64,int64> item_hash = 7; // item 字典
 }
 
 message ItemInfo {
@@ -202,7 +200,7 @@ message IdCardBackgroundInfo {
 // 剧情信息
 
 message MissionBin{
-  map<int64,bool> tutorial_list = 1; // 已完成的教程
+  repeated int64 tutorial_list = 1; // 已完成的教程
   map<int64,ScenarioGroupHistoryInfo> scenario_group_history_info_list = 2; // 场景剧情完成信息
   map<int64,ScenarioHistoryInfo> scenario_history_info_list = 3; // 剧情完成信息
   map<string,CategoryMissionInfo> category_mission_info = 4;
@@ -350,7 +348,7 @@ message MomoTalkBin {
 }
 
 message FavorScheduleInfo {
-  map<int64,bool> schedule_group_list = 1; // 已完成的MomoTalk剧情列表
+  repeated int64 schedule_group_list = 1; // 已完成的MomoTalk剧情列表
   map<int64,MomoTalkInfo> momo_talk_info_list = 2; // 已完成的对话
   int64 cur_message_group_id = 3; // 当前对话
 }

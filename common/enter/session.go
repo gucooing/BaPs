@@ -350,3 +350,23 @@ func (x *Session) GetCharacterByKeyId(k int64) *sro.CharacterInfo {
 		return nil
 	}
 }
+
+func (x *Session) GetItemByKeyId(k int64) *sro.ItemInfo {
+	v := x.getPlayerHashByKeyId(k)
+	switch info := v.(type) {
+	case *sro.ItemInfo:
+		return info
+	default:
+		return nil
+	}
+}
+
+func (x *Session) GetEquipmentByKeyId(k int64) *sro.EquipmentInfo {
+	v := x.getPlayerHashByKeyId(k)
+	switch info := v.(type) {
+	case *sro.EquipmentInfo:
+		return info
+	default:
+		return nil
+	}
+}

@@ -50,16 +50,20 @@ func NewPotentialStats() map[int32]int32 {
 	return list
 }
 
-func NewCharacterEquipment(characterId int64) map[int32]int64 {
+func NewCharacterEquipment(characterId int64) []int64 {
 	conf := gdconf.GetCharacterExcel(characterId)
 	if conf == nil {
 		return nil
 	}
-	list := make(map[int32]int64)
-	for i := 0; i < len(conf.EquipmentSlot); i++ {
-		list[int32(i)] = 0
-	}
+	list := make([]int64, len(conf.EquipmentSlot))
 	return list
+}
+
+func GetCharacterEquipment(bin *sro.CharacterInfo) []int64 {
+	if bin.EquipmentList == nil {
+		bin.EquipmentList = NewCharacterEquipment(bin.CharacterId)
+	}
+	return bin.EquipmentList
 }
 
 func GetCharacterBin(s *enter.Session) *sro.CharacterBin {
@@ -90,13 +94,6 @@ func GetCharacterInfo(s *enter.Session, characterId int64) *sro.CharacterInfo {
 	return bin[characterId]
 }
 
-func ServerIdToCharacterId(s *enter.Session, serverId int64) int64 {
-	if info := s.GetCharacterByKeyId(serverId); info != nil {
-		return info.CharacterId
-	}
-	return 0
-}
-
 func ServerIdsToCharacterIds(s *enter.Session, serverIdList []int64) []int64 {
 	list := make([]int64, 0)
 	for _, serverId := range serverIdList {
@@ -108,57 +105,6 @@ func ServerIdsToCharacterIds(s *enter.Session, serverIdList []int64) []int64 {
 
 func GetCharacterServerId(s *enter.Session, characterId int64) int64 {
 	return GetCharacterInfo(s, characterId).GetServerId()
-}
-
-func GetCharacterDBs(s *enter.Session) []*proto.CharacterDB {
-	list := make([]*proto.CharacterDB, 0)
-	for _, bin := range GetCharacterInfoList(s) {
-		list = append(list, GetCharacterDB(s, bin.CharacterId))
-	}
-
-	return list
-}
-
-func GetCharacterDB(s *enter.Session, characterId int64) *proto.CharacterDB {
-	bin := GetCharacterInfo(s, characterId)
-	if bin == nil {
-		return nil
-	}
-	info := &proto.CharacterDB{
-		Type:                   proto.ParcelType_Character,
-		ServerId:               bin.ServerId,
-		UniqueId:               bin.CharacterId,
-		StarGrade:              bin.StarGrade,
-		Level:                  bin.Level,
-		Exp:                    bin.Exp,
-		FavorRank:              bin.FavorRank,
-		FavorExp:               bin.FavorExp,
-		PublicSkillLevel:       bin.CommonSkillLevel,
-		ExSkillLevel:           bin.ExSkillLevel,
-		PassiveSkillLevel:      bin.PassiveSkillLevel,
-		ExtraPassiveSkillLevel: bin.ExtraPassiveSkillLevel,
-		LeaderSkillLevel:       bin.LeaderSkillLevel,
-		IsNew:                  false,
-		IsLocked:               false,
-		IsFavorite:             bin.IsFavorite,
-		EquipmentServerIds:     make([]int64, 0),
-		PotentialStats:         bin.PotentialStats,
-	}
-	info.FavorRank = 100 // TODO 由于excel中没有好感度配置所以默认满级
-	for i := 0; i < 3; i++ {
-		e, ok := bin.EquipmentList[int32(i)]
-		if ok {
-			if GetEquipmentInfo(s, e) == nil {
-				bin.EquipmentList[int32(i)] = 0
-				e = 0
-			}
-			info.EquipmentServerIds = append(info.EquipmentServerIds, e)
-		} else {
-			info.EquipmentServerIds = append(info.EquipmentServerIds, 0)
-		}
-	}
-
-	return info
 }
 
 func AddCharacter(s *enter.Session, characterId int64) bool {
@@ -198,6 +144,45 @@ func AddCharacter(s *enter.Session, characterId int64) bool {
 
 	s.AddPlayerHash(sid, info)
 	return true
+}
+
+func GetCharacterDBs(s *enter.Session) []*proto.CharacterDB {
+	list := make([]*proto.CharacterDB, 0)
+	for _, bin := range GetCharacterInfoList(s) {
+		list = append(list, GetCharacterDB(s, bin.CharacterId))
+	}
+
+	return list
+}
+
+func GetCharacterDB(s *enter.Session, characterId int64) *proto.CharacterDB {
+	bin := GetCharacterInfo(s, characterId)
+	if bin == nil {
+		return nil
+	}
+	info := &proto.CharacterDB{
+		Type:                   proto.ParcelType_Character,
+		ServerId:               bin.ServerId,
+		UniqueId:               bin.CharacterId,
+		StarGrade:              bin.StarGrade,
+		Level:                  bin.Level,
+		Exp:                    bin.Exp,
+		FavorRank:              bin.FavorRank,
+		FavorExp:               bin.FavorExp,
+		PublicSkillLevel:       bin.CommonSkillLevel,
+		ExSkillLevel:           bin.ExSkillLevel,
+		PassiveSkillLevel:      bin.PassiveSkillLevel,
+		ExtraPassiveSkillLevel: bin.ExtraPassiveSkillLevel,
+		LeaderSkillLevel:       bin.LeaderSkillLevel,
+		IsNew:                  false,
+		IsLocked:               false,
+		IsFavorite:             bin.IsFavorite,
+		EquipmentServerIds:     GetCharacterEquipment(bin),
+		PotentialStats:         bin.PotentialStats,
+	}
+	info.FavorRank = 100 // TODO 由于excel中没有好感度配置所以默认满级
+
+	return info
 }
 
 func RepeatAddCharacter(s *enter.Session, characterId int64) []int64 {

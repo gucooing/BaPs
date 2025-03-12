@@ -33,10 +33,10 @@ func EchelonSave(s *enter.Session, request, response proto.Message) {
 		}
 		conf := &sro.DefaultEchelonExcelTable{
 			EchlonId:      int32(req.EchelonDB.EchelonType),
-			LeaderId:      game.ServerIdToCharacterId(s, req.EchelonDB.LeaderServerId),
+			LeaderId:      s.GetCharacterByKeyId(req.EchelonDB.LeaderServerId).GetCharacterId(),
 			MainId:        game.ServerIdsToCharacterIds(s, req.EchelonDB.MainSlotServerIds),
 			SupportId:     game.ServerIdsToCharacterIds(s, req.EchelonDB.SupportSlotServerIds),
-			TssId:         game.ServerIdToCharacterId(s, req.EchelonDB.TSSInteractionServerId),
+			TssId:         s.GetCharacterByKeyId(req.EchelonDB.TSSInteractionServerId).GetCharacterId(),
 			SkillId:       req.EchelonDB.SkillCardMulliganCharacterIds,
 			ExtensionType: int32(req.EchelonDB.ExtensionType),
 		}

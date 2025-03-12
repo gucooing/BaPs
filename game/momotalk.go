@@ -41,7 +41,7 @@ func GetFavorScheduleInfo(s *enter.Session, characterId int64) *sro.FavorSchedul
 	bin := GetFavorScheduleInfoList(s)
 	if bin[characterId] == nil {
 		bin[characterId] = &sro.FavorScheduleInfo{
-			ScheduleGroupList: make(map[int64]bool),
+			ScheduleGroupList: make([]int64, 0),
 			MomoTalkInfoList:  make(map[int64]*sro.MomoTalkInfo),
 			CurMessageGroupId: 0,
 		}
@@ -112,12 +112,14 @@ func UpScheduleGroup(s *enter.Session, scheduleId int64) []*ParcelResult {
 		return nil
 	}
 	if bin.ScheduleGroupList == nil {
-		bin.ScheduleGroupList = make(map[int64]bool)
+		bin.ScheduleGroupList = make([]int64, 0)
 	}
-	if ok := bin.ScheduleGroupList[scheduleId]; ok {
-		return nil
+	for _, id := range bin.ScheduleGroupList {
+		if id == scheduleId {
+			return nil
+		}
 	}
-	bin.ScheduleGroupList[scheduleId] = true
+	bin.ScheduleGroupList = append(bin.ScheduleGroupList, scheduleId)
 
 	return GetParcelResultList(conf.RewardParcelType, conf.RewardParcelId, conf.RewardAmount, false)
 }

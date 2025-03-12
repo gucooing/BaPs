@@ -27,7 +27,7 @@ func GetMissionBin(s *enter.Session) *sro.MissionBin {
 	return bin.MissionBin
 }
 
-func GetTutorialList(s *enter.Session) map[int64]bool {
+func GetTutorialList(s *enter.Session) []int64 {
 	bin := GetMissionBin(s)
 	if bin == nil {
 		return nil
@@ -41,10 +41,19 @@ func FinishTutorial(s *enter.Session, tutorialIdS []int64) bool {
 		return false
 	}
 	if bin.TutorialList == nil {
-		bin.TutorialList = make(map[int64]bool)
+		bin.TutorialList = make([]int64, 0)
 	}
 	for _, t := range tutorialIdS {
-		bin.TutorialList[t] = true
+		add := true
+		for _, id := range bin.TutorialList {
+			if id == t {
+				add = false
+				continue
+			}
+		}
+		if add {
+			bin.TutorialList = append(bin.TutorialList, t)
+		}
 	}
 	return true
 }

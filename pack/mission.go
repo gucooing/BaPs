@@ -100,12 +100,8 @@ func GuideMissionSeasonList(s *enter.Session, request, response proto.Message) {
 func AccountGetTutorial(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.AccountGetTutorialResponse)
 
+	// rsp.TutorialIds = game.GetTutorialList(s)
 	rsp.TutorialIds = make([]int64, 0)
-	// for id, ok := range game.GetTutorialList(s) {
-	// 	if ok {
-	// 		rsp.TutorialIds = append(rsp.TutorialIds, id)
-	// 	}
-	// }
 	for i := 1; i < 28; i++ {
 		rsp.TutorialIds = append(rsp.TutorialIds, int64(i))
 	}

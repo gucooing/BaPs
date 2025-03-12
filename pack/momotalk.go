@@ -24,15 +24,10 @@ func MomoTalkOutLine(s *enter.Session, request, response proto.Message) {
 		if characterInfo == nil {
 			continue
 		}
+		// 添加已完成的
+		rsp.FavorScheduleRecords[characterId] = fsInfo.ScheduleGroupList
 		if rsp.FavorScheduleRecords[characterId] == nil {
 			rsp.FavorScheduleRecords[characterId] = make([]int64, 0)
-		}
-		// 添加已完成的
-		for gid, ok := range fsInfo.ScheduleGroupList {
-			if ok {
-				rsp.FavorScheduleRecords[characterId] = append(
-					rsp.FavorScheduleRecords[characterId], gid)
-			}
 		}
 		// 添加最新的
 		if info, ok := fsInfo.MomoTalkInfoList[fsInfo.CurMessageGroupId]; ok {
@@ -51,18 +46,18 @@ func MomoTalkMessageList(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.MomoTalkMessageListRequest)
 	rsp := response.(*proto.MomoTalkMessageListResponse)
 
-	characterId := game.ServerIdToCharacterId(s, req.CharacterDBId)
+	characterInfo := s.GetCharacterByKeyId(req.CharacterDBId)
 
 	rsp.MomoTalkOutLineDB = &proto.MomoTalkOutLineDB{
-		CharacterDBId:        req.CharacterDBId,
-		CharacterId:          characterId,
+		CharacterDBId:        characterInfo.GetServerId(),
+		CharacterId:          characterInfo.GetCharacterId(),
 		LatestMessageGroupId: 0,
 		ChosenMessageId:      0,
 		LastUpdateDate:       mx.MxTime{},
 	}
-	rsp.MomoTalkChoiceDBs = game.GetMomoTalkChoiceDBs(s, characterId)
+	rsp.MomoTalkChoiceDBs = game.GetMomoTalkChoiceDBs(s, characterInfo.GetCharacterId())
 
-	bin := game.GetFavorScheduleInfo(s, characterId)
+	bin := game.GetFavorScheduleInfo(s, characterInfo.GetCharacterId())
 	if bin == nil {
 		return
 	}
@@ -77,14 +72,14 @@ func MomoTalkRead(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.MomoTalkReadRequest)
 	rsp := response.(*proto.MomoTalkReadResponse)
 
-	characterId := game.ServerIdToCharacterId(s, req.CharacterDBId)
+	characterInfo := s.GetCharacterByKeyId(req.CharacterDBId)
 
-	game.UpMomoTalkInfo(s, characterId, req.LastReadMessageGroupId, req.ChosenMessageId)
+	game.UpMomoTalkInfo(s, characterInfo.GetCharacterId(), req.LastReadMessageGroupId, req.ChosenMessageId)
 
-	rsp.MomoTalkChoiceDBs = game.GetMomoTalkChoiceDBs(s, characterId)
+	rsp.MomoTalkChoiceDBs = game.GetMomoTalkChoiceDBs(s, characterInfo.GetCharacterId())
 	rsp.MomoTalkOutLineDB = &proto.MomoTalkOutLineDB{
-		CharacterDBId:        req.CharacterDBId,
-		CharacterId:          characterId,
+		CharacterDBId:        characterInfo.GetServerId(),
+		CharacterId:          characterInfo.GetCharacterId(),
 		LatestMessageGroupId: req.LastReadMessageGroupId,
 		ChosenMessageId:      req.ChosenMessageId,
 		LastUpdateDate:       mx.Now(),
@@ -99,14 +94,9 @@ func MomoTalkFavorSchedule(s *enter.Session, request, response proto.Message) {
 	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
 	rsp.FavorScheduleRecords = make(map[int64][]int64)
 	for characterId, fsInfo := range game.GetFavorScheduleInfoList(s) {
+		rsp.FavorScheduleRecords[characterId] = fsInfo.ScheduleGroupList
 		if rsp.FavorScheduleRecords[characterId] == nil {
 			rsp.FavorScheduleRecords[characterId] = make([]int64, 0)
-		}
-		for gid, ok := range fsInfo.ScheduleGroupList {
-			if ok {
-				rsp.FavorScheduleRecords[characterId] = append(
-					rsp.FavorScheduleRecords[characterId], gid)
-			}
 		}
 	}
 }

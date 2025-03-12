@@ -17,17 +17,16 @@ func NewItemList(s *enter.Session) map[int64]*sro.ItemInfo {
 	if bin == nil {
 		return nil
 	}
-	if bin.ItemHash == nil {
-		bin.ItemHash = make(map[int64]int64)
-	}
 	list := make(map[int64]*sro.ItemInfo)
-	sId := GetServerId(s)
-	list[2] = &sro.ItemInfo{
-		ServerId:   sId,
+	sid := GetServerId(s)
+	info := &sro.ItemInfo{
+		ServerId:   sid,
 		UniqueId:   2,
 		StackCount: 5,
 	}
-	bin.ItemHash[sId] = 0
+	list[2] = info
+	s.AddPlayerHash(sid, info)
+
 	return list
 }
 
@@ -69,33 +68,19 @@ func AddItem(s *enter.Session, id int64, num int32) int64 {
 	if bin.ItemInfoList == nil {
 		bin.ItemInfoList = NewItemList(s)
 	}
-	if bin.ItemHash == nil {
-		bin.ItemHash = make(map[int64]int64)
-	}
 	if info, ok := bin.ItemInfoList[id]; ok {
 		info.StackCount += num
 		return info.ServerId
 	}
-	sId := GetServerId(s)
+	sid := GetServerId(s)
 	info := &sro.ItemInfo{
-		ServerId:   sId,
+		ServerId:   sid,
 		UniqueId:   id,
 		StackCount: num,
 	}
 	bin.ItemInfoList[id] = info
-	bin.ItemHash[sId] = id
+	s.AddPlayerHash(sid, info)
 	return info.ServerId
-}
-
-func GetItemIdByServer(s *enter.Session, serverId int64) int64 {
-	bin := GetItemBin(s)
-	if bin == nil {
-		return 0
-	}
-	if bin.ItemHash == nil {
-		bin.ItemHash = make(map[int64]int64)
-	}
-	return bin.ItemHash[serverId]
 }
 
 func RemoveItem(s *enter.Session, id int64, num int32) bool {
@@ -431,38 +416,36 @@ func AddEquipment(s *enter.Session, equipmentId int64, num int64) []int64 {
 	if bin.EquipmentInfoList == nil {
 		bin.EquipmentInfoList = make(map[int64]*sro.EquipmentInfo)
 	}
-	if bin.EquipmentItemHash == nil {
-		bin.EquipmentItemHash = make(map[int64]int64)
-	}
 	if conf.MaxLevel < 10 { // 装备材料
-		if info := bin.EquipmentInfoList[bin.EquipmentItemHash[equipmentId]]; info != nil {
+		if info := s.GetEquipmentByKeyId(equipmentId); info != nil {
 			info.StackCount += num
 			return []int64{info.ServerId}
 		} else {
-			sId := GetServerId(s)
-			bin.EquipmentItemHash[equipmentId] = sId
-			bin.EquipmentInfoList[sId] = &sro.EquipmentInfo{
+			sid := GetServerId(s)
+			equipmentInfo := &sro.EquipmentInfo{
 				UniqueId:   equipmentId,
-				ServerId:   sId,
+				ServerId:   sid,
 				StackCount: num,
 			}
-			return []int64{sId}
+			bin.EquipmentInfoList[sid] = equipmentInfo
+			s.AddPlayerHash(equipmentId, equipmentInfo)
+			return []int64{sid}
 		}
 	}
 	sIdLi := make([]int64, 0)
 	for i := 0; int64(i) < num; i++ {
-		sId := GetServerId(s)
-		bin.EquipmentInfoList[sId] = &sro.EquipmentInfo{
+		sid := GetServerId(s)
+		bin.EquipmentInfoList[sid] = &sro.EquipmentInfo{
 			UniqueId:          equipmentId,
 			CharacterServerId: 0,
 			Level:             1,
 			Exp:               0,
-			ServerId:          sId,
+			ServerId:          sid,
 			Tier:              conf.TierInit,
 			StackCount:        1,
 			IsLocked:          false,
 		}
-		sIdLi = append(sIdLi, sId)
+		sIdLi = append(sIdLi, sid)
 	}
 	return sIdLi
 }
@@ -490,17 +473,6 @@ func DelEquipment(s *enter.Session, serverId int64, num int64) (bool, int64) {
 		delete(bin.EquipmentInfoList, info.ServerId)
 	}
 	return true, statConf.LevelUpFeedExp * num
-}
-
-func GetEquipmentItemServerId(s *enter.Session, uniqueId int64) int64 {
-	bin := GetItemBin(s)
-	if bin == nil {
-		return 0
-	}
-	if bin.EquipmentItemHash == nil {
-		bin.EquipmentItemHash = make(map[int64]int64)
-	}
-	return bin.EquipmentItemHash[uniqueId]
 }
 
 func GetEquipmentDBs(s *enter.Session) []*proto.EquipmentDB {

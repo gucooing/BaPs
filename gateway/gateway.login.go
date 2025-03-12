@@ -10,6 +10,7 @@ import (
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/db"
 	"github.com/gucooing/BaPs/game"
+	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
 	"github.com/gucooing/BaPs/pkg/mx"
@@ -164,5 +165,17 @@ func newPlayerHash(s *enter.Session) {
 	// 初始化角色哈希表
 	for _, info := range game.GetCharacterInfoList(s) {
 		s.AddPlayerHash(info.GetServerId(), info)
+	}
+	// 初始化物品哈希表
+	for _, info := range game.GetItemList(s) {
+		s.AddPlayerHash(info.GetServerId(), info)
+	}
+	// 初始化装备哈希表
+	for _, info := range game.GetEquipmentInfoList(s) {
+		conf := gdconf.GetEquipmentExcelTable(info.GetUniqueId())
+		if conf == nil || conf.MaxLevel >= 10 {
+			continue
+		}
+		s.AddPlayerHash(info.GetUniqueId(), info)
 	}
 }

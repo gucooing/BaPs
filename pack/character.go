@@ -224,7 +224,7 @@ func CharacterExpGrowth(s *enter.Session, request, response proto.Message) {
 		return
 	}
 	for itemServerId, itemNum := range req.ConsumeRequestDB.ConsumeItemServerIdAndCounts {
-		itemInfo := game.GetItemInfo(s, game.GetItemIdByServer(s, itemServerId))
+		itemInfo := game.GetItemInfo(s, s.GetItemByKeyId(itemServerId).GetUniqueId())
 		if itemInfo == nil {
 			continue
 		}

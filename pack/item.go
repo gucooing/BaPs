@@ -302,7 +302,7 @@ func CharacterWeaponExpGrowth(s *enter.Session, request, response proto.Message)
 		ParcelId:   characterInfo.CharacterId,
 	})
 	for id, num := range req.ConsumeUniqueIdAndCounts {
-		serverId := game.GetEquipmentItemServerId(s, id)
+		serverId := s.GetEquipmentByKeyId(id).GetServerId()
 		ok, feedExp := game.DelEquipment(s, serverId, num)
 		if !ok {
 			continue
