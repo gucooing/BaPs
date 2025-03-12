@@ -1,94 +1,95 @@
 package command
 
 import (
+	"errors"
 	"fmt"
-	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/pkg/alg"
+	"github.com/gucooing/cdq"
 )
 
 type ApiSet struct {
-	Uid  int64  `json:"uid"`
-	Type string `json:"type"`
-	Sub1 string `json:"sub1"`
-	Su   bool   `json:"-"`
-	Msg  string `json:"-"`
+	s    *enter.Session
+	Type string
+	Sub1 string
 }
 
-func (c *Command) Set(g *gin.Context) {
-	req := new(ApiSet)
-	err := g.BindJSON(req)
-	if err != nil {
-		g.JSON(http.StatusOK, gin.H{
-			"code": 1,
-			"msg":  "ApiSet 解析错误",
-		})
-		return
+func (c *Command) ApplicationCommandSet() {
+	set := &cdq.Command{
+		Name:        "set",
+		AliasList:   []string{"set"},
+		Description: "直接设置一个值",
+		Permissions: cdq.User,
+		Options: append(playerOptions, []*cdq.CommandOption{
+			{
+				Name:        "type",
+				Description: "设置类型",
+				Required:    true,
+			},
+			{
+				Name:        "sub1",
+				Description: "设置参数1",
+				Required:    true,
+			},
+		}...),
+		CommandFunc: c.set,
 	}
-	parseSet(req, g)
+
+	c.c.ApplicationCommand(set)
 }
 
-func parseSet(req *ApiSet, g *gin.Context) {
-	if req == nil {
-		return
+func (c *Command) set(options map[string]*cdq.CommandOption) (string, error) {
+	uidOption, ok := options["uid"]
+	if !ok {
+		return "", errors.New("缺少参数 uid")
 	}
-	switch req.Type {
+	typeOption, ok := options["type"]
+	if !ok {
+		return "", errors.New("缺少参数 type")
+	}
+	sub1Option, ok := options["sub1"]
+	if !ok {
+		return "", errors.New("缺少参数 sub1")
+	}
+
+	// 玩家验证
+	uid := alg.S2I64(uidOption.Option)
+	s := enter.GetSessionByAccountServerId(uid)
+	if s == nil {
+		return "", errors.New(fmt.Sprintf("玩家不在线或未注册 UID:%v", uid))
+	}
+	s.GoroutinesSync.Lock()
+	defer s.GoroutinesSync.Unlock()
+
+	req := &ApiSet{
+		s:    s,
+		Type: typeOption.Option,
+		Sub1: sub1Option.Option,
+	}
+
+	return req.parseSet()
+}
+
+func (x *ApiSet) parseSet() (string, error) {
+	switch x.Type {
 	case "AccountLevel":
-		SetAccountLevel(req)
+		return x.setAccountLevel()
 	case "Toast":
-		SetToast(req)
-	case "MaxCharacter":
-		SetMaxCharacter(req)
+		return x.setToast()
 	default:
-		req.Msg = "Set Type 未实现"
-	}
-	if req.Su {
-		g.JSON(http.StatusOK, gin.H{
-			"code": 0,
-			"msg":  req.Msg,
-		})
-	} else {
-		g.JSON(http.StatusOK, gin.H{
-			"code": 2,
-			"msg":  req.Msg,
-		})
+		return "", errors.New(fmt.Sprintf("Set Type 未实现:%s", x.Type))
 	}
 }
 
-func SetAccountLevel(req *ApiSet) {
-	s := enter.GetSessionByAccountServerId(req.Uid)
-	if s == nil {
-		req.Msg = "玩家不在线"
-		return
-	}
-	game.SetAccountLevel(s, alg.S2I32(req.Sub1))
-	game.AddToast(s, "已设置账号等级,请重新登录以刷新")
-	req.Su = true
-	req.Msg = fmt.Sprintf("已设置玩家等级:%v级", game.GetAccountLevel(s))
+func (x *ApiSet) setAccountLevel() (string, error) {
+	game.SetAccountLevel(x.s, alg.S2I32(x.Sub1))
+	game.AddToast(x.s, "已设置账号等级,请重新登录以刷新")
+	return fmt.Sprintf("已设置玩家等级:%v级", game.GetAccountLevel(x.s)), nil
 }
 
-func SetToast(req *ApiSet) {
-	s := enter.GetSessionByAccountServerId(req.Uid)
-	if s == nil {
-		req.Msg = "玩家不在线"
-		return
-	}
-	game.AddToast(s, req.Sub1)
-	req.Su = true
-	req.Msg = fmt.Sprintf("已设置玩家通知:%s", req.Sub1)
-}
-
-func SetMaxCharacter(req *ApiSet) {
-	s := enter.GetSessionByAccountServerId(req.Uid)
-	if s == nil {
-		req.Msg = "玩家不在线"
-		return
-	}
-	game.MaxAllCharacter(s)
-	game.AddToast(s, "角色已全部满级,请重新登录刷新")
-	req.Su = true
-	req.Msg = fmt.Sprintf("已设置角色满级")
+func (x *ApiSet) setToast() (string, error) {
+	game.AddToast(x.s, x.Sub1)
+	return fmt.Sprintf("已设置玩家通知:%s", x.Sub1), nil
 }

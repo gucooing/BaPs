@@ -40,19 +40,22 @@ func (s *SDK) initRouter() {
 		user.POST("/login", s.YostarLogin)
 		user.POST("/agreement", agreement)
 	}
-	hash := s.router.Group("/r76_d32k9xg20divs4806ybp_2")
+	hash := s.router.Group("/r77_8q5tn5v8489fubab84a8")
 	{
 		hash.GET("/TableBundles/TableCatalog.hash", func(c *gin.Context) {
-			c.String(200, "4136508985")
+			c.String(200, "0")
 		})
 		hash.GET("/MediaResources/Catalog/MediaCatalog.hash", func(c *gin.Context) {
-			c.String(200, "2581543713")
+			c.String(200, "0")
 		})
 		hash.GET("/iOS/bundleDownloadInfo.hash", func(c *gin.Context) {
-			c.String(200, "970608301")
+			c.String(200, "0")
 		})
 		hash.GET("/iOS/catalog_iOS.hash", func(c *gin.Context) {
-			c.String(200, "a0d3861cb71f215d5d3033d3eee04172")
+			c.String(200, "0")
+		})
+		hash.GET("/TableBundles/TableCatalog.bytes", func(c *gin.Context) {
+			c.String(200, "0")
 		})
 	}
 	app := s.router.Group("/app")
@@ -79,17 +82,17 @@ type ConnectionGroupS struct {
 	ConnectionGroups []*ConnectionGroup `json:"ConnectionGroups"`
 }
 type ConnectionGroup struct {
-	Name                       string                     `json:"Name"`
-	ManagementDataUrl          string                     `json:"ManagementDataUrl"`
-	IsProductionAddressables   bool                       `json:"IsProductionAddressables"`
-	ApiUrl                     string                     `json:"ApiUrl"`
-	GatewayUrl                 string                     `json:"GatewayUrl"`
-	KibanaLogUrl               string                     `json:"KibanaLogUrl"`
-	ProhibitedWordBlackListUri string                     `json:"ProhibitedWordBlackListUri"`
-	ProhibitedWordWhiteListUri string                     `json:"ProhibitedWordWhiteListUri"`
-	CustomerServiceUrl         string                     `json:"CustomerServiceUrl"`
-	OverrideConnectionGroups   []*OverrideConnectionGroup `json:"OverrideConnectionGroups"`
-	BundleVersion              string                     `json:"BundleVersion"`
+	Name                       string                    `json:"Name"`
+	ManagementDataUrl          string                    `json:"ManagementDataUrl"`
+	IsProductionAddressables   bool                      `json:"IsProductionAddressables"`
+	ApiUrl                     string                    `json:"ApiUrl"`
+	GatewayUrl                 string                    `json:"GatewayUrl"`
+	KibanaLogUrl               string                    `json:"KibanaLogUrl"`
+	ProhibitedWordBlackListUri string                    `json:"ProhibitedWordBlackListUri"`
+	ProhibitedWordWhiteListUri string                    `json:"ProhibitedWordWhiteListUri"`
+	CustomerServiceUrl         string                    `json:"CustomerServiceUrl"`
+	OverrideConnectionGroups   []OverrideConnectionGroup `json:"OverrideConnectionGroups"`
+	BundleVersion              string                    `json:"BundleVersion"`
 }
 
 type OverrideConnectionGroup struct {
@@ -114,6 +117,7 @@ func (s *SDK) connectionGroups(c *gin.Context) {
 		return
 	}
 	for _, group := range data.ConnectionGroups {
+		group.IsProductionAddressables = false
 		group.ApiUrl = fmt.Sprintf("%s/api/", s.GetOuterAddr())
 		group.GatewayUrl = fmt.Sprintf("%s/getEnterTicket/", s.GetOuterAddr())
 		group.ManagementDataUrl = fmt.Sprintf("%s/prod/index.json", s.GetOuterAddr())
