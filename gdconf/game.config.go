@@ -99,7 +99,7 @@ func LoadGameConfig(dataPath string, resPath string) *GameConfig {
 	gc.gpp()
 	endTime := time.Now()
 	runtime.GC()
-	logger.Info("读取资源完成,用时:%s秒", endTime.Sub(startTime))
+	logger.Info("读取资源完成,用时:%s", endTime.Sub(startTime))
 	return gc
 }
 

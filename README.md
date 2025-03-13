@@ -36,9 +36,7 @@
 转代以下地址:其中 http://127.0.0.1:5000 为服务器地址
 ```
 https://ba-jp-sdk.bluearchive.jp http://127.0.0.1:5000
-https://prod-gateway.bluearchiveyostar.com:5100/api/gateway http://127.0.0.1:5000/getEnterTicket/gateway
-https://prod-game.bluearchiveyostar.com:5000/api/gateway http://127.0.0.1:5000/api/gateway
-https://prod-logcollector.bluearchiveyostar.com:5300 http://127.0.0.1:5000/game/log
+https://yostar-serverinfo.bluearchiveyostar.com http://127.0.0.1:5000
 ```
 
 ## 使用方法

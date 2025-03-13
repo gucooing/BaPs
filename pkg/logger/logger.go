@@ -147,6 +147,9 @@ func GetLogLevel() int {
 }
 
 func CloseLogger() {
+	if logger == nil {
+		return
+	}
 	logger.CloseChan <- struct{}{}
 	<-logger.CloseChan
 }

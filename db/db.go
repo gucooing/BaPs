@@ -48,12 +48,10 @@ func NewMysql(dsn string) *gorm.DB {
 		},
 	})
 	if err != nil {
-		logger.Error("mysql connect err:", err)
 		panic(err.Error())
 	}
 	sqlDB, err := db.DB()
 	if err != nil {
-		logger.Error("mysql connect err:", err)
 		panic(err.Error())
 	}
 	// SetMaxIdleConns 设置空闲连接池中连接的最大数量
@@ -74,12 +72,10 @@ func NewSqlite(dsn string) *gorm.DB {
 		},
 	})
 	if err != nil {
-		logger.Error("mysql connect err:", err)
 		panic(err.Error())
 	}
 	sqlDB, err := db.DB()
 	if err != nil {
-		logger.Error("mysql connect err:", err)
 		panic(err.Error())
 	}
 	// SetMaxIdleConns 设置空闲连接池中连接的最大数量

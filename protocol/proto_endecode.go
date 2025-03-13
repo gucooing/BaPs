@@ -47,10 +47,6 @@ func MarshalResponse(m proto.Message) (*NetworkProtocolResponse, error) {
 		Packet:   string(jsonData),
 		Protocol: mx.Protocol(m.GetProtocol()).String(),
 	}
-	switch m.GetProtocol() {
-	case -6:
-		v.Packet = ""
-	}
 
 	return v, nil
 }
