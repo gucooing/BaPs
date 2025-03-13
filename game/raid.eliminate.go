@@ -22,7 +22,7 @@ func GetEliminateRaidSeasonType() proto.RaidSeasonType {
 		cur.EndTime.After(time.Now()) {
 		return proto.RaidSeasonType_Open
 	}
-	return proto.RaidSeasonType_Settlement
+	return proto.RaidSeasonType_Close // proto.RaidSeasonType_Settlement
 }
 
 func GetRaidEliminateBin(s *enter.Session) *sro.RaidEliminateBin {

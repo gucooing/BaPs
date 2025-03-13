@@ -74,7 +74,7 @@ func GetScenarioGroupHistoryInfo(s *enter.Session, scenarioGroupUniqueId int64) 
 	return bin[scenarioGroupUniqueId]
 }
 
-func FinishScenarioGroupHistoryInfo(s *enter.Session, scenarioGroupUniqueId, scenarioType int64) {
+func FinishScenarioGroupHistoryInfo(s *enter.Session, scenarioGroupUniqueId, scenarioType, eventContentId int64) {
 	bin := GetMissionBin(s)
 	if bin == nil {
 		return
@@ -86,8 +86,23 @@ func FinishScenarioGroupHistoryInfo(s *enter.Session, scenarioGroupUniqueId, sce
 		ScenarioGroupUqniueId: scenarioGroupUniqueId,
 		ClearDateTime:         time.Now().Unix(),
 		ScenarioType:          scenarioType,
-		// EventContentId:        v.EventContentId,
+		EventContentId:        eventContentId,
 	}
+}
+
+func GetScenarioGroupHistoryDBs(s *enter.Session) []*proto.ScenarioGroupHistoryDB {
+	list := make([]*proto.ScenarioGroupHistoryDB, 0)
+	for _, bin := range GetScenarioGroupHistoryInfoList(s) {
+		list = append(list, &proto.ScenarioGroupHistoryDB{
+			AccountServerId:       s.AccountServerId,
+			ScenarioGroupUqniueId: bin.ScenarioGroupUqniueId,
+			ScenarioType:          bin.ScenarioType,
+			EventContentId:        bin.EventContentId,
+			ClearDateTime:         mx.Unix(bin.ClearDateTime, 0),
+			IsReturn:              false,
+		})
+	}
+	return list
 }
 
 func GetScenarioHistoryInfoList(s *enter.Session) map[int64]*sro.ScenarioHistoryInfo {

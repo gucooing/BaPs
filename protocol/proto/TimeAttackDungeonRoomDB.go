@@ -3,8 +3,6 @@
 package proto
 
 import (
-    "time"
-
     "github.com/gucooing/BaPs/pkg/mx"
 )
 
@@ -13,9 +11,9 @@ type TimeAttackDungeonRoomDB struct{
     SeasonId int64
     RoomId int64
     CreateDate mx.MxTime
-    RewardDate mx.MxTime
     IsPractice bool
-    SweepHistoryDates []time.Time
+    RewardDate mx.MxTime
+    SweepHistoryDates []mx.MxTime
     BattleHistoryDBs []*TimeAttackDungeonBattleHistoryDB
 }
 

@@ -57,3 +57,10 @@ func CampaignEnterMainStage(s *enter.Session, request, response proto.Message) {
 func CampaignChapterClearReward(s *enter.Session, request, response proto.Message) {
 
 }
+
+func CampaignEnterMainStageStrategySkip(s *enter.Session, request, response proto.Message) {
+	// req := request.(*proto.CampaignEnterMainStageStrategySkipRequest)
+	rsp := response.(*proto.CampaignEnterMainStageStrategySkipResponse)
+
+	rsp.ParcelResultDB = new(proto.ParcelResultDB)
+}

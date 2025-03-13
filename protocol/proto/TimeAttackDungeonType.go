@@ -33,3 +33,10 @@ func (x TimeAttackDungeonType) String() string {
   return TimeAttackDungeonType_name[int32(x)]
 }
 
+func (x TimeAttackDungeonType) Value() int32 {
+    return int32(x)
+}
+
+func GetTimeAttackDungeonType(s string) TimeAttackDungeonType {
+    return TimeAttackDungeonType(TimeAttackDungeonType_value[s])
+}

@@ -107,6 +107,10 @@ var funcRouteMap = map[int32]handlerFunc{
 	mx.Protocol_Mission_Sync:                   pack.MissionSync,            // 同步任务/成就
 	mx.Protocol_Mission_GuideMissionSeasonList: pack.GuideMissionSeasonList, // 获取成就信息
 	mx.Protocol_Mission_Reward:                 pack.MissionReward,          // 领取 任务/成就 奖励
+	// 活动
+	mx.Protocol_EventContent_AdventureList:              pack.EventContentAdventureList,              // 获取活动关卡信息
+	mx.Protocol_EventContent_BoxGachaShopList:           pack.EventContentBoxGachaShopList,           // 获取活动盲盒商店列表
+	mx.Protocol_EventContent_ScenarioGroupHistoryUpdate: pack.EventContentScenarioGroupHistoryUpdate, // 活动剧情完成请求
 	// 咖啡馆
 	mx.Protocol_Cafe_Get:             pack.CafeGetInfo,         // 获取咖啡馆信息
 	mx.Protocol_Cafe_Ack:             pack.CafeAck,             // 确认咖啡馆
@@ -156,9 +160,10 @@ var funcRouteMap = map[int32]handlerFunc{
 	mx.Protocol_Shop_BeforehandGachaPick: pack.ShopBeforehandGachaPick, // 确定新手卡池免费十连结果
 	mx.Protocol_Shop_BuyGacha3:           pack.ShopBuyGacha3,           // 卡池3抽卡请求
 	// 任务
-	mx.Protocol_Campaign_List:               pack.CampaignList,               // 获取任务信息
-	mx.Protocol_Campaign_EnterMainStage:     pack.CampaignEnterMainStage,     // 进入任务
-	mx.Protocol_Campaign_ChapterClearReward: pack.CampaignChapterClearReward, // 领取总关卡奖励
+	mx.Protocol_Campaign_List:                       pack.CampaignList,                       // 获取任务信息
+	mx.Protocol_Campaign_EnterMainStage:             pack.CampaignEnterMainStage,             // 进入任务
+	mx.Protocol_Campaign_ChapterClearReward:         pack.CampaignChapterClearReward,         // 领取总关卡奖励
+	mx.Protocol_Campaign_EnterMainStageStrategySkip: pack.CampaignEnterMainStageStrategySkip, // 简易攻略
 	// 悬赏通缉/特别依赖
 	mx.Protocol_WeekDungeon_List:         pack.WeekDungeonList,         // 获取 悬赏通缉/特别依赖 通关信息
 	mx.Protocol_WeekDungeon_EnterBattle:  pack.WeekDungeonEnterBattle,  // 开始战斗
@@ -173,6 +178,8 @@ var funcRouteMap = map[int32]handlerFunc{
 	mx.Protocol_TimeAttackDungeon_CreateBattle: pack.TimeAttackDungeonCreateBattle, // 综合战术考试开始战斗
 	mx.Protocol_TimeAttackDungeon_EnterBattle:  pack.TimeAttackDungeonEnterBattle,  // 战术综合考试开始
 	mx.Protocol_TimeAttackDungeon_EndBattle:    pack.TimeAttackDungeonEndBattle,    // 战术综合考试战斗结算
+	mx.Protocol_TimeAttackDungeon_GiveUp:       pack.TimeAttackDungeonGiveUp,       // 主动结算
+	mx.Protocol_TimeAttackDungeon_Sweep:        pack.TimeAttackDungeonSweep,        // 扫荡
 	// 竞技场
 	mx.Protocol_Arena_Login:        pack.ArenaLogin,        // 登录获取竞技场信息
 	mx.Protocol_Arena_EnterLobby:   pack.ArenaEnterLobby,   // 获取竞技场详情

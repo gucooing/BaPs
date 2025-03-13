@@ -2,6 +2,7 @@ package command
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/gucooing/BaPs/common/code"
 	"github.com/gucooing/cdq"
@@ -32,9 +33,8 @@ func (c *Command) getEmailCode(options map[string]*cdq.CommandOption) (string, e
 	if !ok {
 		return "", errors.New("缺少参数 account")
 	}
-	if codeInfo := code.GetCodeInfo(accountOption.Option); codeInfo != nil &&
-		codeInfo.FialNum < code.MaxFialNum {
-		return string(codeInfo.Code), nil
+	if codeInfo := code.GetCodeInfo(accountOption.Option); codeInfo != nil {
+		return fmt.Sprintf("coed:%v", codeInfo.Code), nil
 	} else {
 		return "", errors.New("验证码已过期或失效")
 	}

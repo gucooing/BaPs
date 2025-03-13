@@ -66,7 +66,7 @@ func AddCurTimeAttackRoom(s *enter.Session, isPractice bool) {
 	info := &sro.TimeAttackRoom{
 		SeasonId:   bin.SeasonId,
 		RoomId:     roomId,
-		StartTime:  time.Now().Unix(),
+		StartTime:  time.Now().Add(1 * time.Hour).Unix(),
 		IsPractice: isPractice,
 		RewardTime: 0,
 	}
@@ -80,15 +80,65 @@ func GetTimeAttackDungeonRoomDB(s *enter.Session, roomId int64) *proto.TimeAttac
 		return nil
 	}
 	info := &proto.TimeAttackDungeonRoomDB{
-		AccountId:         s.AccountServerId,
-		SeasonId:          bin.SeasonId,                                       // 赛季id
-		RoomId:            bin.RoomId,                                         // 房间id
-		CreateDate:        mx.Unix(bin.StartTime, 0),                          // 战斗开始时间
-		RewardDate:        mx.Unix(bin.RewardTime, 0),                         // 奖励领取时间
-		IsPractice:        bin.IsPractice,                                     // 是否实践
-		SweepHistoryDates: make([]time.Time, 0),                               // 扫荡记录
+		AccountId:  s.AccountServerId,
+		SeasonId:   bin.SeasonId,              // 赛季id
+		RoomId:     bin.RoomId,                // 房间id
+		CreateDate: mx.Unix(bin.StartTime, 0), // 战斗结束时间
+		IsPractice: bin.IsPractice,            // 是否实践
+		// RewardDate: mx.Unix(bin.RewardTime, 0), // 奖励领取时间
+		SweepHistoryDates: make([]mx.MxTime, 0),                               // 扫荡记录
 		BattleHistoryDBs:  make([]*proto.TimeAttackDungeonBattleHistoryDB, 0), // 成功战斗记录
 	}
+	if bin.RewardTime != 0 {
+		info.RewardDate = mx.Unix(bin.RewardTime, 0)
+	}
+	for _, battleInfo := range bin.BattleList {
+		tabh := &proto.TimeAttackDungeonBattleHistoryDB{
+			DungeonType:         proto.TimeAttackDungeonType(battleInfo.DungeonType),
+			GeasId:              battleInfo.GeasId,
+			DefaultPoint:        battleInfo.DefaultPoint,
+			ClearTimePoint:      battleInfo.ClearTimePoint,
+			EndFrame:            battleInfo.Frame,
+			MainCharacterDBs:    make([]*proto.TimeAttackDungeonCharacterDB, 0),
+			SupportCharacterDBs: make([]*proto.TimeAttackDungeonCharacterDB, 0),
+		}
+		for _, tadc := range battleInfo.MainCharacterDBs {
+			tabh.MainCharacterDBs = append(tabh.MainCharacterDBs, GetTimeAttackDungeonCharacterDB(tadc))
+		}
+		for _, tadc := range battleInfo.SupportCharacterDBs {
+			tabh.SupportCharacterDBs = append(tabh.SupportCharacterDBs, GetTimeAttackDungeonCharacterDB(tadc))
+		}
+		info.BattleHistoryDBs = append(info.BattleHistoryDBs, tabh)
+	}
+	for _, sweepTime := range bin.SweepTime {
+		info.SweepHistoryDates = append(info.SweepHistoryDates, mx.Unix(sweepTime, 0))
+	}
+	return info
+}
+
+func GetTimeAttackDungeonCharacterDB(bin *sro.TimeAttackDungeonCharacter) *proto.TimeAttackDungeonCharacterDB {
+	info := &proto.TimeAttackDungeonCharacterDB{
+		ServerId:  bin.ServerId,
+		UniqueId:  bin.UniqueId,
+		CostumeId: bin.CostumeId,
+		StarGrade: bin.StarGrade,
+		Level:     bin.Level,
+		HasWeapon: bin.HasWeapon,
+		WeaponDB:  nil,
+		IsAssist:  bin.IsAssist,
+	}
+	if bin.WeaponInfo != nil {
+		info.WeaponDB = &proto.WeaponDB{
+			Type:                   proto.ParcelType_CharacterWeapon,
+			UniqueId:               bin.WeaponInfo.UniqueId,
+			Level:                  bin.WeaponInfo.Level,
+			Exp:                    bin.WeaponInfo.Exp,
+			StarGrade:              bin.WeaponInfo.StarGrade,
+			BoundCharacterServerId: bin.WeaponInfo.CharacterServerId,
+			IsLocked:               bin.WeaponInfo.IsLocked,
+		}
+	}
+
 	return info
 }
 
@@ -110,4 +160,59 @@ func GetCurTimeAttackDungeonRoomDB(s *enter.Session) *proto.TimeAttackDungeonRoo
 		return nil
 	}
 	return GetTimeAttackDungeonRoomDB(s, bin.CurRoom)
+}
+
+func TimeAttackDungeonClose(s *enter.Session) ([]*ParcelResult, int64) {
+	bin := GetTimeAttackBin(s)
+	curBin := GetTimeAttackRoom(s, bin.GetCurRoom())
+	if curBin == nil {
+		return nil, 0
+	}
+	curBin.RewardTime = time.Now().Unix()
+	bin.CurRoom = 0
+	// 计算总得分
+	score := int64(0)
+	for _, battleInfo := range curBin.BattleList {
+		score += battleInfo.ClearTimePoint
+		score += battleInfo.DefaultPoint
+	}
+	curBin.Score = score
+	if curBin.IsPractice {
+		// delete(bin.TimeAttackRoomList, curBin.RoomId)
+		return nil, score
+	}
+	if previous := GetTimeAttackRoom(s, bin.GetPreviousRoom()); previous == nil || previous.Score <= score {
+		bin.PreviousRoom = curBin.RoomId
+	}
+	// 获取奖励
+	list := GetTimeAttackDungeonParcelResultByScore(score, curBin.SeasonId)
+
+	return list, score
+}
+
+func GetTimeAttackDungeonParcelResultByScore(score, seasonId int64) (list []*ParcelResult) {
+	list = make([]*ParcelResult, 0)
+	conf := gdconf.GetTimeAttackDungeonSeasonManageExcelById(seasonId)
+	if conf == nil {
+		return
+	}
+	rewardConf := gdconf.GetTimeAttackDungeonRewardExcelTable(conf.TimeAttackDungeonRewardId)
+	if rewardConf == nil {
+		return
+	}
+	for index, minPoint := range rewardConf.RewardMinPoint {
+		if minPoint > score {
+			break
+		}
+		prInfo := &ParcelResult{
+			ParcelType: proto.GetParcelTypeValue(rewardConf.RewardParcelType[index]),
+			ParcelId:   rewardConf.RewardParcelId[index],
+			Amount:     rewardConf.RewardParcelDefaultAmount[index],
+		}
+		if rewardConf.RewardType[index] == "TimeWeight" {
+			prInfo.Amount = score
+		}
+		list = append(list, prInfo)
+	}
+	return
 }

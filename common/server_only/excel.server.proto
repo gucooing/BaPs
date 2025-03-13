@@ -67,6 +67,8 @@ message Excel {
   repeated GachaElementRecursiveExcelTable GachaElementRecursiveExcelTable = 58; // 随机组配置
   repeated GachaElementExcelTable GachaElementExcelTable = 59; // 随机组池配置
   repeated GoodsExcelTable GoodsExcelTable = 60; // 商品配置
+  repeated TimeAttackDungeonGeasExcelTable TimeAttackDungeonGeasExcelTable = 61; // 综合战术考试关卡配置
+  repeated TimeAttackDungeonRewardExcelTable TimeAttackDungeonRewardExcelTable = 62; // 综合战术考试奖励配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -1160,4 +1162,34 @@ message GoodsExcelTable {
   repeated string ParcelType_ = 16;
   repeated int64 ParcelId = 17;
   repeated int64 ParcelAmount = 18;
+}
+
+message TimeAttackDungeonGeasExcelTable {
+  int64 Id = 1;
+  string TimeAttackDungeonType_ = 2;
+  int64 LocalizeEtcKey = 3;
+  int64 BattleDuration = 4;
+  int64 ClearDefaultPoint = 5;
+  int64 ClearTimeWeightPoint = 6;
+  int64 TimeWeightConst = 7;
+  int64 Difficulty = 8;
+  int64 RecommandLevel = 9;
+  int64 GroundId = 10;
+  repeated int64 AllyPassiveSkillId = 11;
+  repeated int64 AllyPassiveSkillLevel = 12;
+  repeated int64 EnemyPassiveSkillId = 13;
+  repeated int64 EnemyPassiveSkillLevel = 14;
+  repeated string GeasIconPath = 15;
+  repeated int64 GeasLocalizeEtcKey = 16;
+}
+
+message TimeAttackDungeonRewardExcelTable {
+  int64 Id = 1;
+  int64 RewardMaxPoint = 2;
+  repeated string RewardType = 3;
+  repeated int64 RewardMinPoint = 4;
+  repeated string RewardParcelType = 5;
+  repeated int64 RewardParcelId = 6;
+  repeated int64 RewardParcelDefaultAmount = 7;
+  repeated int64 RewardParcelMaxAmount = 8;
 }

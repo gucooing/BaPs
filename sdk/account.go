@@ -51,7 +51,7 @@ func (s *SDK) YostarAuthRequest(c *gin.Context) {
 			rsp.Result = 100302
 			return
 		} else {
-			logger.Debug("邮箱:%s,写入新验证码:%v", req.Account, newCode)
+			logger.Info("邮箱:%s,写入新验证码:%v", req.Account, newCode)
 		}
 	}
 	rsp.Result = 0

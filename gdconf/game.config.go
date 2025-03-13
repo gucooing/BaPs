@@ -84,6 +84,8 @@ type GPP struct {
 	GachaElementExcel                   *GachaElementExcel
 	GachaElementRecursiveExcel          *GachaElementRecursiveExcel
 	GoodsExcel                          *GoodsExcel
+	TimeAttackDungeonGeasExcel          *TimeAttackDungeonGeasExcel
+	TimeAttackDungeonRewardExcel        *TimeAttackDungeonRewardExcel
 }
 
 func LoadGameConfig(dataPath string, resPath string) *GameConfig {
@@ -168,6 +170,8 @@ func (g *GameConfig) gpp() {
 		g.gppGachaElementExcelTable,
 		g.gppGachaElementRecursiveExcelTable,
 		g.gppGoodsExcelTable,
+		g.gppTimeAttackDungeonGeasExcelTable,
+		g.gppTimeAttackDungeonRewardExcelTable,
 
 		// data
 		g.loadRaidSchedule,

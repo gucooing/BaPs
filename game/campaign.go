@@ -16,17 +16,17 @@ func NewCampaignMainStageSaveDB(s *enter.Session, stageUniqueId int64) *proto.Ca
 	}
 	info := &proto.CampaignMainStageSaveDB{
 		ContentType:                      proto.ContentType(proto.ContentType_value[stageConf.ContentType]),
-		CampaignState:                    proto.CampaignState_Win,
+		CampaignState:                    proto.CampaignState_BeforeStart, //  proto.CampaignState_Win,
 		CreateTime:                       mx.Now(),
 		StageUniqueId:                    stageUniqueId,
 		AccountServerId:                  s.AccountServerId,
 		ActivatedHexaEventsAndConditions: make(map[int64][]int64),
-		EnemyInfos:                       make(map[int64]*proto.HexaUnit),
+		EnemyInfos:                       GetEnemyInfos(stageUniqueId),
 		EnemyKillCountByUniqueId:         make(map[int64]int64),
 		HexaEventDelayedExecutions:       make(map[int64][]int64),
-		LastEnemyEntityId:                0,
+		LastEnemyEntityId:                10010,
 		StageEntranceFee:                 make([]*proto.ParcelInfo, 0),
-		StrategyObjects:                  make(map[int64]*proto.Strategy),
+		StrategyObjects:                  GetStrategyObjects(stageUniqueId),
 		TileMapStates:                    make(map[int32]*proto.HexaTileState),
 
 		CurrentTurn:           0,
@@ -41,4 +41,58 @@ func NewCampaignMainStageSaveDB(s *enter.Session, stageUniqueId int64) *proto.Ca
 	}
 
 	return info
+}
+
+func GetEnemyInfos(StageUniqueId int64) map[int64]*proto.HexaUnit {
+	list := make(map[int64]*proto.HexaUnit)
+	// list[10008] = &proto.HexaUnit{
+	// 	EntityId: 10008,
+	// 	Id:       101110101,
+	// 	Rotate: &proto.Vector3{
+	// 		X: 0,
+	// 		Y: 240,
+	// 		Z: 0,
+	// 	},
+	// 	Location: &proto.Vector3{
+	// 		X: -1,
+	// 		Y: 1,
+	// 		Z: 0,
+	// 	},
+	// }
+	// list[10009] = &proto.HexaUnit{
+	// 	EntityId: 10009,
+	// 	Id:       101110102,
+	// 	Rotate: &proto.Vector3{
+	// 		X: 0,
+	// 		Y: 240,
+	// 		Z: 0,
+	// 	},
+	// 	Location: &proto.Vector3{
+	// 		X: 0,
+	// 		Y: 0,
+	// 		Z: 0,
+	// 	},
+	// }
+
+	return list
+}
+
+func GetStrategyObjects(StageUniqueId int64) map[int64]*proto.Strategy {
+	list := make(map[int64]*proto.Strategy)
+	// list[10010] = &proto.Strategy{
+	// 	EntityId: 10010,
+	// 	Id:       101101,
+	// 	Rotate: &proto.Vector3{
+	// 		X: 0,
+	// 		Y: 0,
+	// 		Z: 0,
+	// 	},
+	// 	Location: &proto.Vector3{
+	// 		X: -2,
+	// 		Y: 2,
+	// 		Z: 0,
+	// 	},
+	// }
+
+	return list
 }

@@ -88,6 +88,8 @@ func (g *GameConfig) LoadExcel() {
 		g.loadGachaElementRecursiveExcelTable,
 		g.loadGachaElementExcelTable,
 		g.loadGoodsExcelTable,
+		g.loadTimeAttackDungeonGeasExcelTable,
+		g.loadTimeAttackDungeonRewardExcelTable,
 	}
 
 	for _, fn := range g.loadFunc {

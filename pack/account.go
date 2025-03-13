@@ -74,6 +74,7 @@ func NetworkTimeSync(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.NetworkTimeSyncResponse)
 
 	rsp.ReceiveTick = game.GetServerTime()
+	rsp.ServerTimeTicks = game.GetServerTime()
 	rsp.EchoSendTick = game.GetServerTimeTick()
 }
 
@@ -212,7 +213,7 @@ func ToastList(s *enter.Session, request, response proto.Message) {
 			LocalizeText: make(map[proto.Language]string),
 			ToastId:      str,
 			BeginDate:    time.Now(),
-			EndDate:      time.Now().Add(time.Second * 10),
+			EndDate:      time.Now().Add(1*time.Minute + 1*time.Hour),
 			LifeTime:     3000, // ms
 			Delay:        0})
 	}

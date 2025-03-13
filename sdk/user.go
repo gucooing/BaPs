@@ -186,7 +186,7 @@ func (s *SDK) YostarLogin(c *gin.Context) {
 	// 拉取游戏数据
 	rsp.Result = 0
 	rsp.ChannelId = yostarUser.ChannelId
-	rsp.CurrentTimestampMs = time.Now().UnixNano() / 1e6
+	rsp.CurrentTimestampMs = time.Now().UnixMicro()
 	rsp.KrKmcStatus = 2
 	rsp.Migrated = true
 	rsp.YostarUid = strconv.Itoa(int(yostarUser.YostarUid))

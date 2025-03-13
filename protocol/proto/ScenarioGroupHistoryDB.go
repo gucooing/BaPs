@@ -3,7 +3,7 @@
 package proto
 
 import (
-    "time"
+    "github.com/gucooing/BaPs/pkg/mx"
 )
 
 type ScenarioGroupHistoryDB struct{
@@ -11,7 +11,7 @@ type ScenarioGroupHistoryDB struct{
     ScenarioGroupUqniueId int64
     ScenarioType int64
     EventContentId int64
-    ClearDateTime time.Time
+    ClearDateTime mx.MxTime
     IsReturn bool
 }
 

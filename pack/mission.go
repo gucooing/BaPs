@@ -8,6 +8,7 @@ import (
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/alg"
+	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -126,21 +127,9 @@ func MissionSync(s *enter.Session, request, response proto.Message) {
 func ScenarioList(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.ScenarioListResponse)
 
-	rsp.ScenarioGroupHistoryDBs = make([]*proto.ScenarioGroupHistoryDB, 0)
+	rsp.ScenarioGroupHistoryDBs = game.GetScenarioGroupHistoryDBs(s)
 	rsp.ScenarioHistoryDBs = make([]*proto.ScenarioHistoryDB, 0)
-
 	rsp.ScenarioCollectionDBs = make([]*proto.ScenarioCollectionDB, 0)
-
-	for _, bin := range game.GetScenarioGroupHistoryInfoList(s) {
-		rsp.ScenarioGroupHistoryDBs = append(rsp.ScenarioGroupHistoryDBs, &proto.ScenarioGroupHistoryDB{
-			AccountServerId:       s.AccountServerId,
-			ScenarioGroupUqniueId: bin.ScenarioGroupUqniueId,
-			ScenarioType:          bin.ScenarioType,
-			EventContentId:        bin.EventContentId,
-			ClearDateTime:         time.Unix(bin.ClearDateTime, 0),
-			IsReturn:              false,
-		})
-	}
 
 	for _, bin := range game.GetScenarioHistoryInfoList(s) {
 		rsp.ScenarioHistoryDBs = append(rsp.ScenarioHistoryDBs, &proto.ScenarioHistoryDB{
@@ -155,7 +144,7 @@ func ScenarioGroupHistoryUpdate(s *enter.Session, request, response proto.Messag
 	req := request.(*proto.ScenarioGroupHistoryUpdateRequest)
 	rsp := response.(*proto.ScenarioGroupHistoryUpdateResponse)
 
-	game.FinishScenarioGroupHistoryInfo(s, req.ScenarioGroupUniqueId, req.ScenarioType)
+	game.FinishScenarioGroupHistoryInfo(s, req.ScenarioGroupUniqueId, req.ScenarioType, 0)
 
 	bin := game.GetScenarioGroupHistoryInfo(s, req.ScenarioGroupUniqueId)
 	if bin == nil {
@@ -166,7 +155,7 @@ func ScenarioGroupHistoryUpdate(s *enter.Session, request, response proto.Messag
 		ScenarioGroupUqniueId: bin.ScenarioGroupUqniueId,
 		ScenarioType:          bin.ScenarioType,
 		EventContentId:        bin.EventContentId,
-		ClearDateTime:         time.Unix(bin.ClearDateTime, 0),
+		ClearDateTime:         mx.Unix(bin.ClearDateTime, 0),
 		IsReturn:              false,
 	}
 }

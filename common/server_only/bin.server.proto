@@ -23,6 +23,7 @@ message PlayerBin {
     AttendanceBin attendance_bin = 16; // 登录奖励
     RaidMultiFloorBin raid_multi_floor_bin = 17; // 制约解除决战信息
     RaidEliminateBin raid_eliminate_bin = 18; // 大决战
+    EventContentBin event_content_bin = 19; // 活动信息
 }
 
 // 基础信息
@@ -401,11 +402,29 @@ message TimeAttackRoom {
   bool is_practice = 4; // 是否实践
   int64 reward_time = 5; // 奖励领取时间
   repeated TimeAttackRoomBattleHistory battle_list = 6; // 成功战斗记录
+  int64 score = 7; // 总得分
+  repeated int64 sweep_time = 8; // 扫荡时间
 }
 
 message TimeAttackRoomBattleHistory {
   int64 geas_id = 1; // 关卡id
   int64 frame = 2; // 时间帧
+  int64 clear_time_point = 3; // 时间得分
+  int64 default_point = 4; //默认分
+  int32 dungeon_type = 5; // 类型
+  repeated TimeAttackDungeonCharacter MainCharacterDBs = 6;
+  repeated TimeAttackDungeonCharacter SupportCharacterDBs = 7;
+}
+
+message TimeAttackDungeonCharacter {
+  int64 server_id = 1;
+  int64 unique_id = 2;
+  int64 costume_id = 3;
+  int32 star_grade = 4;
+  int32 level = 5;
+  bool has_weapon = 6;
+  WeaponInfo weapon_info = 7;
+  bool is_assist = 8;
 }
 
 // 总力战
@@ -522,4 +541,19 @@ message RaidEliminateInfo {
 message RaidEliminateBest {
   int64 score = 1; // 分数
   map<int32,RaidTeamInfo> raid_team_list = 2; // 参赛队伍信息
+}
+
+// 活动信息
+
+message EventContentBin {
+  map<int64,EventContentInfo> event_content_info_list = 1; // 活动数据列表
+}
+
+message EventContentInfo {
+    BoxGachaShopInfo BoxGachaShop_info = 1; // 活动盲盒商店信息
+}
+
+message BoxGachaShopInfo{
+  int64 round = 1 ; // 当前回合数
+  int32 purchase_count = 2; // 购买数量
 }
