@@ -204,8 +204,7 @@ func CafeReceiveCurrency(s *enter.Session, request, response proto.Message) {
 			})
 			// prodBin.Amount = 0
 		}
-		bin.ProductionAppliedTime = time.Unix(bin.ProductionAppliedTime, 0).
-			Add(time.Duration(bin.ProductionAppliedNum) * time.Hour).Unix()
+		bin.ProductionAppliedTime = time.Now().Unix()
 	}
 
 	rsp.CafeDBs = game.GetPbCafeDBs(s)

@@ -15,11 +15,11 @@ func GetServerId(s *enter.Session) int64 {
 }
 
 func GetServerTime() int64 {
-	return (time.Now().Add(-1*time.Hour).Unix() * 10000000) + 621356292000000000
+	return (time.Now().Unix() * 10000000) + 621356292000000000
 }
 
 func GetServerTimeTick() int64 {
-	return time.Now().Add(-1*time.Hour).UnixNano()/100 + 621356292000000000
+	return time.Now().UnixNano()/100 + 621356292000000000
 }
 
 func NewYostarGame(accountId int64) *sro.PlayerBin {

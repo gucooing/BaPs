@@ -283,10 +283,10 @@ func RecoverActionPoint(s *enter.Session, db *sro.CurrencyInfo) {
 		db.UpdateTime = time.Now().Unix()
 		return
 	}
-	num := int64(time.Now().Sub(time.Unix(db.UpdateTime, 0)).Minutes() / 6)
+	num := int64(time.Now().Sub(time.Unix(db.UpdateTime, 0).Add(-1*time.Hour)).Minutes() / 6)
 	db.CurrencyNum = alg.MinInt64(db.CurrencyNum+num, maxAp)
 	if num > 0 { // 这样处理精度不高 但是方便
-		db.UpdateTime = time.Unix(db.UpdateTime, 0).Add(time.Duration(num*6) * time.Minute).Unix()
+		db.UpdateTime = time.Now().Add(1 * time.Hour).Unix()
 	}
 }
 
