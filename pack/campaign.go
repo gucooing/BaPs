@@ -51,7 +51,8 @@ func CampaignEnterMainStage(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CampaignEnterMainStageRequest)
 	rsp := response.(*proto.CampaignEnterMainStageResponse)
 
-	rsp.SaveDataDB = game.NewCampaignMainStageSaveDB(s, req.StageUniqueId)
+	bin := game.NewCampaignMainStageSaveDB(s, req.StageUniqueId)
+	rsp.SaveDataDB = game.GetCampaignMainStageSaveDB(s, bin)
 }
 
 func CampaignChapterClearReward(s *enter.Session, request, response proto.Message) {

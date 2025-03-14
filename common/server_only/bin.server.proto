@@ -15,7 +15,7 @@ message PlayerBin {
     int64 server_id = 8; // 唯一id计数器
     EchelonBin echelon_bin = 9; // 队伍信息
     GachaBin gacha_bin = 10; // 抽卡记录
-    CampaignBin campaign_bin = 11; // 任务信息
+    CampaignBin campaign_bin = 11; // 走格子信息
     AttachmentBin attachment_bin = 12; // 玩家档案
     MomoTalkBin momo_talk_bin = 13; // MomoTalk 信息
     DungeonBin dungeon_bin = 14; // 副本信息
@@ -48,6 +48,7 @@ message BasePlayer { // 此处仅留必要数据
   bool show_arena_ranking = 17;
   bool show_eliminate_raid_ranking = 18;
   int64 clan_id = 19; // 加入的社团id
+  string call_name = 20; // 语音昵称
 }
 
 // 课程表信息
@@ -287,10 +288,11 @@ message BeforehandInfo {
   int64 goods_id = 7;
 }
 
-// 任务信息
+// 走格子信息
 
 message CampaignBin {
  map<int64,StageInfo> stage_history = 1; // 完成的关卡信息
+ map<int64,BattleCampaign> battle_campaign_list = 2; // 进行中的走格子
 }
 
 message StageInfo {
@@ -304,6 +306,28 @@ message StageInfo {
   bool star3_flag = 8;
   int64 star_reward_receive = 9;
   int64 tactic_clear_count_with_rank_s_record = 10;
+}
+
+message BattleCampaign {
+  int64 stage_id = 1; // 关卡id
+  int64 create_time = 2; // 开始时间
+  map<int64,EnemyInfo> enemy_infos = 3; // 实体信息
+  int64 last_enemy_entity_id = 4; // 上场实体id
+  map<int64,EnemyInfo> strategy_objects = 5;
+  int32 campaign_state = 6; // 状态
+}
+
+message EnemyInfo {
+  int64 entity_id = 1; // 实体id
+  int64 id = 2; // id
+  Vector3 rotate = 3; // 旋转
+  Vector3 location = 4; // 坐标
+}
+
+message Vector3 {
+  float x = 1;
+  float y = 2;
+  float z = 3;
 }
 
 // 邮箱配置

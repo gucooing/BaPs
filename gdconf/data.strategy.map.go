@@ -8,12 +8,14 @@ import (
 )
 
 type StrategyMap struct {
-	StrategyMap     string       `json:"StrategyMap"`
-	EnemyInfos      []*EnemyInfo `json:"EnemyInfos"`
-	StrategyObjects []*EnemyInfo `json:"StrategyObjects"`
+	StrategyMap       string       `json:"StrategyMap"`
+	LastEnemyEntityId int64        `json:"LastEnemyEntityId"`
+	EnemyInfos        []*EnemyInfo `json:"EnemyInfos"`
+	StrategyObjects   []*EnemyInfo `json:"StrategyObjects"`
 }
 type EnemyInfo struct {
 	EntityId int64    `json:"EntityId"`
+	Id       int64    `json:"Id"`
 	Rotate   *Vector3 `json:"Rotate"`
 	Location *Vector3 `json:"Location"`
 }
