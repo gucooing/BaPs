@@ -79,6 +79,7 @@ docker run -d \
   "DataPath": "./data",
   "GucooingApiKey": "123456", // 使用api时验证身份的key
   "AutoRegistration": true, // 是否自动注册
+  "Tutorial": false, // 是否开启教程-不完善
   "HttpNet": {
     "InnerAddr": "0.0.0.0", // 监听地址
     "InnerPort": "5000", // 监听端口
@@ -100,7 +101,7 @@ docker run -d \
   },
   "RaidRankDB": {
     "dbType": "sqlite", // 使用的数据库类型,支持sqlite和mysql
-    "dsn": "RaidRank.db" // 数据库地址,如果是mysql请填写mysql url
+    "dsn": "Rank.db" // 数据库地址,如果是mysql请填写mysql url
   },
   "Irc": { // 可使用通用irc服务器地址
     "HostAddress": "127.0.0.1", // 社团聊天服务器irc地址

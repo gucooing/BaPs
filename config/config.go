@@ -13,6 +13,7 @@ type Config struct {
 	DataPath         string   `json:"DataPath"`
 	GucooingApiKey   string   `json:"GucooingApiKey"`
 	AutoRegistration bool     `json:"AutoRegistration"`
+	Tutorial         bool     `json:"Tutorial"`
 	HttpNet          *HttpNet `json:"HttpNet"`
 	GateWay          *GateWay `json:"GateWay"`
 	DB               *DB      `json:"DB"`
@@ -70,6 +71,10 @@ func GetAutoRegistration() bool {
 	return GetConfig().AutoRegistration
 }
 
+func GetTutorial() bool {
+	return GetConfig().Tutorial
+}
+
 func GetHttpNet() *HttpNet {
 	return GetConfig().HttpNet
 }
@@ -123,6 +128,7 @@ var DefaultConfig = &Config{
 	DataPath:         "./data",
 	GucooingApiKey:   "123456",
 	AutoRegistration: true,
+	Tutorial:         false,
 	HttpNet: &HttpNet{
 		InnerAddr: "0.0.0.0",
 		InnerPort: "5000",

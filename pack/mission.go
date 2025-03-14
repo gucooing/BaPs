@@ -5,6 +5,7 @@ import (
 
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
+	"github.com/gucooing/BaPs/config"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/alg"
@@ -101,10 +102,13 @@ func GuideMissionSeasonList(s *enter.Session, request, response proto.Message) {
 func AccountGetTutorial(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.AccountGetTutorialResponse)
 
-	// rsp.TutorialIds = game.GetTutorialList(s)
-	rsp.TutorialIds = make([]int64, 0)
-	for i := 1; i < 28; i++ {
-		rsp.TutorialIds = append(rsp.TutorialIds, int64(i))
+	if config.GetTutorial() {
+		rsp.TutorialIds = game.GetTutorialList(s)
+	} else {
+		rsp.TutorialIds = make([]int64, 0)
+		for i := 1; i < 28; i++ {
+			rsp.TutorialIds = append(rsp.TutorialIds, int64(i))
+		}
 	}
 }
 

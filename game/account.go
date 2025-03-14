@@ -296,7 +296,7 @@ func GetAccountDB(s *enter.Session) *proto.AccountDB {
 		return nil
 	}
 	info := &proto.AccountDB{
-		ServerId:                   baseBin.GetAccountId(),
+		ServerId:                   s.AccountServerId,
 		Nickname:                   GetNickname(s),
 		Level:                      GetAccountLevel(s),
 		Exp:                        GetAccountExp(s),
@@ -309,6 +309,7 @@ func GetAccountDB(s *enter.Session) *proto.AccountDB {
 		PublisherAccountId:         s.YostarUID,
 		RetentionDays:              0,
 		CallName:                   GetCallName(s),
+		LobbyMode:                  0,
 	}
 
 	return info
