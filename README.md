@@ -51,7 +51,8 @@ https://yostar-serverinfo.bluearchiveyostar.com http://127.0.0.1:5000
 docker run -d \
   -p 5000:5000 \
   -v /data/baps/config.json:/usr/ba/config.json \
-  -v /data/baps/sqlite:/usr/ba/sqlite \
+  -v /data/baps/sqlite/BaPs.db:/usr/ba/BaPs.db \
+  -v /data/baps/sqlite/Rank.db:/usr/ba/Rank.db \
   ghcr.io/gucooing/baps:latest
 ```
 
@@ -62,7 +63,8 @@ docker run -d \
 docker run -d \
   -p 5000:5000 \
   -v /data/baps/config.json:/usr/ba/config.json \
-  -v /data/baps/sqlite:/usr/ba/sqlite \
+  -v /data/baps/sqlite/BaPs.db:/usr/ba/BaPs.db \
+  -v /data/baps/sqlite/Rank.db:/usr/ba/Rank.db \
   ghcr.nju.edu.cn/gucooing/baps:latest
 ```
 </details>

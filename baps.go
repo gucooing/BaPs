@@ -53,7 +53,7 @@ func NewBaPs() {
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	// 初始化数据库
-	db.NewPE(cfg.DB)
+	db.NewDb(cfg.DB)
 	// 尝试保存硬盘中的玩家数据
 	if !enter.TaskUpDiskPlayerData() {
 		logger.Info("请检查硬盘中的玩家数据是否正确再启动")

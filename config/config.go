@@ -140,11 +140,11 @@ var DefaultConfig = &Config{
 	},
 	DB: &DB{
 		DbType: "sqlite",
-		Dsn:    "./sqlite/BaPs.db",
+		Dsn:    "BaPs.db",
 	},
 	RankDB: &DB{
 		DbType: "sqlite",
-		Dsn:    "./sqlite/Rank.db",
+		Dsn:    "Rank.db",
 	},
 	Irc: &Irc{
 		HostAddress: "127.0.0.1",
