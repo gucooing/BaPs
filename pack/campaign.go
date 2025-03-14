@@ -63,5 +63,14 @@ func CampaignEnterMainStageStrategySkip(s *enter.Session, request, response prot
 	// req := request.(*proto.CampaignEnterMainStageStrategySkipRequest)
 	rsp := response.(*proto.CampaignEnterMainStageStrategySkipResponse)
 
+	// 成本计算
 	rsp.ParcelResultDB = new(proto.ParcelResultDB)
+}
+
+func CampaignMainStageStrategySkipResult(s *enter.Session, request, response proto.Message) {
+	// req := request.(*proto.CampaignMainStageStrategySkipResultRequest)
+	// rsp := response.(*proto.CampaignMainStageStrategySkipResultResponse)
+	//
+	// win := req.Summary.Winner == "Group01"
+
 }

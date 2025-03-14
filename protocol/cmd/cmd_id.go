@@ -360,4 +360,6 @@ func (c *CmdProtoMap) registerAllMessage() {
 	c.regMsg(mx.Protocol_TimeAttackDungeon_GiveUp, func() any { return new(proto.TimeAttackDungeonGiveUpResponse) }, false)
 	c.regMsg(mx.Protocol_TimeAttackDungeon_Sweep, func() any { return new(proto.TimeAttackDungeonSweepRequest) }, true)
 	c.regMsg(mx.Protocol_TimeAttackDungeon_Sweep, func() any { return new(proto.TimeAttackDungeonSweepResponse) }, false)
+	c.regMsg(mx.Protocol_Campaign_MainStageStrategySkipResult, func() any { return new(proto.CampaignMainStageStrategySkipResultRequest) }, true)
+	c.regMsg(mx.Protocol_Campaign_MainStageStrategySkipResult, func() any { return new(proto.CampaignMainStageStrategySkipResultResponse) }, false)
 }

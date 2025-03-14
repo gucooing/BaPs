@@ -6,6 +6,7 @@ import (
 
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/protocol/proto"
 )
 
 func (g *GameConfig) loadEliminateRaidSeasonManageExcelTable() {
@@ -59,4 +60,21 @@ func GetEliminateRaidRankingRewardExcelTableBySeasonId(seasonId, ranking int64) 
 		return nil
 	}
 	return GetEliminateRaidRankingRewardExcelTable(conf.RankingRewardGroupId, ranking)
+}
+
+func GetEliminateRaidEchelonType(seasonId int64, raidBossGroup string) proto.EchelonType {
+	conf := GetEliminateRaidSeasonManageExcelTable(seasonId)
+	if conf == nil {
+		return proto.EchelonType_None
+	}
+	switch raidBossGroup {
+	case conf.OpenRaidBossGroup01:
+		return proto.EchelonType_EliminateRaid01
+	case conf.OpenRaidBossGroup02:
+		return proto.EchelonType_EliminateRaid02
+	case conf.OpenRaidBossGroup03:
+		return proto.EchelonType_EliminateRaid03
+	default:
+		return proto.EchelonType_None
+	}
 }

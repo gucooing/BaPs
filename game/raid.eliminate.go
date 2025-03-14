@@ -91,7 +91,7 @@ func NewCurRaidEliminateBattleInfo(s *enter.Session, raidUniqueId int64, isPract
 		IsPractice:   isPractice,
 		RaidTeamList: make(map[int32]*sro.RaidTeamInfo),
 		Frame:        0,
-		Begin:        time.Now().Unix(),
+		Begin:        time.Now().Add(1 * time.Hour).Unix(),
 		MaxHp:        chConf.MaxHP100,
 		SeasonId:     GetCurRaidEliminateInfo(s).SeasonId,
 		ServerId:     1,

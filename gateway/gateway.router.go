@@ -161,10 +161,11 @@ var funcRouteMap = map[int32]handlerFunc{
 	mx.Protocol_Shop_BeforehandGachaPick: pack.ShopBeforehandGachaPick, // 确定新手卡池免费十连结果
 	mx.Protocol_Shop_BuyGacha3:           pack.ShopBuyGacha3,           // 卡池3抽卡请求
 	// 任务
-	mx.Protocol_Campaign_List:                       pack.CampaignList,                       // 获取任务信息
-	mx.Protocol_Campaign_EnterMainStage:             pack.CampaignEnterMainStage,             // 进入任务
-	mx.Protocol_Campaign_ChapterClearReward:         pack.CampaignChapterClearReward,         // 领取总关卡奖励
-	mx.Protocol_Campaign_EnterMainStageStrategySkip: pack.CampaignEnterMainStageStrategySkip, // 简易攻略
+	mx.Protocol_Campaign_List:                        pack.CampaignList,                        // 获取任务信息
+	mx.Protocol_Campaign_EnterMainStage:              pack.CampaignEnterMainStage,              // 进入任务
+	mx.Protocol_Campaign_ChapterClearReward:          pack.CampaignChapterClearReward,          // 领取总关卡奖励
+	mx.Protocol_Campaign_EnterMainStageStrategySkip:  pack.CampaignEnterMainStageStrategySkip,  // 简易攻略
+	mx.Protocol_Campaign_MainStageStrategySkipResult: pack.CampaignMainStageStrategySkipResult, // 简易攻略结算
 	// 悬赏通缉/特别依赖
 	mx.Protocol_WeekDungeon_List:         pack.WeekDungeonList,         // 获取 悬赏通缉/特别依赖 通关信息
 	mx.Protocol_WeekDungeon_EnterBattle:  pack.WeekDungeonEnterBattle,  // 开始战斗

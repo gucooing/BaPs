@@ -1,7 +1,6 @@
 package game
 
 import (
-	"strings"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
@@ -95,11 +94,11 @@ func NewCurRaidBattleInfo(s *enter.Session, raidUniqueId int64, isPractice bool)
 		IsPractice:   isPractice,
 		RaidTeamList: make(map[int32]*sro.RaidTeamInfo),
 		Frame:        0,
-		Begin:        time.Now().Unix(),
+		Begin:        time.Now().Add(1 * time.Hour).Unix(),
 		MaxHp:        chConf.MaxHP100,
 		SeasonId:     GetCurRaidInfo(s).SeasonId,
 		ServerId:     1,
-		ContentType:  proto.ContentType_Raid,
+		ContentType:  proto.ContentType_EliminateRaid,
 	}
 }
 
@@ -408,28 +407,16 @@ func CheckRaidCharacter(s *enter.Session, echelonId int64,
 	if curBattle == nil {
 		return false
 	}
-	echelonType := int32(proto.EchelonType_Raid)
+	echelonType := proto.EchelonType_Raid
 	if curBattle.ContentType == proto.ContentType_EliminateRaid {
 		conf := gdconf.GetEliminateRaidStageExcelTable(curBattle.RaidUniqueId)
-		if conf == nil ||
-			len(conf.RaidBossGroup) < 13 {
-			return false
-		}
-
-		bossGroups := strings.Split(conf.RaidBossGroup, "_")
-		switch bossGroups[len(bossGroups)-1] {
-		case "LightArmor":
-			echelonType = proto.EchelonType_EliminateRaid01
-		case "HeavyArmor":
-			echelonType = proto.EchelonType_EliminateRaid02
-		case "Unarmed":
-			echelonType = proto.EchelonType_EliminateRaid03
-		default:
-			logger.Warn("未知的总力战boss类型")
-			return false
-		}
+		echelonType = gdconf.GetEliminateRaidEchelonType(curBattle.SeasonId, conf.GetRaidBossGroup())
 	}
-	echelonInfo := GetEchelonInfo(s, echelonType, echelonId)
+	if echelonType == proto.EchelonType_None {
+		logger.Warn("未知的总力战boss类型")
+		return false
+	}
+	echelonInfo := GetEchelonInfo(s, echelonType.Value(), echelonId)
 	if curBattle.RaidTeamList == nil {
 		curBattle.RaidTeamList = make(map[int32]*sro.RaidTeamInfo)
 	}

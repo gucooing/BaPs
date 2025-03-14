@@ -5,32 +5,32 @@ package proto
 type EchelonType int32
 
 const (
-    EchelonType_None = 0
-    EchelonType_Adventure = 1
-    EchelonType_Raid = 2
-    EchelonType_ArenaAttack = 3
-    EchelonType_ArenaDefence = 4
-    EchelonType_WeekDungeonChaserA = 5
-    EchelonType_Scenario = 6
-    EchelonType_WeekDungeonBlood = 7
-    EchelonType_WeekDungeonChaserB = 8
-    EchelonType_WeekDungeonChaserC = 9
-    EchelonType_WeekDungeonFindGift = 10
-    EchelonType_EventContent = 11
-    EchelonType_SchoolDungeonA = 12
-    EchelonType_SchoolDungeonB = 13
-    EchelonType_SchoolDungeonC = 14
-    EchelonType_TimeAttack = 15
-    EchelonType_WorldRaid = 16
-    EchelonType_Conquest = 17
-    EchelonType_ConquestManage = 18
-    EchelonType_StoryStrategyStage = 19
-    EchelonType_EliminateRaid01 = 20
-    EchelonType_EliminateRaid02 = 21
-    EchelonType_EliminateRaid03 = 22
-    EchelonType_Field = 23
-    EchelonType_MultiFloorRaid = 24
-    EchelonType_Temp = 25
+    EchelonType_None EchelonType = 0
+    EchelonType_Adventure EchelonType = 1
+    EchelonType_Raid EchelonType = 2
+    EchelonType_ArenaAttack EchelonType = 3
+    EchelonType_ArenaDefence EchelonType = 4
+    EchelonType_WeekDungeonChaserA EchelonType = 5
+    EchelonType_Scenario EchelonType = 6
+    EchelonType_WeekDungeonBlood EchelonType = 7
+    EchelonType_WeekDungeonChaserB EchelonType = 8
+    EchelonType_WeekDungeonChaserC EchelonType = 9
+    EchelonType_WeekDungeonFindGift EchelonType = 10
+    EchelonType_EventContent EchelonType = 11
+    EchelonType_SchoolDungeonA EchelonType = 12
+    EchelonType_SchoolDungeonB EchelonType = 13
+    EchelonType_SchoolDungeonC EchelonType = 14
+    EchelonType_TimeAttack EchelonType = 15
+    EchelonType_WorldRaid EchelonType = 16
+    EchelonType_Conquest EchelonType = 17
+    EchelonType_ConquestManage EchelonType = 18
+    EchelonType_StoryStrategyStage EchelonType = 19
+    EchelonType_EliminateRaid01 EchelonType = 20
+    EchelonType_EliminateRaid02 EchelonType = 21
+    EchelonType_EliminateRaid03 EchelonType = 22
+    EchelonType_Field EchelonType = 23
+    EchelonType_MultiFloorRaid EchelonType = 24
+    EchelonType_Temp EchelonType = 25
 )
 
 var (
@@ -96,3 +96,6 @@ func (x EchelonType) String() string {
   return EchelonType_name[int32(x)]
 }
 
+func (x EchelonType) Value() int32 {
+    return int32(x)
+}

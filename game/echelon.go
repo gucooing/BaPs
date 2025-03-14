@@ -1,6 +1,8 @@
 package game
 
 import (
+	"time"
+
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
@@ -415,7 +417,7 @@ func GetClanAssistSlotDB(s *enter.Session, info *sro.AssistInfo) *proto.ClanAssi
 		EchelonType:      proto.EchelonType(info.EchelonType),
 		SlotNumber:       info.SlotNumber,
 		CharacterDBId:    characterInfo.ServerId,
-		DeployDate:       mx.Unix(info.DeployDate, 0),
+		DeployDate:       mx.Unix(info.DeployDate, 0).Add(1 * time.Hour),
 		TotalRentCount:   info.TotalRentCount,
 		CombatStyleIndex: 0,
 	}

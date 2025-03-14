@@ -26,7 +26,7 @@ func EliminateRaidLobby(s *enter.Session, request, response proto.Message) {
 	// 超时了
 	if curBattle != nil &&
 		!curBattle.IsClose &&
-		time.Now().After(time.Unix(curBattle.Begin, 0).Add(1*time.Hour)) {
+		time.Now().After(time.Unix(curBattle.Begin, 0)) {
 		parcelResult := game.RaidEliminateClose(s)
 		rsp.RaidGiveUpDB = game.GetRaidEliminateGiveUpDB(s)
 		rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResult)
