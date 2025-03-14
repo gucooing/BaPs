@@ -63,6 +63,14 @@ func AccountNickname(s *enter.Session, request, response proto.Message) {
 	rsp.AccountDB = game.GetAccountDB(s)
 }
 
+func AccountCallName(s *enter.Session, request, response proto.Message) {
+	req := request.(*proto.AccountCallNameRequest)
+	rsp := response.(*proto.AccountCallNameResponse)
+
+	game.SetCallName(s, req.CallName)
+	rsp.AccountDB = game.GetAccountDB(s)
+}
+
 func ProofTokenRequestQuestion(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.ProofTokenRequestQuestionResponse)
 

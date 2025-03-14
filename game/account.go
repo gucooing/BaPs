@@ -308,13 +308,26 @@ func GetAccountDB(s *enter.Session) *proto.AccountDB {
 		RepresentCharacterServerId: GetCharacterServerId(s, GetRepresentCharacterUniqueId(s)),
 		PublisherAccountId:         s.YostarUID,
 		RetentionDays:              0,
+		CallName:                   GetCallName(s),
 	}
 
 	return info
 }
 
+func SetCallName(s *enter.Session, callName string) {
+	bin := GetBaseBin(s)
+	if bin == nil {
+		return
+	}
+	bin.CallName = callName
+}
+
+func GetCallName(s *enter.Session) string {
+	return GetBaseBin(s).GetCallName()
+}
+
 func SetAccountNickname(s *enter.Session, nickname string) bool {
-	baseBin := s.PlayerBin.GetBaseBin()
+	baseBin := GetBaseBin(s)
 	if baseBin == nil {
 		return false
 	}
@@ -323,7 +336,7 @@ func SetAccountNickname(s *enter.Session, nickname string) bool {
 }
 
 func SetLastConnectTime(s *enter.Session) {
-	baseBin := s.PlayerBin.GetBaseBin()
+	baseBin := GetBaseBin(s)
 	if baseBin == nil {
 		return
 	}

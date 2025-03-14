@@ -10,6 +10,8 @@ func (c *CmdProtoMap) registerAllMessage() {
 	c.regMsg(mx.Protocol_Queuing_GetTicket, func() any { return new(proto.QueuingGetTicketResponse) }, false)
 	c.regMsg(mx.Protocol_Account_CheckYostar, func() any { return new(proto.AccountCheckYostarRequest) }, true)
 	c.regMsg(mx.Protocol_Account_CheckYostar, func() any { return new(proto.AccountCheckYostarResponse) }, false)
+	c.regMsg(mx.Protocol_Account_CallName, func() any { return new(proto.AccountCallNameRequest) }, true)
+	c.regMsg(mx.Protocol_Account_CallName, func() any { return new(proto.AccountCallNameResponse) }, false)
 	c.regMsg(mx.Protocol_Account_Auth, func() any { return new(proto.AccountAuthRequest) }, true)
 	c.regMsg(mx.Protocol_Account_Auth, func() any { return new(proto.AccountAuthResponse) }, false)
 	c.regMsg(mx.Protocol_Account_Nickname, func() any { return new(proto.AccountNicknameRequest) }, true)

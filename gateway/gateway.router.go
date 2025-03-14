@@ -39,6 +39,7 @@ var funcRouteMap = map[int32]handlerFunc{
 	mx.Protocol_ContentSweep_Request:       pack.ContentSweepRequest,       // 战斗扫荡
 	// 玩家档案
 	mx.Protocol_Account_Nickname:                        pack.AccountNickname,                        // 设置/修改 昵称
+	mx.Protocol_Account_CallName:                        pack.AccountCallName,                        // 设定语音称呼
 	mx.Protocol_Account_SetRepresentCharacterAndComment: pack.AccountSetRepresentCharacterAndComment, // 修改 签名/值日生
 	mx.Protocol_Scenario_AccountStudentChange:           pack.ScenarioAccountStudentChange,           // 更换值日生 二次确认
 	mx.Protocol_Scenario_LobbyStudentChange:             pack.ScenarioLobbyStudentChange,             // 修改大厅值日生
