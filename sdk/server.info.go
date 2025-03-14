@@ -88,7 +88,7 @@ func (s *SDK) connectionGroups(c *gin.Context) {
 		IsProductionAddressables:   false,
 		ApiUrl:                     fmt.Sprintf("%s/api/", s.GetOuterAddr()),
 		GatewayUrl:                 fmt.Sprintf("%s/getEnterTicket/", s.GetOuterAddr()),
-		KibanaLogUrl:               fmt.Sprintf("%s/client/log/", s.GetOuterAddr()),
+		KibanaLogUrl:               "https://prod-logcollector.bluearchiveyostar.com:5300", //    fmt.Sprintf("%s/client/log/", s.GetOuterAddr()),
 		ProhibitedWordBlackListUri: "https://prod-notice.bluearchiveyostar.com/prod/ProhibitedWord/blacklist.csv",
 		ProhibitedWordWhiteListUri: "https://prod-notice.bluearchiveyostar.com/prod/ProhibitedWord/whitelist.csv",
 		CustomerServiceUrl:         "https://bluearchive.jp/contact-1-hint",

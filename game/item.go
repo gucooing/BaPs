@@ -253,12 +253,13 @@ func GetAccountCurrencyDB(s *enter.Session) *proto.AccountCurrencyDB {
 				proto.CurrencyTypes_EliminateTicketB,
 				proto.CurrencyTypes_EliminateTicketC,
 				proto.CurrencyTypes_EliminateTicketD:
-				if GetEliminateRaidSeasonType() == proto.RaidSeasonType_Open {
+				if GetEliminateRaidSeasonType() == proto.RaidSeasonType_Open && db.CurrencyNum != 0 {
 					db.CurrencyNum = alg.MinInt64(db.CurrencyNum+1, 7)
+					db.UpdateTime = time.Now().Unix()
 				} else {
 					db.CurrencyNum = 0
+					db.UpdateTime = time.Now().Unix()
 				}
-				db.UpdateTime = time.Now().Unix()
 			case proto.CurrencyTypes_AcademyTicket:
 				db.CurrencyNum = alg.MaxInt64(db.CurrencyNum, GetMaxAcademyTicket(s))
 				db.UpdateTime = time.Now().Unix()

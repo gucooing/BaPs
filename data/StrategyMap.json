@@ -1,0 +1,2102 @@
+{
+    "StrategyMap_1011101": {
+        "StrategyMap": "StrategyMap_1011101",
+        "EnemyInfos": [
+            {
+                "EntityId": 10008,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 1,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10009,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": null
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10010,
+                "Rotate": null,
+                "Location": {
+                    "X": -2,
+                    "Y": 2,
+                    "Z": 0
+                }
+            }
+        ]
+    },
+    "StrategyMap_1011102": {
+        "StrategyMap": "StrategyMap_1011102",
+        "EnemyInfos": [
+            {
+                "EntityId": 10014,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": null
+            },
+            {
+                "EntityId": 10015,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 1,
+                    "Y": -1,
+                    "Z": 0
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10016,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 0,
+                    "Z": 1
+                }
+            }
+        ]
+    },
+    "StrategyMap_1011103": {
+        "StrategyMap": "StrategyMap_1011103",
+        "EnemyInfos": [
+            {
+                "EntityId": 10002,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 180,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 3,
+                    "Z": -2
+                }
+            },
+            {
+                "EntityId": 10001,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 0,
+                    "Y": 1,
+                    "Z": -1
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10004,
+                "Rotate": null,
+                "Location": {
+                    "X": -2,
+                    "Y": 2,
+                    "Z": 0
+                }
+            }
+        ]
+    },
+    "StrategyMap_1011104": {
+        "StrategyMap": "StrategyMap_1011104",
+        "EnemyInfos": [
+            {
+                "EntityId": 10017,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -2,
+                    "Y": 4,
+                    "Z": -2
+                }
+            },
+            {
+                "EntityId": 10013,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 0,
+                    "Y": 1,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10018,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -2,
+                    "Y": 3,
+                    "Z": -1
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10019,
+                "Rotate": null,
+                "Location": {
+                    "X": -3,
+                    "Y": 3,
+                    "Z": 0
+                }
+            }
+        ]
+    },
+    "StrategyMap_1011105": {
+        "StrategyMap": "StrategyMap_1011105",
+        "EnemyInfos": [
+            {
+                "EntityId": 10001,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 3,
+                    "Z": -2
+                }
+            },
+            {
+                "EntityId": 10002,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -2,
+                    "Y": 3,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10003,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 0,
+                    "Y": 1,
+                    "Z": -1
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10009,
+                "Rotate": null,
+                "Location": {
+                    "X": -2,
+                    "Y": 4,
+                    "Z": -2
+                }
+            },
+            {
+                "EntityId": 10010,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 2,
+                    "Z": -1
+                }
+            }
+        ]
+    },
+    "StrategyMap_1012101": {
+        "StrategyMap": "StrategyMap_1012101",
+        "EnemyInfos": [
+            {
+                "EntityId": 10001,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": null
+            },
+            {
+                "EntityId": 10002,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": -1
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10008,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 1,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10007,
+                "Rotate": null,
+                "Location": {
+                    "X": 2,
+                    "Y": -1,
+                    "Z": -1
+                }
+            }
+        ]
+    },
+    "StrategyMap_1012102": {
+        "StrategyMap": "StrategyMap_1012102",
+        "EnemyInfos": [
+            {
+                "EntityId": 10003,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 1,
+                    "Y": -1,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10004,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 180,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 0,
+                    "Y": 1,
+                    "Z": -1
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10010,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 0,
+                    "Z": 1
+                }
+            }
+        ]
+    },
+    "StrategyMap_1012103": {
+        "StrategyMap": "StrategyMap_1012103",
+        "EnemyInfos": [
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10005,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 1,
+                    "Y": -1,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10006,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 2,
+                    "Y": -1,
+                    "Z": -1
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10020,
+                "Rotate": null,
+                "Location": null
+            },
+            {
+                "EntityId": 10021,
+                "Rotate": null,
+                "Location": {
+                    "X": 2,
+                    "Y": 0,
+                    "Z": -2
+                }
+            }
+        ]
+    },
+    "StrategyMap_1021101": {
+        "StrategyMap": "StrategyMap_1021101",
+        "EnemyInfos": [
+            {
+                "EntityId": 10006,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 0,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 1,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10008,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 1,
+                    "Y": -1,
+                    "Z": 0
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10012,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 2,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10013,
+                "Rotate": null,
+                "Location": null
+            }
+        ]
+    },
+    "StrategyMap_1021102": {
+        "StrategyMap": "StrategyMap_1021102",
+        "EnemyInfos": [
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 2,
+                    "Y": -1,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10008,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 4,
+                    "Y": -3,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10006,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 3,
+                    "Y": -2,
+                    "Z": -1
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10012,
+                "Rotate": null,
+                "Location": {
+                    "X": 3,
+                    "Y": -1,
+                    "Z": -2
+                }
+            },
+            {
+                "EntityId": 10011,
+                "Rotate": null,
+                "Location": {
+                    "X": 2,
+                    "Y": 0,
+                    "Z": -2
+                }
+            }
+        ]
+    },
+    "StrategyMap_1021103": {
+        "StrategyMap": "StrategyMap_1021103",
+        "EnemyInfos": [
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 1,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10008,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 0,
+                    "Y": -1,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10006,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": -1
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10012,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 2,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10013,
+                "Rotate": null,
+                "Location": null
+            }
+        ]
+    },
+    "StrategyMap_1021104": {
+        "StrategyMap": "StrategyMap_1021104",
+        "EnemyInfos": [
+            {
+                "EntityId": 10006,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": null
+            },
+            {
+                "EntityId": 10009,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 0,
+                    "Y": -1,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10008,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 2,
+                    "Y": -1,
+                    "Z": -1
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10012,
+                "Rotate": null,
+                "Location": {
+                    "X": 0,
+                    "Y": 1,
+                    "Z": -1
+                }
+            }
+        ]
+    },
+    "StrategyMap_1021105": {
+        "StrategyMap": "StrategyMap_1021105",
+        "EnemyInfos": [
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -4,
+                    "Y": 4,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10008,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 2,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10009,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -3,
+                    "Y": 2,
+                    "Z": 1
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10014,
+                "Rotate": null,
+                "Location": {
+                    "X": -4,
+                    "Y": 5,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10015,
+                "Rotate": null,
+                "Location": {
+                    "X": -3,
+                    "Y": 3,
+                    "Z": 0
+                }
+            }
+        ]
+    },
+    "StrategyMap_1022101": {
+        "StrategyMap": "StrategyMap_1022101",
+        "EnemyInfos": [
+            {
+                "EntityId": 10006,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -3,
+                    "Y": 4,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 3,
+                    "Z": -2
+                }
+            },
+            {
+                "EntityId": 10008,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -2,
+                    "Y": 5,
+                    "Z": -3
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10018,
+                "Rotate": null,
+                "Location": {
+                    "X": -5,
+                    "Y": 5,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10019,
+                "Rotate": null,
+                "Location": {
+                    "X": -4,
+                    "Y": 4,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10020,
+                "Rotate": null,
+                "Location": {
+                    "X": -2,
+                    "Y": 4,
+                    "Z": -2
+                }
+            }
+        ]
+    },
+    "StrategyMap_1022102": {
+        "StrategyMap": "StrategyMap_1022102",
+        "EnemyInfos": [
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -2,
+                    "Y": 1,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10008,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -2,
+                    "Y": 0,
+                    "Z": 2
+                }
+            },
+            {
+                "EntityId": 10009,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 0,
+                    "Y": 2,
+                    "Z": -2
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10017,
+                "Rotate": null,
+                "Location": {
+                    "X": -2,
+                    "Y": 3,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10018,
+                "Rotate": null,
+                "Location": {
+                    "X": -2,
+                    "Y": 2,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10019,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 0,
+                    "Z": 1
+                }
+            }
+        ]
+    },
+    "StrategyMap_1022103": {
+        "StrategyMap": "StrategyMap_1022103",
+        "EnemyInfos": [
+            {
+                "EntityId": 10008,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 1,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10009,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 4,
+                    "Z": -3
+                }
+            },
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -3,
+                    "Y": 3,
+                    "Z": 0
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10020,
+                "Rotate": null,
+                "Location": {
+                    "X": -3,
+                    "Y": 4,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10021,
+                "Rotate": null,
+                "Location": {
+                    "X": -2,
+                    "Y": 3,
+                    "Z": -1
+                }
+            }
+        ]
+    },
+    "StrategyMap_1031101": {
+        "StrategyMap": "StrategyMap_1031101",
+        "EnemyInfos": [
+            {
+                "EntityId": 10008,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -2,
+                    "Y": 3,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10009,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -2,
+                    "Y": 2,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10010,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 1,
+                    "Y": -1,
+                    "Z": 0
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10018,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 1,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10016,
+                "Rotate": null,
+                "Location": {
+                    "X": -3,
+                    "Y": 3,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10017,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 2,
+                    "Z": -1
+                }
+            }
+        ]
+    },
+    "StrategyMap_1031102": {
+        "StrategyMap": "StrategyMap_1031102",
+        "EnemyInfos": [
+            {
+                "EntityId": 10006,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 1,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 2,
+                    "Y": -1,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10005,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 1,
+                    "Y": -1,
+                    "Z": 0
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10013,
+                "Rotate": null,
+                "Location": {
+                    "X": -2,
+                    "Y": 2,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10014,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 2,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10015,
+                "Rotate": null,
+                "Location": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": -1
+                }
+            }
+        ]
+    },
+    "StrategyMap_1031103": {
+        "StrategyMap": "StrategyMap_1031103",
+        "EnemyInfos": [
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": -2,
+                    "Z": 3
+                }
+            },
+            {
+                "EntityId": 10005,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 1,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10006,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 1,
+                    "Y": -1,
+                    "Z": 0
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10012,
+                "Rotate": null,
+                "Location": {
+                    "X": -2,
+                    "Y": 2,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10013,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 0,
+                    "Z": 1
+                }
+            }
+        ]
+    },
+    "StrategyMap_1031104": {
+        "StrategyMap": "StrategyMap_1031104",
+        "EnemyInfos": [
+            {
+                "EntityId": 10006,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 1,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 0,
+                    "Y": 2,
+                    "Z": -2
+                }
+            },
+            {
+                "EntityId": 10005,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -2,
+                    "Y": 4,
+                    "Z": -2
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10014,
+                "Rotate": null,
+                "Location": {
+                    "X": -5,
+                    "Y": 5,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10015,
+                "Rotate": null,
+                "Location": {
+                    "X": -4,
+                    "Y": 5,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10016,
+                "Rotate": null,
+                "Location": {
+                    "X": -3,
+                    "Y": 4,
+                    "Z": -1
+                }
+            }
+        ]
+    },
+    "StrategyMap_1031105": {
+        "StrategyMap": "StrategyMap_1031105",
+        "EnemyInfos": [
+            {
+                "EntityId": 10019,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 3,
+                    "Y": -1,
+                    "Z": -2
+                }
+            },
+            {
+                "EntityId": 10020,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 120,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 2,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10021,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 120,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": -1,
+                    "Z": 2
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10016,
+                "Rotate": null,
+                "Location": {
+                    "X": 2,
+                    "Y": 0,
+                    "Z": -2
+                }
+            },
+            {
+                "EntityId": 10017,
+                "Rotate": null,
+                "Location": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10018,
+                "Rotate": null,
+                "Location": {
+                    "X": 0,
+                    "Y": 1,
+                    "Z": -1
+                }
+            }
+        ]
+    },
+    "StrategyMap_1032101": {
+        "StrategyMap": "StrategyMap_1032101",
+        "EnemyInfos": [
+            {
+                "EntityId": 10006,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 2,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 2,
+                    "Y": -3,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10005,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": -1
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10017,
+                "Rotate": null,
+                "Location": {
+                    "X": -2,
+                    "Y": 2,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10020,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 1,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10019,
+                "Rotate": null,
+                "Location": {
+                    "X": 1,
+                    "Y": -1,
+                    "Z": 0
+                }
+            }
+        ]
+    },
+    "StrategyMap_1032102": {
+        "StrategyMap": "StrategyMap_1032102",
+        "EnemyInfos": [
+            {
+                "EntityId": 10005,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 120,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 0,
+                    "Y": 2,
+                    "Z": -2
+                }
+            },
+            {
+                "EntityId": 10006,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 120,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -2,
+                    "Y": 2,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10009,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 4,
+                    "Y": -3,
+                    "Z": -1
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10016,
+                "Rotate": null,
+                "Location": {
+                    "X": -2,
+                    "Y": 0,
+                    "Z": 2
+                }
+            },
+            {
+                "EntityId": 10017,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 0,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10018,
+                "Rotate": null,
+                "Location": null
+            }
+        ]
+    },
+    "StrategyMap_1032103": {
+        "StrategyMap": "StrategyMap_1032103",
+        "EnemyInfos": [
+            {
+                "EntityId": 10005,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 120,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -3,
+                    "Y": 2,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10006,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 0,
+                    "Y": -1,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 4,
+                    "Y": -3,
+                    "Z": -1
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10020,
+                "Rotate": null,
+                "Location": {
+                    "X": 0,
+                    "Y": 1,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10021,
+                "Rotate": null,
+                "Location": {
+                    "X": 1,
+                    "Y": -1,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10018,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 3,
+                    "Z": -2
+                }
+            },
+            {
+                "EntityId": 10019,
+                "Rotate": null,
+                "Location": {
+                    "X": 0,
+                    "Y": 2,
+                    "Z": -2
+                }
+            }
+        ]
+    },
+    "StrategyMap_1041101": {
+        "StrategyMap": "StrategyMap_1041101",
+        "EnemyInfos": [
+            {
+                "EntityId": 10008,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 3,
+                    "Y": -2,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10006,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 2,
+                    "Y": -1,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 2,
+                    "Y": -2,
+                    "Z": 0
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10015,
+                "Rotate": null,
+                "Location": {
+                    "X": -2,
+                    "Y": 2,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10016,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 1,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10017,
+                "Rotate": null,
+                "Location": {
+                    "X": 1,
+                    "Y": -1,
+                    "Z": 0
+                }
+            }
+        ]
+    },
+    "StrategyMap_1041102": {
+        "StrategyMap": "StrategyMap_1041102",
+        "EnemyInfos": [
+            {
+                "EntityId": 10006,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 4,
+                    "Y": -3,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 3,
+                    "Y": -2,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10008,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 4,
+                    "Y": -4,
+                    "Z": 0
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10016,
+                "Rotate": null,
+                "Location": {
+                    "X": 3,
+                    "Y": -3,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10017,
+                "Rotate": null,
+                "Location": {
+                    "X": 3,
+                    "Y": -1,
+                    "Z": -2
+                }
+            },
+            {
+                "EntityId": 10014,
+                "Rotate": null,
+                "Location": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10015,
+                "Rotate": null,
+                "Location": {
+                    "X": 2,
+                    "Y": 0,
+                    "Z": -2
+                }
+            }
+        ]
+    },
+    "StrategyMap_1041103": {
+        "StrategyMap": "StrategyMap_1041103",
+        "EnemyInfos": [
+            {
+                "EntityId": 10006,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 5,
+                    "Y": -3,
+                    "Z": -2
+                }
+            },
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 2,
+                    "Y": -1,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10008,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 2,
+                    "Y": -2,
+                    "Z": 0
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10016,
+                "Rotate": null,
+                "Location": null
+            },
+            {
+                "EntityId": 10017,
+                "Rotate": null,
+                "Location": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10018,
+                "Rotate": null,
+                "Location": {
+                    "X": 4,
+                    "Y": -2,
+                    "Z": -2
+                }
+            }
+        ]
+    },
+    "StrategyMap_1041104": {
+        "StrategyMap": "StrategyMap_1041104",
+        "EnemyInfos": [
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 0,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10006,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 0,
+                    "Y": -2,
+                    "Z": 2
+                }
+            },
+            {
+                "EntityId": 10008,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 1,
+                    "Y": -2,
+                    "Z": 1
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10018,
+                "Rotate": null,
+                "Location": {
+                    "X": -2,
+                    "Y": 1,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10019,
+                "Rotate": null,
+                "Location": {
+                    "X": 0,
+                    "Y": -1,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10020,
+                "Rotate": null,
+                "Location": {
+                    "X": 2,
+                    "Y": -1,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10021,
+                "Rotate": null,
+                "Location": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": -1
+                }
+            }
+        ]
+    },
+    "StrategyMap_1041105": {
+        "StrategyMap": "StrategyMap_1041105",
+        "EnemyInfos": [
+            {
+                "EntityId": 10008,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 1,
+                    "Y": -2,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 120,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 0,
+                    "Y": 2,
+                    "Z": -2
+                }
+            },
+            {
+                "EntityId": 10009,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 120,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 2,
+                    "Z": -1
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10019,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 0,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10020,
+                "Rotate": null,
+                "Location": {
+                    "X": 0,
+                    "Y": -1,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10021,
+                "Rotate": null,
+                "Location": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": -1
+                }
+            }
+        ]
+    },
+    "StrategyMap_1042101": {
+        "StrategyMap": "StrategyMap_1042101",
+        "EnemyInfos": [
+            {
+                "EntityId": 10006,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 2,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": 0,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10008,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -1,
+                    "Y": -1,
+                    "Z": 2
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10019,
+                "Rotate": null,
+                "Location": {
+                    "X": -3,
+                    "Y": 2,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10020,
+                "Rotate": null,
+                "Location": {
+                    "X": -2,
+                    "Y": 1,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10021,
+                "Rotate": null,
+                "Location": {
+                    "X": 0,
+                    "Y": 1,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10022,
+                "Rotate": null,
+                "Location": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": -1
+                }
+            }
+        ]
+    },
+    "StrategyMap_1042102": {
+        "StrategyMap": "StrategyMap_1042102",
+        "EnemyInfos": [
+            {
+                "EntityId": 10007,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 0,
+                    "Y": 1,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10009,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 1,
+                    "Y": -2,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10010,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 3,
+                    "Y": -1,
+                    "Z": -2
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10025,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 1,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10026,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 0,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10027,
+                "Rotate": null,
+                "Location": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10028,
+                "Rotate": null,
+                "Location": {
+                    "X": 2,
+                    "Y": -2,
+                    "Z": 0
+                }
+            }
+        ]
+    },
+    "StrategyMap_1042103": {
+        "StrategyMap": "StrategyMap_1042103",
+        "EnemyInfos": [
+            {
+                "EntityId": 10008,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 2,
+                    "Y": -1,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10009,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 120,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": -2,
+                    "Y": 0,
+                    "Z": 2
+                }
+            },
+            {
+                "EntityId": 10010,
+                "Rotate": {
+                    "X": 0,
+                    "Y": 240,
+                    "Z": 0
+                },
+                "Location": {
+                    "X": 1,
+                    "Y": 2,
+                    "Z": -3
+                }
+            }
+        ],
+        "StrategyObjects": [
+            {
+                "EntityId": 10022,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 1,
+                    "Z": 0
+                }
+            },
+            {
+                "EntityId": 10023,
+                "Rotate": null,
+                "Location": {
+                    "X": 0,
+                    "Y": 1,
+                    "Z": -1
+                }
+            },
+            {
+                "EntityId": 10024,
+                "Rotate": null,
+                "Location": {
+                    "X": -1,
+                    "Y": 0,
+                    "Z": 1
+                }
+            },
+            {
+                "EntityId": 10025,
+                "Rotate": null,
+                "Location": {
+                    "X": 2,
+                    "Y": 0,
+                    "Z": -2
+                }
+            }
+        ]
+    }
+}

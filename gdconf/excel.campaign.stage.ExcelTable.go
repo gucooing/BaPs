@@ -39,8 +39,8 @@ func (g *GameConfig) gppCampaignStageExcelTable() {
 	logger.Info("处理任务关卡信息数量完成:%v个", len(g.GetGPP().CampaignStageExcel.CampaignStageExcelMap))
 }
 
-func GetCampaignStageExcelTable(stageId int64) *sro.CampaignStageExcelTable {
-	return GC.GetGPP().CampaignStageExcel.CampaignStageExcelMap[stageId]
+func GetCampaignStageExcelTable(id int64) *sro.CampaignStageExcelTable {
+	return GC.GetGPP().CampaignStageExcel.CampaignStageExcelMap[id]
 }
 
 func GetCampaignStageExcelMap() map[int64]*sro.CampaignStageExcelTable {
