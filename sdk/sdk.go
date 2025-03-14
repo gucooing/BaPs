@@ -41,7 +41,12 @@ func (s *SDK) initRouter() {
 	{
 		user.POST("/yostar_createlogin", s.YostarCreatelogin)
 		user.POST("/login", s.YostarLogin)
-		user.POST("/agreement", agreement)
+		user.Any("/agreement", agreement)
+	}
+	app := s.router.Group("/app")
+	{
+		app.Any("/getSettings", getSettings)
+		app.Any("/getCode", getCode)
 	}
 	hash := s.router.Group("/r77_8q5tn5v8489fubab84a8")
 	{
@@ -60,11 +65,6 @@ func (s *SDK) initRouter() {
 		hash.GET("/TableBundles/TableCatalog.bytes", func(c *gin.Context) {
 			c.String(200, "0")
 		})
-	}
-	app := s.router.Group("/app")
-	{
-		app.Any("/getSettings", getSettings)
-		app.Any("/getCode", getCode)
 	}
 }
 
