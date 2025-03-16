@@ -123,3 +123,6 @@ func (x ShopCategoryType) String() string {
   return ShopCategoryType_name[int32(x)]
 }
 
+func GetShopCategoryType(s string) ShopCategoryType  {
+    return ShopCategoryType(ShopCategoryType_value[s])
+}

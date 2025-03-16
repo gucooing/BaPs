@@ -3,6 +3,7 @@ package gdconf
 import (
 	"encoding/json"
 	"os"
+	"time"
 
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
@@ -36,6 +37,10 @@ func (g *GameConfig) gppShopExcelTable() {
 	}
 	for _, v := range g.GetExcel().GetShopExcelTable() {
 		g.GetGPP().ShopExcel.ShopExcelTableMap[v.Id] = v
+		salePeriodTo, _ := time.Parse("2006-01-02 15:04:05", v.SalePeriodTo)
+		if v.SalePeriodTo != "" && time.Now().After(salePeriodTo) {
+			continue
+		}
 		if g.GetGPP().ShopExcel.ShopExcelTypeMap[v.CategoryType] == nil {
 			g.GetGPP().ShopExcel.ShopExcelTypeMap[v.CategoryType] = make([]*sro.ShopExcelTable, 0)
 		}
@@ -50,4 +55,8 @@ func GetShopExcelType(categoryType string) []*sro.ShopExcelTable {
 		return nil
 	}
 	return GC.GetGPP().ShopExcel.ShopExcelTypeMap[categoryType]
+}
+
+func GetShopExcelTable(shopId int64) *sro.ShopExcelTable {
+	return GC.GetGPP().ShopExcel.ShopExcelTableMap[shopId]
 }

@@ -87,6 +87,7 @@ type GPP struct {
 	TimeAttackDungeonGeasExcel          *TimeAttackDungeonGeasExcel
 	TimeAttackDungeonRewardExcel        *TimeAttackDungeonRewardExcel
 	StrategyMap                         map[string]*StrategyMap
+	ShopRefreshExcel                    *ShopRefreshExcel
 }
 
 func LoadGameConfig(dataPath string, resPath string) *GameConfig {
@@ -173,6 +174,7 @@ func (g *GameConfig) gpp() {
 		g.gppGoodsExcelTable,
 		g.gppTimeAttackDungeonGeasExcelTable,
 		g.gppTimeAttackDungeonRewardExcelTable,
+		g.gppShopRefreshExcelTable,
 
 		// data
 		g.loadRaidSchedule,

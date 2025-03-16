@@ -153,6 +153,7 @@ var funcRouteMap = map[int32]handlerFunc{
 	mx.Protocol_Shop_List:                  pack.ShopList,                  // 获取商店信息
 	mx.Protocol_Shop_BuyRefreshMerchandise: pack.ShopBuyRefreshMerchandise, // 每日刷新商店购买
 	mx.Protocol_Shop_BuyEligma:             pack.ShopBuyEligma,             // 角色碎片购买
+	mx.Protocol_Shop_BuyMerchandise:        pack.ShopBuyMerchandise,        // 商店购买
 	// 卡池
 	mx.Protocol_Shop_GachaRecruitList:    pack.ShopGachaRecruitList,    // 获取卡池历史数据
 	mx.Protocol_Shop_BeforehandGachaGet:  pack.ShopBeforehandGachaGet,  // 获取新手免费十连信息

@@ -6,16 +6,18 @@ import (
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func GetNoRefreshShopProductList(s *enter.Session, categoryType string) []*proto.ShopProductDB {
+func GetNoRefreshShopProductList(s *enter.Session, categoryType proto.ShopCategoryType) []*proto.ShopProductDB {
 	list := make([]*proto.ShopProductDB, 0)
-	if categoryType == "SecretStone" {
-		return list
-	}
-	for _, product := range gdconf.GetShopExcelType(categoryType) {
+	for _, product := range gdconf.GetShopExcelType(categoryType.String()) {
+		if categoryType == proto.ShopCategoryType_SecretStone {
+			if GetCharacterInfo(s, product.Id) == nil {
+				continue
+			}
+		}
 		list = append(list, &proto.ShopProductDB{
 			EventContentId:     0,
 			ShopExcelId:        product.Id,
-			Category:           proto.ShopCategoryType(proto.ShopCategoryType_value[product.CategoryType]),
+			Category:           categoryType,
 			DisplayOrder:       product.DisplayOrder,
 			PurchaseCount:      0,
 			PurchaseCountLimit: product.PurchaseCountLimit,
@@ -27,16 +29,16 @@ func GetNoRefreshShopProductList(s *enter.Session, categoryType string) []*proto
 	return list
 }
 
-func GetRefreshShopProductList(categoryType string) []*proto.ShopProductDB {
+func GetRefreshShopProductList(categoryType proto.ShopCategoryType) []*proto.ShopProductDB {
 	list := make([]*proto.ShopProductDB, 0)
-	for _, product := range gdconf.GetShopExcelType(categoryType) {
+	for _, product := range gdconf.GetShopRefreshExcelMap(categoryType.String()) {
 		list = append(list, &proto.ShopProductDB{
 			EventContentId:     0,
 			ShopExcelId:        product.Id,
-			Category:           proto.ShopCategoryType(proto.ShopCategoryType_value[product.CategoryType]),
+			Category:           categoryType,
 			DisplayOrder:       product.DisplayOrder,
 			PurchaseCount:      0,
-			PurchaseCountLimit: product.PurchaseCountLimit,
+			PurchaseCountLimit: 1, // product.PurchaseCountLimit,
 			Price:              0,
 			ProductType:        proto.ShopProductType_Refresh,
 		})

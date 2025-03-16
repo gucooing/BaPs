@@ -69,6 +69,7 @@ message Excel {
   repeated GoodsExcelTable GoodsExcelTable = 60; // 商品配置
   repeated TimeAttackDungeonGeasExcelTable TimeAttackDungeonGeasExcelTable = 61; // 综合战术考试关卡配置
   repeated TimeAttackDungeonRewardExcelTable TimeAttackDungeonRewardExcelTable = 62; // 综合战术考试奖励配置
+  repeated ShopRefreshExcelTable ShopRefreshExcelTable = 63; // 可刷新商品配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -1192,4 +1193,19 @@ message TimeAttackDungeonRewardExcelTable {
   repeated int64 RewardParcelId = 6;
   repeated int64 RewardParcelDefaultAmount = 7;
   repeated int64 RewardParcelMaxAmount = 8;
+}
+
+message ShopRefreshExcelTable {
+  int64 Id = 1;
+  int64 LocalizeEtcId = 2;
+  bool IsLegacy = 3;
+  int64 GoodsId = 4;
+  bool IsBundle = 5;
+  int64 VisibleAmount = 6;
+  int64 DisplayOrder = 7;
+  string CategoryType = 8;
+  int64 RefreshGroup = 9;
+  int64 Prob = 10;
+  string BuyReportEventName = 11;
+  string DisplayTag = 12;
 }

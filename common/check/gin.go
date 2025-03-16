@@ -13,8 +13,8 @@ import (
 
 var TPS int64
 var RT int64
-var OLDTPS int64
-var OLDRT float64
+var OLDTPS int64 = 0
+var OLDRT float64 = 0
 
 func GinNetInfo() {
 	ticker := time.NewTicker(time.Second * 60)
