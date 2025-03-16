@@ -61,6 +61,9 @@ func GetItemInfo(s *enter.Session, itemId int64) *sro.ItemInfo {
 }
 
 func AddItem(s *enter.Session, id int64, num int32) int64 {
+	if !gdconf.IsItem(id) {
+		return 0
+	}
 	bin := GetItemBin(s)
 	if bin == nil {
 		return 0
@@ -671,6 +674,9 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 				GetEmblemDB(s, parcelResult.ParcelId))
 		case proto.ParcelType_Item: // 背包物品
 			serverId := AddItem(s, parcelResult.ParcelId, int32(parcelResult.Amount))
+			if serverId == 0 {
+				continue
+			}
 			info.ItemDBs[serverId] = GetItemDB(s, parcelResult.ParcelId)
 		case proto.ParcelType_Character: // 角色
 			if !AddCharacter(s, parcelResult.ParcelId) { // 重复添加处理
@@ -725,4 +731,22 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 	info.ParcelForMission = parcelInfoList
 
 	return info
+}
+
+func NoGMFack(parcelType proto.ParcelType, id int64) bool {
+	switch parcelType {
+	case proto.ParcelType_Character:
+		return gdconf.GetCharacterExcel(id) == nil
+	case proto.ParcelType_Currency:
+		_, ok := DefaultCurrencyNum[int32(id)]
+		return !ok
+	case proto.ParcelType_Equipment:
+		return gdconf.GetEquipmentExcelTable(id) == nil
+	case proto.ParcelType_Item:
+		return gdconf.GetItemExcelTable(id) == nil
+	case proto.ParcelType_Furniture:
+		return gdconf.GetFurnitureExcelTable(id) == nil
+	default:
+		return true
+	}
 }

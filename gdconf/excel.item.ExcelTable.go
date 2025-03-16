@@ -103,3 +103,7 @@ func GetItemExcelCategoryMap(itemCategory string) []*sro.ItemExcelTable {
 func GetItemExcelTable(id int64) *sro.ItemExcelTable {
 	return GC.GetGPP().ItemExcel.ItemExcelMap[id]
 }
+
+func IsItem(id int64) bool {
+	return GC.GetGPP().ItemExcel.ItemExcelMap[id] != nil
+}

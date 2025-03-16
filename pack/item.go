@@ -21,7 +21,7 @@ func ItemList(s *enter.Session, request, response proto.Message) {
 	rsp.ItemDBs = make([]*proto.ItemDB, 0)
 
 	for id, conf := range game.GetItemList(s) {
-		if gdconf.GetItemExcelTable(conf.UniqueId) == nil {
+		if !gdconf.IsItem(conf.UniqueId) {
 			delete(game.GetItemList(s), id)
 			continue
 		}
