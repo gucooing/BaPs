@@ -77,7 +77,7 @@ func ShopBuyEligma(s *enter.Session, request, response proto.Message) {
 		ShopExcelId:        conf.GetId(),
 		Category:           proto.ShopCategoryType_SecretStone,
 		DisplayOrder:       conf.GetDisplayOrder(),
-		PurchaseCount:      0,
+		PurchaseCount:      req.PurchaseCount,
 		PurchaseCountLimit: conf.GetPurchaseCountLimit(),
 		Price:              0,
 		ProductType:        proto.ShopProductType_General,

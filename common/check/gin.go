@@ -13,8 +13,8 @@ import (
 
 var TPS int64
 var RT int64
-var OLDTPS int64 = 0
-var OLDRT float64 = 0
+var OLDTPS int64
+var OLDRT float64
 
 func GinNetInfo() {
 	ticker := time.NewTicker(time.Second * 60)
@@ -24,7 +24,8 @@ func GinNetInfo() {
 		rt := float64(atomic.LoadInt64(&RT)) / (float64(tps) * 1000 * 1000)
 		OLDTPS = tps
 		OLDRT = rt
-		if tps == 0 && math.IsNaN(rt) {
+		if tps == 0 || math.IsNaN(rt) {
+			OLDRT = 0
 			continue
 		}
 		logger.Info("SessionNum: %v", enter.GetSessionNum())
