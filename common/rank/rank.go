@@ -22,6 +22,9 @@ type RankInfo struct {
 	// 大决战
 	raidEliminateRankZset map[int64]*zset.SortedSet[int64] // 赛季
 	raidEliminateSync     sync.RWMutex
+	// 竞技场
+	arenaRankZset map[int64]*zset.SortedSet[int64] // 赛季
+	arenaSync     sync.RWMutex
 }
 
 func NewRank() *RankInfo {
@@ -30,6 +33,8 @@ func NewRank() *RankInfo {
 		raidSync:              sync.RWMutex{},
 		raidEliminateRankZset: make(map[int64]*zset.SortedSet[int64]),
 		raidEliminateSync:     sync.RWMutex{},
+		arenaRankZset:         make(map[int64]*zset.SortedSet[int64]),
+		arenaSync:             sync.RWMutex{},
 	}
 	// 初始化数据库
 	RANKINFO.SQL = db.NewYostarRank(config.GetRankDB())
@@ -52,6 +57,7 @@ func NewRank() *RankInfo {
 		logger.Warn("缺少总力战当期排期")
 	}
 	logger.Info("拉取当期总力战排名完成")
+
 	// 获取大决战信息
 	for _, conf := range gdconf.GetRaidEliminateScheduleMap() {
 		err := RANKINFO.SQL.Table(fmt.Sprintf("raid_eliminate_rank_%v", conf.SeasonId)).AutoMigrate(&db.YostarRank{})
@@ -67,6 +73,20 @@ func NewRank() *RankInfo {
 		logger.Warn("缺少大决战当期排期")
 	}
 	logger.Info("拉取当期大决战排名完成")
+
+	// 拉取竞技场排名信息
+	logger.Info("开始拉取当期竞技场排名")
+	if cur := gdconf.GetCurArenaSeason(); cur != nil {
+		err := RANKINFO.SQL.Table(fmt.Sprintf("arena_rank_%v", cur.GetUniqueId())).AutoMigrate(&db.YostarRank{})
+		if err != nil {
+			logger.Error(err.Error())
+		}
+		RANKINFO.NewArenaRank(cur.GetUniqueId())
+	} else {
+		logger.Warn("缺少当期竞技场排期")
+	}
+	logger.Info("拉取当期竞技场排名完成")
+
 	return RANKINFO
 }
 
@@ -104,6 +124,22 @@ func (x *RankInfo) Close() {
 		err := db.UpAllYostarRank(x.SQL, all, db.RaidEliminateUserTable(seasonId))
 		if err != nil {
 			logger.Error("大决战排名保存失败SeasonId:%v,err:%s", seasonId, err.Error())
+		}
+	}
+	// 保存竞技场数据
+	x.arenaSync.Lock()
+	for seasonId, s := range x.arenaRankZset {
+		all := make([]*db.YostarRank, 0)
+		s.RevRange(0, -1, func(score float64, uid int64) {
+			all = append(all, &db.YostarRank{
+				SeasonId: seasonId,
+				Uid:      uid,
+				Score:    score,
+			})
+		})
+		err := db.UpAllYostarRank(x.SQL, all, db.ArenaUserTable(seasonId))
+		if err != nil {
+			logger.Error("竞技场排名保存失败SeasonId:%v,err:%s", seasonId, err.Error())
 		}
 	}
 	logger.Info("排名数据保存完毕")

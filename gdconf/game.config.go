@@ -88,6 +88,8 @@ type GPP struct {
 	TimeAttackDungeonRewardExcel        *TimeAttackDungeonRewardExcel
 	StrategyMap                         map[string]*StrategyMap
 	ShopRefreshExcel                    *ShopRefreshExcel
+	ArenaSeasonExcel                    *ArenaSeasonExcel
+	ArenaNPCList                        []*ArenaNPCInfo
 }
 
 func LoadGameConfig(dataPath string, resPath string) *GameConfig {
@@ -175,12 +177,14 @@ func (g *GameConfig) gpp() {
 		g.gppTimeAttackDungeonGeasExcelTable,
 		g.gppTimeAttackDungeonRewardExcelTable,
 		g.gppShopRefreshExcelTable,
+		g.gppArenaSeasonExcelTable,
 
 		// data
 		g.loadRaidSchedule,
 		g.loadAttendance,
 		g.loadRaidEliminateSchedule,
 		g.loadStrategyMap,
+		g.loadArenaNPC,
 	}
 
 	for _, fn := range g.gppFunc {

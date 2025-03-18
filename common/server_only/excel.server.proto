@@ -70,6 +70,7 @@ message Excel {
   repeated TimeAttackDungeonGeasExcelTable TimeAttackDungeonGeasExcelTable = 61; // 综合战术考试关卡配置
   repeated TimeAttackDungeonRewardExcelTable TimeAttackDungeonRewardExcelTable = 62; // 综合战术考试奖励配置
   repeated ShopRefreshExcelTable ShopRefreshExcelTable = 63; // 可刷新商品配置
+  repeated ArenaSeasonExcelTable ArenaSeasonExcelTable =64; // 竞技场赛季配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -1176,9 +1177,9 @@ message TimeAttackDungeonGeasExcelTable {
   int64 Difficulty = 8;
   int64 RecommandLevel = 9;
   int64 GroundId = 10;
-  repeated int64 AllyPassiveSkillId = 11;
+  repeated string AllyPassiveSkillId = 11;
   repeated int64 AllyPassiveSkillLevel = 12;
-  repeated int64 EnemyPassiveSkillId = 13;
+  repeated string EnemyPassiveSkillId = 13;
   repeated int64 EnemyPassiveSkillLevel = 14;
   repeated string GeasIconPath = 15;
   repeated int64 GeasLocalizeEtcKey = 16;
@@ -1208,4 +1209,12 @@ message ShopRefreshExcelTable {
   int64 Prob = 10;
   string BuyReportEventName = 11;
   string DisplayTag = 12;
+}
+
+message ArenaSeasonExcelTable {
+  int64 UniqueId = 1;
+  string SeasonStartDate = 2;
+  string SeasonEndDate = 3;
+  int64 SeasonGroupLimit = 4;
+  int64 PrevSeasonId = 5;
 }

@@ -1,0 +1,30 @@
+[
+  {
+    "NpcaccountLevel": 31,
+    "Npclevel": 28,
+    "NpclevelDeviation": 3,
+    "NpcstarGrade": 3,
+    "ExceptionMainCharacterIds": [
+      10079,
+      10080
+    ],
+    "ExceptionSupportCharacterIds": [
+      20007,
+      26011
+    ]
+  },
+  {
+    "NpcaccountLevel": 31,
+    "Npclevel": 28,
+    "NpclevelDeviation": 3,
+    "NpcstarGrade": 3,
+    "ExceptionMainCharacterIds": [
+      10079,
+      10080
+    ],
+    "ExceptionSupportCharacterIds": [
+      20007,
+      26011
+    ]
+  }
+]

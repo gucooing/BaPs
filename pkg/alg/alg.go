@@ -14,8 +14,7 @@ func Xor(data []byte, key []byte) {
 }
 
 func CheckGateWay(c *gin.Context) bool {
-	if c.GetHeader("user-agent") != "BestHTTP/2 v2.4.0" ||
-		c.GetHeader("accept-encoding") != "gzip" {
+	if c.GetHeader("user-agent") != "BestHTTP/2 v2.4.0" {
 		return false
 	}
 	return true

@@ -91,6 +91,7 @@ func (g *GameConfig) LoadExcel() {
 		g.loadTimeAttackDungeonGeasExcelTable,
 		g.loadTimeAttackDungeonRewardExcelTable,
 		g.loadShopRefreshExcelTable,
+		g.loadArenaSeasonExcelTable,
 	}
 
 	for _, fn := range g.loadFunc {

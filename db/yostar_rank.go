@@ -27,6 +27,12 @@ func RaidEliminateUserTable(x int64) func(tx *gorm.DB) *gorm.DB {
 	}
 }
 
+func ArenaUserTable(x int64) func(tx *gorm.DB) *gorm.DB {
+	return func(tx *gorm.DB) *gorm.DB {
+		return tx.Table(fmt.Sprintf("arena_rank_%v", x))
+	}
+}
+
 func NewYostarRank(cfg *config.DB) *gorm.DB {
 	switch cfg.DbType {
 	case "sqlite":

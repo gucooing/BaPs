@@ -4,6 +4,8 @@ package proto
 
 import (
     "time"
+
+    "github.com/gucooing/BaPs/pkg/mx"
 )
 
 type ArenaPlayerInfoDB struct{
@@ -14,7 +16,7 @@ type ArenaPlayerInfoDB struct{
     AllTimeRecord int64
     CumulativeTimeReward int64
     TimeRewardLastUpdateTime time.Time
-    BattleEnterActiveTime time.Time
+    BattleEnterActiveTime mx.MxTime
     DailyRewardActiveTime time.Time
 }
 

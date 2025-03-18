@@ -24,6 +24,7 @@ message PlayerBin {
     RaidMultiFloorBin raid_multi_floor_bin = 17; // 制约解除决战信息
     RaidEliminateBin raid_eliminate_bin = 18; // 大决战
     EventContentBin event_content_bin = 19; // 活动信息
+    ArenaBin arena_bin = 20; //  竞技场信息
 }
 
 // 基础信息
@@ -580,4 +581,15 @@ message EventContentInfo {
 message BoxGachaShopInfo{
   int64 round = 1 ; // 当前回合数
   int32 purchase_count = 2; // 购买数量
+}
+
+// 竞技场信息
+
+message ArenaBin {
+  int64 cur_season_id = 1 ;// 当前赛季信息
+  int64 player_group_id = 2; // 玩家组
+  int64 season_record = 3; // 当前赛季最高排名
+  int64 all_time_record = 4; // 全部赛季最高排名
+  int64 battle_enter_time = 5; // 最后一次战斗结束时间
+  int64 auto_refresh_time = 6; // 最后一次竞技场刷新时间
 }
