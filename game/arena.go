@@ -28,13 +28,12 @@ func GetArenaBin(s *enter.Session) *sro.ArenaBin {
 		return nil
 	}
 	newArena := func() {
-		ranks := rank.NewArenaRank(conf.GetUniqueId(), s.AccountServerId)
 		old := bin.ArenaBin
 		info := &sro.ArenaBin{
 			CurSeasonId:   conf.GetUniqueId(),
 			PlayerGroupId: 1, // 默认全放到一起去
-			SeasonRecord:  ranks,
-			AllTimeRecord: alg.MaxInt64(old.GetAllTimeRecord(), ranks),
+			SeasonRecord:  rank.DefaultArenaRank,
+			AllTimeRecord: alg.MaxInt64(old.GetAllTimeRecord(), rank.DefaultArenaRank),
 		}
 		bin.ArenaBin = info
 	}
@@ -93,7 +92,7 @@ func GetOpponentUserDBs(s *enter.Session) []*proto.ArenaUserDB {
 		}
 	} else {
 		for i := 0; i < 3; i++ {
-			uid := rand.Int63n(r-1) + 1
+			uid := rand.Int63n(r-1-r/5) + 1 + r*4/5
 			if ranks[uid] {
 				i--
 				continue

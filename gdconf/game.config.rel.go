@@ -28,13 +28,13 @@ func (g *GameConfig) LoadExcel() {
 	}
 	bin, err := mx.DeExcelBytes(file)
 	if err != nil {
-		logger.Error("解析Excel失败")
+		panic(err)
 		return
 	}
 	g.Excel = new(sro.Excel)
 	err = pb.Unmarshal(bin, g.Excel)
 	if err != nil {
-		logger.Error("解析Excel失败,err:%s", err)
+		panic("解析Excel失败,请检查Excel.bin版本和服务端版本是否一致")
 		return
 	}
 }

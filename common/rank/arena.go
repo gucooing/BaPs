@@ -16,6 +16,8 @@ import (
 使用len方法获取最低的新排名
 */
 
+const DefaultArenaRank = 15000
+
 // NewArenaRank 此操作会将排名强制覆盖成冷数据中的排名，建议仅用于初始化这个赛季时拉取冷数据使用
 func (x *RankInfo) NewArenaRank(seasonId int64) {
 	conf := gdconf.GetArenaSeasonExcelTable(seasonId)
@@ -94,24 +96,15 @@ func GetArenaRankZset(seasonId int64) *zset.SortedSet[int64] {
 	return RANKINFO.arenaRankZset[seasonId]
 }
 
-func NewArenaRank(seasonId, uid int64) int64 {
-	s := GetArenaRankZset(seasonId)
-	if s == nil {
-		return 0
-	}
-	RANKINFO.arenaSync.Lock()
-	defer RANKINFO.arenaSync.Unlock()
-	s.Set(float64(s.Length()), uid)
-	rank, _ := s.GetRank(uid, false)
-	return rank + 1
-}
-
 func GetArenaRank(seasonId, uid int64) int64 {
 	s := GetArenaRankZset(seasonId)
 	if s == nil {
 		return 0
 	}
 	rank, _ := s.GetRank(uid, false)
+	if rank == zset.NoRank {
+		return DefaultArenaRank
+	}
 	return rank + 1
 }
 

@@ -37,7 +37,10 @@ import (
 	"github.com/gucooing/BaPs/pkg/zset/cmp"
 )
 
-const zSkiplistMaxlevel = 32
+const (
+	zSkiplistMaxlevel = 32
+	NoRank            = -1
+)
 
 type (
 	// Key constraint
@@ -569,7 +572,7 @@ func (z *SortedSet[K]) GetRank(key K, reverse bool) (rank int64, score float64) 
 	defer z.lock.RUnlock()
 	score, ok := z.dict[key]
 	if !ok {
-		return -1, 0
+		return NoRank, 0
 	}
 	r := z.zsl.zslGetRank(score, key)
 	if reverse {

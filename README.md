@@ -41,10 +41,11 @@ https://yostar-serverinfo.bluearchiveyostar.com http://127.0.0.1:5000
 ```
 
 ## 使用方法
-#### 1.前往[Releases](https://github.com/gucooing/BaPs/releases/latest)下载最新的发行版本并拷贝到运行目录
-#### 2.拷贝仓库的data文件夹到运行目录
-#### 3.直接运行一次将会自动生成config.json文件,打开并编辑config.json文件
-#### 4.运行
+#### 1.此步骤非常重要 前往[Releases](https://github.com/gucooing/BaPs/releases/latest)下载最新的发行版本并拷贝到运行目录
+#### 2.此步骤非常重要 拷贝仓库的data文件夹到运行目录
+#### 3.此步骤非常重要 下载[Releases](https://github.com/gucooing/BaPs/releases/latest)中的Excel.bin文件,并替换到data文件夹中
+#### 4.直接运行一次将会自动生成config.json文件,打开并编辑config.json文件
+#### 5.运行
 
 ## Docker运行
 
