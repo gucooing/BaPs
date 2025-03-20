@@ -42,8 +42,9 @@
 
 #### 前置准备 (此步骤非常重要！！！)
 
-1. 前往[Releases](https://github.com/gucooing/BaPs/releases/latest)下载最新的发行版本并拷贝到运行目录
-2. 拷贝仓库的data文件夹到运行目录
+1. 前往APKpure / Google Play 下载《ブルーアーカイブ》并安装游戏
+2. 前往[Releases](https://github.com/gucooing/BaPs/releases/latest)下载最新的发行版本并拷贝到运行目录（请根据自己的系统进行下载）
+3. 拷贝仓库的data文件夹到运行目录
 3. 下载[Releases](https://github.com/gucooing/BaPs/releases/latest)中的Excel.bin文件,并替换到data文件夹中
 4. 直接运行一次将会自动生成config.json文件,打开并编辑config.json文件
 5. 运行
@@ -148,12 +149,12 @@ def request(flow: http.HTTPFlow) -> None:
 
 - [BlueArchiveGM](https://github.com/PrimeStudentCouncil/BlueArchiveGM/releases/latest)
 
-以及在线版GM菜单
+在线版GM菜单
 注：内网环境不可使用在线版
 
 - [BlueArchiveGM Web](https://gm.bluearchive.cc)
 
-默认连接地址：http://127.0.0.1:5000
+默认连接地址：http://127.0.0.1:5000 
 默认密钥：123456 (可前往config.json进行更改)
 
 ---
@@ -163,7 +164,6 @@ def request(flow: http.HTTPFlow) -> None:
 - 💡 提交Pull Request改进代码
 - 📖 完善项目文档
 - 🚀 加入Discord频道为我们提供建议
-
 ---
 
 ## ⚠️ 注意事项
