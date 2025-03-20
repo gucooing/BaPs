@@ -57,9 +57,9 @@ func NewCafeBin(s *enter.Session, bin *sro.CafeBin, cafeId int64) *sro.CafeInfo 
 			ServerId:     furnitureSid,
 			Location:     proto.FurnitureLocation_value[furnitureConf.Location], // 摆放位置
 			CafeServerId: sid,
-			PositionX:    0,
-			PositionY:    0,
-			Rotation:     0,
+			PositionX:    furnitureConf.PositionX,
+			PositionY:    furnitureConf.PositionY,
+			Rotation:     furnitureConf.Rotation,
 		}
 		bin.FurnitureInfoList[furnitureSid] = furnitureInfo
 		info.FurnitureList[furnitureSid] = true
