@@ -63,7 +63,7 @@ docker run -d \
 ---
 
 ## ⚙️ 配置说明
-```json
+```
 {
   "LogLevel": "info",
   "ResourcesPath": "./resources", // 发行版无用
