@@ -21,14 +21,14 @@ func CafeAck(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CafeAckRequest)
 	rsp := response.(*proto.CafeAckResponse)
 
+	rsp.CafeDB = game.GetCafeDB(s, req.CafeDBId)
+
 	cafeInfo := game.GetCafeInfo(s, req.CafeDBId)
 	if cafeInfo == nil {
 		rsp.ErrorCode = 0
 		return
 	}
-	cafeInfo.SummonUpdate = time.Now().Unix()
-
-	rsp.CafeDB = game.GetCafeDB(s, req.CafeDBId)
+	cafeInfo.IsNew = false
 }
 
 func CafeOpen(s *enter.Session, request, response proto.Message) {
