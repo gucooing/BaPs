@@ -140,7 +140,7 @@ def request(flow: http.HTTPFlow) -> None:
 ### 如何使用？
 
 具体可前往以下docs查看
-- [MitmProxy代理方案](Mitmproxy_Readme_ZH.md)
+- [Android_MitmProxy代理方案](Android_Mitmproxy_Readme_ZH.md)
 
 ---
 
