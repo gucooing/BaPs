@@ -60,10 +60,24 @@ docker run -d \
   -v /data/baps/sqlite/BaPs.db:/usr/ba/BaPs.db \
   -v /data/baps/sqlite/Rank.db:/usr/ba/Rank.db \
   ghcr.io/gucooing/baps:latest
+``` 
+<details>
+你展开了一个可用的镜像加速,这个镜像加速站来源于网络
+
 ```
+docker run -d \
+  -p 5000:5000 \
+  -v /data/baps/config.json:/usr/ba/config.json \
+  -v /data/baps/sqlite/BaPs.db:/usr/ba/BaPs.db \
+  -v /data/baps/sqlite/Rank.db:/usr/ba/Rank.db \
+  ghcr.nju.edu.cn/gucooing/baps:latest
+```
+</details>
+
 ---
 
 ## ⚙️ 配置说明
+>需要注意的是,实际的json文件中不能存在注释
 ```
 {
   "LogLevel": "info",
@@ -110,36 +124,10 @@ docker run -d \
 https://ba-jp-sdk.bluearchive.jp  →  http://127.0.0.1:5000
 https://yostar-serverinfo.bluearchiveyostar.com → http://127.0.0.1:5000
 ```
----
 
-## ⛓️ 代理脚本
-```python
-# KitanoSakura
-# 脚本还没完善，请使用WireGuard进行代理
+### ⛓️代理方案
 
-from mitmproxy import http
-
-# 定义重定向规则
-redirects = {
-    "https://ba-jp-sdk.bluearchive.jp": "http://127.0.0.1:5000",
-    "https://prod-gateway.bluearchiveyostar.com:5100/api/gateway": "http://127.0.0.1:5000/getEnterTicket/gateway",
-    "https://prod-game.bluearchiveyostar.com:5000/api/gateway": "http://127.0.0.1:5000/api/gateway",
-    "https://prod-logcollector.bluearchiveyostar.com:5300": "http://127.0.0.1:5000/game/log",
-}
-
-def request(flow: http.HTTPFlow) -> None:
-    # 判断请求的URL是否在重定向规则中
-    for original_url, redirected_url in redirects.items():
-        if flow.request.pretty_url.startswith(original_url):
-            # 如果匹配，修改请求的URL为本地地址
-            flow.request.url = flow.request.pretty_url.replace(original_url, redirected_url)
-            print(f"Redirecting {original_url} to {redirected_url}")
-            break
-```
-
-### 如何使用？
-
-具体可前往以下docs查看
+可前往以下docs查看
 - [Android_MitmProxy代理方案](Android_Mitmproxy_Readme_ZH.md)
 
 ---
@@ -170,7 +158,6 @@ def request(flow: http.HTTPFlow) -> None:
 1. 由于版权原因，dev使用的resources我们不会公开
 2. 由于版权原因，部分源代码将不会被公开，但我们可以保证非公开部分代码无任何恶意内容
 3. 玩家数据并不会实时保存到数据库中,如果有最新数据的需求,可通过api进行访问玩家数据
-4. Api的使用过于复杂，没时间写docs自己研究，或自行下载GM工具调用
 
 ---
 ## 🤜 感谢名单

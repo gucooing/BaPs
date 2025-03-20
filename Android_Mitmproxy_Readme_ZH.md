@@ -5,6 +5,7 @@
  1. [下载 mitmproxy](https://mitmproxy.org/) 并安装。
  2. 具备 WireGuard 和 Python 脚本的基本知识。
  3. 一台客户端设备（例如 Android 模拟器或手机）以及运行 `mitmproxy` 的主机。
+ >本次将以模拟器的方式进行教程
 ### 安装步骤
 - Linux/Mac
 ```markdown
@@ -129,4 +130,8 @@ mitmweb -m wireguard --no-http2 -s redirect_server.py --set termlog_verbosity=wa
 - 然后前往/system/etc/security/cacerts/
 - 找到 c8750f0d.0 给予 664 权限。用户组为 root
 
+### （手机端）无权限修改系统目录？
+- 安装证书到用户证书
+- 然后安装模块自动将用户证书转到系统证书
+- 之后重启手机查看有没有相关证书
 ---
