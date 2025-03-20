@@ -96,5 +96,7 @@ func (c *Command) character(options map[string]*cdq.CommandOption) (string, erro
 		}
 	}
 
+	game.AddToast(s, respMsg)
+
 	return respMsg, nil
 }

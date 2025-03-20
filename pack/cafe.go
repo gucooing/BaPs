@@ -21,6 +21,13 @@ func CafeAck(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CafeAckRequest)
 	rsp := response.(*proto.CafeAckResponse)
 
+	cafeInfo := game.GetCafeInfo(s, req.CafeDBId)
+	if cafeInfo == nil {
+		rsp.ErrorCode = 0
+		return
+	}
+	cafeInfo.SummonUpdate = time.Now().Unix()
+
 	rsp.CafeDB = game.GetCafeDB(s, req.CafeDBId)
 }
 
@@ -133,7 +140,6 @@ func CafeSummonCharacter(s *enter.Session, request, response proto.Message) {
 		return
 	}
 
-	cafeInfo.SummonUpdate = time.Now().Unix()
 	if cafeInfo.VisitCharacterList == nil {
 		cafeInfo.VisitCharacterList = make(map[int64]*sro.VisitCharacterInfo)
 	}

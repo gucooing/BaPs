@@ -302,7 +302,7 @@ func GetCafeDB(s *enter.Session, serverId int64) *proto.CafeDB {
 		ProductionDB:          nil,
 		LastUpdate:            mx.Unix(bin.LastUpdate, 0),
 		LastSummonDate:        mx.Unix(bin.SummonUpdate, 0),
-		ProductionAppliedTime: mx.Unix(bin.ProductionAppliedTime, 0).Add(time.Duration(bin.ProductionAppliedNum+1) * time.Hour),
+		ProductionAppliedTime: mx.Unix(bin.ProductionAppliedTime, 0).Add(time.Duration(bin.ProductionAppliedNum) * time.Hour),
 	}
 
 	for _, visitCharacterInfo := range bin.VisitCharacterList {

@@ -221,7 +221,7 @@ func ToastList(s *enter.Session, request, response proto.Message) {
 			LocalizeText: make(map[proto.Language]string),
 			ToastId:      str,
 			BeginDate:    time.Now(),
-			EndDate:      time.Now().Add(1*time.Minute + 1*time.Hour),
+			EndDate:      time.Now().Add(30 * time.Second),
 			LifeTime:     3000, // ms
 			Delay:        0})
 	}

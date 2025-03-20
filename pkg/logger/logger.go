@@ -305,7 +305,7 @@ func (l *Logger) writeLogFile() {
 					_, _ = os.Stderr.WriteString(fmt.Sprintf(string(red)+"close old log file error: %v\n"+string(reset), err))
 					return
 				}
-				timeStr := time.Now().Format("20060102150405")
+				timeStr := GetOriginalLocalTime().Format("20060102150405")
 				err = os.Rename(logFile.Name(), logFile.Name()+"."+timeStr)
 				if err != nil {
 					_, _ = os.Stderr.WriteString(fmt.Sprintf(string(red)+"rename old log file error: %v\n"+string(reset), err))
@@ -360,7 +360,7 @@ func formatLog(level int, msg string, param []any) {
 		return
 	}
 	logInfo := logInfoPool.Get().(*LogInfo)
-	logInfo.Time = time.Now()
+	logInfo.Time = GetOriginalLocalTime()
 	logInfo.Level = level
 	if config.EnableJson || logFlag.LogJson == "true" {
 		jsonList := make([]any, 0)
@@ -465,4 +465,10 @@ func StackAll() string {
 		}
 		buf = make([]byte, 2*len(buf))
 	}
+}
+
+var OriginalLocal *time.Location
+
+func GetOriginalLocalTime() time.Time {
+	return time.Now().In(OriginalLocal)
 }

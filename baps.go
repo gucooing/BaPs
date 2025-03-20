@@ -24,6 +24,7 @@ import (
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/sdk"
 )
 
@@ -48,6 +49,8 @@ func NewBaPs() {
 		}
 	}
 	cfg := config.GetConfig()
+	// 设置时区
+	mx.SetTZ()
 	logger.InitLogger("BaPs", strings.ToUpper(cfg.LogLevel))
 	logger.Info("BaPs")
 	done := make(chan os.Signal, 1)

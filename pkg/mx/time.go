@@ -2,8 +2,11 @@ package mx
 
 import (
 	"encoding/json"
+	"log"
 	"strings"
 	"time"
+
+	"github.com/gucooing/BaPs/pkg/logger"
 )
 
 type MxTime time.Time
@@ -45,4 +48,13 @@ func (t MxTime) After(u MxTime) bool {
 
 func (t MxTime) Before(u MxTime) bool {
 	return time.Time(t).Before(time.Time(u))
+}
+
+func SetTZ() {
+	logger.OriginalLocal = time.Local
+	loc, err := time.LoadLocation("Asia/Tokyo")
+	if err != nil {
+		log.Fatal(err)
+	}
+	time.Local = loc
 }

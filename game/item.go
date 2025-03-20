@@ -161,12 +161,12 @@ func UpCurrency(s *enter.Session, parcelId int64, num int64) *sro.CurrencyInfo {
 	}
 
 	// 砖石特殊处理
-	gemBonus := GetCurrencyInfo(s, proto.CurrencyTypes_GemBonus)
-	gem := GetCurrencyInfo(s, proto.CurrencyTypes_Gem)
-	if gem != nil || gemBonus != nil {
-		gem.CurrencyNum = gemBonus.CurrencyNum
+	if parcelId == proto.CurrencyTypes_Gem || parcelId == proto.CurrencyTypes_GemPaid {
+		gem := GetCurrencyInfo(s, int32(parcelId))
+		gemBonus := GetCurrencyInfo(s, proto.CurrencyTypes_GemBonus)
+		gemBonus.UpdateTime = gem.UpdateTime
+		gemBonus.CurrencyNum += num
 	}
-
 	// 体力特殊处理
 	if parcelId == proto.CurrencyTypes_ActionPoint {
 		if info.CurrencyNum > 999 {
@@ -182,6 +182,7 @@ func UpCurrency(s *enter.Session, parcelId int64, num int64) *sro.CurrencyInfo {
 		if num < 0 {
 			AddAccountExp(s, -num) // 如果是体力扣除,就触发账号经验处理
 		}
+		info.UpdateTime = time.Now().Add(1 * time.Hour).Unix()
 	}
 
 	return info
@@ -209,35 +210,7 @@ func GetCurrencyList(s *enter.Session) map[int32]*sro.CurrencyInfo {
 	if bin.CurrencyInfoList == nil {
 		bin.CurrencyInfoList = NewCurrencyInfo()
 	}
-	return bin.CurrencyInfoList
-}
-
-func GetCurrencyInfo(s *enter.Session, currencyId int32) *sro.CurrencyInfo {
-	bin := GetItemBin(s)
-	if bin == nil {
-		return nil
-	}
-	if bin.CurrencyInfoList == nil {
-		bin.CurrencyInfoList = NewCurrencyInfo()
-	}
-	if bin.CurrencyInfoList[currencyId] == nil {
-		bin.CurrencyInfoList[currencyId] = &sro.CurrencyInfo{
-			CurrencyId:  currencyId,
-			CurrencyNum: DefaultCurrencyNum[currencyId],
-			UpdateTime:  time.Now().Unix(),
-		}
-	}
-	return bin.CurrencyInfoList[currencyId]
-}
-
-func GetAccountCurrencyDB(s *enter.Session) *proto.AccountCurrencyDB {
-	accountCurrencyDB := &proto.AccountCurrencyDB{
-		AccountLevel:           int64(GetAccountLevel(s)),
-		AcademyLocationRankSum: GetAcademyLocationRankSum(s),
-		CurrencyDict:           make(map[proto.CurrencyTypes]int64),
-		UpdateTimeDict:         make(map[proto.CurrencyTypes]mx.MxTime),
-	}
-	for id, db := range GetCurrencyList(s) {
+	for id, db := range bin.CurrencyInfoList {
 		// 特殊物品刷新查询
 		if time.Unix(db.UpdateTime, 0).Before(alg.GetLastDay4()) {
 			switch id {
@@ -271,6 +244,37 @@ func GetAccountCurrencyDB(s *enter.Session) *proto.AccountCurrencyDB {
 		if id == proto.CurrencyTypes_ActionPoint {
 			RecoverActionPoint(s, db)
 		}
+	}
+
+	return bin.CurrencyInfoList
+}
+
+func GetCurrencyInfo(s *enter.Session, currencyId int32) *sro.CurrencyInfo {
+	bin := GetCurrencyList(s)
+	if bin == nil {
+		return nil
+	}
+	if bin[currencyId] == nil {
+		bin[currencyId] = &sro.CurrencyInfo{
+			CurrencyId:  currencyId,
+			CurrencyNum: DefaultCurrencyNum[currencyId],
+			UpdateTime:  time.Now().Unix(),
+		}
+		if currencyId == proto.CurrencyTypes_ActionPoint {
+			bin[currencyId].UpdateTime = time.Now().Add(1 * time.Hour).Unix()
+		}
+	}
+	return bin[currencyId]
+}
+
+func GetAccountCurrencyDB(s *enter.Session) *proto.AccountCurrencyDB {
+	accountCurrencyDB := &proto.AccountCurrencyDB{
+		AccountLevel:           int64(GetAccountLevel(s)),
+		AcademyLocationRankSum: GetAcademyLocationRankSum(s),
+		CurrencyDict:           make(map[proto.CurrencyTypes]int64),
+		UpdateTimeDict:         make(map[proto.CurrencyTypes]mx.MxTime),
+	}
+	for id, db := range GetCurrencyList(s) {
 		accountCurrencyDB.CurrencyDict[proto.CurrencyTypes(proto.CurrencyTypes_name[id])] = db.CurrencyNum
 		accountCurrencyDB.UpdateTimeDict[proto.CurrencyTypes(proto.CurrencyTypes_name[id])] = mx.Unix(db.UpdateTime, 0)
 	}
@@ -284,7 +288,7 @@ func RecoverActionPoint(s *enter.Session, db *sro.CurrencyInfo) {
 	}
 	maxAp := gdconf.GetAPAutoChargeMax(GetAccountLevel(s))
 	if db.CurrencyNum >= maxAp {
-		db.UpdateTime = time.Now().Unix()
+		db.UpdateTime = time.Now().Add(1 * time.Hour).Unix()
 		return
 	}
 	num := int64(time.Now().Sub(time.Unix(db.UpdateTime, 0).Add(-1*time.Hour)).Minutes() / 6)
