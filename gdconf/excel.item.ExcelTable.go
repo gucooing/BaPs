@@ -55,11 +55,11 @@ func (g *GameConfig) gppItemExcelTable() {
 			}
 		}
 		g.GetGPP().ItemExcel.ItemExcelMap[v.Id] = v
-		if g.GetGPP().ItemExcel.ItemExcelCategoryMap[v.ItemCategory_] == nil {
-			g.GetGPP().ItemExcel.ItemExcelCategoryMap[v.ItemCategory_] = make([]*sro.ItemExcelTable, 0)
+		if g.GetGPP().ItemExcel.ItemExcelCategoryMap[v.ItemCategory] == nil {
+			g.GetGPP().ItemExcel.ItemExcelCategoryMap[v.ItemCategory] = make([]*sro.ItemExcelTable, 0)
 		}
-		g.GetGPP().ItemExcel.ItemExcelCategoryMap[v.ItemCategory_] = append(
-			g.GetGPP().ItemExcel.ItemExcelCategoryMap[v.ItemCategory_], v)
+		g.GetGPP().ItemExcel.ItemExcelCategoryMap[v.ItemCategory] = append(
+			g.GetGPP().ItemExcel.ItemExcelCategoryMap[v.ItemCategory], v)
 	}
 
 	logger.Info("处理道具配置完成,道具:%v个,类型:%v个", len(g.GetGPP().ItemExcel.ItemExcelMap),

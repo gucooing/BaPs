@@ -100,7 +100,7 @@ func ContentSweepSchoolDungeon(stageId int64, count int64) ([]*ParcelResult, [][
 		clearParcel := make([]*proto.ParcelInfo, 0)
 		for _, rewardConf := range gdconf.GetSchoolDungeonRewardExcelList(conf.StageRewardId) {
 			if !rewardConf.IsDisplayed ||
-				rewardConf.RewardTag_ != "Default" {
+				rewardConf.RewardTag != "Default" {
 				continue
 			}
 			parcelType := proto.GetParcelTypeValue(rewardConf.RewardParcelType)

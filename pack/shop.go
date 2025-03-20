@@ -108,7 +108,7 @@ func ShopBuyMerchandise(s *enter.Session, request, response proto.Message) {
 		)...)
 		// 添加
 		parcelResultList = append(parcelResultList, game.GetParcelResultList(
-			goodsInfo.ParcelType_,
+			goodsInfo.ParcelType,
 			goodsInfo.ParcelId,
 			goodsInfo.ParcelAmount,
 			false,

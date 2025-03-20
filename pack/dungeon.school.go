@@ -69,8 +69,8 @@ func SchoolDungeonBattleResult(s *enter.Session, request, response proto.Message
 		if !rewardConf.IsDisplayed {
 			continue
 		}
-		if (rewardConf.RewardTag_ == "ThreeStar" && isThreeStar) ||
-			(rewardConf.RewardTag_ == "FirstClear" && isFirstClear) {
+		if (rewardConf.RewardTag == "ThreeStar" && isThreeStar) ||
+			(rewardConf.RewardTag == "FirstClear" && isFirstClear) {
 			parcelType := proto.GetParcelTypeValue(rewardConf.RewardParcelType)
 			parcelResultList = append(parcelResultList, &game.ParcelResult{
 				ParcelType: parcelType,
@@ -79,9 +79,9 @@ func SchoolDungeonBattleResult(s *enter.Session, request, response proto.Message
 			})
 			parcelInfo := game.GetParcelInfo(rewardConf.RewardParcelId,
 				rewardConf.RewardParcelAmount, parcelType)
-			if rewardConf.RewardTag_ == "ThreeStar" {
+			if rewardConf.RewardTag == "ThreeStar" {
 				rsp.ThreeStarReward = append(rsp.ThreeStarReward, parcelInfo)
-			} else if rewardConf.RewardTag_ == "FirstClear" {
+			} else if rewardConf.RewardTag == "FirstClear" {
 				rsp.FirstClearReward = append(rsp.FirstClearReward, parcelInfo)
 			}
 		}

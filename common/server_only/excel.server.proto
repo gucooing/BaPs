@@ -100,11 +100,11 @@ message CharacterExcelTable {
   string DevName =  2;
   int64 CostumeGroupId = 3;
   bool IsPlayable = 4;
-  string ProductionStep_ = 5;
+  string ProductionStep = 5;
   bool CollectionVisible = 6;
   bool IsPlayableCharacter = 7;
   int64 LocalizeEtcId = 8;
-  string Rarity_ = 9;
+  string Rarity = 9;
   bool IsNPC = 25;
   int32 DefaultStarGrade = 10;
   int32 MaxStarGrade = 11;
@@ -152,7 +152,7 @@ message ShopExcelTable {
   string SalePeriodTo = 8;
   int64 PurchaseCooltimeMin = 9;
   int64 PurchaseCountLimit = 10;
-  string PurchaseCountResetType_ = 11;
+  string PurchaseCountResetType = 11;
   string BuyReportEventName = 12;
   bool RestrictBuyWhenInventoryFull = 13;
   string DisplayTag = 14;
@@ -193,10 +193,10 @@ message ShopInfoExcelTable {
 message ItemExcelTable {
   int64 Id = 1;
   int64 GroupId = 2;
-  string Rarity_ = 3;
-  string ProductionStep_ = 4;
+  string Rarity = 3;
+  string ProductionStep = 4;
   int64 LocalizeEtcId = 5;
-  string ItemCategory_ = 6;
+  string ItemCategory = 6;
   int64 Quality = 7;
   string Icon = 8;
   string SpriteName = 9;
@@ -206,7 +206,7 @@ message ItemExcelTable {
   string UsingResultParcelType = 13;
   int64 UsingResultId = 14;
   int64 UsingResultAmount = 15;
-  string MailType_ = 16;
+  string MailType = 16;
   string ExpiryChangeParcelType = 17;
   int64 ExpiryChangeId = 18;
   int64 ExpiryChangeAmount = 19;
@@ -422,7 +422,7 @@ message SkillExcelTable {
 
 message RecipeIngredientExcelTable {
   int64 Id = 1;
-  string RecipeType_ = 2;
+  string RecipeType = 2;
   repeated string CostParcelType = 3;
   repeated int64 CostId = 4;
   repeated int64 CostAmount = 5;
@@ -532,8 +532,8 @@ message AccountLevelExcel {
 
 message EquipmentExcelTable {
   int64 Id = 1;
-  string EquipmentCategory_ = 2;
-  string Rarity_ = 3;
+  string EquipmentCategory = 2;
+  string Rarity = 3;
   int64 LocalizeEtcId = 4;
   bool Wear = 5;
   int32 MaxLevel = 6;
@@ -554,7 +554,7 @@ message EquipmentExcelTable {
 
 message EquipmentStatExcelTable {
   int64 EquipmentId = 1;
-  string StatLevelUpType_ = 2;
+  string StatLevelUpType = 2;
   repeated string StatType = 3;
   repeated int64 MinStat = 4;
   repeated int64 MaxStat = 5;
@@ -562,7 +562,7 @@ message EquipmentStatExcelTable {
   int64 LevelUpFeedExp = 7;
   string LevelUpFeedCostCurrency = 8;
   int64 LevelUpFeedCostAmount = 9;
-  string EquipmentCategory_ = 10;
+  string EquipmentCategory = 10;
   int64 LevelUpFeedAddExp = 11;
   int64 DefaultMaxLevel = 12;
   int64 TranscendenceMax = 13;
@@ -577,8 +577,8 @@ message EquipmentLevelExcelTable {
 
 message FurnitureExcelTable {
   int64 Id = 1;
-  string ProductionStep_ = 2;
-  string Rarity_ = 3;
+  string ProductionStep = 2;
+  string Rarity = 3;
   string Category = 4;
   string SubCategory = 5;
   int64 LocalizeEtcId = 6;
@@ -607,7 +607,7 @@ message FurnitureExcelTable {
   int64 CraftQualityTier1 = 29;
   int64 CraftQualityTier2 = 30;
   int64 ShiftingCraftQuality = 31;
-  string FurnitureFunctionType_ = 32;
+  string FurnitureFunctionType = 32;
   repeated int64 FurnitureFunctionParameter = 33;
   int64 VideoId = 34;
   int64 EventCollectionId = 35;
@@ -691,7 +691,7 @@ message CharacterGearExcel {
 message CharacterPotentialExcel {
   int64 Id = 1;
   int64 PotentialStatGroupId = 2;
-  string PotentialStatBonusRateType_ = 3;
+  string PotentialStatBonusRateType = 3;
   bool IsUnnecessaryStat = 4;
 }
 
@@ -759,7 +759,7 @@ message AcademyRewardExcelTable {
 message SchoolDungeonRewardExcel {
   int64 GroupId = 1;
   string DungeonType = 2;
-  string RewardTag_ = 3;
+  string RewardTag = 3;
   string RewardParcelType = 4;
   int64 RewardParcelId = 5;
   int64 RewardParcelAmount = 6;
@@ -803,7 +803,7 @@ message RaidStageExcelTable {
   string BGPath = 6;
   int64 RaidCharacterId = 7;
   repeated int64 BossCharacterId = 8;
-  string Difficulty_ = 9;
+  string Difficulty = 9;
   bool DifficultyOpenCondition = 10;
   int64 MaxPlayerCount = 11;
   int64 RaidRoomLifeTime = 12;
@@ -1075,7 +1075,7 @@ message EliminateRaidStageExcelTable {
   string Bgpath = 10;
   int64 RaidCharacterId = 11;
   repeated int64 BossCharacterId = 12;
-  string Difficulty_ = 13;
+  string Difficulty = 13;
   bool IsOpen = 14;
   int64 MaxPlayerCount = 15;
   int64 RaidRoomLifeTime = 16;
@@ -1083,7 +1083,7 @@ message EliminateRaidStageExcelTable {
   int64 GroundId = 18;
   string GroundDevName = 19;
   string EnterTimeLine = 20;
-  string TacticEnvironment_ = 21;
+  string TacticEnvironment = 21;
   int64 DefaultClearScore = 22;
   int64 MaximumScore = 23;
   int64 PerSecondMinusScore = 24;
@@ -1101,7 +1101,7 @@ message EliminateRaidStageExcelTable {
   int64 ClearScenarioKey = 36;
   bool ShowSkillCard = 37;
   int64 BossBginfoKey = 38;
-  string EchelonExtensionType_ = 39;
+  string EchelonExtensionType = 39;
 }
 
 message EliminateRaidStageRewardExcelTable {
@@ -1125,7 +1125,7 @@ message EliminateRaidStageSeasonRewardExcelTable {
 message GachaElementRecursiveExcelTable {
   int64 Id = 1;
   int64 GachaGroupId = 2;
-  string ParcelType_ = 3;
+  string ParcelType = 3;
   int64 ParcelId = 4;
   int64 ParcelAmountMin = 5;
   int64 ParcelAmountMax = 6;
@@ -1136,9 +1136,9 @@ message GachaElementRecursiveExcelTable {
 message GachaElementExcelTable {
   int64 Id = 1;
   int64 GachaGroupId = 2;
-  string ParcelType_ = 3;
+  string ParcelType = 3;
   int64 ParcelId = 4;
-  string Rarity_ = 5;
+  string Rarity = 5;
   int64 ParcelAmountMin = 6;
   int64 ParcelAmountMax = 7;
   int64 Prob = 8;
@@ -1148,12 +1148,12 @@ message GachaElementExcelTable {
 message GoodsExcelTable {
   int64 Id = 1;
   int64 Type = 2;
-  string Rarity_ = 3;
+  string Rarity = 3;
   string IconPath = 4;
   repeated string ConsumeParcelType = 5;
   repeated int64 ConsumeParcelId = 6;
   repeated int64 ConsumeParcelAmount = 7;
-  repeated string ConsumeCondition_ = 8;
+  repeated string ConsumeCondition = 8;
   string ConsumeGachaTicketType = 9;
   int64 ConsumeGachaTicketTypeAmount = 10;
   int64 ProductIdAos = 11;
@@ -1161,14 +1161,14 @@ message GoodsExcelTable {
   repeated int64 ConsumeExtraStep = 13;
   repeated int64 ConsumeExtraAmount = 14;
   int64 State = 15;
-  repeated string ParcelType_ = 16;
+  repeated string ParcelType = 16;
   repeated int64 ParcelId = 17;
   repeated int64 ParcelAmount = 18;
 }
 
 message TimeAttackDungeonGeasExcelTable {
   int64 Id = 1;
-  string TimeAttackDungeonType_ = 2;
+  string TimeAttackDungeonType = 2;
   int64 LocalizeEtcKey = 3;
   int64 BattleDuration = 4;
   int64 ClearDefaultPoint = 5;

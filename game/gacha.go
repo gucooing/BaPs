@@ -111,7 +111,7 @@ func GenGachaResults(goodsId int64) []*ParcelResult {
 					continue
 				}
 				results = append(results, &ParcelResult{
-					ParcelType: proto.GetParcelTypeValue(gee.ParcelType_),
+					ParcelType: proto.GetParcelTypeValue(gee.ParcelType),
 					ParcelId:   gee.ParcelId,
 					Amount:     1,
 				})
@@ -119,7 +119,7 @@ func GenGachaResults(goodsId int64) []*ParcelResult {
 		}
 	}
 
-	for index, pt := range goods.ParcelType_ {
+	for index, pt := range goods.ParcelType {
 		switch pt {
 		case "Item", "Character":
 			results = append(results, &ParcelResult{
