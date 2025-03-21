@@ -8,8 +8,8 @@
 
 ## 📍Discord
 
-![Discord](https://img.shields.io/badge/Join-Discord-blue?logo=discord&logoSize=auto
-)
+[![Discord](https://img.shields.io/badge/Join-Discord-blue?logo=discord&logoSize=auto)](https://discord.gg/222yVp6pUq)
+
 
 ---
 ## 🚀 已实现功能
