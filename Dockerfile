@@ -16,7 +16,7 @@ RUN go build -ldflags="-s -w" -o /app/BaPs ./cmd/BaPs/BaPs.go
 
 # 最终镜像
 FROM alpine:latest
-RUN apk add --no-cache bash
+RUN apk add --no-cache bash tzdata
 WORKDIR /usr/ba
 COPY --from=builder /app/BaPs .
 COPY --from=builder /app/data/ ./data/
