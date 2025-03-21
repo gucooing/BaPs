@@ -1,6 +1,7 @@
 ![introduce](https://socialify.git.ci/gucooing/BaPs/image?description=1&font=Source+Code+Pro&forks=1&issues=1&language=1&name=1&owner=1&pattern=Plus&pulls=1&stargazers=1&theme=Light)
 
 # BaPs 🎮
+> ⚠️ 项目仅供学习用途，严禁用于商业用途，请于24小时内删除。
 
 > 🌟 由于是无状态设计,所以对内存的要求会略高
   
@@ -136,7 +137,7 @@ https://yostar-serverinfo.bluearchiveyostar.com → http://127.0.0.1:5000
 
 - [BlueArchiveGM](https://github.com/PrimeStudentCouncil/BlueArchiveGM/releases/latest)
 
-在线版GM菜单
+免下载在线版GM菜单
 
 - [BlueArchiveGM Web](https://gm.bluearchive.cc)
 
