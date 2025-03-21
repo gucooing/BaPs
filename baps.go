@@ -52,7 +52,13 @@ func NewBaPs() {
 	// 设置时区
 	mx.SetTZ()
 	logger.InitLogger("BaPs", strings.ToUpper(cfg.LogLevel))
+	defer func() {
+		logger.CloseLogger()
+	}()
 	logger.Info("BaPs")
+	logger.Info("---------------------------------------------")
+	logger.Info("仅供学习用途，严禁用于商业用途，请于24小时内删除！！！")
+	logger.Info("---------------------------------------------")
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	// 初始化数据库
@@ -60,7 +66,6 @@ func NewBaPs() {
 	// 尝试保存硬盘中的玩家数据
 	if !enter.TaskUpDiskPlayerData() {
 		logger.Info("请检查硬盘中的玩家数据是否正确再启动")
-		logger.CloseLogger()
 		return
 	}
 	// 检查数据库内容
@@ -100,7 +105,6 @@ func NewBaPs() {
 		rankInfo.Close()
 		enter.Close()
 		logger.Info("BaPs Close")
-		logger.CloseLogger()
 		os.Exit(0)
 	}
 

@@ -76,6 +76,6 @@ func errBestHTTP(c *gin.Context, errorCode int32) {
 func errTokenBestHTTP(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"protocol": "Error",
-		"packet":   "{\"Protocol\":-1,\"ErrorCode\":500}",
+		"packet":   "{\"Protocol\":-1,\"ErrorCode\":402}",
 	})
 }

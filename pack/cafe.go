@@ -21,13 +21,14 @@ func CafeAck(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CafeAckRequest)
 	rsp := response.(*proto.CafeAckResponse)
 
-	rsp.CafeDB = game.GetCafeDB(s, req.CafeDBId)
-
 	cafeInfo := game.GetCafeInfo(s, req.CafeDBId)
 	if cafeInfo == nil {
 		rsp.ErrorCode = 0
 		return
 	}
+
+	rsp.CafeDB = game.GetCafeDB(s, req.CafeDBId)
+
 	cafeInfo.IsNew = false
 }
 
@@ -121,7 +122,6 @@ func CafeInteract(s *enter.Session, request, response proto.Message) {
 	if cafeInfo == nil {
 		return
 	}
-	cafeInfo.IsNew = false
 	if visitCharacterInfo, ok := cafeInfo.VisitCharacterList[req.CharacterId]; ok {
 		visitCharacterInfo.LastInteractTime = time.Now().Unix()
 	}

@@ -31,7 +31,7 @@ func NewCharacter(s *enter.Session) *sro.CharacterBin {
 			LeaderSkillLevel:       conf.LeaderSkillLevel,
 			EquipmentList:          NewCharacterEquipment(conf.CharacterId),
 			ServerId:               sid,
-			IsFavorite:             false,
+			IsFavorite:             conf.FavoriteCharacter,
 			PotentialStats:         NewPotentialStats(),
 		}
 		bin.CharacterInfoList[conf.CharacterId] = info
