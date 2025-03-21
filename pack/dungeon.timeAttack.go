@@ -93,7 +93,7 @@ func TimeAttackDungeonEndBattle(s *enter.Session, request, response proto.Messag
 		Frame:               int64(summary.EndFrame),
 		ClearTimePoint:      clearTimePoint,
 		DefaultPoint:        conf.ClearDefaultPoint,
-		DungeonType:         proto.GetTimeAttackDungeonType(conf.TimeAttackDungeonType_).Value(),
+		DungeonType:         proto.GetTimeAttackDungeonType(conf.TimeAttackDungeonType).Value(),
 		MainCharacterDBs:    make([]*sro.TimeAttackDungeonCharacter, 0),
 		SupportCharacterDBs: make([]*sro.TimeAttackDungeonCharacter, 0),
 	}

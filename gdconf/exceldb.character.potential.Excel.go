@@ -38,7 +38,7 @@ func (g *GameConfig) gppCharacterPotentialExcel() {
 		if g.GetGPP().CharacterPotential.CharacterPotentialByCharacterId[v.Id] == nil {
 			g.GetGPP().CharacterPotential.CharacterPotentialByCharacterId[v.Id] = make(map[string]*sro.CharacterPotentialExcel)
 		}
-		g.GetGPP().CharacterPotential.CharacterPotentialByCharacterId[v.Id][v.PotentialStatBonusRateType_] = v
+		g.GetGPP().CharacterPotential.CharacterPotentialByCharacterId[v.Id][v.PotentialStatBonusRateType] = v
 	}
 
 	logger.Info("处理角色能力解放配置完成,数量:%v个",

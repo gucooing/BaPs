@@ -504,7 +504,7 @@ func RaidClose(s *enter.Session) []*ParcelResult {
 			rank.SetRaidScore(curBattle.SeasonId, s.AccountServerId, float64(rankingPoint))
 		}
 		// 计算奖励
-		cur.Difficulty = alg.MaxInt32(cur.Difficulty, int32(proto.GetDifficultyByStr(conf.Difficulty_)))
+		cur.Difficulty = alg.MaxInt32(cur.Difficulty, int32(proto.GetDifficultyByStr(conf.Difficulty)))
 		for _, rewardConf := range gdconf.GetRaidStageRewardExcelTable(conf.RaidRewardGroupId) {
 			list = append(list, &ParcelResult{
 				ParcelType: proto.GetParcelTypeValue(rewardConf.ClearStageRewardParcelType),

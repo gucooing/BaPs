@@ -45,7 +45,7 @@ func (g *GameConfig) gppGachaElementExcelTable() {
 		if g.GetGPP().GachaElementExcel.GachaElementGroupIdList[v.GachaGroupId] == nil {
 			g.GetGPP().GachaElementExcel.GachaElementGroupIdList[v.GachaGroupId] = &GachaElementGroupId{
 				GachaGroupId:          v.GachaGroupId,
-				Rarity:                v.Rarity_,
+				Rarity:                v.Rarity,
 				GachaElementExcelList: make([]*sro.GachaElementExcelTable, 0),
 			}
 		}

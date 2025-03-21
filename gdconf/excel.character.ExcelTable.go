@@ -53,10 +53,10 @@ func (g *GameConfig) gppCharacterExcelTable() {
 	for _, v := range g.GetExcel().GetCharacterExcelTable() {
 		info.CharacterExcelTableMap[v.Id] = v
 		if v.IsPlayable && !v.IsNPC && v.IsPlayableCharacter &&
-			v.ProductionStep_ == "Release" && v.Id == v.CharacterPieceItemId {
+			v.ProductionStep == "Release" && v.Id == v.CharacterPieceItemId {
 			info.CharacterReleaseList = append(info.CharacterReleaseList, v)
 			info.CharacterMap[v.Id] = v
-			// switch v.Rarity_ {
+			// switch v.Rarity {
 			// case "R":
 			// 	info.CharacterRMap = append(info.CharacterRMap, v)
 			// case "SR":
@@ -64,7 +64,7 @@ func (g *GameConfig) gppCharacterExcelTable() {
 			// case "SSR":
 			// 	info.CharacterSSRMap = append(info.CharacterSSRMap, v)
 			// default:
-			// 	logger.Debug("未知的角色星级|角色id:%v Rarity:%s", v.Id, v.Rarity_)
+			// 	logger.Debug("未知的角色星级|角色id:%v Rarity:%s", v.Id, v.Rarity)
 			// }
 		}
 	}
