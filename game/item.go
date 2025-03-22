@@ -633,15 +633,17 @@ func GetParcelResultList(typeList []string, idList, numList []int64, isDel bool)
 // ParcelResultDB TODO 没有验证是否能被消耗
 func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.ParcelResultDB {
 	info := &proto.ParcelResultDB{
-		MemoryLobbyDBs:      make([]*proto.MemoryLobbyDB, 0),
-		ItemDBs:             make(map[int64]*proto.ItemDB),
-		EmblemDBs:           make([]*proto.EmblemDB, 0),
-		CharacterDBs:        make([]*proto.CharacterDB, 0),
-		WeaponDBs:           make([]*proto.WeaponDB, 0),
-		EquipmentDBs:        make(map[int64]*proto.EquipmentDB),
-		FurnitureDBs:        make(map[int64]*proto.FurnitureDB),
-		IdCardBackgroundDBs: make(map[int64]*proto.IdCardBackgroundDB),
-		AcademyLocationDBs:  make([]*proto.AcademyLocationDB, 0),
+		MemoryLobbyDBs:       make([]*proto.MemoryLobbyDB, 0),
+		ItemDBs:              make(map[int64]*proto.ItemDB),
+		EmblemDBs:            make([]*proto.EmblemDB, 0),
+		CharacterDBs:         make([]*proto.CharacterDB, 0),
+		WeaponDBs:            make([]*proto.WeaponDB, 0),
+		EquipmentDBs:         make(map[int64]*proto.EquipmentDB),
+		FurnitureDBs:         make(map[int64]*proto.FurnitureDB),
+		IdCardBackgroundDBs:  make(map[int64]*proto.IdCardBackgroundDB),
+		AcademyLocationDBs:   make([]*proto.AcademyLocationDB, 0),
+		AdditionalAccountExp: 0,
+		BaseAccountExp:       GetAccountExp(s),
 
 		CostumeDBs:                      nil,
 		TSSCharacterDBs:                 nil,
@@ -652,8 +654,6 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 		CharacterNewUniqueIds:           nil,
 		SecretStoneCharacterIdAndCounts: nil,
 		ParcelResultStepInfoList:        nil,
-		BaseAccountExp:                  0,
-		AdditionalAccountExp:            0,
 		GachaResultCharacters:           nil,
 	}
 	defer func() {
@@ -694,6 +694,7 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 			}
 		case proto.ParcelType_FavorExp: // 角色好感度
 			isParcelResult = false
+			AddCharacterFavorExp(s, parcelResult.ParcelId, alg.AbsInt64(parcelResult.Amount))
 			info.CharacterDBs = append(info.CharacterDBs, GetCharacterDB(s, parcelResult.ParcelId))
 		case proto.ParcelType_CharacterWeapon: // 角色武器 仅同步
 			isParcelResult = false
@@ -712,6 +713,9 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 		case proto.ParcelType_LocationExp: // 课程表经验更改
 			UpAcademyLocationExp(s, parcelResult.ParcelId, parcelResult.Amount)
 			info.AcademyLocationDBs = append(info.AcademyLocationDBs, GetAcademyLocationDB(s, parcelResult.ParcelId))
+		case proto.ParcelType_AccountExp: // 账号经验
+			AddAccountExp(s, alg.AbsInt64(parcelResult.Amount))
+			info.AdditionalAccountExp = alg.AbsInt64(parcelResult.Amount)
 		default:
 			logger.Warn("没有处理的奖励类型 Unknown ParcelType:%s", parcelResult.ParcelType.String())
 		}
@@ -738,6 +742,7 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 }
 
 func NoGMFack(parcelType proto.ParcelType, id int64) bool {
+	return true
 	switch parcelType {
 	case proto.ParcelType_Character:
 		return gdconf.GetCharacterExcel(id) == nil

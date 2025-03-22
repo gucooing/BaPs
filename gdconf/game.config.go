@@ -90,6 +90,7 @@ type GPP struct {
 	ShopRefreshExcel                    *ShopRefreshExcel
 	ArenaSeasonExcel                    *ArenaSeasonExcel
 	ArenaNPCList                        []*ArenaNPCInfo
+	FavorLevel                          *FavorLevel
 }
 
 func LoadGameConfig(dataPath string, resPath string) *GameConfig {
@@ -178,6 +179,7 @@ func (g *GameConfig) gpp() {
 		g.gppTimeAttackDungeonRewardExcelTable,
 		g.gppShopRefreshExcelTable,
 		g.gppArenaSeasonExcelTable,
+		g.gppFavorLevelExcel,
 
 		// data
 		g.loadRaidSchedule,

@@ -113,8 +113,10 @@ func CafeInteract(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.CafeInteractWithCharacterRequest)
 	rsp := response.(*proto.CafeInteractWithCharacterResponse)
 
+	parcelResultList := make([]*game.ParcelResult, 0)
 	defer func() {
 		rsp.CafeDB = game.GetCafeDB(s, req.CafeDBId)
+		rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
 		rsp.CharacterDB = game.GetCharacterDB(s, req.CharacterId)
 	}()
 
@@ -124,6 +126,12 @@ func CafeInteract(s *enter.Session, request, response proto.Message) {
 	}
 	if visitCharacterInfo, ok := cafeInfo.VisitCharacterList[req.CharacterId]; ok {
 		visitCharacterInfo.LastInteractTime = time.Now().Unix()
+		// 添加学生好感度
+		parcelResultList = append(parcelResultList, &game.ParcelResult{
+			ParcelType: proto.ParcelType_FavorExp,
+			ParcelId:   visitCharacterInfo.CharacterId,
+			Amount:     15,
+		})
 	}
 }
 
@@ -143,6 +151,7 @@ func CafeSummonCharacter(s *enter.Session, request, response proto.Message) {
 	if cafeInfo.VisitCharacterList == nil {
 		cafeInfo.VisitCharacterList = make(map[int64]*sro.VisitCharacterInfo)
 	}
+	cafeInfo.SummonUpdate = time.Now().Unix()
 	cafeInfo.VisitCharacterList[characterInfo.CharacterId] = &sro.VisitCharacterInfo{
 		CharacterId: characterInfo.CharacterId,
 		IsSummon:    true,
@@ -254,10 +263,6 @@ func CafeGiveGift(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.CafeGiveGiftResponse)
 
 	parcelResultList := make([]*game.ParcelResult, 0)
-	parcelResultList = append(parcelResultList, &game.ParcelResult{
-		ParcelType: proto.ParcelType_Character,
-		ParcelId:   req.CharacterUniqueId,
-	})
 
 	defer func() {
 		rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
@@ -272,4 +277,23 @@ func CafeGiveGift(s *enter.Session, request, response proto.Message) {
 	}
 	rsp.ConsumeResultDB = consumeResultDB
 
+	addExp := int64(0)
+	for sid, num := range req.ConsumeRequestDB.ConsumeItemServerIdAndCounts {
+		itemDb := s.GetItemByKeyId(sid)
+		if itemDb == nil || itemDb.StackCount < int32(num) {
+			continue
+		}
+		addExp += num * 60
+		parcelResultList = append(parcelResultList, &game.ParcelResult{
+			ParcelType: proto.ParcelType_Item,
+			ParcelId:   itemDb.UniqueId,
+			Amount:     -num,
+		})
+	}
+	// 添加学生好感度
+	parcelResultList = append(parcelResultList, &game.ParcelResult{
+		ParcelType: proto.ParcelType_FavorExp,
+		ParcelId:   req.CharacterUniqueId,
+		Amount:     addExp,
+	})
 }

@@ -86,6 +86,13 @@ func MinInt32(a, b int32) int32 {
 	return a
 }
 
+func AbsInt64(x int64) int64 {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+
 func GetDay4() time.Time {
 	currentTime := time.Now()
 	nextExecution := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 4, 0, 0, 0, currentTime.Location())

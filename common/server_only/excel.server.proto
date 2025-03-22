@@ -71,6 +71,7 @@ message Excel {
   repeated TimeAttackDungeonRewardExcelTable TimeAttackDungeonRewardExcelTable = 62; // 综合战术考试奖励配置
   repeated ShopRefreshExcelTable ShopRefreshExcelTable = 63; // 可刷新商品配置
   repeated ArenaSeasonExcelTable ArenaSeasonExcelTable =64; // 竞技场赛季配置
+  repeated FavorLevelExcel FavorLevelExcel = 65; // 好感系统等级经验配置
 }
 
 message CafeInfoExcelTableInfo {
@@ -1217,4 +1218,9 @@ message ArenaSeasonExcelTable {
   string SeasonEndDate = 3;
   int64 SeasonGroupLimit = 4;
   int64 PrevSeasonId = 5;
+}
+
+message FavorLevelExcel {
+  int32 Level = 1;
+  repeated int64 ExpType = 2;
 }

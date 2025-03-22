@@ -149,6 +149,7 @@ func AddCharacter(s *enter.Session, characterId int64) bool {
 func GetCharacterDBs(s *enter.Session) []*proto.CharacterDB {
 	list := make([]*proto.CharacterDB, 0)
 	for _, bin := range GetCharacterInfoList(s) {
+		bin.FavorRank = 1
 		list = append(list, GetCharacterDB(s, bin.CharacterId))
 	}
 
@@ -180,7 +181,6 @@ func GetCharacterDB(s *enter.Session, characterId int64) *proto.CharacterDB {
 		EquipmentServerIds:     GetCharacterEquipment(bin),
 		PotentialStats:         bin.PotentialStats,
 	}
-	info.FavorRank = 100 // TODO 由于excel中没有好感度配置所以默认满级
 
 	return info
 }
@@ -233,6 +233,34 @@ func SetCharacterEquipment(s *enter.Session, characterServerId int64, equipmentI
 	characterInfo.EquipmentList[index] = equipmentIdServerId
 	equipmentInfo.CharacterServerId = characterServerId
 	return true
+}
+
+func AddCharacterFavorExp(s *enter.Session, characterId, exp int64) {
+	db := GetCharacterInfo(s, characterId)
+	if db == nil {
+		return
+	}
+	db.FavorExp += exp
+
+	newLevel := db.FavorRank
+	for newLevel < gdconf.GetMaxFavorLevel() {
+		conf := gdconf.GetFavorLevelExcel(newLevel)
+		if conf == nil {
+			break
+		}
+		expType := int64(0)
+		for _, v := range conf.ExpType {
+			expType += v
+		}
+		if db.FavorExp >= expType {
+			db.FavorExp -= expType
+			newLevel++
+		} else {
+			break
+		}
+	}
+
+	db.FavorRank = newLevel
 }
 
 func GetGearInfoList(s *enter.Session) map[int64]*sro.GearInfo {
