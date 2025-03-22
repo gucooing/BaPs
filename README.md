@@ -1,6 +1,9 @@
 ![introduce](https://socialify.git.ci/gucooing/BaPs/image?description=1&font=Source+Code+Pro&forks=1&issues=1&language=1&name=1&owner=1&pattern=Plus&pulls=1&stargazers=1&theme=Light)
 
 # BaPs 🎮
+
+#### [English](README_EN.md)
+  
 > ⚠️ 项目仅供学习用途，严禁用于商业用途，请于24小时内删除。
 
 # 仅供学习用途，严禁用于商业用途，请于24小时内删除！！！

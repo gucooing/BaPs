@@ -81,7 +81,7 @@ def request(flow: http.HTTPFlow) -> None:
             # 如果匹配，修改请求的URL为本地地址
             flow.request.url = flow.request.pretty_url.replace(original_url, redirected_url)
             print(f"Redirecting {original_url} to {redirected_url}")
-            break
+            return
 ```
 
 ---
