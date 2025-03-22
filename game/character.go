@@ -149,7 +149,6 @@ func AddCharacter(s *enter.Session, characterId int64) bool {
 func GetCharacterDBs(s *enter.Session) []*proto.CharacterDB {
 	list := make([]*proto.CharacterDB, 0)
 	for _, bin := range GetCharacterInfoList(s) {
-		bin.FavorRank = 1
 		list = append(list, GetCharacterDB(s, bin.CharacterId))
 	}
 
