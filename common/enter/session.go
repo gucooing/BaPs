@@ -32,6 +32,7 @@ type Session struct {
 	Mission         *Mission
 	Toast           []string
 	PlayerHash      map[int64]any
+	arenaInfo       *ArenaInfo // 竞技场临时数据
 }
 
 // 定时检查一次是否有用户长时间离线

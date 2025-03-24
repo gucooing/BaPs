@@ -89,7 +89,7 @@ type GPP struct {
 	StrategyMap                         map[string]*StrategyMap
 	ShopRefreshExcel                    *ShopRefreshExcel
 	ArenaSeasonExcel                    *ArenaSeasonExcel
-	ArenaNPCList                        []*ArenaNPCInfo
+	ArenaNPCInfo                        *ArenaNPCInfo
 	FavorLevel                          *FavorLevel
 }
 

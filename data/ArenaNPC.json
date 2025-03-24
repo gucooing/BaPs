@@ -1,5 +1,6 @@
 [
-  {
+ {
+    "Index": 1,
     "NpcaccountLevel": 31,
     "Npclevel": 28,
     "NpclevelDeviation": 3,
@@ -14,6 +15,7 @@
     ]
   },
   {
+    "Index": 2,
     "NpcaccountLevel": 31,
     "Npclevel": 28,
     "NpclevelDeviation": 3,

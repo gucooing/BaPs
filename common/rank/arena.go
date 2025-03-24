@@ -82,7 +82,7 @@ func (x *RankInfo) SettlementAren(seasonId int64) {
 	logger.Info("竞技场旧赛季回收结束")
 }
 
-func GetArenaRankZset(seasonId int64) *zset.SortedSet[int64] {
+func getArenaRankZset(seasonId int64) *zset.SortedSet[int64] {
 	if RANKINFO == nil {
 		return nil
 	}
@@ -97,7 +97,7 @@ func GetArenaRankZset(seasonId int64) *zset.SortedSet[int64] {
 }
 
 func GetArenaRank(seasonId, uid int64) int64 {
-	s := GetArenaRankZset(seasonId)
+	s := getArenaRankZset(seasonId)
 	if s == nil {
 		return 0
 	}
@@ -110,9 +110,13 @@ func GetArenaRank(seasonId, uid int64) int64 {
 
 // GetArenaUidByRank 获取指定排名uid和分数
 func GetArenaUidByRank(seasonId, rank int64) (int64, float64) {
-	s := GetArenaRankZset(seasonId)
+	s := getArenaRankZset(seasonId)
 	if s == nil {
 		return 0, 0
 	}
-	return s.GetDataByRank(rank-1, false)
+	uid, score := s.GetDataByRank(rank-1, false)
+	if score == 0.0 {
+		return zset.NoRank, score
+	}
+	return uid, score
 }

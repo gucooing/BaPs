@@ -184,9 +184,12 @@ var funcRouteMap = map[int32]handlerFunc{
 	mx.Protocol_TimeAttackDungeon_GiveUp:       pack.TimeAttackDungeonGiveUp,       // 主动结算
 	mx.Protocol_TimeAttackDungeon_Sweep:        pack.TimeAttackDungeonSweep,        // 扫荡
 	// 竞技场
-	mx.Protocol_Arena_Login:        pack.ArenaLogin,        // 登录获取竞技场信息
-	mx.Protocol_Arena_EnterLobby:   pack.ArenaEnterLobby,   // 获取竞技场详情
-	mx.Protocol_Arena_OpponentList: pack.ArenaOpponentList, // 获取竞技场战斗列表
+	mx.Protocol_Arena_Login:                  pack.ArenaLogin,                  // 登录获取竞技场信息
+	mx.Protocol_Arena_EnterLobby:             pack.ArenaEnterLobby,             // 获取竞技场详情
+	mx.Protocol_Arena_OpponentList:           pack.ArenaOpponentList,           // 获取竞技场战斗列表
+	mx.Protocol_Arena_SyncEchelonSettingTime: pack.ArenaSyncEchelonSettingTime, // 竞技场队伍设定时间
+	mx.Protocol_Arena_EnterBattlePart1:       pack.ArenaEnterBattlePart1,       // 竞技场开始战斗
+	mx.Protocol_Arena_EnterBattlePart2:       pack.ArenaEnterBattlePart2,       // 竞技场战斗 结算/跳过战斗
 	// 总力战
 	mx.Protocol_Raid_Login:         pack.RaidLogin,         // 登录获取总力战开放信息
 	mx.Protocol_Raid_Lobby:         pack.RaidLobby,         // 获取总力战详情

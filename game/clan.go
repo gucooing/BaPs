@@ -134,7 +134,7 @@ func NewClan(s *enter.Session, clanName string, joinOption proto.ClanJoinOption)
 	}
 	if !check.CheckName(clanName) {
 		logger.Debug("社团名称检查不通过")
-		return 15022
+		return proto.WebAPIErrorCode_ClanNameWithInvalidLength
 	}
 	_, err := db.AddYostarClanByClanName(clanName)
 	if err != nil {
@@ -144,7 +144,7 @@ func NewClan(s *enter.Session, clanName string, joinOption proto.ClanJoinOption)
 	clanInfo := enter.GetYostarClanByClanName(clanName)
 	if clanInfo == nil {
 		logger.Debug("拉取新社团失败")
-		return 15022
+		return proto.WebAPIErrorCode_ClanNotFound
 	}
 	// 添加社长
 	if !clanInfo.AddAccount(s.AccountServerId, proto.ClanSocialGrade_President) {

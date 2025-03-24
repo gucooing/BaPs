@@ -2,7 +2,6 @@ package game
 
 import (
 	"fmt"
-	"math/rand"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
@@ -81,56 +80,29 @@ func GetOpponentUserDBs(s *enter.Session) []*proto.ArenaUserDB {
 	}
 	bin.AutoRefreshTime = time.Now().Unix()
 
-	ranks := make(map[int64]bool, 0)
-	r := rank.GetArenaRank(bin.GetCurSeasonId(), s.AccountServerId)
-	if r <= 3 {
-		for i := int64(1); i < 5; i++ {
-			if i == r {
-				continue
-			}
-			ranks[i] = true
-		}
-	} else {
-		for i := 0; i < 3; i++ {
-			uid := rand.Int63n(r-1-r/5) + 1 + r*4/5
-			if ranks[uid] {
-				i--
-				continue
-			}
-			ranks[uid] = true
-		}
-	}
-
+	s.GenArenaUserList(bin.GetCurSeasonId())
 	list := make([]*proto.ArenaUserDB, 0)
-	for aernaRank := range ranks {
-		var info *proto.ArenaUserDB
-		uid, _ := rank.GetArenaUidByRank(bin.GetCurSeasonId(), aernaRank)
-		if ps := enter.GetSessionByUid(uid); ps != nil {
-			// 补上真人
+	for _, v := range s.GetArenaUserList() {
+		if ps := enter.GetSessionByUid(v.Uid); ps != nil && !v.IsNpc {
+			list = append(list, GetPlayerArenaUserDB(ps, proto.EchelonType_ArenaDefence))
 		} else {
-			info = GetNPCArenaUserDB(aernaRank)
+			list = append(list, GetNPCArenaUserDB(v))
 		}
-
-		list = append(list, info)
 	}
 
 	return list
 }
 
-func GetNPCArenaUserDB(aernaRank int64) *proto.ArenaUserDB {
-	conf := gdconf.GetArenaNPCInfo()
-	if conf == nil {
-		conf = gdconf.DefaultArenaNPCInfo
-	}
-	characterId := gdconf.RandCharacter()
+func GetNPCArenaUserDB(au *enter.ArenaUser) *proto.ArenaUserDB {
+	conf := gdconf.GetArenaNPCByIndex(au.Index)
 	info := &proto.ArenaUserDB{
-		RepresentCharacterUniqueId: characterId,
-		NickName:                   fmt.Sprintf("Character_%v", characterId),
-		Rank:                       aernaRank,
+		RepresentCharacterUniqueId: au.CharacterId,
+		NickName:                   fmt.Sprintf("Character_%v", au.CharacterId),
+		Rank:                       au.Rank,
 		Level:                      conf.NpcaccountLevel,
 		TeamSettingDB: &proto.ArenaTeamSettingDB{
 			EchelonType:               proto.EchelonType_ArenaDefence,
-			LeaderCharacterId:         characterId,
+			LeaderCharacterId:         au.CharacterId,
 			TSSInteractionCharacterId: 0,
 			MainCharacters:            make([]*proto.ArenaCharacterDB, 0),
 			SupportCharacters:         make([]*proto.ArenaCharacterDB, 0),
@@ -139,28 +111,79 @@ func GetNPCArenaUserDB(aernaRank int64) *proto.ArenaUserDB {
 	}
 	for _, id := range conf.ExceptionMainCharacterIds {
 		info.TeamSettingDB.MainCharacters = append(
-			info.TeamSettingDB.MainCharacters, GetNPCArenaCharacterDB(id),
+			info.TeamSettingDB.MainCharacters, conf.GetArenaCharacterDB(id),
 		)
 	}
 	for _, id := range conf.ExceptionSupportCharacterIds {
 		info.TeamSettingDB.SupportCharacters = append(
-			info.TeamSettingDB.SupportCharacters, GetNPCArenaCharacterDB(id),
+			info.TeamSettingDB.SupportCharacters, conf.GetArenaCharacterDB(id),
 		)
 	}
 
 	return info
 }
 
-func GetNPCArenaCharacterDB(id int64) *proto.ArenaCharacterDB {
-	info := &proto.ArenaCharacterDB{
-		UniqueId:               id,
-		StarGrade:              3,
-		Level:                  22,
-		PublicSkillLevel:       1,
-		ExSkillLevel:           1,
-		PassiveSkillLevel:      1,
-		ExtraPassiveSkillLevel: 1,
-		LeaderSkillLevel:       1,
+func GetPlayerArenaUserDB(s *enter.Session, echelonType proto.EchelonType) *proto.ArenaUserDB {
+	echelonInfo := GetEchelonInfo(s, int32(echelonType), 1)
+	info := &proto.ArenaUserDB{
+		RepresentCharacterUniqueId: GetRepresentCharacterUniqueId(s),
+		NickName:                   GetNickname(s),
+		Level:                      int64(GetAccountLevel(s)),
+		TeamSettingDB: &proto.ArenaTeamSettingDB{
+			EchelonType:               echelonType,
+			LeaderCharacterId:         echelonInfo.GetLeaderCharacter(),
+			TSSInteractionCharacterId: echelonInfo.GetTssId(),
+			MainCharacters:            make([]*proto.ArenaCharacterDB, 0),
+			SupportCharacters:         make([]*proto.ArenaCharacterDB, 0),
+			MapId:                     1006,
+		},
 	}
+	for _, characterId := range echelonInfo.GetMainCharacterList() {
+		ac := GetArenaCharacterDB(s, characterId)
+		if ac == nil {
+			continue
+		}
+		info.TeamSettingDB.MainCharacters = append(
+			info.TeamSettingDB.MainCharacters, ac,
+		)
+	}
+	for _, characterId := range echelonInfo.GetSupportCharacterList() {
+		ac := GetArenaCharacterDB(s, characterId)
+		if ac == nil {
+			continue
+		}
+		info.TeamSettingDB.SupportCharacters = append(
+			info.TeamSettingDB.SupportCharacters, ac,
+		)
+	}
+
+	return info
+}
+
+func GetArenaCharacterDB(s *enter.Session, characterId int64) *proto.ArenaCharacterDB {
+	db := GetCharacterInfo(s, characterId)
+	if db == nil {
+		return nil
+	}
+	info := &proto.ArenaCharacterDB{
+		ServerId:               db.ServerId,
+		UniqueId:               db.CharacterId,
+		StarGrade:              db.StarGrade,
+		Level:                  db.Level,
+		PublicSkillLevel:       db.CommonSkillLevel,
+		ExSkillLevel:           db.ExSkillLevel,
+		PassiveSkillLevel:      db.PassiveSkillLevel,
+		ExtraPassiveSkillLevel: db.ExtraPassiveSkillLevel,
+		LeaderSkillLevel:       db.LeaderSkillLevel,
+		EquipmentDBs:           make([]*proto.EquipmentDB, 0),
+		FavorRankInfo:          make(map[int64]int64),
+		PotentialStats:         db.PotentialStats,
+		WeaponDB:               GetWeaponDB(s, db.CharacterId),
+		GearDB:                 GetGearDB(s, db.GearServerId),
+
+		CostumeDB:        nil,
+		CombatStyleIndex: 0,
+	}
+
 	return info
 }

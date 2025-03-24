@@ -362,4 +362,10 @@ func (c *CmdProtoMap) registerAllMessage() {
 	c.regMsg(mx.Protocol_TimeAttackDungeon_Sweep, func() any { return new(proto.TimeAttackDungeonSweepResponse) }, false)
 	c.regMsg(mx.Protocol_Campaign_MainStageStrategySkipResult, func() any { return new(proto.CampaignMainStageStrategySkipResultRequest) }, true)
 	c.regMsg(mx.Protocol_Campaign_MainStageStrategySkipResult, func() any { return new(proto.CampaignMainStageStrategySkipResultResponse) }, false)
+	c.regMsg(mx.Protocol_Arena_SyncEchelonSettingTime, func() any { return new(proto.ArenaSyncEchelonSettingTimeRequest) }, true)
+	c.regMsg(mx.Protocol_Arena_SyncEchelonSettingTime, func() any { return new(proto.ArenaSyncEchelonSettingTimeResponse) }, false)
+	c.regMsg(mx.Protocol_Arena_EnterBattlePart1, func() any { return new(proto.ArenaEnterBattlePart1Request) }, true)
+	c.regMsg(mx.Protocol_Arena_EnterBattlePart1, func() any { return new(proto.ArenaEnterBattlePart1Response) }, false)
+	c.regMsg(mx.Protocol_Arena_EnterBattlePart2, func() any { return new(proto.ArenaEnterBattlePart2Request) }, true)
+	c.regMsg(mx.Protocol_Arena_EnterBattlePart2, func() any { return new(proto.ArenaEnterBattlePart2Response) }, false)
 }
