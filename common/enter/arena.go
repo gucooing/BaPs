@@ -10,7 +10,8 @@ import (
 )
 
 type ArenaInfo struct {
-	ArenaUserList []*ArenaUser
+	ArenaUserList   []*ArenaUser
+	BattleArenaUser *ArenaUser // 被打的玩家
 }
 
 type ArenaUser struct {
@@ -35,6 +36,8 @@ func (x *Session) GenArenaUserList(seasonId int64) {
 
 	r := rank.GetArenaRank(seasonId, x.AccountServerId)
 
+	besaR := r
+
 	ranks := make(map[int64]bool, 0)
 	if r <= 3 {
 		for i := int64(1); i < 5; i++ {
@@ -45,17 +48,18 @@ func (x *Session) GenArenaUserList(seasonId int64) {
 		}
 	} else {
 		for i := 0; i < 3; i++ {
-			uid := rand.Int63n(r-1-r/5) + 1 + r*4/5
-			if ranks[uid] {
+			rr := rand.Int63n(besaR/5-1) + 1 + (besaR * 4 / 5)
+			if ranks[rr] {
 				i--
 				continue
 			}
-			ranks[uid] = true
+			besaR = rr
+			ranks[rr] = true
 		}
 	}
 
 	for aernaRank := range ranks {
-		uid, _ := rank.GetArenaUidByRank(seasonId, aernaRank)
+		uid := rank.GetArenaUidByRank(seasonId, aernaRank)
 		au := &ArenaUser{
 			IsNpc: false,
 			Uid:   uid,
@@ -85,6 +89,14 @@ func (x *Session) GetArenaUserByIndex(index int32) *ArenaUser {
 		return nil
 	}
 	return list[index]
+}
+
+func (x *Session) SetBattleArenaUser(au *ArenaUser) {
+	x.arenaInfo.BattleArenaUser = au
+}
+
+func (x *Session) GetBattleArenaUser() *ArenaUser {
+	return x.arenaInfo.BattleArenaUser
 }
 
 var arenaBattleList map[int64]bool
@@ -128,7 +140,7 @@ func CheckArenaBattle(ticker *time.Ticker, attackRank, defenceRank int64) {
 	select {
 	case <-ticker.C:
 		ticker.Stop()
-		CheckArenaBattleRank(attackRank)
-		CheckArenaBattleRank(defenceRank)
+		DelArenaBattleRank(attackRank)
+		DelArenaBattleRank(defenceRank)
 	}
 }

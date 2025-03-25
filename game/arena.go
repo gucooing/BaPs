@@ -6,6 +6,7 @@ import (
 
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/common/rank"
+	ranar "github.com/gucooing/BaPs/common/rank_arena"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/alg"
@@ -31,8 +32,8 @@ func GetArenaBin(s *enter.Session) *sro.ArenaBin {
 		info := &sro.ArenaBin{
 			CurSeasonId:   conf.GetUniqueId(),
 			PlayerGroupId: 1, // 默认全放到一起去
-			SeasonRecord:  rank.DefaultArenaRank,
-			AllTimeRecord: alg.MaxInt64(old.GetAllTimeRecord(), rank.DefaultArenaRank),
+			SeasonRecord:  ranar.DefaultArenaRank,
+			AllTimeRecord: alg.MaxInt64(old.GetAllTimeRecord(), ranar.DefaultArenaRank),
 		}
 		bin.ArenaBin = info
 	}

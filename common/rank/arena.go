@@ -3,10 +3,10 @@ package rank
 import (
 	"time"
 
+	ranar "github.com/gucooing/BaPs/common/rank_arena"
 	"github.com/gucooing/BaPs/db"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/zset"
 )
 
 /*
@@ -16,8 +16,6 @@ import (
 使用len方法获取最低的新排名
 */
 
-const DefaultArenaRank = 15000
-
 // NewArenaRank 此操作会将排名强制覆盖成冷数据中的排名，建议仅用于初始化这个赛季时拉取冷数据使用
 func (x *RankInfo) NewArenaRank(seasonId int64) {
 	conf := gdconf.GetArenaSeasonExcelTable(seasonId)
@@ -26,13 +24,13 @@ func (x *RankInfo) NewArenaRank(seasonId int64) {
 	}
 	x.arenaSync.Lock()
 	if x.arenaRankZset == nil {
-		x.arenaRankZset = make(map[int64]*zset.SortedSet[int64])
+		x.arenaRankZset = make(map[int64]*ranar.RankArena)
 	}
-	s := zset.New[int64]()
+	s := ranar.New()
 	x.arenaRankZset[seasonId] = s
 	x.arenaSync.Unlock()
 	for _, dbInfo := range db.GetAllYostarRank(x.SQL, db.ArenaUserTable(seasonId)) {
-		s.Set(dbInfo.Score, dbInfo.Uid)
+		s.Set(dbInfo.Rank, dbInfo.Uid)
 	}
 	// 赛季结束
 	nextConf := gdconf.GetArenaSeasonExcelTable(conf.PrevSeasonId)
@@ -67,11 +65,11 @@ func (x *RankInfo) SettlementAren(seasonId int64) {
 	x.arenaSync.Unlock()
 
 	all := make([]*db.YostarRank, 0)
-	s.RevRange(0, -1, func(score float64, k int64) {
+	s.GetAll(func(uid, rank int64) {
 		all = append(all, &db.YostarRank{
 			SeasonId: seasonId,
-			Uid:      k,
-			Score:    score,
+			Uid:      uid,
+			Rank:     rank,
 		})
 	})
 	err := db.UpAllYostarRank(x.SQL, all, db.ArenaUserTable(seasonId))
@@ -82,7 +80,7 @@ func (x *RankInfo) SettlementAren(seasonId int64) {
 	logger.Info("竞技场旧赛季回收结束")
 }
 
-func getArenaRankZset(seasonId int64) *zset.SortedSet[int64] {
+func getArenaRankZset(seasonId int64) *ranar.RankArena {
 	if RANKINFO == nil {
 		return nil
 	}
@@ -101,22 +99,22 @@ func GetArenaRank(seasonId, uid int64) int64 {
 	if s == nil {
 		return 0
 	}
-	rank, _ := s.GetRank(uid, false)
-	if rank == zset.NoRank {
-		return DefaultArenaRank
-	}
-	return rank + 1
+	return s.GetRank(uid)
 }
 
-// GetArenaUidByRank 获取指定排名uid和分数
-func GetArenaUidByRank(seasonId, rank int64) (int64, float64) {
+// GetArenaUidByRank 获取指定排名的uid
+func GetArenaUidByRank(seasonId, rank int64) int64 {
 	s := getArenaRankZset(seasonId)
 	if s == nil {
-		return 0, 0
+		return 0
 	}
-	uid, score := s.GetDataByRank(rank-1, false)
-	if score == 0.0 {
-		return zset.NoRank, score
+	return s.GetUid(rank)
+}
+
+func SetArenaRank(seasonId, rank, uid int64) {
+	s := getArenaRankZset(seasonId)
+	if s == nil {
+		return
 	}
-	return uid, score
+	s.Set(rank, uid)
 }

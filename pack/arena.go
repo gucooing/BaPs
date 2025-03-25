@@ -55,6 +55,8 @@ func ArenaEnterBattlePart1(s *enter.Session, request, response proto.Message) {
 		return
 	}
 
+	s.SetBattleArenaUser(au)
+
 	// 上锁！！！！！！！！！！！！！！！！！
 	if !enter.AddArenaBattleRank(au.Rank) {
 		rsp.ErrorCode = proto.WebAPIErrorCode_ArenaInfoNotFound
@@ -66,7 +68,7 @@ func ArenaEnterBattlePart1(s *enter.Session, request, response proto.Message) {
 		return
 	}
 	go enter.CheckArenaBattle(
-		time.NewTicker(3+1*time.Hour),
+		time.NewTicker(3+1*time.Second),
 		rank.GetArenaRank(game.GetArenaBin(s).GetCurSeasonId(), s.AccountServerId),
 		au.Rank,
 	)
@@ -76,7 +78,7 @@ func ArenaEnterBattlePart1(s *enter.Session, request, response proto.Message) {
 		Season:              game.GetArenaBin(s).GetCurSeasonId(),
 		Group:               game.GetArenaBin(s).GetPlayerGroupId(),
 		BattleStartTime:     mx.MxTime(time.Now()),
-		BattleEndTime:       mx.MxTime(time.Now().Add(3 * time.Hour)),
+		BattleEndTime:       mx.MxTime(time.Now().Add(3 * time.Second)),
 		Seed:                114514,
 		AttackingUserDB:     game.GetPlayerArenaUserDB(s, proto.EchelonType_ArenaAttack),
 		DefendingUserDB:     nil,
@@ -94,24 +96,35 @@ func ArenaEnterBattlePart2(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ArenaEnterBattlePart2Request)
 	rsp := response.(*proto.ArenaEnterBattlePart2Response)
 
+	defer func() {
+		rsp.ArenaBattleDB = &proto.ArenaBattleDB{
+			ArenaBattleServerId: req.ArenaBattleDB.ArenaBattleServerId,
+			Season:              req.ArenaBattleDB.Season,
+			Group:               req.ArenaBattleDB.Group,
+			BattleStartTime:     req.ArenaBattleDB.BattleStartTime,
+			BattleEndTime:       req.ArenaBattleDB.BattleEndTime,
+			Seed:                req.ArenaBattleDB.Seed,
+			AttackingUserDB:     req.ArenaBattleDB.AttackingUserDB,
+			DefendingUserDB:     req.ArenaBattleDB.DefendingUserDB,
+			BattleSummary:       nil,
+		}
+		rsp.ArenaPlayerInfoDB = game.GetArenaPlayerInfoDB(s)
+		rsp.AccountCurrencyDB = game.GetAccountCurrencyDB(s)
+	}()
+
+	bau := s.GetBattleArenaUser()
 	// 判断输赢
+	if req.ArenaBattleDB.BattleSummary.Winner != "Group01" || bau == nil {
+		return
+	}
 
 	// 交换排名
+	oldRank := rank.GetArenaRank(game.GetArenaBin(s).GetCurSeasonId(), s.AccountServerId)
 
+	rank.SetArenaRank(game.GetArenaBin(s).GetCurSeasonId(), bau.Rank, s.AccountServerId)
 	// 发送奖励
 
 	// 主动解除锁定
-	rsp.ArenaBattleDB = &proto.ArenaBattleDB{
-		ArenaBattleServerId: req.ArenaBattleDB.ArenaBattleServerId,
-		Season:              req.ArenaBattleDB.Season,
-		Group:               req.ArenaBattleDB.Group,
-		BattleStartTime:     req.ArenaBattleDB.BattleStartTime,
-		BattleEndTime:       req.ArenaBattleDB.BattleEndTime,
-		Seed:                req.ArenaBattleDB.Seed,
-		AttackingUserDB:     req.ArenaBattleDB.AttackingUserDB,
-		DefendingUserDB:     req.ArenaBattleDB.DefendingUserDB,
-		BattleSummary:       nil,
-	}
-	rsp.ArenaPlayerInfoDB = game.GetArenaPlayerInfoDB(s)
-	rsp.AccountCurrencyDB = game.GetAccountCurrencyDB(s)
+	enter.DelArenaBattleRank(oldRank)
+	enter.DelArenaBattleRank(bau.Rank)
 }

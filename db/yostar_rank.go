@@ -13,6 +13,7 @@ type YostarRank struct {
 	SeasonId int64
 	Uid      int64   `gorm:"unique"`
 	Score    float64 // 分数
+	Rank     int64
 }
 
 func RaidUserTable(x int64) func(tx *gorm.DB) *gorm.DB {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 
+	ranar "github.com/gucooing/BaPs/common/rank_arena"
 	"github.com/gucooing/BaPs/config"
 	"github.com/gucooing/BaPs/db"
 	"github.com/gucooing/BaPs/gdconf"
@@ -23,7 +24,7 @@ type RankInfo struct {
 	raidEliminateRankZset map[int64]*zset.SortedSet[int64] // 赛季
 	raidEliminateSync     sync.RWMutex
 	// 竞技场
-	arenaRankZset map[int64]*zset.SortedSet[int64] // 赛季
+	arenaRankZset map[int64]*ranar.RankArena // 赛季
 	arenaSync     sync.RWMutex
 }
 
@@ -33,7 +34,7 @@ func NewRank() *RankInfo {
 		raidSync:              sync.RWMutex{},
 		raidEliminateRankZset: make(map[int64]*zset.SortedSet[int64]),
 		raidEliminateSync:     sync.RWMutex{},
-		arenaRankZset:         make(map[int64]*zset.SortedSet[int64]),
+		arenaRankZset:         make(map[int64]*ranar.RankArena),
 		arenaSync:             sync.RWMutex{},
 	}
 	// 初始化数据库
@@ -130,11 +131,11 @@ func (x *RankInfo) Close() {
 	x.arenaSync.Lock()
 	for seasonId, s := range x.arenaRankZset {
 		all := make([]*db.YostarRank, 0)
-		s.RevRange(0, -1, func(score float64, uid int64) {
+		s.GetAll(func(uid, rank int64) {
 			all = append(all, &db.YostarRank{
 				SeasonId: seasonId,
 				Uid:      uid,
-				Score:    score,
+				Rank:     rank,
 			})
 		})
 		err := db.UpAllYostarRank(x.SQL, all, db.ArenaUserTable(seasonId))
