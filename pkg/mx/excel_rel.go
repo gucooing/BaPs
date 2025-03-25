@@ -1,5 +1,5 @@
-//go:build rel
-// +build rel
+//go:build !dev
+// +build !dev
 
 package mx
 
