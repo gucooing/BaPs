@@ -52,9 +52,6 @@ func NewBaPs() {
 	// 设置时区
 	mx.SetTZ()
 	logger.InitLogger("BaPs", strings.ToUpper(cfg.LogLevel))
-	defer func() {
-		logger.CloseLogger()
-	}()
 	logger.Info("BaPs")
 	logger.Info("---------------------------------------------")
 	logger.Info("仅供学习用途，严禁用于商业用途，请于24小时内删除！！！")
