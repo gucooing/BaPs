@@ -19,9 +19,9 @@ for %%p in (%PLATFORMS%) do (
         if not exist "!OUT_DIR!" mkdir "!OUT_DIR!"
 
         if "!GOOS!"=="windows" (
-            go build -ldflags="-s -w" -o "!OUT_DIR!/!OUTPUT_NAME!_!GOOS!_!GOARCH!.exe" %MAIN_PATH%
+            go build -ldflags="-s -w" -tags "rel" -o "!OUT_DIR!/!OUTPUT_NAME!_!GOOS!_!GOARCH!.exe" %MAIN_PATH%
         ) else (
-            go build -ldflags="-s -w" -o "!OUT_DIR!/!OUTPUT_NAME!_!GOOS!_!GOARCH!" %MAIN_PATH%
+            go build -ldflags="-s -w" -tags "rel" -o "!OUT_DIR!/!OUTPUT_NAME!_!GOOS!_!GOARCH!" %MAIN_PATH%
         )
     )
 )

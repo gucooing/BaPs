@@ -470,5 +470,8 @@ func StackAll() string {
 var OriginalLocal *time.Location
 
 func GetOriginalLocalTime() time.Time {
+	if OriginalLocal == nil {
+		OriginalLocal = time.Local
+	}
 	return time.Now().In(OriginalLocal)
 }
