@@ -98,7 +98,7 @@ func NewCurRaidBattleInfo(s *enter.Session, raidUniqueId int64, isPractice bool)
 		MaxHp:        chConf.MaxHP100,
 		SeasonId:     GetCurRaidInfo(s).SeasonId,
 		ServerId:     1,
-		ContentType:  proto.ContentType_EliminateRaid,
+		ContentType:  proto.ContentType_Raid,
 	}
 }
 
