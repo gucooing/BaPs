@@ -499,7 +499,7 @@ message CurRaidBattleInfo {
   map<int32,RaidTeamInfo> raid_team_list = 3; // 参赛队伍信息
   int32 frame = 4; // 总时间帧
   int64 begin = 5; // 开始时间
-  int64 max_hp = 14; // 最大血量
+//  int64 max_hp = 6; // 最大血量
   int64 season_id = 7; // 赛季
   bool is_assist = 8; // 是否借人
   bool is_close = 9; // 是否已经结算
@@ -507,12 +507,17 @@ message CurRaidBattleInfo {
   int64 clear_time_point = 11; // 时间得分
   int64 default_point = 12; // 基础得分
   int64 hp_score_point = 13; // 血量得分
-  int64 boss_groggy_point = 15; // 不知道
-  int64 given_damage = 16; // 消耗血量
-  int32 index_damage = 17; // 序号
-  int64 server_id = 18; // 战斗次数
-  int32 warn_num = 19; // 警告等级
-  int32 content_type = 20; // 类型
+  int64 server_id = 14; // 战斗次数
+  int32 warn_num = 15; // 警告等级
+  int32 content_type = 16; // 类型
+  repeated RaidBoosInfo raid_boos_list = 17;
+}
+
+message RaidBoosInfo {
+  int32 index = 1; // 序号
+  int64 given_damage = 2; // 消耗血量
+  int64 boss_groggy_point = 3; // 不知道
+  int64 max_hp = 4; // 最大血量
 }
 
 // 登录奖励

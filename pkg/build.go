@@ -1,4 +1,4 @@
 package pkg
 
-var ClientVersion = "1.54.327262"
-var ServerVersion = "0.0.7"
+var ClientVersion = "1.55.331706"
+var ServerVersion = "0.0.8"

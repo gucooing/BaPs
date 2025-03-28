@@ -23,10 +23,10 @@ func EliminateRaidLobby(s *enter.Session, request, response proto.Message) {
 	rsp := response.(*proto.EliminateRaidLobbyResponse)
 
 	curBattle := game.GetCurRaidEliminateBattleInfo(s)
-	// 超时了
+	// 超时了 进入结算程序
 	if curBattle != nil &&
 		!curBattle.IsClose &&
-		time.Now().After(time.Unix(curBattle.Begin, 0)) {
+		time.Now().After(time.Unix(curBattle.Begin, 0).Add(1*time.Hour)) {
 		parcelResult := game.RaidEliminateClose(s)
 		rsp.RaidGiveUpDB = game.GetRaidEliminateGiveUpDB(s)
 		rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResult)
@@ -124,14 +124,27 @@ func EliminateRaidEndBattle(s *enter.Session, request, response proto.Message) {
 	}
 	// 记录boss情况
 	for _, raidBossResult := range raidSummary.RaidBossResults {
+		if int32(len(curBattle.RaidBoosList)) < raidBossResult.RaidDamage.Index+1 {
+			break
+		}
+
+		raidBoosInfo := curBattle.RaidBoosList[raidBossResult.RaidDamage.Index]
+
 		curBattle.AiPhase = raidBossResult.AIPhase
-		curBattle.BossGroggyPoint += raidBossResult.RaidDamage.GivenGroggyPoint
-		curBattle.GivenDamage += raidBossResult.RaidDamage.GivenDamage
-		curBattle.IndexDamage = raidBossResult.RaidDamage.Index
+		raidBoosInfo.BossGroggyPoint += raidBossResult.RaidDamage.GivenGroggyPoint
+		raidBoosInfo.GivenDamage += raidBossResult.RaidDamage.GivenDamage
 	}
+
+	givenDamage := int64(0)
+	mxHp := int64(0)
+	for _, raidBoosInfo := range curBattle.RaidBoosList {
+		givenDamage += raidBoosInfo.GivenDamage
+		mxHp += raidBoosInfo.MaxHp
+	}
+
 	curBattle.Frame += summary.EndFrame
 	curBattle.ServerId++
-	curBattle.IsClose = curBattle.MaxHp-curBattle.GivenDamage == 0
+	curBattle.IsClose = mxHp-givenDamage == 0
 	// 判断是否结算
 	if curBattle.IsClose {
 		// 结算

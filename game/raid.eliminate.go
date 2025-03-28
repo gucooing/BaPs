@@ -77,11 +77,6 @@ func NewCurRaidEliminateBattleInfo(s *enter.Session, raidUniqueId int64, isPract
 		logger.Debug("玩家实例不存在或大决战关卡不存在RaidUniqueId:%v", raidUniqueId)
 		return
 	}
-	chConf := gdconf.GetCharacterStatExcelTable(conf.RaidCharacterId)
-	if chConf == nil {
-		logger.Error("大决战boss实例不存在RaidCharacterId:%v", conf.RaidCharacterId)
-		return
-	}
 	if !isPractice {
 		// 扣票
 		UpCurrency(s, conf.RaidEnterCostId, -conf.RaidEnterCostAmount)
@@ -91,11 +86,25 @@ func NewCurRaidEliminateBattleInfo(s *enter.Session, raidUniqueId int64, isPract
 		IsPractice:   isPractice,
 		RaidTeamList: make(map[int32]*sro.RaidTeamInfo),
 		Frame:        0,
-		Begin:        time.Now().Add(1 * time.Hour).Unix(),
-		MaxHp:        chConf.MaxHP100,
+		Begin:        time.Now().Unix(),
+		// MaxHp:        chConf.MaxHP100,
 		SeasonId:     GetCurRaidEliminateInfo(s).SeasonId,
 		ServerId:     1,
 		ContentType:  proto.ContentType_EliminateRaid,
+		RaidBoosList: make([]*sro.RaidBoosInfo, 0),
+	}
+
+	for index, bosscid := range conf.BossCharacterId {
+		chConf := gdconf.GetCharacterStatExcelTable(bosscid)
+		if chConf == nil {
+			logger.Error("大决战boss实例不存在BossCharacterId:%v", bosscid)
+			return
+		}
+		raidBoosInfo := &sro.RaidBoosInfo{
+			Index: int32(index),
+			MaxHp: chConf.MaxHP100,
+		}
+		bin.CurRaidBattleInfo.RaidBoosList = append(bin.CurRaidBattleInfo.RaidBoosList, raidBoosInfo)
 	}
 }
 
@@ -253,9 +262,17 @@ func RaidEliminateClose(s *enter.Session) []*ParcelResult {
 		return nil
 	}
 	list := make([]*ParcelResult, 0)
+
+	givenDamage := int64(0)
+	mxHp := int64(0)
+	for _, raidBoosInfo := range curBattle.RaidBoosList {
+		givenDamage += raidBoosInfo.GivenDamage
+		mxHp += raidBoosInfo.MaxHp
+	}
+
 	// 计算分数
 	curBattle.DefaultPoint = conf.DefaultClearScore
-	curBattle.HpScorePoint = conf.HppercentScore * curBattle.GivenDamage / curBattle.MaxHp
+	curBattle.HpScorePoint = conf.HppercentScore * givenDamage / mxHp
 	curBattle.ClearTimePoint = alg.MaxInt64(conf.MaximumScore-conf.PerSecondMinusScore/300*int64(curBattle.Frame), 0)
 
 	// 如果不是模拟,且战斗结束

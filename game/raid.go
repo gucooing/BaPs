@@ -84,21 +84,29 @@ func NewCurRaidBattleInfo(s *enter.Session, raidUniqueId int64, isPractice bool)
 		logger.Debug("玩家实例不存在或总力战关卡不存在RaidUniqueId:%v", raidUniqueId)
 		return
 	}
-	chConf := gdconf.GetCharacterStatExcelTable(conf.RaidCharacterId)
-	if chConf == nil {
-		logger.Error("总力战boss实例不存在RaidCharacterId:%v", conf.RaidCharacterId)
-		return
-	}
 	bin.CurRaidBattleInfo = &sro.CurRaidBattleInfo{
 		RaidUniqueId: raidUniqueId,
 		IsPractice:   isPractice,
 		RaidTeamList: make(map[int32]*sro.RaidTeamInfo),
 		Frame:        0,
-		Begin:        time.Now().Add(1 * time.Hour).Unix(),
-		MaxHp:        chConf.MaxHP100,
+		Begin:        time.Now().Unix(),
+		// MaxHp:        ,
 		SeasonId:     GetCurRaidInfo(s).SeasonId,
 		ServerId:     1,
 		ContentType:  proto.ContentType_Raid,
+		RaidBoosList: make([]*sro.RaidBoosInfo, 0),
+	}
+	for index, bosscid := range conf.BossCharacterId {
+		chConf := gdconf.GetCharacterStatExcelTable(bosscid)
+		if chConf == nil {
+			logger.Error("总力战boss实例不存在BossCharacterId:%v", bosscid)
+			return
+		}
+		raidBoosInfo := &sro.RaidBoosInfo{
+			Index: int32(index),
+			MaxHp: chConf.MaxHP100,
+		}
+		bin.CurRaidBattleInfo.RaidBoosList = append(bin.CurRaidBattleInfo.RaidBoosList, raidBoosInfo)
 	}
 }
 
@@ -304,30 +312,46 @@ func GetRaidBattleDB(s *enter.Session, bin *sro.CurRaidBattleInfo) *proto.RaidBa
 		return nil
 	}
 	info := &proto.RaidBattleDB{
-		ContentType:   proto.ContentType(bin.ContentType),
-		CurrentBossHP: bin.MaxHp - bin.GivenDamage,
-		RaidMembers: []*proto.RaidMemberDescription{
-			{
-				AccountId:   s.AccountServerId,
-				AccountName: GetNickname(s),
-				CharacterId: 0,
-				DamageCollection: []*proto.RaidDamageCollection{
-					{
-						Index:            bin.IndexDamage,
-						GivenGroggyPoint: bin.BossGroggyPoint,
-						GivenDamage:      bin.GivenDamage,
-					},
-				},
-			},
-		},
+		ContentType:        proto.ContentType(bin.ContentType),
+		CurrentBossHP:      0,
+		RaidMembers:        make([]*proto.RaidMemberDescription, 0),
 		RaidUniqueId:       bin.RaidUniqueId,
 		CurrentBossAIPhase: bin.AiPhase,
-		CurrentBossGroggy:  bin.BossGroggyPoint,
+		CurrentBossGroggy:  0,
+		IsClear:            bin.IsClose,
+		RaidBossIndex:      0,
 
-		RaidBossIndex: 0,
-		BIEchelon:     "",
-		IsClear:       false,
-		SubPartsHPs:   make([]int64, 0),
+		BIEchelon:   "",
+		SubPartsHPs: make([]int64, 0),
+	}
+
+	rmd := &proto.RaidMemberDescription{
+		AccountId:        s.AccountServerId,
+		AccountName:      GetNickname(s),
+		CharacterId:      0,
+		DamageCollection: make([]*proto.RaidDamageCollection, 0),
+	}
+
+	info.RaidMembers = append(info.RaidMembers, rmd)
+
+	isIndex := false
+	for _, raidBoosInfo := range bin.RaidBoosList {
+		rdc := &proto.RaidDamageCollection{
+			Index:            raidBoosInfo.Index,
+			GivenGroggyPoint: raidBoosInfo.BossGroggyPoint,
+			GivenDamage:      raidBoosInfo.GivenDamage,
+		}
+		rmd.DamageCollection = append(rmd.DamageCollection, rdc)
+
+		curHp := raidBoosInfo.MaxHp - raidBoosInfo.GivenDamage
+
+		if curHp != 0 && !isIndex {
+			isIndex = true
+			info.CurrentBossGroggy = raidBoosInfo.BossGroggyPoint
+			info.RaidBossIndex = raidBoosInfo.Index
+		}
+
+		info.CurrentBossHP += curHp
 	}
 
 	return info
@@ -341,21 +365,14 @@ func GetRaidDB(s *enter.Session, bin *sro.CurRaidBattleInfo) *proto.RaidDB {
 		AccountLevelWhenCreateDB: int64(GetAccountLevel(s)),
 		Begin:                    mx.Unix(bin.Begin, 0),
 		ContentType:              proto.ContentType(bin.ContentType),
-		End:                      mx.Unix(bin.Begin, 0).Add(1 * time.Hour),
+		End:                      mx.Unix(bin.Begin, 0), // .Add(1 * time.Hour),
 		Owner: &proto.RaidMemberDescription{
 			AccountId:   s.AccountServerId,
 			AccountName: GetNickname(s),
 			CharacterId: 0,
 		},
-		PlayerCount: 1,
-		RaidBossDBs: []*proto.RaidBossDB{
-			{
-				ContentType:     proto.ContentType(bin.ContentType),
-				BossIndex:       0,
-				BossCurrentHP:   bin.MaxHp - bin.GivenDamage,
-				BossGroggyPoint: bin.BossGroggyPoint,
-			},
-		},
+		PlayerCount:                   1,
+		RaidBossDBs:                   make([]*proto.RaidBossDB, 0),
 		RaidState:                     proto.RaidStatus_Playing,
 		SeasonId:                      bin.SeasonId,
 		UniqueId:                      bin.RaidUniqueId,
@@ -363,13 +380,13 @@ func GetRaidDB(s *enter.Session, bin *sro.CurRaidBattleInfo) *proto.RaidDB {
 		ClanAssistUsed:                bin.IsAssist,
 		ParticipateCharacterServerIds: make(map[int64][]int64),
 		ServerId:                      bin.ServerId,
+		LastBossIndex:                 0,
 
 		SecretCode:           "0",
 		OwnerAccountServerId: 0,
 		OwnerNickname:        "",
 		BossGroup:            "",
 		BossDifficulty:       0,
-		LastBossIndex:        0,
 		Tags:                 make([]int32, 0),
 		IsEnterRoom:          false,
 		SessionHitPoint:      0,
@@ -384,6 +401,25 @@ func GetRaidDB(s *enter.Session, bin *sro.CurRaidBattleInfo) *proto.RaidDB {
 		}
 		info.ParticipateCharacterServerIds[int64(index)] = list
 	}
+
+	isIndex := false
+
+	for _, raidBoosInfo := range bin.RaidBoosList {
+		curHp := raidBoosInfo.MaxHp - raidBoosInfo.GivenDamage
+		rb := &proto.RaidBossDB{
+			ContentType:     proto.ContentType(bin.ContentType),
+			BossIndex:       raidBoosInfo.Index,
+			BossCurrentHP:   curHp,
+			BossGroggyPoint: raidBoosInfo.BossGroggyPoint,
+		}
+		info.RaidBossDBs = append(info.RaidBossDBs, rb)
+
+		if curHp != 0 && !isIndex {
+			isIndex = true
+			info.LastBossIndex = raidBoosInfo.Index
+		}
+	}
+
 	return info
 }
 
@@ -489,13 +525,25 @@ func RaidClose(s *enter.Session) []*ParcelResult {
 		return nil
 	}
 	list := make([]*ParcelResult, 0)
+
+	givenDamage := int64(0)
+	mxHp := int64(0)
+	for _, raidBoosInfo := range curBattle.RaidBoosList {
+		givenDamage += raidBoosInfo.GivenDamage
+		mxHp += raidBoosInfo.MaxHp
+	}
+
 	// 计算分数
 	curBattle.DefaultPoint = conf.DefaultClearScore
-	curBattle.HpScorePoint = conf.HPPercentScore * curBattle.GivenDamage / curBattle.MaxHp
+	curBattle.HpScorePoint = conf.HPPercentScore * givenDamage / mxHp
 	curBattle.ClearTimePoint = alg.MaxInt64(conf.MaximumScore-conf.PerSecondMinusScore/300*int64(curBattle.Frame), 0)
 
 	// 如果不是模拟,且战斗结束
 	if !curBattle.IsPractice && curBattle.IsClose && len(curBattle.RaidTeamList) > 0 {
+		if mxHp-givenDamage == 0 {
+			// 更新通关难度
+			cur.Difficulty = alg.MaxInt32(cur.Difficulty, int32(proto.GetDifficultyByStr(conf.Difficulty)))
+		}
 		rankingPoint := curBattle.ClearTimePoint + curBattle.HpScorePoint + curBattle.DefaultPoint
 		cur.TotalScore += rankingPoint // 累积分数
 		if cur.BestScore < rankingPoint {
@@ -504,7 +552,6 @@ func RaidClose(s *enter.Session) []*ParcelResult {
 			rank.SetRaidScore(curBattle.SeasonId, s.AccountServerId, float64(rankingPoint))
 		}
 		// 计算奖励
-		cur.Difficulty = alg.MaxInt32(cur.Difficulty, int32(proto.GetDifficultyByStr(conf.Difficulty)))
 		for _, rewardConf := range gdconf.GetRaidStageRewardExcelTable(conf.RaidRewardGroupId) {
 			list = append(list, &ParcelResult{
 				ParcelType: proto.GetParcelTypeValue(rewardConf.ClearStageRewardParcelType),
