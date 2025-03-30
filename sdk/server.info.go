@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gucooing/BaPs/config"
 )
 
 type ServerInfo struct {
@@ -86,8 +87,8 @@ func (s *SDK) connectionGroups(c *gin.Context) {
 		Name:                       "Prod-Audit",
 		ManagementDataUrl:          "https://prod-noticeindex.bluearchiveyostar.com/prod/index.json",
 		IsProductionAddressables:   false,
-		ApiUrl:                     fmt.Sprintf("%s/api/", s.GetOuterAddr()),
-		GatewayUrl:                 fmt.Sprintf("%s/getEnterTicket/", s.GetOuterAddr()),
+		ApiUrl:                     fmt.Sprintf("%s/api/", config.GetHttpNet().GetOuterAddr()),
+		GatewayUrl:                 fmt.Sprintf("%s/getEnterTicket/", config.GetHttpNet().GetOuterAddr()),
 		KibanaLogUrl:               "https://prod-logcollector.bluearchiveyostar.com:5300", //    fmt.Sprintf("%s/client/log/", s.GetOuterAddr()),
 		ProhibitedWordBlackListUri: "https://prod-notice.bluearchiveyostar.com/prod/ProhibitedWord/blacklist.csv",
 		ProhibitedWordWhiteListUri: "https://prod-notice.bluearchiveyostar.com/prod/ProhibitedWord/whitelist.csv",

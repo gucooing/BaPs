@@ -1,12 +1,10 @@
 package sdk
 
 import (
-	"fmt"
 	"net/http"
 	"sync"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gucooing/BaPs/config"
 )
 
 type SDK struct {
@@ -70,13 +68,4 @@ func (s *SDK) initRouter() {
 
 func handleIndex(c *gin.Context) {
 	c.String(http.StatusOK, "Ba Ps!")
-}
-
-func (s *SDK) GetOuterAddr() string {
-	cfg := config.GetHttpNet()
-	if cfg.Tls {
-		return fmt.Sprintf("https://%s:%s", cfg.OuterAddr, cfg.OuterPort)
-	} else {
-		return fmt.Sprintf("http://%s:%s", cfg.OuterAddr, cfg.OuterPort)
-	}
 }

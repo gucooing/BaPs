@@ -94,10 +94,9 @@ docker run -d \
   "AutoRegistration": true, // 是否自动注册
   "Tutorial": false, // 是否开启教程-不完善
   "HttpNet": {
-    "InnerAddr": "0.0.0.0", // 监听地址
+    "InnerIp": "0.0.0.0", // 监听IP
     "InnerPort": "5000", // 监听端口
-    "OuterAddr": "10.0.0.3", // 外网地址
-    "OuterPort": "5000", // 外网端口
+    "OuterAddr": "http://127.0.0.1:5000", // 外网地址
     "Tls": false, // 是否启用ssl
     "CertFile": "./data/cert.pem",
     "KeyFile":   "./data/key.pem"

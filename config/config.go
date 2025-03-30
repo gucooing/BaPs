@@ -29,10 +29,9 @@ type GateWay struct {
 }
 
 type HttpNet struct {
-	InnerAddr string `json:"InnerAddr"`
+	InnerIp   string `json:"InnerIp"`
 	InnerPort string `json:"InnerPort"`
 	OuterAddr string `json:"OuterAddr"`
-	OuterPort string `json:"OuterPort"`
 	Tls       bool   `json:"Tls"`
 	CertFile  string `json:"CertFile"`
 	KeyFile   string `json:"KeyFile"`
@@ -77,6 +76,10 @@ func GetTutorial() bool {
 
 func GetHttpNet() *HttpNet {
 	return GetConfig().HttpNet
+}
+
+func (x *HttpNet) GetOuterAddr() string {
+	return x.OuterAddr
 }
 
 func GetGateWay() *GateWay {
@@ -130,10 +133,9 @@ var DefaultConfig = &Config{
 	AutoRegistration: true,
 	Tutorial:         false,
 	HttpNet: &HttpNet{
-		InnerAddr: "0.0.0.0",
+		InnerIp:   "0.0.0.0",
 		InnerPort: "5000",
-		OuterAddr: "127.0.0.1",
-		OuterPort: "5000",
+		OuterAddr: "http://127.0.0.1:5000",
 		Tls:       false,
 		CertFile:  "./config/cert.pem",
 		KeyFile:   "./config/key.pem",

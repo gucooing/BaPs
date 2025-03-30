@@ -126,15 +126,15 @@ func newGin(appNet *config.HttpNet) (*gin.Engine, *http.Server) {
 	}
 	router.Use(gin.Recovery())
 	router.Use(check.Cors())
-	addr := fmt.Sprintf("%s:%s", appNet.InnerAddr, appNet.InnerPort)
+	addr := fmt.Sprintf("%s:%s", appNet.InnerPort, appNet.InnerPort)
 	if appNet.Tls {
 		logger.Info("监听地址: https://%s", addr)
-		logger.Info("对外地址: https://%s", fmt.Sprintf("%s:%s", appNet.OuterAddr, appNet.OuterPort))
+		logger.Info("对外地址: %s", config.GetHttpNet().GetOuterAddr())
 		server := &http.Server{Addr: addr, Handler: router, TLSConfig: &tls.Config{InsecureSkipVerify: true}}
 		return router, server
 	}
 	logger.Info("监听地址: http://%s", addr)
-	logger.Info("对外地址: http://%s", fmt.Sprintf("%s:%s", appNet.OuterAddr, appNet.OuterPort))
+	logger.Info("对外地址: %s", config.GetHttpNet().GetOuterAddr())
 	server := &http.Server{Addr: addr, Handler: router}
 	return router, server
 }
