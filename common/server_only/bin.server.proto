@@ -503,7 +503,6 @@ message CurRaidBattleInfo {
   int64 season_id = 7; // 赛季
   bool is_assist = 8; // 是否借人
   bool is_close = 9; // 是否已经结算
-  int64 ai_phase = 10; // 当前boss阶段
   int64 clear_time_point = 11; // 时间得分
   int64 default_point = 12; // 基础得分
   int64 hp_score_point = 13; // 血量得分
@@ -518,6 +517,8 @@ message RaidBoosInfo {
   int64 given_damage = 2; // 消耗血量
   int64 boss_groggy_point = 3; // 不知道
   int64 max_hp = 4; // 最大血量
+  int64 ai_phase = 5; // 当前boss阶段
+  repeated int64 sub_parts_hp_s = 6; // 不知道
 }
 
 // 登录奖励

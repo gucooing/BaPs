@@ -130,7 +130,7 @@ func EliminateRaidEndBattle(s *enter.Session, request, response proto.Message) {
 
 		raidBoosInfo := curBattle.RaidBoosList[raidBossResult.RaidDamage.Index]
 
-		curBattle.AiPhase = raidBossResult.AIPhase
+		raidBoosInfo.AiPhase = raidBossResult.AIPhase
 		raidBoosInfo.BossGroggyPoint += raidBossResult.RaidDamage.GivenGroggyPoint
 		raidBoosInfo.GivenDamage += raidBossResult.RaidDamage.GivenDamage
 	}

@@ -28,7 +28,7 @@ func New(router *gin.Engine) *SDK {
 
 func (s *SDK) initRouter() {
 	s.router.Any("/", handleIndex)
-	s.router.GET("/:url.json", s.connectionGroups)
+	s.router.GET("/r:url", s.connectionGroups)
 
 	s.router.GET("/prod/index.json", index)
 

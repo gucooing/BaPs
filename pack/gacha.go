@@ -40,7 +40,7 @@ func ShopBeforehandGachaRun(s *enter.Session, request, response proto.Message) {
 	genLastResults := func(results []*game.ParcelResult) []int64 {
 		list := make([]int64, 0)
 		for _, result := range results {
-			if result.ParcelType == proto.ParcelType_Currency {
+			if result.ParcelType == proto.ParcelType_Character {
 				list = append(list, result.ParcelId)
 			}
 		}

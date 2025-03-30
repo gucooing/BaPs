@@ -90,8 +90,7 @@ func NewCurRaidBattleInfo(s *enter.Session, raidUniqueId int64, isPractice bool)
 		RaidTeamList: make(map[int32]*sro.RaidTeamInfo),
 		Frame:        0,
 		Begin:        time.Now().Unix(),
-		// MaxHp:        ,
-		SeasonId:     GetCurRaidInfo(s).SeasonId,
+		SeasonId:     GetCurRaidInfo(s).GetSeasonId(),
 		ServerId:     1,
 		ContentType:  proto.ContentType_Raid,
 		RaidBoosList: make([]*sro.RaidBoosInfo, 0),
@@ -316,13 +315,13 @@ func GetRaidBattleDB(s *enter.Session, bin *sro.CurRaidBattleInfo) *proto.RaidBa
 		CurrentBossHP:      0,
 		RaidMembers:        make([]*proto.RaidMemberDescription, 0),
 		RaidUniqueId:       bin.RaidUniqueId,
-		CurrentBossAIPhase: bin.AiPhase,
+		CurrentBossAIPhase: 0,
 		CurrentBossGroggy:  0,
 		IsClear:            bin.IsClose,
 		RaidBossIndex:      0,
+		SubPartsHPs:        make([]int64, 0),
 
-		BIEchelon:   "",
-		SubPartsHPs: make([]int64, 0),
+		BIEchelon: "",
 	}
 
 	rmd := &proto.RaidMemberDescription{
@@ -349,6 +348,8 @@ func GetRaidBattleDB(s *enter.Session, bin *sro.CurRaidBattleInfo) *proto.RaidBa
 			isIndex = true
 			info.CurrentBossGroggy = raidBoosInfo.BossGroggyPoint
 			info.RaidBossIndex = raidBoosInfo.Index
+			info.CurrentBossAIPhase = raidBoosInfo.AiPhase
+			info.SubPartsHPs = raidBoosInfo.SubPartsHpS
 		}
 
 		info.CurrentBossHP += curHp
