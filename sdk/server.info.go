@@ -24,7 +24,7 @@ func (s *SDK) GetServerInfo(c *gin.Context) *ServerInfo {
 		s.serverinfo.loadSync.Lock()
 		defer s.serverinfo.loadSync.Unlock()
 		url := c.Request.URL.String()
-		resp, err := http.Get("https://yostar-serverinfo.bluearchiveyostar.com" + url)
+		resp, err := http.Get(config.GetOtherAddr().GetServerInfoUrl() + url)
 		if err != nil {
 			return
 		}
@@ -85,7 +85,7 @@ func (s *SDK) connectionGroups(c *gin.Context) {
 	sinfo := s.GetServerInfo(c)
 	connectionGroup := &ConnectionGroup{
 		Name:                       "Prod-Audit",
-		ManagementDataUrl:          "https://prod-noticeindex.bluearchiveyostar.com/prod/index.json",
+		ManagementDataUrl:          config.GetOtherAddr().GetManagementDataUrl(),
 		IsProductionAddressables:   false,
 		ApiUrl:                     fmt.Sprintf("%s/api/", config.GetHttpNet().GetOuterAddr()),
 		GatewayUrl:                 fmt.Sprintf("%s/getEnterTicket/", config.GetHttpNet().GetOuterAddr()),

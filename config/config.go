@@ -8,17 +8,23 @@ import (
 )
 
 type Config struct {
-	LogLevel         string   `json:"LogLevel"`
-	ResourcesPath    string   `json:"ResourcesPath"`
-	DataPath         string   `json:"DataPath"`
-	GucooingApiKey   string   `json:"GucooingApiKey"`
-	AutoRegistration bool     `json:"AutoRegistration"`
-	Tutorial         bool     `json:"Tutorial"`
-	HttpNet          *HttpNet `json:"HttpNet"`
-	GateWay          *GateWay `json:"GateWay"`
-	DB               *DB      `json:"DB"`
-	Irc              *Irc     `json:"Irc"`
-	RankDB           *DB      `json:"RankDB"`
+	LogLevel         string     `json:"LogLevel"`
+	ResourcesPath    string     `json:"ResourcesPath"`
+	DataPath         string     `json:"DataPath"`
+	GucooingApiKey   string     `json:"GucooingApiKey"`
+	AutoRegistration bool       `json:"AutoRegistration"`
+	Tutorial         bool       `json:"Tutorial"`
+	OtherAddr        *OtherAddr `json:"OtherAddr"`
+	HttpNet          *HttpNet   `json:"HttpNet"`
+	GateWay          *GateWay   `json:"GateWay"`
+	DB               *DB        `json:"DB"`
+	Irc              *Irc       `json:"Irc"`
+	RankDB           *DB        `json:"RankDB"`
+}
+
+type OtherAddr struct {
+	ServerInfoUrl     string `json:"ServerInfoUrl"`
+	ManagementDataUrl string `json:"ManagementDataUrl"`
 }
 
 type GateWay struct {
@@ -72,6 +78,18 @@ func GetAutoRegistration() bool {
 
 func GetTutorial() bool {
 	return GetConfig().Tutorial
+}
+
+func GetOtherAddr() *OtherAddr {
+	return GetConfig().OtherAddr
+}
+
+func (x *OtherAddr) GetServerInfoUrl() string {
+	return x.ServerInfoUrl
+}
+
+func (x *OtherAddr) GetManagementDataUrl() string {
+	return x.ManagementDataUrl
 }
 
 func GetHttpNet() *HttpNet {
@@ -132,6 +150,10 @@ var DefaultConfig = &Config{
 	GucooingApiKey:   "123456",
 	AutoRegistration: true,
 	Tutorial:         false,
+	OtherAddr: &OtherAddr{
+		ServerInfoUrl:     "https://yostar-serverinfo.bluearchiveyostar.com",
+		ManagementDataUrl: "https://prod-noticeindex.bluearchiveyostar.com/prod/index.json",
+	},
 	HttpNet: &HttpNet{
 		InnerIp:   "0.0.0.0",
 		InnerPort: "5000",

@@ -93,6 +93,10 @@ docker run -d \
   "GucooingApiKey": "123456", // 使用api时验证身份的key
   "AutoRegistration": true, // 是否自动注册
   "Tutorial": false, // 是否开启教程-不完善
+  "OtherAddr": {
+    "ServerInfoUrl": "https://yostar-serverinfo.bluearchiveyostar.com", // 上游服务器地址
+    "ManagementDataUrl": "https://prod-noticeindex.bluearchiveyostar.com/prod/index.json" // 公告地址
+  },
   "HttpNet": {
     "InnerIp": "0.0.0.0", // 监听IP
     "InnerPort": "5000", // 监听端口

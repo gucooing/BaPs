@@ -58,6 +58,10 @@ func UpAccountLevel(level int32, exp int64) (int32, int64) {
 	}
 }
 
+func GetAccountLevelExcel(level int32) *sro.AccountLevelExcel {
+	return GC.GetGPP().AccountLevel.AccountLevelExcelMap[level]
+}
+
 func GetAPAutoChargeMax(level int32) int64 {
 	conf := GC.GetGPP().AccountLevel.AccountLevelExcelMap[level]
 	if conf == nil {

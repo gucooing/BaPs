@@ -527,8 +527,10 @@ message AccountLevelExcel {
   int64 Id = 1;
   int32 Level = 2;
   int64 Exp = 3;
-  int64 APAutoChargeMax = 4;
-  bool NeedReportEvent = 5;
+  int64 NewbieExpRatio = 4;
+  int64 CloseInterval = 5;
+  int64 APAutoChargeMax = 6;
+  bool NeedReportEvent = 7;
 }
 
 message EquipmentExcelTable {

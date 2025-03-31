@@ -261,6 +261,9 @@ func AddAccountExp(s *enter.Session, num int64) {
 	if bin == nil {
 		return
 	}
+	if ratio := gdconf.GetAccountLevelExcel(GetAccountLevel(s)).GetNewbieExpRatio(); ratio != 0 {
+		num = (ratio * num * 10000) / 10000
+	}
 	bin.Exp += num
 	newLevel, newExp := gdconf.UpAccountLevel(GetAccountLevel(s),
 		GetAccountExp(s))
