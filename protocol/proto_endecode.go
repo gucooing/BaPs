@@ -1,10 +1,10 @@
 package protocol
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 
+	"github.com/bytedance/sonic"
 	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/cmd"
 	"github.com/gucooing/BaPs/protocol/proto"
@@ -18,7 +18,7 @@ type NetworkProtocolResponse struct {
 // UnmarshalRequest 解码req数据包
 func UnmarshalRequest(b []byte) (proto.Message, *proto.BasePacket, error) {
 	base := new(proto.BasePacket)
-	err := json.Unmarshal(b, base)
+	err := sonic.Unmarshal(b, base)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -26,7 +26,7 @@ func UnmarshalRequest(b []byte) (proto.Message, *proto.BasePacket, error) {
 	if packet == nil {
 		return nil, nil, errors.New(fmt.Sprintf("request unknown cmd id: %v", base.GetProtocol()))
 	}
-	err = json.Unmarshal(b, packet)
+	err = sonic.Unmarshal(b, packet)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -39,12 +39,12 @@ func MarshalResponse(m proto.Message) (*NetworkProtocolResponse, error) {
 	if m == nil {
 		return nil, errors.New("message nil")
 	}
-	jsonData, err := json.Marshal(m)
+	jsonData, err := sonic.MarshalString(m)
 	if err != nil {
 		return nil, err
 	}
 	v := &NetworkProtocolResponse{
-		Packet:   string(jsonData),
+		Packet:   jsonData,
 		Protocol: mx.Protocol(m.GetProtocol()).String(),
 	}
 

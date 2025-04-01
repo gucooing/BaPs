@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/bytedance/sonic"
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/cdq"
@@ -43,11 +44,9 @@ func (c *Command) getPlayer(options map[string]*cdq.CommandOption) (string, erro
 	if session == nil {
 		return "", errors.New(fmt.Sprintf("玩家未注册 UID:%v", uid))
 	}
-	session.GoroutinesSync.Lock()
-	defer session.GoroutinesSync.Unlock()
 
 	if isBin == 0 {
-		return session.PlayerBin.String(), nil
+		return sonic.MarshalString(session.PlayerBin)
 	} else {
 		return hex.EncodeToString(session.GetPbBinData()), nil
 	}

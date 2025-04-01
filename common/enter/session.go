@@ -241,6 +241,8 @@ func Close() {
 
 // GetPbBinData 将玩家pb数据转二进制数据
 func (x *Session) GetPbBinData() []byte {
+	x.GoroutinesSync.Lock()
+	defer x.GoroutinesSync.Unlock()
 	bin, err := pb.Marshal(x.PlayerBin)
 	if err != nil {
 		return nil

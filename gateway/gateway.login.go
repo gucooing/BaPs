@@ -1,11 +1,11 @@
 package gateway
 
 import (
-	"encoding/json"
 	"sync"
 	"sync/atomic"
 	"time"
 
+	"github.com/bytedance/sonic"
 	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/db"
@@ -62,7 +62,7 @@ func (g *Gateway) getEnterTicket(c *gin.Context) {
 	rsp := &proto.QueuingGetTicketResponse{}
 	defer g.send(c, rsp)
 	req := new(proto.QueuingGetTicketRequest)
-	err = json.Unmarshal(bin, req)
+	err = sonic.Unmarshal(bin, req)
 	if err != nil {
 		logger.Debug("request err:%s c--->s:%s", err.Error(), string(bin))
 		return

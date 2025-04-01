@@ -4,10 +4,9 @@
 package gateway
 
 import (
-	"encoding/json"
-
 	"github.com/arl/statsviz"
 	example "github.com/arl/statsviz/_example"
+	"github.com/bytedance/sonic"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/config"
@@ -43,7 +42,7 @@ func logPlayerMsg(logType int, msg proto.Message) {
 	case NoRoute:
 		a = "@LogTag(player_no_route)@ c --> s no route for msg, cmd id:"
 	}
-	b, _ := json.MarshalIndent(msg, "", "  ")
+	b, _ := sonic.MarshalIndent(msg, "", "  ")
 
 	logger.Debug("%s%s :%s", a, mx.Protocol(msg.GetProtocol()).String(), string(b))
 }

@@ -4,7 +4,7 @@ setlocal enabledelayedexpansion
 go mod download
 go mod verify
 set CGO_ENABLED=0
-set "PLATFORMS=windows/amd64 windows/arm64 linux/amd64 linux/arm64 linux/armv7l"
+set "PLATFORMS=windows/amd64 windows/arm64 linux/amd64 linux/arm64"
 set "OUT_DIR=./bin"
 set "MAIN_PATH=.\cmd\BaPs\BaPs.go"
 set "OUTPUT_NAME=BaPs"
@@ -15,15 +15,7 @@ for %%p in (%PLATFORMS%) do (
         set "GOARCH=%%b"
         set "GOARM="
 
-        rem 处理ARMv7架构的特殊情况
-        if "%%b"=="armv7l" (
-            set "GOARCH=arm"
-            set "GOARM=7"
-        )
         set "ARCH_SUFFIX=!GOARCH!"
-        if "!GOARCH!"=="arm" if defined GOARM (
-            set "ARCH_SUFFIX=armv!GOARM!"
-        )
 
         echo Compiling for GOOS=!GOOS! ARCH_SUFFIX=!ARCH_SUFFIX!...
 
