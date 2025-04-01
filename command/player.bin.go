@@ -17,11 +17,12 @@ func (c *Command) ApplicationCommandGetPlayer() {
 		AliasList:   []string{"getplayer", "gp"},
 		Description: "获取指定玩家的db数据",
 		Permissions: cdq.Admin,
-		Options: append(playerOptions, &cdq.CommandOption{
-			Name:        "bin",
-			Description: "是否输出二进制pb数据,默认:0",
-			Required:    false,
-		}),
+		Options: append(playerOptions,
+			&cdq.CommandOption{
+				Name:        "bin",
+				Description: "是否输出二进制pb数据,默认:0",
+				Required:    false,
+			}),
 		CommandFunc: c.getPlayer,
 	}
 

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
+	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/protocol/proto"
@@ -88,44 +89,81 @@ func ShopBuyMerchandise(s *enter.Session, request, response proto.Message) {
 	req := request.(*proto.ShopBuyMerchandiseRequest)
 	rsp := response.(*proto.ShopBuyMerchandiseResponse)
 
-	conf := gdconf.GetShopExcelTable(req.ShopUniqueId)
-	if conf == nil {
-		return
-	}
 	parcelResultList := make([]*game.ParcelResult, 0)
-	// 购买物品
-	for _, goodsId := range conf.GoodsId {
-		goodsInfo := gdconf.GetGoodsExcelTable(goodsId)
+	addParcelResult := func(typeList []string, idList, numList []int64, purchaseCount int64, isDel bool) {
+		//  不验有没有那么多了,随意了
+		if len(typeList) == len(idList) &&
+			len(idList) == len(numList) {
+			for index, rewardType := range typeList {
+				num := numList[index] * purchaseCount
+				if isDel {
+					num = -numList[index]
+				}
+				parcelResultList = append(parcelResultList, &game.ParcelResult{
+					ParcelType: proto.GetParcelTypeValue(rewardType),
+					ParcelId:   idList[index],
+					Amount:     num,
+				})
+			}
+		}
+	}
+	addGoodsExcel := func(goodsInfo *sro.GoodsExcelTable) {
 		if goodsInfo == nil {
-			continue
+			return
 		}
 		// 消耗
-		parcelResultList = append(parcelResultList, game.GetParcelResultList(
-			goodsInfo.ConsumeParcelType,
+		addParcelResult(goodsInfo.ConsumeParcelType,
 			goodsInfo.ConsumeParcelId,
 			goodsInfo.ConsumeParcelAmount,
-			true,
-		)...)
+			req.PurchaseCount,
+			true)
 		// 添加
-		parcelResultList = append(parcelResultList, game.GetParcelResultList(
+		addParcelResult(
 			goodsInfo.ParcelType,
 			goodsInfo.ParcelId,
 			goodsInfo.ParcelAmount,
+			req.PurchaseCount,
 			false,
-		)...)
+		)
 	}
+
+	// 购买物品
+	var productType proto.ShopProductType
+	var category proto.ShopCategoryType
+	var purchaseCountLimit int64
+	var displayOrder int64
+	if req.IsRefreshGoods {
+		conf := gdconf.GetShopRefreshExcel(req.ShopUniqueId)
+		productType = proto.ShopProductType_Refresh
+		category = proto.GetShopCategoryType(conf.GetCategoryType())
+		purchaseCountLimit = 1
+		displayOrder = conf.GetDisplayOrder()
+
+		addGoodsExcel(gdconf.GetGoodsExcelTable(conf.GoodsId))
+	} else {
+		conf := gdconf.GetShopExcelTable(req.ShopUniqueId)
+		productType = proto.ShopProductType_General
+		category = proto.GetShopCategoryType(conf.GetCategoryType())
+		purchaseCountLimit = conf.GetPurchaseCountLimit()
+		displayOrder = conf.GetDisplayOrder()
+
+		for _, goodsId := range conf.GoodsId {
+			addGoodsExcel(gdconf.GetGoodsExcelTable(goodsId))
+		}
+	}
+
 	// 构造回复
 	rsp.AccountCurrencyDB = game.GetAccountCurrencyDB(s)
 	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
 	rsp.ShopProductDB = &proto.ShopProductDB{
 		EventContentId:     0,
-		ShopExcelId:        conf.GetId(),
-		Category:           proto.GetShopCategoryType(conf.GetCategoryType()),
-		DisplayOrder:       conf.GetDisplayOrder(),
+		ShopExcelId:        req.ShopUniqueId,
+		Category:           category,
+		DisplayOrder:       displayOrder,
 		PurchaseCount:      req.PurchaseCount,
-		PurchaseCountLimit: conf.GetPurchaseCountLimit(),
+		PurchaseCountLimit: purchaseCountLimit,
 		Price:              0,
-		ProductType:        proto.ShopProductType_General,
+		ProductType:        productType,
 	}
 	rsp.ConsumeResultDB = &proto.ConsumeResultDB{
 		RemovedItemServerIds:                    make([]int64, 0),

@@ -50,3 +50,7 @@ func (g *GameConfig) gppShopRefreshExcelTable() {
 func GetShopRefreshExcelMap(categoryType string) []*sro.ShopRefreshExcelTable {
 	return GC.GetGPP().ShopRefreshExcel.ShopRefreshExcelTableMap[categoryType]
 }
+
+func GetShopRefreshExcel(shopId int64) *sro.ShopRefreshExcelTable {
+	return GC.GetGPP().ShopRefreshExcel.ShopRefreshExcelTableList[shopId]
+}
