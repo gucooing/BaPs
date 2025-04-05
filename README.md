@@ -85,7 +85,7 @@ docker run -d \
 
 ## ⚙️ 配置说明
 >需要注意的是,实际的json文件中不能存在注释
-```
+```json
 {
   "LogLevel": "info",
   "ResourcesPath": "./resources", // 发行版无用
