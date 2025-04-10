@@ -4,7 +4,7 @@ setlocal enabledelayedexpansion
 go mod download
 go mod verify
 set CGO_ENABLED=0
-set "PLATFORMS=windows/amd64 windows/arm64 linux/amd64 linux/arm64"
+set "PLATFORMS=linux/amd64 linux/arm64 linux/mips64 windows/amd64 windows/arm64"
 set "OUT_DIR=./bin"
 set "MAIN_PATH=.\cmd\BaPs\BaPs.go"
 set "OUTPUT_NAME=BaPs"

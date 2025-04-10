@@ -5,9 +5,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/glebarez/sqlite"
 	"github.com/gucooing/BaPs/config"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/ncruces/go-sqlite3/gormlite"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -66,7 +66,7 @@ func NewMysql(dsn string) *gorm.DB {
 }
 
 func NewSqlite(dsn string) *gorm.DB {
-	db, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{
+	db, err := gorm.Open(gormlite.Open(dsn), &gorm.Config{
 		Logger: gromlogger.Default.LogMode(gromlogger.Silent),
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
