@@ -79,13 +79,18 @@ jobs:
         GOOS=${TARGET_SPLIT[0]}
         GOARCH=${TARGET_SPLIT[1]}
         
+        case $GOOS in
+             "android") GOOS="linux"; CGO_ENABLED=1 ;;
+             "ios") GOOS="darwin"; CGO_ENABLED=1 ;;
+        esac
+        
         OUTPUT_NAME="BaPs_"$GOOS"_"$GOARCH
         if [ "$GOOS" = "windows" ]; then
           OUTPUT_NAME="$OUTPUT_NAME.exe"
         fi
         
         echo "Building for $GOOS-$GOARCH..."
-        GOOS=$GOOS GOARCH=$GOARCH \
+        GOOS=$GOOS GOARCH=$GOARCH CGO_ENABLED=${CGO_ENABLED:-0} \
         go build -ldflags="-s -w" -o ./bin/$OUTPUT_NAME ./cmd/BaPs/BaPs.go
 
     - name: Upload artifact
