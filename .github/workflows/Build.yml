@@ -30,7 +30,6 @@ jobs:
           - illumos-amd64
           - netbsd-amd64
           - netbsd-arm64
-          - solaris-amd64
     name: Build
     runs-on: ${{ matrix.platform }}
     env:
