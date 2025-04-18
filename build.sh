@@ -11,7 +11,7 @@ go mod download
 go mod verify
 export CGO_ENABLED=0
 
-PLATFORMS="linux/amd64 linux/arm64 linux/mips64 linux/aarch64 windows/amd64 windows/arm64"
+PLATFORMS="darwin/amd64 darwin/arm64 linux/amd64 linux/arm64 linux/loong64 linux/mips64 linux/mips64le linux/ppc64 linux/ppc64le linux/riscv64 linux/s390x aix/ppc64 dragonfly/amd64 netbsd/amd64 netbsd/arm64 windows/amd64 windows/arm64"
 OUT_DIR=./bin
 MAIN_PATH=./cmd/BaPs/BaPs.go
 NAME="BaPs"
@@ -24,5 +24,5 @@ NAME="BaPs"
         OUTPUT_NAME="$OUTPUT_NAME.exe"
       fi
       echo "Building $OUTPUT_NAME..."
-      go build -ldflags="-s -w" -tags "rel" -o $OUT_DIR/$OUTPUT_NAME $MAIN_PATH
+      go build -ldflags="-s -w" -o $OUT_DIR/$OUTPUT_NAME $MAIN_PATH
     done

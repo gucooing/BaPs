@@ -1,4 +1,4 @@
-name: HKRPG-Go Releases
+name: Releases
 on:
   workflow_dispatch:
 

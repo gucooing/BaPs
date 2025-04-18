@@ -55,6 +55,7 @@
 3. 下载[Releases](https://github.com/gucooing/BaPs/releases/latest)中的Excel.bin文件,并替换到data文件夹中
 4. 直接运行一次将会自动生成config.json文件,打开并编辑config.json文件
 5. 运行
+##### tips 也可以前往[Build Action](https://github.com/gucooing/BaPs/actions/workflows/Build.yml)下载最新的版本
 
 >若Excel.bin找不到请前往源代码中data文件夹下载
 ---
