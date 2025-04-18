@@ -81,7 +81,7 @@ jobs:
         fi
         
         echo "Building for $GOOS-$GOARCH..."
-        GOOS=$GOOS GOARCH=$GOARCH CGO_ENABLED=${CGO_ENABLED:-0} \
+        GOOS=$GOOS GOARCH=$GOARCH \
         go build -ldflags="-s -w" -o ./bin/$OUTPUT_NAME ./cmd/BaPs/BaPs.go
 
     - name: Upload artifact
