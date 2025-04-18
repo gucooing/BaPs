@@ -81,8 +81,19 @@ jobs:
         name: BaPs_${{ env.SHA }}_${{ matrix.target }}
         path: bin/*
 
-    - name: Upload data
-      uses: actions/upload-artifact@v4
-      with:
-        name: data.zip
-        path: data/*
+  upload-data:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: gucooing/BaPs
+          ref: "main"
+          fetch-depth: 0
+
+      - name: Upload data
+        uses: actions/upload-artifact@v4
+        with:
+          name: data.zip
+          path: data/*
