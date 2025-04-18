@@ -37,7 +37,6 @@ jobs:
           - openbsd-arm64
           - openbsd-ppc64
           - openbsd-riscv64
-          - plan9-amd64
           - solaris-amd64
     name: Build
     runs-on: ${{ matrix.platform }}
