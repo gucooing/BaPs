@@ -11,7 +11,7 @@ go mod download
 go mod verify
 export CGO_ENABLED=0
 
-PLATFORMS="linux/amd64 linux/arm64 linux/mips64 windows/amd64 windows/arm64"
+PLATFORMS="linux/amd64 linux/arm64 linux/mips64 linux/aarch64 windows/amd64 windows/arm64"
 OUT_DIR=./bin
 MAIN_PATH=./cmd/BaPs/BaPs.go
 NAME="BaPs"

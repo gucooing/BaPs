@@ -7,6 +7,7 @@ import (
 
 	"github.com/gucooing/BaPs/config"
 	"github.com/gucooing/BaPs/pkg/logger"
+	_ "github.com/ncruces/go-sqlite3/embed"
 	"github.com/ncruces/go-sqlite3/gormlite"
 
 	"gorm.io/driver/mysql"

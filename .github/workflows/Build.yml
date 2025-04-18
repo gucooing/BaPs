@@ -8,17 +8,58 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+        target:
+          - darwin-amd64
+          - darwin-arm64
+          - windows-amd64
+          - windows-arm64
+          - linux-amd64
+          - linux-arm64
+          - linux-loong64
+          - linux-mips64
+          - linux-mips64le
+          - linux-ppc64
+          - linux-ppc64le
+          - linux-riscv64
+          - linux-s390x
+          - android-amd64
+          - android-arm64
+          - ios-amd64
+          - ios-arm64
+          - aix-ppc64
+          - dragonfly-amd64
+          - freebsd-amd64
+          - freebsd-arm64
+          - freebsd-riscv64
+          - illumos-amd64
+          - netbsd-amd64
+          - netbsd-arm64
+          - openbsd-amd64
+          - openbsd-arm64
+          - openbsd-ppc64
+          - openbsd-riscv64
+          - plan9-amd64
+          - solaris-amd64
+    name: Build
+    runs-on: ${{ matrix.platform }}
+    evn:
+      TARGET: ${{ matrix.target }}
     steps:
-    - name: Sync BaPs
-      uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v4
       with:
         repository: gucooing/BaPs
         ref: "main"
         fetch-depth: 0
 
+    - uses: benjlevesque/short-sha@v3.0
+      id: short-sha
+
     - name: Set up Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
         go-version: "1.23.2"
         check-latest: true
@@ -29,47 +70,32 @@ jobs:
           chmod 777 ./protoc ./protoc-gen-go
           ./protoc --proto_path=. --plugin=protoc-gen-go=./protoc-gen-go --go_out=. *.proto
 
+    - name: Sync Excel
+      run: wget ${{ secrets.EXCEL_URL }} -O ./pkg/mx/excel.go
+
     - name: Build
-      run: bash build.sh
+      run: |
+        TARGET_SPLIT=(${TARGET//-/ })
+        GOOS=${TARGET_SPLIT[0]}
+        GOARCH=${TARGET_SPLIT[1]}
+        
+        OUTPUT_NAME="BaPs_"$GOOS"_"$GOARCH
+        if [ "$GOOS" = "windows" ]; then
+          OUTPUT_NAME="$OUTPUT_NAME.exe"
+        fi
+        
+        echo "Building for $GOOS-$GOARCH..."
+        GOOS=$GOOS GOARCH=$GOARCH CGO_ENABLED=${CGO_ENABLED:-0} \
+        go build -ldflags="-s -w" -tags -o ./bin/$OUTPUT_NAME ./cmd/BaPs/BaPs.go
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: BaPs_${{ env.SHA }}_${{ matrix.target }}
+        path: bin/*
 
     - name: Upload data
       uses: actions/upload-artifact@v4
       with:
         name: data.zip
         path: data/*
-
-#    - name: Upload docs
-#      uses: actions/upload-artifact@v4
-#      with:
-#        name: docs.zip
-#        path: docs/*
-
-#    - name: Upload linux-amd64
-#      uses: actions/upload-artifact@v4
-#      with:
-#        name: linux-amd64.zip
-#        path: bin/linux-amd64/*
-#
-#    - name: Upload linux-arm64
-#      uses: actions/upload-artifact@v4
-#      with:
-#        name: linux-arm64.zip
-#        path: build/linux-arm64/*
-#
-#    - name: Upload windows-amd64
-#      uses: actions/upload-artifact@v4
-#      with:
-#        name: windows-amd64.zip
-#        path: build/windows-amd64/*
-#
-#    - name: Upload windows-arm64
-#      uses: actions/upload-artifact@v4
-#      with:
-#        name: windows-arm64.zip
-#        path: build/windows-arm64/*
-
-    - name: Upload Bin
-      uses: actions/upload-artifact@v4
-      with:
-        name: Bin.zip
-        path: bin/*
