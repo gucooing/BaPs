@@ -27,7 +27,6 @@ jobs:
           - linux-s390x
           - aix-ppc64
           - dragonfly-amd64
-          - illumos-amd64
           - netbsd-amd64
           - netbsd-arm64
     name: Build
