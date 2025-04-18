@@ -45,7 +45,7 @@ jobs:
           - solaris-amd64
     name: Build
     runs-on: ${{ matrix.platform }}
-    evn:
+    env:
       TARGET: ${{ matrix.target }}
     steps:
     - name: Checkout
