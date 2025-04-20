@@ -351,13 +351,15 @@ func ClanAllAssistList(s *enter.Session, request, response proto.Message) {
 			}
 			rsp.AssistCharacterDBs = append(rsp.AssistCharacterDBs,
 				game.GetAssistCharacterDB(fs, info, assistRelation))
-			rsp.AssistCharacterRentHistoryDBs = append(rsp.AssistCharacterRentHistoryDBs,
-				&proto.ClanAssistRentHistoryDB{
-					AssistCharacterAccountId: fs.AccountServerId,
-					AssistCharacterDBId:      characterInfo.ServerId,
-					// RentDate:                 mx.Unix(info.DeployDate, 0), 是我的视角下什么时候借了人
-					AssistCharacterId: characterInfo.CharacterId,
-				})
+
+			// 已借的人历史数据
+			// rsp.AssistCharacterRentHistoryDBs = append(rsp.AssistCharacterRentHistoryDBs,
+			// 	&proto.ClanAssistRentHistoryDB{
+			// 		AssistCharacterAccountId: fs.AccountServerId,
+			// 		AssistCharacterDBId:      characterInfo.ServerId,
+			// 		// RentDate:                 mx.Unix(info.DeployDate, 0), 是我的视角下什么时候借了人
+			// 		AssistCharacterId: characterInfo.CharacterId,
+			// 	})
 		}
 	}
 	addUid := make(map[int64]bool, 0)

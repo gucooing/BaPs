@@ -180,6 +180,7 @@ func GetRaidLobbyInfoDB(s *enter.Session) *proto.RaidLobbyInfoDB {
 		PlayingRaidDB:             GetRaidDB(s, GetCurRaidBattleInfo(s)),
 		ReceiveRewardIds:          GetReceiveRewardIds(bin.GetReceiveRewardIds()),
 		ReceivedRankingRewardId:   bin.GetRankingRewardId(),
+		BestRankingPoint:          0,
 
 		RemainFailCompensation: map[int32]bool{
 			0: false,
@@ -348,11 +349,15 @@ func GetRaidBattleDB(s *enter.Session, bin *sro.CurRaidBattleInfo) *proto.RaidBa
 			isIndex = true
 			info.CurrentBossGroggy = raidBoosInfo.BossGroggyPoint
 			info.RaidBossIndex = raidBoosInfo.Index
-			info.CurrentBossAIPhase = raidBoosInfo.AiPhase
+			// info.CurrentBossAIPhase = raidBoosInfo.AiPhase
 			info.SubPartsHPs = raidBoosInfo.SubPartsHpS
 		}
 
 		info.CurrentBossHP += curHp
+	}
+
+	if info.CurrentBossGroggy != 0 {
+		info.CurrentBossAIPhase = -1
 	}
 
 	return info
@@ -366,7 +371,7 @@ func GetRaidDB(s *enter.Session, bin *sro.CurRaidBattleInfo) *proto.RaidDB {
 		AccountLevelWhenCreateDB: int64(GetAccountLevel(s)),
 		Begin:                    mx.Unix(bin.Begin, 0),
 		ContentType:              proto.ContentType(bin.ContentType),
-		End:                      mx.Unix(bin.Begin, 0), // .Add(1 * time.Hour),
+		End:                      mx.Unix(bin.Begin, 0).Add(1 * time.Hour),
 		Owner: &proto.RaidMemberDescription{
 			AccountId:   s.AccountServerId,
 			AccountName: GetNickname(s),

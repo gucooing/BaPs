@@ -115,7 +115,6 @@ func AccountCheckYostar(s *enter.Session, request, response proto.Message) {
 	}
 	enter.DelEnterTicket(req.EnterTicket)
 	s = enter.GetSessionByAccountServerId(tickInfo.AccountServerId)
-	mxToken := mx.GetMxToken(tickInfo.AccountServerId, 64)
 	if s == nil {
 		yostarGame := db.GetYostarGameByAccountServerId(tickInfo.AccountServerId)
 		if yostarGame == nil {
@@ -136,6 +135,7 @@ func AccountCheckYostar(s *enter.Session, request, response proto.Message) {
 		}
 	}
 	// 更新一次账号缓存
+	mxToken := mx.GetMxToken(tickInfo.AccountServerId, 64)
 	s.MxToken = mxToken
 	s.EndTime = time.Now().Add(time.Duration(enter.MaxCachePlayerTime) * time.Minute)
 	if !enter.AddSession(s) {

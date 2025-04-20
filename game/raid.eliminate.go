@@ -146,9 +146,11 @@ func GetEliminateRaidLobbyInfoDB(s *enter.Session) *proto.EliminateRaidLobbyInfo
 				conf.OpenRaidBossGroup02: proto.Difficulty_Lunatic,
 				conf.OpenRaidBossGroup03: proto.Difficulty_Lunatic,
 			},
-			ReceivedRankingRewardId: bin.GetRankingRewardId(),
-			ReceiveRewardIds:        GetReceiveRewardIds(bin.GetReceiveRewardIds()),
+			ReceivedRankingRewardId:       bin.GetRankingRewardId(),
+			ReceiveRewardIds:              GetReceiveRewardIds(bin.GetReceiveRewardIds()),
+			ParticipateCharacterServerIds: make([]int64, 0),
 
+			BestRankingPoint:         0,
 			ReceiveLimitedRewardIds:  nil,
 			ClanAssistUseInfo:        nil,
 			SweepPointByRaidUniqueId: make(map[int64]int64),

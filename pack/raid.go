@@ -137,7 +137,7 @@ func RaidEndBattle(s *enter.Session, request, response proto.Message) {
 		raidBoosInfo := curBattle.RaidBoosList[raidBossResult.RaidDamage.Index]
 
 		raidBoosInfo.SubPartsHpS = raidBossResult.SubPartsHPs
-		raidBoosInfo.AiPhase = raidBossResult.AIPhase
+		// raidBoosInfo.AiPhase = raidBossResult.AIPhase
 		raidBoosInfo.BossGroggyPoint += raidBossResult.RaidDamage.GivenGroggyPoint
 		raidBoosInfo.GivenDamage += raidBossResult.RaidDamage.GivenDamage
 	}
