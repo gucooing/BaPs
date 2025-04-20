@@ -339,8 +339,17 @@ func ClanAllAssistList(s *enter.Session, request, response proto.Message) {
 	rsp.AssistCharacterRentHistoryDBs = make([]*proto.ClanAssistRentHistoryDB, 0)
 	rsp.ClanDBId = game.GetClanServerId(s)
 
+	echelonType := req.EchelonType
+	switch echelonType {
+	case proto.EchelonType_EliminateRaid01,
+		proto.EchelonType_EliminateRaid02,
+		proto.EchelonType_EliminateRaid03,
+		proto.EchelonType_MultiFloorRaid:
+		echelonType = proto.EchelonType_Raid
+	}
+
 	addAssistCharacter := func(fs *enter.Session, assistRelation proto.AssistRelation) {
-		assist := game.GetAssistListByEchelonType(fs, req.EchelonType)
+		assist := game.GetAssistListByEchelonType(fs, echelonType)
 		for _, info := range assist.GetAssistInfoList() {
 			if info == nil {
 				continue
