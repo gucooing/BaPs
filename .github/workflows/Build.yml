@@ -58,8 +58,8 @@ jobs:
 
     - name: Sync Excel
       run: |
-        wget -q ${{ secrets.EXCEL_URL }} -O ./pkg/mx/excel.go
-        wget -q ${{ secrets.GDCONF_DEV }} -O ./gdconf/game.config.dev.go
+        wget ${{ secrets.EXCEL_URL }} -q -O ./pkg/mx/excel.go
+        wget ${{ secrets.GDCONF_DEV }} -q -O ./gdconf/game.config.dev.go
 
     - name: Build
       run: |

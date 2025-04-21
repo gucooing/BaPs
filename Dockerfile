@@ -7,10 +7,10 @@ WORKDIR /app
 COPY . .
 
 RUN --mount=type=secret,id=excel_url,env=EXCEL_URL \
-    wget -q "$EXCEL_URL" -O ./pkg/mx/excel.go
+    wget "$EXCEL_URL" -q -O ./pkg/mx/excel.go
 
 RUN --mount=type=secret,id=gdconf_dev,env=GDCONF_DEV \
-    wget -q "$GDCONF_DEV" -O ./pkg/mx/excel.go
+    wget "$GDCONF_DEV" -q -O ./gdconf/game.config.dev.go
 
 RUN cd ./common/server_only && \
     protoc --proto_path=. --go_out=. --go_opt=paths=source_relative *.proto && \
