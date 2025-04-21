@@ -28,7 +28,7 @@ func (g *GameConfig) LoadExcel() {
 	}
 	bin, err := mx.DeExcelBytes(file)
 	if err != nil {
-		panic(err)
+		panic("Excel.bin不匹配")
 		return
 	}
 	g.Excel = new(sro.Excel)

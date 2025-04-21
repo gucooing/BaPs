@@ -1,8 +1,6 @@
 package gdconf
 
 import (
-	"encoding/json"
-	"os"
 	"time"
 
 	sro "github.com/gucooing/BaPs/common/server_only"
@@ -12,16 +10,7 @@ import (
 func (g *GameConfig) loadMultiFloorRaidSeasonManageExcel() {
 	g.GetExcel().MultiFloorRaidSeasonManageExcel = make([]*sro.MultiFloorRaidSeasonManageExcel, 0)
 	name := "MultiFloorRaidSeasonManageExcel.json"
-	file, err := os.ReadFile(g.excelDbPath + name)
-	if err != nil {
-		logger.Error("文件:%s 读取失败,err:%s", name, err)
-		return
-	}
-	if err := json.Unmarshal(file, &g.GetExcel().MultiFloorRaidSeasonManageExcel); err != nil {
-		logger.Error("文件:%s 解析失败,err:%s", name, err)
-		return
-	}
-	logger.Info("文件:%s 读取成功,解析数量:%v", name, len(g.GetExcel().MultiFloorRaidSeasonManageExcel))
+	loadExcelJson(g.excelDbPath+name, &g.GetExcel().MultiFloorRaidSeasonManageExcel)
 }
 
 type MultiFloorRaidSeasonManage struct {

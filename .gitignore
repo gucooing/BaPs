@@ -32,3 +32,4 @@ go.work.sum
 /bin
 pkg/mx/excel.go
 /.vscode
+gdconf/game.config.dev.go

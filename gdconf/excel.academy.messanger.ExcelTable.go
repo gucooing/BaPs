@@ -1,9 +1,6 @@
 package gdconf
 
 import (
-	"encoding/json"
-	"os"
-
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
 )
@@ -14,17 +11,8 @@ func (g *GameConfig) loadAcademyMessangerExcelTable() {
 		"AcademyMessanger3ExcelTable.json", "AcademyMessangerExcelTable.json"}
 	for _, name := range nameList {
 		list := make([]*sro.AcademyMessangerExcelTable, 0)
-		file, err := os.ReadFile(g.excelPath + name)
-		if err != nil {
-			logger.Error("文件:%s 读取失败,err:%s", name, err)
-			return
-		}
-		if err := json.Unmarshal(file, &list); err != nil {
-			logger.Error("文件:%s 解析失败,err:%s", name, err)
-			return
-		}
+		loadExcelJson(g.excelPath+name, &list)
 		g.GetExcel().AcademyMessangerExcelTable = append(g.GetExcel().AcademyMessangerExcelTable, list...)
-		logger.Info("文件:%s 读取成功,解析数量:%v", name, len(list))
 	}
 }
 

@@ -1,8 +1,6 @@
 package gdconf
 
 import (
-	"encoding/json"
-	"os"
 	"time"
 
 	sro "github.com/gucooing/BaPs/common/server_only"
@@ -12,17 +10,7 @@ import (
 func (g *GameConfig) loadShopExcelTable() {
 	g.GetExcel().ShopExcelTable = make([]*sro.ShopExcelTable, 0)
 	name := "ShopExcelTable.json"
-	file, err := os.ReadFile(g.excelPath + name)
-	if err != nil {
-		logger.Error("文件:%s 读取失败,err:%s", name, err)
-		return
-	}
-	if err := json.Unmarshal(file, &g.GetExcel().ShopExcelTable); err != nil {
-		logger.Error("文件:%s 解析失败,err:%s", name, err)
-		return
-	}
-
-	logger.Info("文件:%s 读取成功,解析数量:%v", name, len(g.GetExcel().GetShopExcelTable()))
+	loadExcelJson(g.excelPath+name, &g.GetExcel().ShopExcelTable)
 }
 
 type ShopExcel struct {

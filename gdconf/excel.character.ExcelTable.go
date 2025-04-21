@@ -1,9 +1,7 @@
 package gdconf
 
 import (
-	"encoding/json"
 	"math/rand"
-	"os"
 
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
@@ -12,17 +10,7 @@ import (
 func (g *GameConfig) loadCharacterExcelTable() {
 	g.GetExcel().CharacterExcelTable = make([]*sro.CharacterExcelTable, 0)
 	name := "CharacterExcelTable.json"
-	file, err := os.ReadFile(g.excelPath + name)
-	if err != nil {
-		logger.Error("文件:%s 读取失败,err:%s", name, err)
-		return
-	}
-	if err := json.Unmarshal(file, &g.GetExcel().CharacterExcelTable); err != nil {
-		logger.Error("文件:%s 解析失败,err:%s", name, err)
-		return
-	}
-
-	logger.Info("文件:%s 读取成功,解析数量:%v", name, len(g.GetExcel().GetCharacterExcelTable()))
+	loadExcelJson(g.excelPath+name, &g.GetExcel().CharacterExcelTable)
 }
 
 type CharacterExcel struct {
