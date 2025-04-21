@@ -3,12 +3,13 @@ package gdconf
 import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
 )
 
 func (g *GameConfig) loadCharacterPotentialExcel() {
 	g.GetExcel().CharacterPotentialExcel = make([]*sro.CharacterPotentialExcel, 0)
 	name := "CharacterPotentialExcel.json"
-	loadExcelJson(g.excelDbPath+name, &g.GetExcel().CharacterPotentialExcel)
+	mx.LoadExcelJson(g.excelDbPath+name, &g.GetExcel().CharacterPotentialExcel)
 }
 
 type CharacterPotential struct {

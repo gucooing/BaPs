@@ -5,12 +5,13 @@ import (
 
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
 )
 
 func (g *GameConfig) loadShopExcelTable() {
 	g.GetExcel().ShopExcelTable = make([]*sro.ShopExcelTable, 0)
 	name := "ShopExcelTable.json"
-	loadExcelJson(g.excelPath+name, &g.GetExcel().ShopExcelTable)
+	mx.LoadExcelJson(g.excelPath+name, &g.GetExcel().ShopExcelTable)
 }
 
 type ShopExcel struct {

@@ -5,6 +5,8 @@ package mx
 
 import (
 	"fmt"
+
+	"github.com/gucooing/BaPs/pkg/logger"
 )
 
 const (
@@ -17,4 +19,8 @@ func GetMxToken(uid int64, len int) string {
 
 func DeExcelBytes(bin []byte) ([]byte, error) {
 	return bin, nil
+}
+
+func LoadExcelJson[T any](path string, table *[]*T) {
+	logger.Error("文件:%s 读取失败,请自行补充相关逻辑s", path)
 }

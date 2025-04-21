@@ -3,12 +3,13 @@ package gdconf
 import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
 )
 
 func (g *GameConfig) loadAcademyLocationRankExcelTable() {
 	g.GetExcel().AcademyLocationRankExcelTable = make([]*sro.AcademyLocationRankExcelTable, 0)
 	name := "AcademyLocationRankExcelTable.json"
-	loadExcelJson(g.excelPath+name, &g.GetExcel().AcademyLocationRankExcelTable)
+	mx.LoadExcelJson(g.excelPath+name, &g.GetExcel().AcademyLocationRankExcelTable)
 }
 
 type AcademyLocationRankExcel struct {

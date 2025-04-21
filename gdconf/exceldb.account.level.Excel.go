@@ -3,12 +3,13 @@ package gdconf
 import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
 )
 
 func (g *GameConfig) loadAccountLevelExcel() {
 	g.GetExcel().AccountLevelExcel = make([]*sro.AccountLevelExcel, 0)
 	name := "AccountLevelExcel.json"
-	loadExcelJson(g.excelDbPath+name, &g.GetExcel().AccountLevelExcel)
+	mx.LoadExcelJson(g.excelDbPath+name, &g.GetExcel().AccountLevelExcel)
 }
 
 type AccountLevel struct {

@@ -3,12 +3,13 @@ package gdconf
 import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
 )
 
 func (g *GameConfig) loadRaidStageExcelTable() {
 	g.GetExcel().RaidStageExcelTable = make([]*sro.RaidStageExcelTable, 0)
 	name := "RaidStageExcelTable.json"
-	loadExcelJson(g.excelPath+name, &g.GetExcel().RaidStageExcelTable)
+	mx.LoadExcelJson(g.excelPath+name, &g.GetExcel().RaidStageExcelTable)
 }
 
 type RaidStageExcel struct {

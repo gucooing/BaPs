@@ -3,12 +3,13 @@ package gdconf
 import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
 )
 
 func (g *GameConfig) loadScenarioModeExcel() {
 	g.GetExcel().ScenarioModeExcel = make([]*sro.ScenarioModeExcel, 0)
 	name := "ScenarioModeExcel.json"
-	loadExcelJson(g.excelDbPath+name, &g.GetExcel().ScenarioModeExcel)
+	mx.LoadExcelJson(g.excelDbPath+name, &g.GetExcel().ScenarioModeExcel)
 }
 
 type ScenarioMode struct {

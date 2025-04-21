@@ -2,12 +2,13 @@ package gdconf
 
 import (
 	sro "github.com/gucooing/BaPs/common/server_only"
+	"github.com/gucooing/BaPs/pkg/mx"
 )
 
 func (g *GameConfig) loadDefaultCharacterExcelTable() {
 	g.GetExcel().DefaultCharacterExcelTable = make([]*sro.DefaultCharacterExcelTable, 0)
 	name := "DefaultCharacterExcelTable.json"
-	loadExcelJson(g.excelPath+name, &g.GetExcel().DefaultCharacterExcelTable)
+	mx.LoadExcelJson(g.excelPath+name, &g.GetExcel().DefaultCharacterExcelTable)
 }
 
 func GetDefaultCharacterExcelTable() []*sro.DefaultCharacterExcelTable {

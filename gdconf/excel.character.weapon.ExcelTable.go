@@ -3,12 +3,13 @@ package gdconf
 import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
 )
 
 func (g *GameConfig) loadCharacterWeaponExcelTable() {
 	g.GetExcel().CharacterWeaponExcelTable = make([]*sro.CharacterWeaponExcelTable, 0)
 	name := "CharacterWeaponExcelTable.json"
-	loadExcelJson(g.excelPath+name, &g.GetExcel().CharacterWeaponExcelTable)
+	mx.LoadExcelJson(g.excelPath+name, &g.GetExcel().CharacterWeaponExcelTable)
 }
 
 type CharacterWeaponExcel struct {

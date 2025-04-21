@@ -3,12 +3,13 @@ package gdconf
 import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
 )
 
 func (g *GameConfig) loadSchoolDungeonRewardExcel() {
 	g.GetExcel().SchoolDungeonRewardExcel = make([]*sro.SchoolDungeonRewardExcel, 0)
 	name := "SchoolDungeonRewardExcel.json"
-	loadExcelJson(g.excelDbPath+name, &g.GetExcel().SchoolDungeonRewardExcel)
+	mx.LoadExcelJson(g.excelDbPath+name, &g.GetExcel().SchoolDungeonRewardExcel)
 }
 
 type SchoolDungeonReward struct {

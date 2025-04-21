@@ -3,12 +3,13 @@ package gdconf
 import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
 )
 
 func (g *GameConfig) loadCafeInfoExcelTable() {
 	g.GetExcel().CafeInfoExcelTableInfo = make([]*sro.CafeInfoExcelTableInfo, 0)
 	name := "CafeInfoExcelTable.json"
-	loadExcelJson(g.excelPath+name, &g.GetExcel().CafeInfoExcelTableInfo)
+	mx.LoadExcelJson(g.excelPath+name, &g.GetExcel().CafeInfoExcelTableInfo)
 }
 
 type CafeInfoExcel struct {

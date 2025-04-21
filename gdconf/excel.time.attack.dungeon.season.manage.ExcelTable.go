@@ -5,12 +5,13 @@ import (
 
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
 )
 
 func (g *GameConfig) loadTimeAttackDungeonSeasonManageExcelTable() {
 	g.GetExcel().TimeAttackDungeonSeasonManageExcelTable = make([]*sro.TimeAttackDungeonSeasonManageExcelTable, 0)
 	name := "TimeAttackDungeonSeasonManageExcelTable.json"
-	loadExcelJson(g.excelPath+name, &g.GetExcel().TimeAttackDungeonSeasonManageExcelTable)
+	mx.LoadExcelJson(g.excelPath+name, &g.GetExcel().TimeAttackDungeonSeasonManageExcelTable)
 }
 
 type TimeAttackDungeonSeasonManageExcel struct {

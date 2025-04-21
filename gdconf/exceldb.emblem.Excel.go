@@ -3,12 +3,13 @@ package gdconf
 import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
 )
 
 func (g *GameConfig) loadEmblemExcel() {
 	g.GetExcel().EmblemExcel = make([]*sro.EmblemExcel, 0)
 	name := "EmblemExcel.json"
-	loadExcelJson(g.excelDbPath+name, &g.GetExcel().EmblemExcel)
+	mx.LoadExcelJson(g.excelDbPath+name, &g.GetExcel().EmblemExcel)
 }
 
 type Emblem struct {

@@ -3,12 +3,13 @@ package gdconf
 import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/pkg/mx"
 )
 
 func (g *GameConfig) loadEquipmentStatExcelTable() {
 	g.GetExcel().EquipmentStatExcelTable = make([]*sro.EquipmentStatExcelTable, 0)
 	name := "EquipmentStatExcelTable.json"
-	loadExcelJson(g.excelPath+name, &g.GetExcel().EquipmentStatExcelTable)
+	mx.LoadExcelJson(g.excelPath+name, &g.GetExcel().EquipmentStatExcelTable)
 }
 
 type EquipmentStatExcel struct {
