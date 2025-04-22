@@ -33,3 +33,4 @@ go.work.sum
 pkg/mx/excel.go
 /.vscode
 gdconf/game.config.dev.go
+common/server_only/*.py
