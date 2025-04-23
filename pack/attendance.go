@@ -41,10 +41,11 @@ func AttendanceReward(s *enter.Session, request, response proto.Message) {
 		}
 
 		bin.AttendedDay[day] = time.Now().Unix()
-		bin.LastReward = time.Now().Unix()
 		rsp.AttendanceBookRewards = append(rsp.AttendanceBookRewards,
 			game.GetAttendanceBookReward(s, id))
 		rsp.AttendanceHistoryDBs = append(rsp.AttendanceHistoryDBs,
 			game.GetAttendanceHistoryDB(s, id))
+		// Do not change the serial number
+		bin.LastReward = time.Now().Unix()
 	}
 }

@@ -60,15 +60,21 @@ func GetAttendanceInfo(s *enter.Session, attendanceId int64) *sro.AttendanceInfo
 		delete(bin, attendanceId)
 		return nil
 	}
-	if (time.Unix(info.LastReward, 0).Before(alg.GetLastDayH(4)) &&
-		int64(len(info.AttendedDay)) >= conf.BookSize) || time.Now().After(conf.EndTime) {
-		if conf.Type == "Basic" {
+	if int64(len(info.AttendedDay)) >= conf.BookSize || time.Now().After(conf.EndTime) {
+		// stop
+		switch conf.Type {
+		case "Basic":
 			info.AttendedDay = make(map[int64]int64)
 			info.LastReward = 0
-		} else {
-			info.Expired = true // 作用是延迟到一天以后处理
 		}
+		info.Expired = true
+	} else if time.Unix(info.LastReward, 0).After(alg.GetLastDayH(4)) {
+		// day
+		info.Expired = true
+	} else {
+		info.Expired = false
 	}
+
 	if info.Expired {
 		return nil
 	}
@@ -76,13 +82,20 @@ func GetAttendanceInfo(s *enter.Session, attendanceId int64) *sro.AttendanceInfo
 	return info
 }
 
+func GetAttendanceListDay(s *enter.Session) []*sro.AttendanceInfo {
+	list := make([]*sro.AttendanceInfo, 0)
+	for id, _ := range GetAttendanceList(s) {
+		if bin := GetAttendanceInfo(s, id); bin != nil {
+			list = append(list, bin)
+		}
+	}
+	return list
+}
+
 func GetAttendanceBookRewards(s *enter.Session) []*proto.AttendanceBookReward {
 	list := make([]*proto.AttendanceBookReward, 0)
-	for id, bin := range GetAttendanceList(s) {
-		if time.Unix(bin.LastReward, 0).After(alg.GetLastDayH(4)) {
-			continue
-		}
-		info := GetAttendanceBookReward(s, id)
+	for _, bin := range GetAttendanceListDay(s) {
+		info := GetAttendanceBookReward(s, bin.GetAttendanceId())
 		if info == nil {
 			continue
 		}
@@ -138,11 +151,8 @@ func GetAttendanceBookReward(s *enter.Session, attendanceId int64) *proto.Attend
 
 func GetAttendanceHistoryDBs(s *enter.Session) []*proto.AttendanceHistoryDB {
 	list := make([]*proto.AttendanceHistoryDB, 0)
-	for id, bin := range GetAttendanceList(s) {
-		if time.Unix(bin.LastReward, 0).After(alg.GetLastDayH(4)) {
-			continue
-		}
-		info := GetAttendanceHistoryDB(s, id)
+	for _, bin := range GetAttendanceListDay(s) {
+		info := GetAttendanceHistoryDB(s, bin.GetAttendanceId())
 		if info == nil {
 			continue
 		}

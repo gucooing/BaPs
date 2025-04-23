@@ -128,7 +128,7 @@ func GetTimeHourH(h int) time.Time {
 	} else if hour < h+12 {
 		return time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), h+12, 0, 0, 0, currentTime.Location())
 	} else {
-		nextTime := currentTime.Add(24 * time.Hour)
+		nextTime := currentTime.Add(12 * time.Hour)
 		return time.Date(nextTime.Year(), nextTime.Month(), nextTime.Day(), h, 0, 0, 0, nextTime.Location())
 	}
 }
