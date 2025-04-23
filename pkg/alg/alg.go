@@ -93,45 +93,42 @@ func AbsInt64(x int64) int64 {
 	return x
 }
 
-func GetDay4() time.Time {
-	currentTime := time.Now()
-	nextExecution := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 4, 0, 0, 0, currentTime.Location())
-	return nextExecution
-}
-
 func GetDayH(h int) time.Time {
 	currentTime := time.Now()
 	nextExecution := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), h, 0, 0, 0, currentTime.Location())
 	return nextExecution
 }
 
-func GetLastDay4() time.Time {
+func GetLastDayH(h int) time.Time {
 	currentTime := time.Now()
-	nextExecution := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 4, 0, 0, 0, currentTime.Location())
-	if currentTime.Hour() < 4 {
+	nextExecution := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), h, 0, 0, 0, currentTime.Location())
+	if currentTime.Hour() < h {
 		nextExecution = nextExecution.AddDate(0, 0, -1)
 	}
 	return nextExecution
 }
 
-func GetEveryDay4() time.Duration {
+func GetEveryDayH(h int) time.Duration {
 	currentTime := time.Now()
-	nextExecution := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 4, 0, 0, 0, currentTime.Location())
-	if currentTime.Hour() >= 4 {
+	nextExecution := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), h, 0, 0, 0, currentTime.Location())
+	if currentTime.Hour() >= h {
 		nextExecution = nextExecution.AddDate(0, 0, 1)
 	}
 	return nextExecution.Sub(currentTime)
 }
 
-func GetTimeHour4() time.Time {
+func GetTimeHourH(h int) time.Time {
+	if h > 12 {
+		h -= 12
+	}
 	currentTime := time.Now()
 	hour := currentTime.Hour()
-	if hour < 4 {
-		previousTwo := currentTime.Add(-24 * time.Hour)
-		return time.Date(previousTwo.Year(), previousTwo.Month(), previousTwo.Day(), 16, 0, 0, 0, previousTwo.Location())
-	} else if hour < 16 {
-		return time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 4, 0, 0, 0, currentTime.Location())
+	if hour < h {
+		return time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), h, 0, 0, 0, currentTime.Location())
+	} else if hour < h+12 {
+		return time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), h+12, 0, 0, 0, currentTime.Location())
 	} else {
-		return time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 16, 0, 0, 0, currentTime.Location())
+		nextTime := currentTime.Add(24 * time.Hour)
+		return time.Date(nextTime.Year(), nextTime.Month(), nextTime.Day(), h, 0, 0, 0, nextTime.Location())
 	}
 }

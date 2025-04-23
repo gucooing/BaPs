@@ -393,7 +393,7 @@ func (x *ClanAccount) SetLastLoginTime() {
 	if x == nil {
 		return
 	}
-	if !time.Unix(x.LastLoginTime, 0).After(alg.GetDay4()) {
+	if time.Unix(x.LastLoginTime, 0).Before(alg.GetLastDayH(4)) {
 		x.AttendanceCount++ // 隔了一天就加1
 	}
 	x.LastLoginTime = time.Now().Unix()

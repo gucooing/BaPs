@@ -44,8 +44,8 @@ func getEnterSet() *EnterSet {
 }
 
 func (e *EnterSet) Check() {
-	ticker := time.NewTicker(time.Second * 300)       // 五分钟验证一次
-	friendTicker := time.NewTimer(alg.GetEveryDay4()) // 每天四点
+	ticker := time.NewTicker(time.Second * 300)        // 五分钟验证一次
+	friendTicker := time.NewTimer(alg.GetEveryDayH(4)) // 每天四点
 	for {
 		select {
 		case <-ticker.C:
@@ -55,7 +55,7 @@ func (e *EnterSet) Check() {
 		case <-friendTicker.C:
 			e.checkAccountFriend()
 			e.checkYostarClan()
-			friendTicker.Reset(alg.GetEveryDay4())
+			friendTicker.Reset(alg.GetEveryDayH(4))
 		}
 	}
 }

@@ -26,7 +26,7 @@ func GetTimeAttackBin(s *enter.Session) *sro.TimeAttackBin {
 		}
 	}
 	info := bin.TimeAttackBin
-	if alg.GetDay4().After(time.Unix(info.LastUpTime, 0)) {
+	if alg.GetLastDayH(4).After(time.Unix(info.LastUpTime, 0)) {
 		info.PreviousRoom = 0
 		info.TimeAttackRoomList = make(map[int64]*sro.TimeAttackRoom)
 		info.LastUpTime = time.Now().Unix()

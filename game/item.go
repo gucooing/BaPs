@@ -212,7 +212,7 @@ func GetCurrencyList(s *enter.Session) map[int32]*sro.CurrencyInfo {
 	}
 	for id, db := range bin.CurrencyInfoList {
 		// 特殊物品刷新查询
-		if time.Unix(db.UpdateTime, 0).Before(alg.GetLastDay4()) {
+		if time.Unix(db.UpdateTime, 0).Before(alg.GetLastDayH(4)) {
 			switch id {
 			case proto.CurrencyTypes_ChaserTotalTicket,
 				proto.CurrencyTypes_SchoolDungeonTotalTicket,

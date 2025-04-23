@@ -70,7 +70,7 @@ func GetAcademyZoneInfoList(s *enter.Session) map[int64]*sro.AcademyZoneInfo {
 	if bin.AcademyZoneList == nil {
 		bin.AcademyZoneList = make(map[int64]*sro.AcademyZoneInfo)
 	}
-	if !time.Unix(bin.LastUpData, 0).After(alg.GetDay4()) {
+	if time.Unix(bin.LastUpData, 0).Before(alg.GetLastDayH(4)) {
 		bin.AcademyZoneList = UpAcademyZoneInfoList(s)
 		bin.LastUpData = time.Now().Unix()
 	}

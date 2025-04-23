@@ -122,7 +122,7 @@ func UpCafeVisitCharacterDB(bin *sro.CafeInfo) {
 		return
 	}
 	// 学生刷新
-	if alg.GetTimeHour4().After(time.Unix(bin.LastUpdate, 0)) {
+	if alg.GetTimeHourH(4).Before(time.Unix(bin.LastUpdate, 0)) {
 		bin.IsNew = true
 		bin.VisitCharacterList = make(map[int64]*sro.VisitCharacterInfo)
 		characterNum := int32(0)
