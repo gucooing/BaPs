@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"errors"
+	"flag"
 	"fmt"
 	"net/http"
 	"os"
@@ -29,12 +30,15 @@ import (
 )
 
 func NewBaPs() {
-	err := config.LoadConfig()
+	var filePath string
+	flag.StringVar(&filePath, "c", "./config.json", "配置文件路径")
+	flag.Parse()
+	err := config.LoadConfig(filePath)
 	if err != nil {
 		if err == config.FileNotExist {
 			fmt.Printf("找不到配置文件准备生成默认配置文件\n")
 			p, _ := json.MarshalIndent(config.DefaultConfig, "", "  ")
-			cf, _ := os.Create("./config.json")
+			cf, _ := os.Create(filePath)
 			_, err := cf.Write(p)
 			cf.Close()
 			if err != nil {

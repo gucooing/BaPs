@@ -122,11 +122,7 @@ func GetIrc() *Irc {
 
 var FileNotExist = errors.New("config file not found")
 
-func LoadConfig() error {
-	filePath := "./config.json"
-	// if _, err := os.Stat("./config"); os.IsNotExist(err) {
-	// 	os.MkdirAll("./config", 0644)
-	// }
+func LoadConfig(filePath string) error {
 	f, err := os.Open(filePath)
 	if err != nil {
 		return FileNotExist
@@ -170,11 +166,11 @@ var DefaultConfig = &Config{
 	},
 	DB: &DB{
 		DbType: "sqlite",
-		Dsn:    "BaPs.db",
+		Dsn:    "./sqlite/BaPs.db",
 	},
 	RankDB: &DB{
 		DbType: "sqlite",
-		Dsn:    "Rank.db",
+		Dsn:    "./sqlite/Rank.db",
 	},
 	Irc: &Irc{
 		HostAddress: "127.0.0.1",

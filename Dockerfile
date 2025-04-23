@@ -15,7 +15,7 @@ RUN --mount=type=secret,id=gdconf_dev,env=GDCONF_DEV \
 RUN cd ./common/server_only && \
     protoc --proto_path=. --go_out=. --go_opt=paths=source_relative *.proto && \
     cd ../../
-RUN go build -ldflags="-s -w" -o /app/BaPs ./cmd/BaPs/BaPs.go
+RUN go build -ldflags="-s -w -X github.com/gucooing/BaPs/pkg/mx.Docker=1" -o /app/BaPs ./cmd/BaPs/BaPs.go
 
 # 最终镜像
 FROM alpine:latest
@@ -25,4 +25,4 @@ COPY --from=builder /app/BaPs .
 COPY --from=builder /app/data/ ./data/
 RUN chmod +x BaPs
 EXPOSE 5000/tcp
-ENTRYPOINT ["./BaPs"]
+ENTRYPOINT ["./BaPs -c ./config/config.json"]

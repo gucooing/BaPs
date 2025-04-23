@@ -188,7 +188,7 @@ func (s *SDK) YostarLogin(c *gin.Context) {
 	rsp.ChannelId = yostarUser.ChannelId
 	rsp.CurrentTimestampMs = time.Now().UnixMicro()
 	rsp.KrKmcStatus = 2
-	rsp.Migrated = true
+	rsp.Migrated = true // 是否已绑定
 	rsp.YostarUid = strconv.Itoa(int(yostarUser.YostarUid))
 	rsp.YostarUsername = yostarAccount.YostarAccount
 	rsp.AccessToken = yoStarUserLogin.YostarLoginToken

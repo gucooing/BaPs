@@ -64,9 +64,8 @@
 ```bash
 docker run -d \
   -p 5000:5000 \
-  -v /data/baps/config.json:/usr/ba/config.json \
-  -v /data/baps/sqlite/BaPs.db:/usr/ba/BaPs.db \
-  -v /data/baps/sqlite/Rank.db:/usr/ba/Rank.db \
+  -v /data/baps/config:/usr/ba/config \
+  -v /data/baps/sqlite:/usr/ba/sqlite \
   ghcr.io/gucooing/baps:latest
 ``` 
 <details>
@@ -75,9 +74,8 @@ docker run -d \
 ```
 docker run -d \
   -p 5000:5000 \
-  -v /data/baps/config.json:/usr/ba/config.json \
-  -v /data/baps/sqlite/BaPs.db:/usr/ba/BaPs.db \
-  -v /data/baps/sqlite/Rank.db:/usr/ba/Rank.db \
+  -v /data/baps/config:/usr/ba/config \
+  -v /data/baps/sqlite:/usr/ba/sqlite \
   ghcr.nju.edu.cn/gucooing/baps:latest
 ```
 </details>
