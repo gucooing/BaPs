@@ -25,4 +25,4 @@ COPY --from=builder /app/BaPs .
 COPY --from=builder /app/data/ ./data/
 RUN chmod +x BaPs
 EXPOSE 5000/tcp
-ENTRYPOINT ["./BaPs -c ./config/config.json"]
+ENTRYPOINT ["./BaPs", "-c", "./config/config.json"]
