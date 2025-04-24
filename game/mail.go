@@ -10,6 +10,10 @@ import (
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
+const (
+	MaxMailParcelNum = 700
+)
+
 func NewMailBin(s *enter.Session) *sro.MailBin {
 	return &sro.MailBin{}
 }

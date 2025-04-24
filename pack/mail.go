@@ -34,6 +34,7 @@ func MailReceive(s *enter.Session, request, response proto.Message) {
 
 	rsp.MailServerIds = make([]int64, 0)
 	result := make([]*game.ParcelResult, 0)
+	readParcelNum := 0
 	for _, mailServerId := range req.MailServerIds {
 		bin := game.GetMailInfo(s, mailServerId)
 		if bin == nil || bin.IsRead {
@@ -44,6 +45,11 @@ func MailReceive(s *enter.Session, request, response proto.Message) {
 		bin.ReceiptDate = time.Now().Unix()
 		bin.IsRead = true
 		rsp.MailServerIds = append(rsp.MailServerIds, mailServerId)
+		readParcelNum += len(bin.ParcelInfoList)
+		if readParcelNum >= game.MaxMailParcelNum {
+			goto ty
+		}
 	}
+ty:
 	rsp.ParcelResultDB = game.ParcelResultDB(s, result)
 }
