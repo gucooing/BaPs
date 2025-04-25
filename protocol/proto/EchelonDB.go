@@ -2,17 +2,16 @@
 
 package proto
 
-type EchelonDB struct{
-    AccountServerId int64
-    EchelonType EchelonType
-    EchelonNumber int64
-    ExtensionType EchelonExtensionType
-    LeaderServerId int64
-    MainSlotServerIds []int64
-    SupportSlotServerIds []int64
-    TSSInteractionServerId int64
-    UsingFlag EchelonStatusFlag
-    SkillCardMulliganCharacterIds []int64
-    CombatStyleIndex []int
+type EchelonDB struct {
+	AccountServerId               int64
+	EchelonType                   EchelonType
+	EchelonNumber                 int64
+	ExtensionType                 EchelonExtensionType
+	LeaderServerId                int64
+	MainSlotServerIds             []int64
+	SupportSlotServerIds          []int64
+	TSSInteractionServerId        int64
+	UsingFlag                     EchelonStatusFlag
+	SkillCardMulliganCharacterIds []int64
+	CombatStyleIndex              []int
 }
-

@@ -3,18 +3,17 @@
 package proto
 
 import (
-    "time"
+	"time"
 )
 
-type ConquestTileDB struct{
-    EventContentId int64
-    Difficulty *StageDifficulty
-    TileUniqueId int64
-    TileState TileState
-    Level int64
-    StarFlags []bool
-    CreateTime time.Time
-    IsThreeStarClear bool
-    IsAnyStarClear bool
+type ConquestTileDB struct {
+	EventContentId   int64
+	Difficulty       *StageDifficulty
+	TileUniqueId     int64
+	TileState        TileState
+	Level            int64
+	StarFlags        []bool
+	CreateTime       time.Time
+	IsThreeStarClear bool
+	IsAnyStarClear   bool
 }
-

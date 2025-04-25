@@ -2,9 +2,8 @@
 
 package proto
 
-type MemoryLobbyDB struct{
-    Type ParcelType
-    AccountServerId int64
-    MemoryLobbyUniqueId int64
+type MemoryLobbyDB struct {
+	Type                ParcelType
+	AccountServerId     int64
+	MemoryLobbyUniqueId int64
 }
-

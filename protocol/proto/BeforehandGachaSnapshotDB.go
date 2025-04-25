@@ -2,13 +2,12 @@
 
 package proto
 
-type BeforehandGachaSnapshotDB struct{
-    ShopUniqueId int64
-    GoodsId int64
-    LastIndex int64
-    LastResults []int64
-    SavedIndex int64
-    SavedResults []int64
-    PickedIndex int64
+type BeforehandGachaSnapshotDB struct {
+	ShopUniqueId int64
+	GoodsId      int64
+	LastIndex    int64
+	LastResults  []int64
+	SavedIndex   int64
+	SavedResults []int64
+	PickedIndex  int64
 }
-

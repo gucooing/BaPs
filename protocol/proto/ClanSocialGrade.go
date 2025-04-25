@@ -5,43 +5,42 @@ package proto
 type ClanSocialGrade int32
 
 const (
-    ClanSocialGrade_None = 0
-    ClanSocialGrade_President = 1
-    ClanSocialGrade_Manager = 2
-    ClanSocialGrade_Member = 3
-    ClanSocialGrade_Applicant = 4
-    ClanSocialGrade_Refused = 5
-    ClanSocialGrade_Kicked = 6
-    ClanSocialGrade_Quit = 7
-    ClanSocialGrade_VicePredisident = 8
+	ClanSocialGrade_None            = 0
+	ClanSocialGrade_President       = 1
+	ClanSocialGrade_Manager         = 2
+	ClanSocialGrade_Member          = 3
+	ClanSocialGrade_Applicant       = 4
+	ClanSocialGrade_Refused         = 5
+	ClanSocialGrade_Kicked          = 6
+	ClanSocialGrade_Quit            = 7
+	ClanSocialGrade_VicePredisident = 8
 )
 
 var (
-    ClanSocialGrade_name = map[int32]string{
-      0 : "None",
-      1 : "President",
-      2 : "Manager",
-      3 : "Member",
-      4 : "Applicant",
-      5 : "Refused",
-      6 : "Kicked",
-      7 : "Quit",
-      8 : "VicePredisident",
-   }
-    ClanSocialGrade_value = map[string]int32{
-      "None" : 0,
-      "President" : 1,
-      "Manager" : 2,
-      "Member" : 3,
-      "Applicant" : 4,
-      "Refused" : 5,
-      "Kicked" : 6,
-      "Quit" : 7,
-      "VicePredisident" : 8,
-   }
+	ClanSocialGrade_name = map[int32]string{
+		0: "None",
+		1: "President",
+		2: "Manager",
+		3: "Member",
+		4: "Applicant",
+		5: "Refused",
+		6: "Kicked",
+		7: "Quit",
+		8: "VicePredisident",
+	}
+	ClanSocialGrade_value = map[string]int32{
+		"None":            0,
+		"President":       1,
+		"Manager":         2,
+		"Member":          3,
+		"Applicant":       4,
+		"Refused":         5,
+		"Kicked":          6,
+		"Quit":            7,
+		"VicePredisident": 8,
+	}
 )
 
 func (x ClanSocialGrade) String() string {
-  return ClanSocialGrade_name[int32(x)]
+	return ClanSocialGrade_name[int32(x)]
 }
-

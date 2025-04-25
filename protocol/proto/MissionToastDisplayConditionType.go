@@ -5,25 +5,24 @@ package proto
 type MissionToastDisplayConditionType int32
 
 const (
-    MissionToastDisplayConditionType_Always = 0
-    MissionToastDisplayConditionType_Complete = 1
-    MissionToastDisplayConditionType_Never = 2
+	MissionToastDisplayConditionType_Always   = 0
+	MissionToastDisplayConditionType_Complete = 1
+	MissionToastDisplayConditionType_Never    = 2
 )
 
 var (
-    MissionToastDisplayConditionType_name = map[int32]string{
-      0 : "Always",
-      1 : "Complete",
-      2 : "Never",
-   }
-    MissionToastDisplayConditionType_value = map[string]int32{
-      "Always" : 0,
-      "Complete" : 1,
-      "Never" : 2,
-   }
+	MissionToastDisplayConditionType_name = map[int32]string{
+		0: "Always",
+		1: "Complete",
+		2: "Never",
+	}
+	MissionToastDisplayConditionType_value = map[string]int32{
+		"Always":   0,
+		"Complete": 1,
+		"Never":    2,
+	}
 )
 
 func (x MissionToastDisplayConditionType) String() string {
-  return MissionToastDisplayConditionType_name[int32(x)]
+	return MissionToastDisplayConditionType_name[int32(x)]
 }
-

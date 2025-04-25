@@ -2,9 +2,8 @@
 
 package proto
 
-type PurchaseOrderDB struct{
-    ShopCashId int64
-    StatusCode PurchaseStatusCode
-    PurchaseOrderId int64
+type PurchaseOrderDB struct {
+	ShopCashId      int64
+	StatusCode      PurchaseStatusCode
+	PurchaseOrderId int64
 }
-

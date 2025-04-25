@@ -2,9 +2,8 @@
 
 package proto
 
-type AcademyLocationDB struct{
-    LocationId int64
-    Rank int64
-    Exp int64
+type AcademyLocationDB struct {
+	LocationId int64
+	Rank       int64
+	Exp        int64
 }
-

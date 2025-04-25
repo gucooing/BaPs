@@ -3,14 +3,13 @@
 package proto
 
 import (
-    "time"
+	"time"
 )
 
-type PurchaseCountDB struct{
-    ShopCashId int64
-    PurchaseCount int32
-    ResetDate time.Time
-    PurchaseDate time.Time
-    ManualResetDate time.Time
+type PurchaseCountDB struct {
+	ShopCashId      int64
+	PurchaseCount   int32
+	ResetDate       time.Time
+	PurchaseDate    time.Time
+	ManualResetDate time.Time
 }
-

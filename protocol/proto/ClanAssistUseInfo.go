@@ -2,18 +2,17 @@
 
 package proto
 
-type ClanAssistUseInfo struct{
-    CharacterAccountId int64
-    CharacterDBId int64
-    EchelonType EchelonType
-    SlotNumber int32
-    AssistRelation AssistRelation
-    EchelonSlotType int32
-    EchelonSlotIndex int32
-    CombatStyleIndex int32
-    DecodedShardId int64
-    DecodedCharacterDBId int64
-    IsMulligan bool
-    IsTSAInteraction bool
+type ClanAssistUseInfo struct {
+	CharacterAccountId   int64
+	CharacterDBId        int64
+	EchelonType          EchelonType
+	SlotNumber           int32
+	AssistRelation       AssistRelation
+	EchelonSlotType      int32
+	EchelonSlotIndex     int32
+	CombatStyleIndex     int32
+	DecodedShardId       int64
+	DecodedCharacterDBId int64
+	IsMulligan           bool
+	IsTSAInteraction     bool
 }
-

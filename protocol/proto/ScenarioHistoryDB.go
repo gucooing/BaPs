@@ -3,12 +3,11 @@
 package proto
 
 import (
-    "time"
+	"time"
 )
 
-type ScenarioHistoryDB struct{
-    AccountServerId int64
-    ScenarioUniqueId int64
-    ClearDateTime time.Time
+type ScenarioHistoryDB struct {
+	AccountServerId  int64
+	ScenarioUniqueId int64
+	ClearDateTime    time.Time
 }
-

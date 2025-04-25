@@ -5,28 +5,27 @@ package proto
 type MissionResetType int32
 
 const (
-    MissionResetType_None = 0
-    MissionResetType_Daily = 1
-    MissionResetType_Weekly = 2
-    MissionResetType_Limit = 3
+	MissionResetType_None   = 0
+	MissionResetType_Daily  = 1
+	MissionResetType_Weekly = 2
+	MissionResetType_Limit  = 3
 )
 
 var (
-    MissionResetType_name = map[int32]string{
-      0 : "None",
-      1 : "Daily",
-      2 : "Weekly",
-      3 : "Limit",
-   }
-    MissionResetType_value = map[string]int32{
-      "None" : 0,
-      "Daily" : 1,
-      "Weekly" : 2,
-      "Limit" : 3,
-   }
+	MissionResetType_name = map[int32]string{
+		0: "None",
+		1: "Daily",
+		2: "Weekly",
+		3: "Limit",
+	}
+	MissionResetType_value = map[string]int32{
+		"None":   0,
+		"Daily":  1,
+		"Weekly": 2,
+		"Limit":  3,
+	}
 )
 
 func (x MissionResetType) String() string {
-  return MissionResetType_name[int32(x)]
+	return MissionResetType_name[int32(x)]
 }
-

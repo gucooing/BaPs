@@ -5,25 +5,24 @@ package proto
 type ParcelProcessActionType int32
 
 const (
-    ParcelProcessActionType_None = 0
-    ParcelProcessActionType_Cost = 1
-    ParcelProcessActionType_Reward = 2
+	ParcelProcessActionType_None   = 0
+	ParcelProcessActionType_Cost   = 1
+	ParcelProcessActionType_Reward = 2
 )
 
 var (
-    ParcelProcessActionType_name = map[int32]string{
-      0 : "None",
-      1 : "Cost",
-      2 : "Reward",
-   }
-    ParcelProcessActionType_value = map[string]int32{
-      "None" : 0,
-      "Cost" : 1,
-      "Reward" : 2,
-   }
+	ParcelProcessActionType_name = map[int32]string{
+		0: "None",
+		1: "Cost",
+		2: "Reward",
+	}
+	ParcelProcessActionType_value = map[string]int32{
+		"None":   0,
+		"Cost":   1,
+		"Reward": 2,
+	}
 )
 
 func (x ParcelProcessActionType) String() string {
-  return ParcelProcessActionType_name[int32(x)]
+	return ParcelProcessActionType_name[int32(x)]
 }
-

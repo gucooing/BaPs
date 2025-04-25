@@ -2,22 +2,21 @@
 
 package proto
 
-type ArenaCharacterDB struct{
-    ServerId int64
-    UniqueId int64
-    StarGrade int32
-    Level int32
-    PublicSkillLevel int32
-    ExSkillLevel int32
-    PassiveSkillLevel int32
-    ExtraPassiveSkillLevel int32
-    LeaderSkillLevel int32
-    EquipmentDBs []*EquipmentDB
-    FavorRankInfo map[int64]int64
-    PotentialStats map[int32]int32
-    CombatStyleIndex int32
-    WeaponDB *WeaponDB
-    GearDB *GearDB
-    CostumeDB *CostumeDB
+type ArenaCharacterDB struct {
+	ServerId               int64
+	UniqueId               int64
+	StarGrade              int32
+	Level                  int32
+	PublicSkillLevel       int32
+	ExSkillLevel           int32
+	PassiveSkillLevel      int32
+	ExtraPassiveSkillLevel int32
+	LeaderSkillLevel       int32
+	EquipmentDBs           []*EquipmentDB
+	FavorRankInfo          map[int64]int64
+	PotentialStats         map[int32]int32
+	CombatStyleIndex       int32
+	WeaponDB               *WeaponDB
+	GearDB                 *GearDB
+	CostumeDB              *CostumeDB
 }
-

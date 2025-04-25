@@ -2,10 +2,9 @@
 
 package proto
 
-type ParcelInfo struct{
-    Key *ParcelKeyPair
-    Amount int64
-    Multiplier *BasisPoint
-    Probability *BasisPoint
+type ParcelInfo struct {
+	Key         *ParcelKeyPair
+	Amount      int64
+	Multiplier  *BasisPoint
+	Probability *BasisPoint
 }
-

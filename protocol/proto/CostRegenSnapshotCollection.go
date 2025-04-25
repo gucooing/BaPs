@@ -2,7 +2,5 @@
 
 package proto
 
-type CostRegenSnapshotCollection struct{
-    
+type CostRegenSnapshotCollection struct {
 }
-

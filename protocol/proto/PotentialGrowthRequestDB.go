@@ -2,8 +2,7 @@
 
 package proto
 
-type PotentialGrowthRequestDB struct{
-    Type PotentialStatBonusRateType
-    Level int32
+type PotentialGrowthRequestDB struct {
+	Type  PotentialStatBonusRateType
+	Level int32
 }
-

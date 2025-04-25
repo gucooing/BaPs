@@ -2,8 +2,7 @@
 
 package proto
 
-type SingleRaidUserDB struct{
-    *RaidUserDB
-    RaidTeamSettingDB *RaidTeamSettingDB
+type SingleRaidUserDB struct {
+	*RaidUserDB
+	RaidTeamSettingDB *RaidTeamSettingDB
 }
-

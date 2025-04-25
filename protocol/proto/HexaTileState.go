@@ -2,10 +2,9 @@
 
 package proto
 
-type HexaTileState struct{
-    Id int32
-    IsHide bool
-    IsFog bool
-    CanNotMove bool
+type HexaTileState struct {
+	Id         int32
+	IsHide     bool
+	IsFog      bool
+	CanNotMove bool
 }
-

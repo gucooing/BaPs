@@ -2,9 +2,8 @@
 
 package proto
 
-type GearTierUpRequestDB struct{
-    TargetServerId int64
-    AfterTier int64
-    ReplaceInfos []*SelectTicketReplaceInfo
+type GearTierUpRequestDB struct {
+	TargetServerId int64
+	AfterTier      int64
+	ReplaceInfos   []*SelectTicketReplaceInfo
 }
-

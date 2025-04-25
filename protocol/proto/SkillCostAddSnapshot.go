@@ -2,8 +2,7 @@
 
 package proto
 
-type SkillCostAddSnapshot struct{
-    Frame int64
-    Added float64
+type SkillCostAddSnapshot struct {
+	Frame int64
+	Added float64
 }
-

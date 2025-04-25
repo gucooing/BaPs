@@ -3,12 +3,11 @@
 package proto
 
 import (
-    "time"
+	"time"
 )
 
-type ShopFreeRecruitHistoryDB struct{
-    UniqueId int64
-    RecruitCount int32
-    LastUpdateDate time.Time
+type ShopFreeRecruitHistoryDB struct {
+	UniqueId       int64
+	RecruitCount   int32
+	LastUpdateDate time.Time
 }
-

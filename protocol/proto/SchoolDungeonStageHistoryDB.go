@@ -2,14 +2,13 @@
 
 package proto
 
-type SchoolDungeonStageHistoryDB struct{
-    AccountServerId int64
-    StageUniqueId int64
-    BestStarRecord int64
-    StarFlags []bool
-    Star1Flag bool
-    Star2Flag bool
-    Star3Flag bool
-    IsClearedEver bool
+type SchoolDungeonStageHistoryDB struct {
+	AccountServerId int64
+	StageUniqueId   int64
+	BestStarRecord  int64
+	StarFlags       []bool
+	Star1Flag       bool
+	Star2Flag       bool
+	Star3Flag       bool
+	IsClearedEver   bool
 }
-

@@ -5,25 +5,24 @@ package proto
 type RankingSearchType int32
 
 const (
-    RankingSearchType_None = 0
-    RankingSearchType_Rank = 1
-    RankingSearchType_Score = 2
+	RankingSearchType_None  = 0
+	RankingSearchType_Rank  = 1
+	RankingSearchType_Score = 2
 )
 
 var (
-    RankingSearchType_name = map[int32]string{
-      0 : "None",
-      1 : "Rank",
-      2 : "Score",
-   }
-    RankingSearchType_value = map[string]int32{
-      "None" : 0,
-      "Rank" : 1,
-      "Score" : 2,
-   }
+	RankingSearchType_name = map[int32]string{
+		0: "None",
+		1: "Rank",
+		2: "Score",
+	}
+	RankingSearchType_value = map[string]int32{
+		"None":  0,
+		"Rank":  1,
+		"Score": 2,
+	}
 )
 
 func (x RankingSearchType) String() string {
-  return RankingSearchType_name[int32(x)]
+	return RankingSearchType_name[int32(x)]
 }
-

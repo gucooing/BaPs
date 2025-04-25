@@ -5,25 +5,24 @@ package proto
 type ProductTagType int32
 
 const (
-    ProductTagType_Monthly = 0
-    ProductTagType_Weekly = 1
-    ProductTagType_Biweekly = 2
+	ProductTagType_Monthly  = 0
+	ProductTagType_Weekly   = 1
+	ProductTagType_Biweekly = 2
 )
 
 var (
-    ProductTagType_name = map[int32]string{
-      0 : "Monthly",
-      1 : "Weekly",
-      2 : "Biweekly",
-   }
-    ProductTagType_value = map[string]int32{
-      "Monthly" : 0,
-      "Weekly" : 1,
-      "Biweekly" : 2,
-   }
+	ProductTagType_name = map[int32]string{
+		0: "Monthly",
+		1: "Weekly",
+		2: "Biweekly",
+	}
+	ProductTagType_value = map[string]int32{
+		"Monthly":  0,
+		"Weekly":   1,
+		"Biweekly": 2,
+	}
 )
 
 func (x ProductTagType) String() string {
-  return ProductTagType_name[int32(x)]
+	return ProductTagType_name[int32(x)]
 }
-

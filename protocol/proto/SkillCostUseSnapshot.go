@@ -2,10 +2,9 @@
 
 package proto
 
-type SkillCostUseSnapshot struct{
-    Frame int64
-    Used float64
-    CharId int64
-    Level int32
+type SkillCostUseSnapshot struct {
+	Frame  int64
+	Used   float64
+	CharId int64
+	Level  int32
 }
-

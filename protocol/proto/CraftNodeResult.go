@@ -2,8 +2,7 @@
 
 package proto
 
-type CraftNodeResult struct{
-    NodeTier CraftNodeTier
-    ParcelInfo *ParcelInfo
+type CraftNodeResult struct {
+	NodeTier   CraftNodeTier
+	ParcelInfo *ParcelInfo
 }
-

@@ -2,8 +2,7 @@
 
 package proto
 
-type VisitingCharacterDB struct{
-    UniqueId int64
-    ServerId int64
+type VisitingCharacterDB struct {
+	UniqueId int64
+	ServerId int64
 }
-

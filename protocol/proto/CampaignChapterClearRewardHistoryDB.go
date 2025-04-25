@@ -3,13 +3,12 @@
 package proto
 
 import (
-    "time"
+	"time"
 )
 
-type CampaignChapterClearRewardHistoryDB struct{
-    AccountServerId int64
-    ChapterUniqueId int64
-    RewardType StageDifficulty
-    ReceiveDate time.Time
+type CampaignChapterClearRewardHistoryDB struct {
+	AccountServerId int64
+	ChapterUniqueId int64
+	RewardType      StageDifficulty
+	ReceiveDate     time.Time
 }
-

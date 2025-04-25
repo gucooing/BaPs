@@ -5,28 +5,27 @@ package proto
 type RaidStatus int32
 
 const (
-    RaidStatus_None = 0
-    RaidStatus_Playing = 1
-    RaidStatus_Clear = 2
-    RaidStatus_Close = 3
+	RaidStatus_None    = 0
+	RaidStatus_Playing = 1
+	RaidStatus_Clear   = 2
+	RaidStatus_Close   = 3
 )
 
 var (
-    RaidStatus_name = map[int32]string{
-      0 : "None",
-      1 : "Playing",
-      2 : "Clear",
-      3 : "Close",
-   }
-    RaidStatus_value = map[string]int32{
-      "None" : 0,
-      "Playing" : 1,
-      "Clear" : 2,
-      "Close" : 3,
-   }
+	RaidStatus_name = map[int32]string{
+		0: "None",
+		1: "Playing",
+		2: "Clear",
+		3: "Close",
+	}
+	RaidStatus_value = map[string]int32{
+		"None":    0,
+		"Playing": 1,
+		"Clear":   2,
+		"Close":   3,
+	}
 )
 
 func (x RaidStatus) String() string {
-  return RaidStatus_name[int32(x)]
+	return RaidStatus_name[int32(x)]
 }
-

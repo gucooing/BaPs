@@ -2,9 +2,8 @@
 
 package proto
 
-type StickerDB struct{
-    Type ParcelType
-    StickerUniqueId int64
-    ParcelInfos []*ParcelInfo
+type StickerDB struct {
+	Type            ParcelType
+	StickerUniqueId int64
+	ParcelInfos     []*ParcelInfo
 }
-

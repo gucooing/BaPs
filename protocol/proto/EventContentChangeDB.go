@@ -3,16 +3,15 @@
 package proto
 
 import (
-    "time"
+	"time"
 )
 
-type EventContentChangeDB struct{
-    AccountId int64
-    EventContentId int64
-    UseAmount int64
-    ChangeCount int64
-    AccumulateChangeCount int64
-    LastUpdateDate time.Time
-    ChangeFlag bool
+type EventContentChangeDB struct {
+	AccountId             int64
+	EventContentId        int64
+	UseAmount             int64
+	ChangeCount           int64
+	AccumulateChangeCount int64
+	LastUpdateDate        time.Time
+	ChangeFlag            bool
 }
-

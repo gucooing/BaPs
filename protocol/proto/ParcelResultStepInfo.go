@@ -2,8 +2,7 @@
 
 package proto
 
-type ParcelResultStepInfo struct{
-    ParcelProcessActionType ParcelProcessActionType
-    StepParcelDetails []*ParcelDetail
+type ParcelResultStepInfo struct {
+	ParcelProcessActionType ParcelProcessActionType
+	StepParcelDetails       []*ParcelDetail
 }
-

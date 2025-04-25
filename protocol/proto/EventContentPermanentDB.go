@@ -2,9 +2,8 @@
 
 package proto
 
-type EventContentPermanentDB struct{
-    EventContentId int64
-    IsStageAllClear bool
-    IsReceivedCharacterReward bool
+type EventContentPermanentDB struct {
+	EventContentId            int64
+	IsStageAllClear           bool
+	IsReceivedCharacterReward bool
 }
-

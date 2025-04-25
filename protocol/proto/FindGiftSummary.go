@@ -2,8 +2,7 @@
 
 package proto
 
-type FindGiftSummary struct{
-    UniqueName string
-    ClearCount int32
+type FindGiftSummary struct {
+	UniqueName string
+	ClearCount int32
 }
-

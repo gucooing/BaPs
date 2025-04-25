@@ -2,10 +2,9 @@
 
 package proto
 
-type IdCardBackgroundDB struct{
-    Type ParcelType
-    ServerId int64
-    UniqueId int64
-    ParcelInfos *ParcelInfo
+type IdCardBackgroundDB struct {
+	Type        ParcelType
+	ServerId    int64
+	UniqueId    int64
+	ParcelInfos *ParcelInfo
 }
-

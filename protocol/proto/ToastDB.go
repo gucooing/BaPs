@@ -3,17 +3,16 @@
 package proto
 
 import (
-    "time"
+	"time"
 )
 
-type ToastDB struct{
-    UniqueId int64
-    Text string
-    LocalizeText map[Language]string
-    ToastId string
-    BeginDate time.Time
-    EndDate time.Time
-    LifeTime int32
-    Delay int32
+type ToastDB struct {
+	UniqueId     int64
+	Text         string
+	LocalizeText map[Language]string
+	ToastId      string
+	BeginDate    time.Time
+	EndDate      time.Time
+	LifeTime     int32
+	Delay        int32
 }
-

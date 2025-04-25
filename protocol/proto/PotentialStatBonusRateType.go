@@ -5,28 +5,27 @@ package proto
 type PotentialStatBonusRateType int32
 
 const (
-    PotentialStatBonusRateType_None = 0
-    PotentialStatBonusRateType_MaxHP = 1
-    PotentialStatBonusRateType_AttackPower = 2
-    PotentialStatBonusRateType_HealPower = 3
+	PotentialStatBonusRateType_None        = 0
+	PotentialStatBonusRateType_MaxHP       = 1
+	PotentialStatBonusRateType_AttackPower = 2
+	PotentialStatBonusRateType_HealPower   = 3
 )
 
 var (
-    PotentialStatBonusRateType_name = map[int32]string{
-      0 : "None",
-      1 : "MaxHP",
-      2 : "AttackPower",
-      3 : "HealPower",
-   }
-    PotentialStatBonusRateType_value = map[string]int32{
-      "None" : 0,
-      "MaxHP" : 1,
-      "AttackPower" : 2,
-      "HealPower" : 3,
-   }
+	PotentialStatBonusRateType_name = map[int32]string{
+		0: "None",
+		1: "MaxHP",
+		2: "AttackPower",
+		3: "HealPower",
+	}
+	PotentialStatBonusRateType_value = map[string]int32{
+		"None":        0,
+		"MaxHP":       1,
+		"AttackPower": 2,
+		"HealPower":   3,
+	}
 )
 
 func (x PotentialStatBonusRateType) String() string {
-  return PotentialStatBonusRateType_name[int32(x)]
+	return PotentialStatBonusRateType_name[int32(x)]
 }
-

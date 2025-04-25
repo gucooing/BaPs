@@ -5,22 +5,21 @@ package proto
 type MultipleConditionCheckType int32
 
 const (
-    MultipleConditionCheckType_And = 0
-    MultipleConditionCheckType_Or = 1
+	MultipleConditionCheckType_And = 0
+	MultipleConditionCheckType_Or  = 1
 )
 
 var (
-    MultipleConditionCheckType_name = map[int32]string{
-      0 : "And",
-      1 : "Or",
-   }
-    MultipleConditionCheckType_value = map[string]int32{
-      "And" : 0,
-      "Or" : 1,
-   }
+	MultipleConditionCheckType_name = map[int32]string{
+		0: "And",
+		1: "Or",
+	}
+	MultipleConditionCheckType_value = map[string]int32{
+		"And": 0,
+		"Or":  1,
+	}
 )
 
 func (x MultipleConditionCheckType) String() string {
-  return MultipleConditionCheckType_name[int32(x)]
+	return MultipleConditionCheckType_name[int32(x)]
 }
-

@@ -2,8 +2,7 @@
 
 package proto
 
-type EliminateRaidUserDB struct{
+type EliminateRaidUserDB struct {
 	*RaidUserDB
-    BossGroupToRankingPoint map[string]int64
+	BossGroupToRankingPoint map[string]int64
 }
-

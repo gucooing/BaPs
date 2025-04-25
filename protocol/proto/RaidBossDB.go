@@ -2,10 +2,9 @@
 
 package proto
 
-type RaidBossDB struct{
-    ContentType ContentType
-    BossIndex int32
-    BossCurrentHP int64
-    BossGroggyPoint int64
+type RaidBossDB struct {
+	ContentType     ContentType
+	BossIndex       int32
+	BossCurrentHP   int64
+	BossGroggyPoint int64
 }
-

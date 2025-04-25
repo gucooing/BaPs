@@ -5,25 +5,24 @@ package proto
 type ClanJoinOption int32
 
 const (
-    ClanJoinOption_Free = 0
-    ClanJoinOption_Permission = 1
-    ClanJoinOption_All = 2
+	ClanJoinOption_Free       = 0
+	ClanJoinOption_Permission = 1
+	ClanJoinOption_All        = 2
 )
 
 var (
-    ClanJoinOption_name = map[int32]string{
-      0 : "Free",
-      1 : "Permission",
-      2 : "All",
-   }
-    ClanJoinOption_value = map[string]int32{
-      "Free" : 0,
-      "Permission" : 1,
-      "All" : 2,
-   }
+	ClanJoinOption_name = map[int32]string{
+		0: "Free",
+		1: "Permission",
+		2: "All",
+	}
+	ClanJoinOption_value = map[string]int32{
+		"Free":       0,
+		"Permission": 1,
+		"All":        2,
+	}
 )
 
 func (x ClanJoinOption) String() string {
-  return ClanJoinOption_name[int32(x)]
+	return ClanJoinOption_name[int32(x)]
 }
-

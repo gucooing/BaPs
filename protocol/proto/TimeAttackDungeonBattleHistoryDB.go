@@ -2,13 +2,12 @@
 
 package proto
 
-type TimeAttackDungeonBattleHistoryDB struct{
-    DungeonType TimeAttackDungeonType
-    GeasId int64
-    DefaultPoint int64
-    ClearTimePoint int64
-    EndFrame int64
-    MainCharacterDBs []*TimeAttackDungeonCharacterDB
-    SupportCharacterDBs []*TimeAttackDungeonCharacterDB
+type TimeAttackDungeonBattleHistoryDB struct {
+	DungeonType         TimeAttackDungeonType
+	GeasId              int64
+	DefaultPoint        int64
+	ClearTimePoint      int64
+	EndFrame            int64
+	MainCharacterDBs    []*TimeAttackDungeonCharacterDB
+	SupportCharacterDBs []*TimeAttackDungeonCharacterDB
 }
-

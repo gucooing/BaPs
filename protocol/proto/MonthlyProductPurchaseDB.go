@@ -3,14 +3,13 @@
 package proto
 
 import (
-    "time"
+	"time"
 )
 
-type MonthlyProductPurchaseDB struct{
-    ProductId int64
-    PurchaseDate time.Time
-    LastDailyRewardDate time.Time
-    RewardEndDate time.Time
-    ProductTagType ProductTagType
+type MonthlyProductPurchaseDB struct {
+	ProductId           int64
+	PurchaseDate        time.Time
+	LastDailyRewardDate time.Time
+	RewardEndDate       time.Time
+	ProductTagType      ProductTagType
 }
-

@@ -2,10 +2,9 @@
 
 package proto
 
-type CafePresetDB struct{
-    ServerId int64
-    SlotId int32
-    PresetName string
-    IsEmpty bool
+type CafePresetDB struct {
+	ServerId   int64
+	SlotId     int32
+	PresetName string
+	IsEmpty    bool
 }
-

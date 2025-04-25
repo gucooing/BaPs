@@ -2,10 +2,9 @@
 
 package proto
 
-type MultiSweepPresetDB struct{
-    PresetId int64
-    PresetName string
-    StageIds []int64
-    ParcelIds []*ParcelKeyPair
+type MultiSweepPresetDB struct {
+	PresetId   int64
+	PresetName string
+	StageIds   []int64
+	ParcelIds  []*ParcelKeyPair
 }
-

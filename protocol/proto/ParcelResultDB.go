@@ -2,31 +2,30 @@
 
 package proto
 
-type ParcelResultDB struct{
-    AccountDB *AccountDB
-    AcademyLocationDBs []*AcademyLocationDB
-    AccountCurrencyDB *AccountCurrencyDB
-    CharacterDBs []*CharacterDB
-    WeaponDBs []*WeaponDB
-    CostumeDBs []*CostumeDB
-    TSSCharacterDBs []*CharacterDB
-    EquipmentDBs map[int64]*EquipmentDB
-    RemovedEquipmentIds []int64
-    ItemDBs map[int64]*ItemDB
-    RemovedItemIds []int64
-    FurnitureDBs map[int64]*FurnitureDB
-    RemovedFurnitureIds []int64
-    IdCardBackgroundDBs map[int64]*IdCardBackgroundDB
-    EmblemDBs []*EmblemDB
-    StickerDBs []*StickerDB
-    MemoryLobbyDBs []*MemoryLobbyDB
-    CharacterNewUniqueIds []int64
-    SecretStoneCharacterIdAndCounts map[int64]int32
-    DisplaySequence []*ParcelInfo
-    ParcelForMission []*ParcelInfo
-    ParcelResultStepInfoList []*ParcelResultStepInfo
-    BaseAccountExp int64
-    AdditionalAccountExp int64
-    GachaResultCharacters []int64
+type ParcelResultDB struct {
+	AccountDB                       *AccountDB
+	AcademyLocationDBs              []*AcademyLocationDB
+	AccountCurrencyDB               *AccountCurrencyDB
+	CharacterDBs                    []*CharacterDB
+	WeaponDBs                       []*WeaponDB
+	CostumeDBs                      []*CostumeDB
+	TSSCharacterDBs                 []*CharacterDB
+	EquipmentDBs                    map[int64]*EquipmentDB
+	RemovedEquipmentIds             []int64
+	ItemDBs                         map[int64]*ItemDB
+	RemovedItemIds                  []int64
+	FurnitureDBs                    map[int64]*FurnitureDB
+	RemovedFurnitureIds             []int64
+	IdCardBackgroundDBs             map[int64]*IdCardBackgroundDB
+	EmblemDBs                       []*EmblemDB
+	StickerDBs                      []*StickerDB
+	MemoryLobbyDBs                  []*MemoryLobbyDB
+	CharacterNewUniqueIds           []int64
+	SecretStoneCharacterIdAndCounts map[int64]int32
+	DisplaySequence                 []*ParcelInfo
+	ParcelForMission                []*ParcelInfo
+	ParcelResultStepInfoList        []*ParcelResultStepInfo
+	BaseAccountExp                  int64
+	AdditionalAccountExp            int64
+	GachaResultCharacters           []int64
 }
-

@@ -2,9 +2,8 @@
 
 package proto
 
-type SkillLevelBatchGrowthRequestDB struct{
-    SkillSlot string
-    Level int32
-    ReplaceInfos []*SelectTicketReplaceInfo
+type SkillLevelBatchGrowthRequestDB struct {
+	SkillSlot    string
+	Level        int32
+	ReplaceInfos []*SelectTicketReplaceInfo
 }
-

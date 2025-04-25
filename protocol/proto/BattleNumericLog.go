@@ -2,18 +2,17 @@
 
 package proto
 
-type BattleNumericLog struct{
-    EntityType BattleEntityType
-    Category BattleLogCategory
-    Source BattleLogSourceType
-    CalculatedSum int64
-    AppliedSum int64
-    Count int64
-    CriticalMultiplierMax int64
-    CriticalCount int64
-    CalculatedMin int64
-    CalculatedMax int64
-    AppliedMin int64
-    AppliedMax int64
+type BattleNumericLog struct {
+	EntityType            BattleEntityType
+	Category              BattleLogCategory
+	Source                BattleLogSourceType
+	CalculatedSum         int64
+	AppliedSum            int64
+	Count                 int64
+	CriticalMultiplierMax int64
+	CriticalCount         int64
+	CalculatedMin         int64
+	CalculatedMax         int64
+	AppliedMin            int64
+	AppliedMax            int64
 }
-

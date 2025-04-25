@@ -2,8 +2,7 @@
 
 package proto
 
-type ParcelKeyPair struct{
-    Type ParcelType
-    Id int64
+type ParcelKeyPair struct {
+	Type ParcelType
+	Id   int64
 }
-

@@ -2,8 +2,7 @@
 
 package proto
 
-type ShopEligmaHistoryDB struct{
-    CharacterUniqueId int64
-    PurchaseCount int64
+type ShopEligmaHistoryDB struct {
+	CharacterUniqueId int64
+	PurchaseCount     int64
 }
-

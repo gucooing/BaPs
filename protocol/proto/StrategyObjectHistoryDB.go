@@ -2,8 +2,7 @@
 
 package proto
 
-type StrategyObjectHistoryDB struct{
-    AccountId int64
-    StrategyObjectId int64
+type StrategyObjectHistoryDB struct {
+	AccountId        int64
+	StrategyObjectId int64
 }
-

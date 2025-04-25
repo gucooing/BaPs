@@ -5,28 +5,27 @@ package proto
 type PurchaseCountResetType int32
 
 const (
-    PurchaseCountResetType_None = 0
-    PurchaseCountResetType_Day = 1
-    PurchaseCountResetType_Week = 2
-    PurchaseCountResetType_Month = 3
+	PurchaseCountResetType_None  = 0
+	PurchaseCountResetType_Day   = 1
+	PurchaseCountResetType_Week  = 2
+	PurchaseCountResetType_Month = 3
 )
 
 var (
-    PurchaseCountResetType_name = map[int32]string{
-      0 : "None",
-      1 : "Day",
-      2 : "Week",
-      3 : "Month",
-   }
-    PurchaseCountResetType_value = map[string]int32{
-      "None" : 0,
-      "Day" : 1,
-      "Week" : 2,
-      "Month" : 3,
-   }
+	PurchaseCountResetType_name = map[int32]string{
+		0: "None",
+		1: "Day",
+		2: "Week",
+		3: "Month",
+	}
+	PurchaseCountResetType_value = map[string]int32{
+		"None":  0,
+		"Day":   1,
+		"Week":  2,
+		"Month": 3,
+	}
 )
 
 func (x PurchaseCountResetType) String() string {
-  return PurchaseCountResetType_name[int32(x)]
+	return PurchaseCountResetType_name[int32(x)]
 }
-

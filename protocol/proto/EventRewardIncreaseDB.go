@@ -3,13 +3,12 @@
 package proto
 
 import (
-    "time"
+	"time"
 )
 
-type EventRewardIncreaseDB struct{
-    EventTargetType EventTargetType
-    Multiplier *BasisPoint
-    BeginDate time.Time
-    EndDate time.Time
+type EventRewardIncreaseDB struct {
+	EventTargetType EventTargetType
+	Multiplier      *BasisPoint
+	BeginDate       time.Time
+	EndDate         time.Time
 }
-

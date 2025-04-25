@@ -2,8 +2,7 @@
 
 package proto
 
-type AccountAttachmentDB struct{
-    AccountId int64
-    EmblemUniqueId int64
+type AccountAttachmentDB struct {
+	AccountId      int64
+	EmblemUniqueId int64
 }
-

@@ -5,34 +5,33 @@ package proto
 type NotificationEventReddot int32
 
 const (
-    NotificationEventReddot_StagePointReward = 0
-    NotificationEventReddot_MissionComplete = 1
-    NotificationEventReddot_MiniGameMissionComplete = 2
-    NotificationEventReddot_WorldRaidReward = 3
-    NotificationEventReddot_ConquestCalculateReward = 4
-    NotificationEventReddot_DiceRaceLapReward = 5
+	NotificationEventReddot_StagePointReward        = 0
+	NotificationEventReddot_MissionComplete         = 1
+	NotificationEventReddot_MiniGameMissionComplete = 2
+	NotificationEventReddot_WorldRaidReward         = 3
+	NotificationEventReddot_ConquestCalculateReward = 4
+	NotificationEventReddot_DiceRaceLapReward       = 5
 )
 
 var (
-    NotificationEventReddot_name = map[int32]string{
-      0 : "StagePointReward",
-      1 : "MissionComplete",
-      2 : "MiniGameMissionComplete",
-      3 : "WorldRaidReward",
-      4 : "ConquestCalculateReward",
-      5 : "DiceRaceLapReward",
-   }
-    NotificationEventReddot_value = map[string]int32{
-      "StagePointReward" : 0,
-      "MissionComplete" : 1,
-      "MiniGameMissionComplete" : 2,
-      "WorldRaidReward" : 3,
-      "ConquestCalculateReward" : 4,
-      "DiceRaceLapReward" : 5,
-   }
+	NotificationEventReddot_name = map[int32]string{
+		0: "StagePointReward",
+		1: "MissionComplete",
+		2: "MiniGameMissionComplete",
+		3: "WorldRaidReward",
+		4: "ConquestCalculateReward",
+		5: "DiceRaceLapReward",
+	}
+	NotificationEventReddot_value = map[string]int32{
+		"StagePointReward":        0,
+		"MissionComplete":         1,
+		"MiniGameMissionComplete": 2,
+		"WorldRaidReward":         3,
+		"ConquestCalculateReward": 4,
+		"DiceRaceLapReward":       5,
+	}
 )
 
 func (x NotificationEventReddot) String() string {
-  return NotificationEventReddot_name[int32(x)]
+	return NotificationEventReddot_name[int32(x)]
 }
-

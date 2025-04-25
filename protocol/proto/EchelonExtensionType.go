@@ -5,22 +5,21 @@ package proto
 type EchelonExtensionType int32
 
 const (
-    EchelonExtensionType_Base = 0
-    EchelonExtensionType_Extension = 1
+	EchelonExtensionType_Base      = 0
+	EchelonExtensionType_Extension = 1
 )
 
 var (
-    EchelonExtensionType_name = map[int32]string{
-      0 : "Base",
-      1 : "Extension",
-   }
-    EchelonExtensionType_value = map[string]int32{
-      "Base" : 0,
-      "Extension" : 1,
-   }
+	EchelonExtensionType_name = map[int32]string{
+		0: "Base",
+		1: "Extension",
+	}
+	EchelonExtensionType_value = map[string]int32{
+		"Base":      0,
+		"Extension": 1,
+	}
 )
 
 func (x EchelonExtensionType) String() string {
-  return EchelonExtensionType_name[int32(x)]
+	return EchelonExtensionType_name[int32(x)]
 }
-

@@ -2,19 +2,18 @@
 
 package proto
 
-type OpenConditionDB struct{
-    ContentType OpenConditionContent
-    HideWhenLocked bool
-    AccountLevel int64
-    ScenarioModeId int64
-    CampaignStageUniqueId int64
-    MultipleConditionCheckType MultipleConditionCheckType
-    OpenDayOfWeek WeekDay
-    OpenHour int64
-    CloseDayOfWeek WeekDay
-    CloseHour int64
-    CafeIdForCafeRank int64
-    CafeRank int64
-    OpenedCafeId int64
+type OpenConditionDB struct {
+	ContentType                OpenConditionContent
+	HideWhenLocked             bool
+	AccountLevel               int64
+	ScenarioModeId             int64
+	CampaignStageUniqueId      int64
+	MultipleConditionCheckType MultipleConditionCheckType
+	OpenDayOfWeek              WeekDay
+	OpenHour                   int64
+	CloseDayOfWeek             WeekDay
+	CloseHour                  int64
+	CafeIdForCafeRank          int64
+	CafeRank                   int64
+	OpenedCafeId               int64
 }
-

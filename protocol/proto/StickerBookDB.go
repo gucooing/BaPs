@@ -2,9 +2,8 @@
 
 package proto
 
-type StickerBookDB struct{
-    AccountId int64
-    UnusedStickerDBs []*StickerDB
-    UsedStickerDBs []*StickerDB
+type StickerBookDB struct {
+	AccountId        int64
+	UnusedStickerDBs []*StickerDB
+	UsedStickerDBs   []*StickerDB
 }
-

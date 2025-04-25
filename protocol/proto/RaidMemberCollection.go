@@ -2,7 +2,6 @@
 
 package proto
 
-type RaidMemberCollection struct{
-    TotalDamage int64
+type RaidMemberCollection struct {
+	TotalDamage int64
 }
-

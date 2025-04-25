@@ -2,16 +2,15 @@
 
 package proto
 
-type StrategyClearRewardInfo struct{
-    FirstClearReward []*ParcelInfo
-    ThreeStarReward []*ParcelInfo
-    StrategyObjectRewards map[int64][]*ParcelInfo
-    ParcelResultDB *ParcelResultDB
-    ClearReward []*ParcelInfo
-    ExpReward []*ParcelInfo
-    TotalReward []*ParcelInfo
-    EventContentReward []*ParcelInfo
-    EventContentBonusReward []*ParcelInfo
-    CampaignStageHistoryDB *CampaignStageHistoryDB
+type StrategyClearRewardInfo struct {
+	FirstClearReward        []*ParcelInfo
+	ThreeStarReward         []*ParcelInfo
+	StrategyObjectRewards   map[int64][]*ParcelInfo
+	ParcelResultDB          *ParcelResultDB
+	ClearReward             []*ParcelInfo
+	ExpReward               []*ParcelInfo
+	TotalReward             []*ParcelInfo
+	EventContentReward      []*ParcelInfo
+	EventContentBonusReward []*ParcelInfo
+	CampaignStageHistoryDB  *CampaignStageHistoryDB
 }
-

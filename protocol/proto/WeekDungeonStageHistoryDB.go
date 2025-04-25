@@ -2,10 +2,9 @@
 
 package proto
 
-type WeekDungeonStageHistoryDB struct{
-    AccountServerId int64
-    StageUniqueId int64
-    StarGoalRecord map[StarGoalType]int64
-    IsCleardEver bool
+type WeekDungeonStageHistoryDB struct {
+	AccountServerId int64
+	StageUniqueId   int64
+	StarGoalRecord  map[StarGoalType]int64
+	IsCleardEver    bool
 }
-

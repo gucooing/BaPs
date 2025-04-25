@@ -5,25 +5,24 @@ package proto
 type BattleLogCategory int32
 
 const (
-    BattleLogCategory_None = 0
-    BattleLogCategory_Damage = 1
-    BattleLogCategory_Heal = 2
+	BattleLogCategory_None   = 0
+	BattleLogCategory_Damage = 1
+	BattleLogCategory_Heal   = 2
 )
 
 var (
-    BattleLogCategory_name = map[int32]string{
-      0 : "None",
-      1 : "Damage",
-      2 : "Heal",
-   }
-    BattleLogCategory_value = map[string]int32{
-      "None" : 0,
-      "Damage" : 1,
-      "Heal" : 2,
-   }
+	BattleLogCategory_name = map[int32]string{
+		0: "None",
+		1: "Damage",
+		2: "Heal",
+	}
+	BattleLogCategory_value = map[string]int32{
+		"None":   0,
+		"Damage": 1,
+		"Heal":   2,
+	}
 )
 
 func (x BattleLogCategory) String() string {
-  return BattleLogCategory_name[int32(x)]
+	return BattleLogCategory_name[int32(x)]
 }
-

@@ -2,10 +2,9 @@
 
 package proto
 
-type SelectTicketReplaceInfo struct{
-    MaterialType ParcelType
-    MaterialId int64
-    TicketItemId int64
-    Amount int32
+type SelectTicketReplaceInfo struct {
+	MaterialType ParcelType
+	MaterialId   int64
+	TicketItemId int64
+	Amount       int32
 }
-

@@ -2,9 +2,8 @@
 
 package proto
 
-type CostumeDB struct{
-    Type ParcelType
-    UniqueId int64
-    BoundCharacterServerId int64
+type CostumeDB struct {
+	Type                   ParcelType
+	UniqueId               int64
+	BoundCharacterServerId int64
 }
-

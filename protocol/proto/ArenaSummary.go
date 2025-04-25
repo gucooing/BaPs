@@ -2,9 +2,8 @@
 
 package proto
 
-type ArenaSummary struct{
-    ArenaMapId int64
-    EnemyAccountId int64
-    EnemyAccountLevel int64
+type ArenaSummary struct {
+	ArenaMapId        int64
+	EnemyAccountId    int64
+	EnemyAccountLevel int64
 }
-

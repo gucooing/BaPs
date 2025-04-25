@@ -2,17 +2,16 @@
 
 package proto
 
-type Strategy struct{
-    PlayAnimation bool
-    Activated bool
-    Values []int32
-    Index int32
-    Movable bool
-    NeedValueType bool
+type Strategy struct {
+	PlayAnimation bool
+	Activated     bool
+	Values        []int32
+	Index         int32
+	Movable       bool
+	NeedValueType bool
 
-    EntityId int64
-    Rotate *Vector3
-    Location *Vector3
-    Id int64
+	EntityId int64
+	Rotate   *Vector3
+	Location *Vector3
+	Id       int64
 }
-

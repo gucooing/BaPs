@@ -2,10 +2,9 @@
 
 package proto
 
-type ParcelDetail struct{
-    OriginParcel *ParcelInfo
-    MailSendParcel *ParcelInfo
-    ConvertedParcelInfos []*ParcelInfo
-    ParcelChangeType ParcelChangeType
+type ParcelDetail struct {
+	OriginParcel         *ParcelInfo
+	MailSendParcel       *ParcelInfo
+	ConvertedParcelInfos []*ParcelInfo
+	ParcelChangeType     ParcelChangeType
 }
-

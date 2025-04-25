@@ -2,16 +2,15 @@
 
 package proto
 
-type CraftNodeDB struct{
-    NodeTier CraftNodeTier
-    SlotSequence int64
-    NodeId int64
-    NodeQuality int64
-    NodeLevel int64
-    NodeRandomSeed int32
-    NodeRandomSequence int32
-    LeafNodeIds []int64
-    ResultId int64
-    CraftNodeResult *CraftNodeResult
+type CraftNodeDB struct {
+	NodeTier           CraftNodeTier
+	SlotSequence       int64
+	NodeId             int64
+	NodeQuality        int64
+	NodeLevel          int64
+	NodeRandomSeed     int32
+	NodeRandomSequence int32
+	LeafNodeIds        []int64
+	ResultId           int64
+	CraftNodeResult    *CraftNodeResult
 }
-

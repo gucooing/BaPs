@@ -2,8 +2,7 @@
 
 package proto
 
-type DailyResetCountDB struct{
-    AccountServerId int64
-    ResetCount map[ResetContentType]int64
+type DailyResetCountDB struct {
+	AccountServerId int64
+	ResetCount      map[ResetContentType]int64
 }
-

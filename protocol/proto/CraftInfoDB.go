@@ -3,14 +3,13 @@
 package proto
 
 import (
-    "time"
+	"time"
 )
 
-type CraftInfoDB struct{
-    SlotSequence int64
-    StartTime time.Time
-    EndTime time.Time
-    CraftSlotOpenDate time.Time
-    Nodes []*CraftNodeDB
+type CraftInfoDB struct {
+	SlotSequence      int64
+	StartTime         time.Time
+	EndTime           time.Time
+	CraftSlotOpenDate time.Time
+	Nodes             []*CraftNodeDB
 }
-

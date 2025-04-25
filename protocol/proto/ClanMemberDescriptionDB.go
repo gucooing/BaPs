@@ -2,11 +2,10 @@
 
 package proto
 
-type ClanMemberDescriptionDB struct{
-    Exp int64
-    Comment string
-    CollectedCharactersCount int32
-    ArenaSeasonBestRanking int64
-    ArenaSeasonCurrentRanking int64
+type ClanMemberDescriptionDB struct {
+	Exp                       int64
+	Comment                   string
+	CollectedCharactersCount  int32
+	ArenaSeasonBestRanking    int64
+	ArenaSeasonCurrentRanking int64
 }
-

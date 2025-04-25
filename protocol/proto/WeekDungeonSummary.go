@@ -2,9 +2,8 @@
 
 package proto
 
-type WeekDungeonSummary struct{
-    DungeonType WeekDungeonType
-    FindGifts []*FindGiftSummary
-    TotalFindGiftClearCount int32
+type WeekDungeonSummary struct {
+	DungeonType             WeekDungeonType
+	FindGifts               []*FindGiftSummary
+	TotalFindGiftClearCount int32
 }
-
