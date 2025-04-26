@@ -71,6 +71,7 @@ func GenGachaResults(goodsId int64) []*ParcelResult {
 		// 概率生成
 		ges := make(map[int]*gdconf.GachaElementGroupId)
 		var probabilityList []int
+		var upParcelId int64
 		probability := 0
 		for _, ge := range gdconf.GetGachaElementExcelTableByGachaGroupId(gachaGoodsId) {
 			if ge == nil {
@@ -79,7 +80,8 @@ func GenGachaResults(goodsId int64) []*ParcelResult {
 			switch ge.Rarity {
 			case "SSR": // 0.03
 				if len(ge.GachaElementExcelList) == 1 {
-					probability += 700
+					upParcelId = ge.GachaElementExcelList[0].ParcelId
+					probability += 700 + 2300
 				} else {
 					probability += 2300
 				}
@@ -114,6 +116,7 @@ func GenGachaResults(goodsId int64) []*ParcelResult {
 					ParcelType: proto.GetParcelTypeValue(gee.ParcelType),
 					ParcelId:   gee.ParcelId,
 					Amount:     1,
+					IsUp:       gee.ParcelId == upParcelId,
 				})
 			}
 		}
@@ -197,12 +200,16 @@ func SaveGachaResults(s *enter.Session, results []*ParcelResult) ([]*proto.Gacha
 					return
 				}
 				// 添加秘石
-				secretStoneServerId := AddItem(s, conf.SecretStoneItemId, conf.SecretStoneItemAmount)
+				secretStoneItemAmount := conf.SecretStoneItemAmount
+				if result.IsUp {
+					secretStoneItemAmount += 70
+				}
+				secretStoneServerId := AddItem(s, conf.SecretStoneItemId, secretStoneItemAmount)
 				gachaResult.Stone = &proto.ItemDB{
 					Type:       proto.ParcelType_Item,
 					ServerId:   secretStoneServerId,
 					UniqueId:   conf.SecretStoneItemId,
-					StackCount: conf.SecretStoneItemAmount,
+					StackCount: secretStoneItemAmount,
 				}
 				addItemList[conf.SecretStoneItemId] = true
 				// 添加碎片

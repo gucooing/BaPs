@@ -608,6 +608,7 @@ type ParcelResult struct {
 	ParcelType proto.ParcelType
 	ParcelId   int64
 	Amount     int64
+	IsUp       bool
 }
 
 func GetParcelResultList(typeList []string, idList, numList []int64, isDel bool) []*ParcelResult {
@@ -739,23 +740,4 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 	info.ParcelForMission = parcelInfoList
 
 	return info
-}
-
-func NoGMFack(parcelType proto.ParcelType, id int64) bool {
-	return true
-	switch parcelType {
-	case proto.ParcelType_Character:
-		return gdconf.GetCharacterExcel(id) == nil
-	case proto.ParcelType_Currency:
-		_, ok := DefaultCurrencyNum[int32(id)]
-		return !ok
-	case proto.ParcelType_Equipment:
-		return gdconf.GetEquipmentExcelTable(id) == nil
-	case proto.ParcelType_Item:
-		return gdconf.GetItemExcelTable(id) == nil
-	case proto.ParcelType_Furniture:
-		return gdconf.GetFurnitureExcelTable(id) == nil
-	default:
-		return true
-	}
 }

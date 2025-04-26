@@ -56,9 +56,6 @@ func (c *Command) give(options map[string]*cdq.CommandOption) (string, error) {
 		return "", errors.New("缺少参数 t")
 	}
 	parcelType := proto.GetParcelTypeValue(typeOption.Option)
-	if game.NoGMFack(parcelType, alg.S2I64(idOption.Option)) {
-		return "", errors.New("所选择的type中没有该物品")
-	}
 	num := int64(1)
 	itemNum, ok := options["num"]
 	if ok {
