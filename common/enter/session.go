@@ -2,6 +2,7 @@ package enter
 
 import (
 	"fmt"
+	dbstruct "github.com/gucooing/BaPs/db/struct"
 	"os"
 	"path/filepath"
 	"strings"
@@ -37,7 +38,7 @@ type Session struct {
 
 // 定时检查一次是否有用户长时间离线
 func (e *EnterSet) checkSession() {
-	yostarGameList := make([]*db.YostarGame, 0)
+	yostarGameList := make([]*dbstruct.YostarGame, 0)
 	for accountServerId, info := range GetAllSession() {
 		if time.Now().After(info.EndTime) {
 			bin := info.GetYostarGame()
@@ -51,7 +52,7 @@ func (e *EnterSet) checkSession() {
 	if len(yostarGameList) == 0 {
 		return
 	}
-	if db.UpAllYostarGame(yostarGameList) != nil {
+	if db.GetDBGame().UpAllYostarGame(yostarGameList) != nil {
 		logger.Error("玩家数据保存失败")
 	} else {
 		logger.Info("玩家数据保存完毕")
@@ -104,7 +105,7 @@ func GetSessionByUid(uid int64) *Session {
 		return info
 	}
 	e.sessionSync.RUnlock()
-	bin := db.GetYostarGameByAccountServerId(uid)
+	bin := db.GetDBGame().GetYostarGameByAccountServerId(uid)
 	if bin == nil || bin.BinData == nil {
 		return nil
 	}
@@ -199,40 +200,40 @@ func AddSession(x *Session) bool {
 // Close 保存全部玩家数据
 func Close() {
 	// 保存玩家主要数据
-	yostarGameList := make([]*db.YostarGame, 0)
+	yostarGameList := make([]*dbstruct.YostarGame, 0)
 	for _, info := range GetAllSession() {
 		bin := info.GetYostarGame()
 		if bin != nil {
 			yostarGameList = append(yostarGameList, bin)
 		}
 	}
-	if db.UpAllYostarGame(yostarGameList) != nil {
+	if db.GetDBGame().UpAllYostarGame(yostarGameList) != nil {
 		logger.Error("玩家数据保存失败")
 	} else {
 		logger.Info("玩家数据保存完毕")
 	}
 	// 保存玩家次要数据 (好友数据
-	yostarFriendList := make([]*db.YostarFriend, 0)
+	yostarFriendList := make([]*dbstruct.YostarFriend, 0)
 	for _, info := range GetAllAccountFriend() {
 		bin := info.GetYostarFriend()
 		if bin != nil {
 			yostarFriendList = append(yostarFriendList, bin)
 		}
 	}
-	if db.UpAllYostarFriend(yostarFriendList) != nil {
+	if db.GetDBGame().UpAllYostarFriend(yostarFriendList) != nil {
 		logger.Error("好友数据保存失败")
 	} else {
 		logger.Info("好友数据保存完毕")
 	}
 	// 保存社团数据
-	yostarClanList := make([]*db.YostarClan, 0)
+	yostarClanList := make([]*dbstruct.YostarClan, 0)
 	for _, info := range GetAllYostarClan() {
 		bin := info.GetYostarClan()
 		if bin != nil {
 			yostarClanList = append(yostarClanList, bin)
 		}
 	}
-	if db.UpAllYostarClan(yostarClanList) != nil {
+	if db.GetDBGame().UpAllYostarClan(yostarClanList) != nil {
 		logger.Error("社团数据保存失败")
 	} else {
 		logger.Info("社团数据保存完毕")
@@ -251,7 +252,7 @@ func (x *Session) GetPbBinData() []byte {
 }
 
 // GetYostarGame 将玩家数据转成数据库格式
-func (x *Session) GetYostarGame() *db.YostarGame {
+func (x *Session) GetYostarGame() *dbstruct.YostarGame {
 	if x == nil {
 		return nil
 	}
@@ -271,7 +272,7 @@ func (x *Session) GetYostarGame() *db.YostarGame {
 		fin = false
 		return nil
 	}
-	data := &db.YostarGame{
+	data := &dbstruct.YostarGame{
 		AccountServerId: x.AccountServerId,
 		BinData:         bin,
 	}
@@ -307,11 +308,11 @@ func TaskUpDiskPlayerData() bool {
 			logger.Error("本地玩家数据文件名错误,文件:%s", file)
 			return false
 		}
-		data := &db.YostarGame{
+		data := &dbstruct.YostarGame{
 			AccountServerId: accountServerId,
 			BinData:         bin,
 		}
-		if err = db.UpdateYostarGame(data); err != nil {
+		if err = db.GetDBGame().UpdateYostarGame(data); err != nil {
 			return false
 		}
 		if os.Remove(file) != nil {

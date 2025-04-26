@@ -77,7 +77,7 @@ func (g *Gateway) getEnterTicket(c *gin.Context) {
 		return
 	}
 
-	yoStarUserLogin := db.GetYoStarUserLoginByYostarUid(req.YostarUID)
+	yoStarUserLogin := db.GetDBGame().GetYoStarUserLoginByYostarUid(req.YostarUID)
 	if yoStarUserLogin == nil {
 		return
 	}
@@ -86,7 +86,7 @@ func (g *Gateway) getEnterTicket(c *gin.Context) {
 		return
 	}
 	yoStarUserLogin.YostarLoginToken = ""
-	if err = db.UpdateYoStarUserLogin(yoStarUserLogin); err != nil {
+	if err = db.GetDBGame().UpdateYoStarUserLogin(yoStarUserLogin); err != nil {
 		return
 	}
 	enterTicket := mx.GetMxToken(alg.RandCodeInt64(), 15)
@@ -116,10 +116,10 @@ func AccountCheckYostar(s *enter.Session, request, response proto.Message) {
 	enter.DelEnterTicket(req.EnterTicket)
 	s = enter.GetSessionByAccountServerId(tickInfo.AccountServerId)
 	if s == nil {
-		yostarGame := db.GetYostarGameByAccountServerId(tickInfo.AccountServerId)
+		yostarGame := db.GetDBGame().GetYostarGameByAccountServerId(tickInfo.AccountServerId)
 		if yostarGame == nil {
 			// new Game Player
-			yostarGame, err = db.AddYostarGameByYostarUid(tickInfo.AccountServerId)
+			yostarGame, err = db.GetDBGame().AddYostarGameByYostarUid(tickInfo.AccountServerId)
 			if err != nil {
 				logger.Debug("账号创建失败:%s", err.Error())
 				return

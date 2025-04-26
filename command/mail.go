@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	dbstruct "github.com/gucooing/BaPs/db/struct"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
-	"github.com/gucooing/BaPs/db"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/cdq"
@@ -102,11 +102,11 @@ func (c *Command) mail(options map[string]*cdq.CommandOption) (string, error) {
 	}
 
 	if alg.S2I32(playerOption.Option) == 0 {
-		parcelInfoList, err := genParcelInfo[db.ParcelInfo](str)
+		parcelInfoList, err := genParcelInfo[dbstruct.ParcelInfo](str)
 		if err != nil {
 			return "", errors.New(fmt.Sprintf("解析邮件附件失败:%s", err.Error()))
 		}
-		sendMail := &db.YostarMail{
+		sendMail := &dbstruct.YostarMail{
 			Sender:         senderOption.Option,
 			Comment:        commentOption.Option,
 			SendDate:       sql.NullTime{Time: time.Unix(alg.S2I64(sendDateOption.Option), 0), Valid: true},

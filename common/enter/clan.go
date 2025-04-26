@@ -1,8 +1,9 @@
 package enter
 
 import (
-	"encoding/json"
 	"errors"
+	"github.com/bytedance/sonic"
+	dbstruct "github.com/gucooing/BaPs/db/struct"
 	"sync"
 	"time"
 
@@ -41,7 +42,7 @@ type ClanAccount struct {
 
 // 每天4点检查一次是否有用户长时间离线然后离线掉好友数据
 func (e *EnterSet) checkYostarClan() {
-	yostarClanList := make([]*db.YostarClan, 0)
+	yostarClanList := make([]*dbstruct.YostarClan, 0)
 	for serverId, info := range GetAllYostarClan() {
 		if time.Now().After(time.Unix(info.UpTime, 0).
 			Add(time.Hour * time.Duration(MaxCacheYostarClanTime))) {
@@ -53,7 +54,7 @@ func (e *EnterSet) checkYostarClan() {
 			logger.Debug("YostarClan:%v,超时离线", serverId)
 		}
 	}
-	if db.UpAllYostarClan(yostarClanList) != nil {
+	if db.GetDBGame().UpAllYostarClan(yostarClanList) != nil {
 		logger.Error("社团数据保存失败")
 	} else {
 		logger.Info("社团数据保存完毕")
@@ -142,11 +143,11 @@ func GetYostarClanByClanName(clanName string) *YostarClan {
 // DbGetYostarClanByClanName 从db拉取数据
 func DbGetYostarClanByClanName(clanName string) (*YostarClan, error) {
 	yc := new(YostarClan)
-	bin := db.GetYostarClanByClanName(clanName)
+	bin := db.GetDBGame().GetYostarClanByClanName(clanName)
 	if bin == nil {
 		return nil, errors.New("sql err")
 	}
-	json.Unmarshal([]byte(bin.ClanInfo), yc)
+	sonic.Unmarshal([]byte(bin.ClanInfo), yc)
 	yc.ServerId = bin.ServerId
 	yc.ClanName = bin.ClanName
 	yc.UpTime = time.Now().Unix()
@@ -157,11 +158,11 @@ func DbGetYostarClanByClanName(clanName string) (*YostarClan, error) {
 // DbGetYostarClan 从db拉取数据
 func DbGetYostarClan(ycId int64) (*YostarClan, error) {
 	yc := new(YostarClan)
-	bin := db.GetYostarClanByServerId(ycId)
+	bin := db.GetDBGame().GetYostarClanByServerId(ycId)
 	if bin == nil {
 		return nil, errors.New("sql err")
 	}
-	json.Unmarshal([]byte(bin.ClanInfo), yc)
+	sonic.Unmarshal([]byte(bin.ClanInfo), yc)
 	yc.ServerId = ycId
 	yc.ClanName = bin.ClanName
 	yc.UpTime = time.Now().Unix()
@@ -170,15 +171,15 @@ func DbGetYostarClan(ycId int64) (*YostarClan, error) {
 }
 
 // GetYostarClan 预处理db数据
-func (x *YostarClan) GetYostarClan() *db.YostarClan {
+func (x *YostarClan) GetYostarClan() *dbstruct.YostarClan {
 	if x == nil {
 		return nil
 	}
-	bin := &db.YostarClan{
+	bin := &dbstruct.YostarClan{
 		ServerId: x.ServerId,
 		ClanName: x.ClanName,
 	}
-	ycInfo, err := json.Marshal(x)
+	ycInfo, err := sonic.Marshal(x)
 	if err != nil {
 		return nil
 	}
@@ -191,16 +192,16 @@ func (x *YostarClan) UpDate() error {
 	if x == nil {
 		return errors.New("YostarClan is nil")
 	}
-	bin := &db.YostarClan{
+	bin := &dbstruct.YostarClan{
 		ServerId: x.ServerId,
 		ClanName: x.ClanName,
 	}
-	ycInfo, err := json.Marshal(x)
+	ycInfo, err := sonic.Marshal(x)
 	if err != nil {
 		return err
 	}
 	bin.ClanInfo = string(ycInfo)
-	err = db.UpdateYostarClan(bin)
+	err = db.GetDBGame().UpdateYostarClan(bin)
 	return err
 }
 

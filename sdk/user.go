@@ -41,7 +41,7 @@ func (s *SDK) YostarCreatelogin(c *gin.Context) {
 		return
 	}
 	// 拉取YostarAccount
-	yostarAccount := db.GetYostarAccountByYostarUid(req.YostarUid)
+	yostarAccount := db.GetDBGame().GetYostarAccountByYostarUid(req.YostarUid)
 	if yostarAccount == nil {
 		logger.Debug("拉取YostarAccount数据库信息失败")
 		return
@@ -54,14 +54,14 @@ func (s *SDK) YostarCreatelogin(c *gin.Context) {
 		return
 	}
 	// 拉取YostarUser
-	yostarUser := db.GetYostarUserByYostarUid(req.YostarUid)
+	yostarUser := db.GetDBGame().GetYostarUserByYostarUid(req.YostarUid)
 	if yostarUser == nil {
 		if !config.GetAutoRegistration() {
 			logger.Debug("邮箱:%s,账号不存在且关闭自动注册  user", req.YostarUsername)
 			return
 		}
 		logger.Debug("邮箱:%s,账号不存在进行自动注册 user", req.YostarUsername)
-		yostarUser, err = db.AddYostarUserByYostarUid(req.YostarUid)
+		yostarUser, err = db.GetDBGame().AddYostarUserByYostarUid(req.YostarUid)
 		if err != nil {
 			logger.Debug("自动注册sdk账号失败,数据库错误:%s user", err.Error())
 			return
@@ -77,7 +77,7 @@ func (s *SDK) YostarCreatelogin(c *gin.Context) {
 	}
 	yostarUser.ChannelId = req.ChannelId
 	yostarUser.DeviceId = req.DeviceId
-	if err = db.UpdateYostarUser(yostarUser); err != nil {
+	if err = db.GetDBGame().UpdateYostarUser(yostarUser); err != nil {
 		logger.Debug("数据库写入出现错误:%s user", err.Error())
 		return
 	}
@@ -129,7 +129,7 @@ func (s *SDK) YostarLogin(c *gin.Context) {
 		return
 	}
 	// 拉取YostarUser
-	yostarUser := db.GetYostarUserByUid(req.Uid)
+	yostarUser := db.GetDBGame().GetYostarUserByUid(req.Uid)
 	if yostarUser == nil {
 		logger.Debug("UID:%v,未知的登录请求", req.Uid)
 		rsp.Result = 1
@@ -142,19 +142,19 @@ func (s *SDK) YostarLogin(c *gin.Context) {
 		return
 	}
 	// 拉取YostarAccount
-	yostarAccount := db.GetYostarAccountByYostarUid(yostarUser.YostarUid)
+	yostarAccount := db.GetDBGame().GetYostarAccountByYostarUid(yostarUser.YostarUid)
 	if yostarAccount == nil {
 		logger.Debug("拉取YostarAccount数据库信息失败 login")
 		return
 	}
 	// 拉取YoStarUserLogin
-	yoStarUserLogin := db.GetYoStarUserLoginByYostarUid(yostarAccount.YostarUid)
+	yoStarUserLogin := db.GetDBGame().GetYoStarUserLoginByYostarUid(yostarAccount.YostarUid)
 	if yoStarUserLogin == nil {
 		if !config.GetAutoRegistration() {
 			logger.Debug("邮箱:%s,账号不存在且关闭自动注册  login", yostarAccount.YostarAccount)
 			return
 		}
-		yoStarUserLogin, err = db.AddYoStarUserLoginByYostarUid(yostarAccount.YostarUid)
+		yoStarUserLogin, err = db.GetDBGame().AddYoStarUserLoginByYostarUid(yostarAccount.YostarUid)
 		if err != nil {
 			logger.Debug("自动注册登录账号失败,数据库错误:%s login", err.Error())
 			return
@@ -171,7 +171,7 @@ func (s *SDK) YostarLogin(c *gin.Context) {
 		return
 	}
 	// 设备黑名单
-	if blackDevice := db.GetBlackDeviceByYostarUid(req.DeviceId); blackDevice != nil ||
+	if blackDevice := db.GetDBGame().GetBlackDeviceByYostarUid(req.DeviceId); blackDevice != nil ||
 		req.DeviceId == "" {
 		logger.Debug("邮箱:%s,DeviceId:%s,设备已被封禁", yostarAccount.YostarAccount, req.DeviceId)
 		rsp.Result = 100100
@@ -179,7 +179,7 @@ func (s *SDK) YostarLogin(c *gin.Context) {
 	}
 	yoStarUserLogin.YostarLoginToken = alg.RandStr(30)
 	// 更新YoStarUserLogin
-	if err = db.UpdateYoStarUserLogin(yoStarUserLogin); err != nil {
+	if err = db.GetDBGame().UpdateYoStarUserLogin(yoStarUserLogin); err != nil {
 		logger.Debug("数据库写入出现错误:%s login", err.Error())
 		return
 	}

@@ -136,7 +136,7 @@ func NewClan(s *enter.Session, clanName string, joinOption proto.ClanJoinOption)
 		logger.Debug("社团名称检查不通过")
 		return proto.WebAPIErrorCode_ClanNameWithInvalidLength
 	}
-	_, err := db.AddYostarClanByClanName(clanName)
+	_, err := db.GetDBGame().AddYostarClanByClanName(clanName)
 	if err != nil {
 		logger.Debug("新社团数据库写入失败")
 		return 15022

@@ -1,10 +1,10 @@
 package enter
 
 import (
+	dbstruct "github.com/gucooing/BaPs/db/struct"
 	"sync"
 	"time"
 
-	"github.com/gucooing/BaPs/db"
 	"github.com/gucooing/BaPs/pkg/alg"
 )
 
@@ -15,7 +15,7 @@ type EnterSet struct {
 	sessionSync    sync.RWMutex
 	EnterTicketMap map[string]*TicketInfo // 登录通行证字典-缓存
 	ticketSync     sync.RWMutex
-	MailMap        map[int64]*db.YostarMail // 全服邮件
+	MailMap        map[int64]*dbstruct.YostarMail // 全服邮件
 	mailSync       sync.RWMutex
 	FriendMap      map[int64]*AccountFriend // 全部玩家的好友关系
 	friendSync     sync.RWMutex

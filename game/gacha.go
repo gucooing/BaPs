@@ -67,7 +67,7 @@ func GenGachaResults(goodsId int64) []*ParcelResult {
 		addDef()
 		return results
 	}
-	genGach := func(gachaGoodsId, gachaNum int64) {
+	genGacha := func(gachaGoodsId, gachaNum int64) {
 		// 概率生成
 		ges := make(map[int]*gdconf.GachaElementGroupId)
 		var probabilityList []int
@@ -131,7 +131,7 @@ func GenGachaResults(goodsId int64) []*ParcelResult {
 				Amount:     goods.ParcelAmount[index],
 			})
 		case "GachaGroup":
-			genGach(goods.ParcelId[index], goods.ParcelAmount[index])
+			genGacha(goods.ParcelId[index], goods.ParcelAmount[index])
 		default:
 			logger.Error("未处理的卡池属性:%s", pt)
 		}
@@ -139,47 +139,6 @@ func GenGachaResults(goodsId int64) []*ParcelResult {
 
 	return results
 }
-
-// 弃用,已有正规方法
-// func GachaRun(num int64, ssr bool, sr bool) []int64 {
-// 	results := make([]int64, 0)
-// 	fn := func(conf []*sro.CharacterExcelTable) int64 {
-// 		index := rand.Intn(len(conf))
-// 		return conf[index].Id
-// 	}
-// 	conf := gdconf.GetCharacterExcelStruct()
-//
-// 	isSr := false
-// 	for i := int64(0); i < num; i++ {
-// 		index := rand.Intn(100000) + 1
-// 		var result int64
-// 		if ssr && (num == 1 || i == num-2) { // 服务端控制是否必出ssr
-// 			ssr = false
-// 			result = fn(conf.CharacterSSRMap)
-// 		} else if sr && (num == 1 || i == num-1) { // 服务端控制是否必出sr
-// 			sr = false
-// 			result = fn(conf.CharacterSRMap)
-// 		} else if num == 10 && i == 9 && !isSr { // 保底四星
-// 			isSr = true
-// 			result = fn(conf.CharacterSRMap)
-//
-// 			// 下面是正常概率计算
-// 		} else if index < 700 {
-// 			result = fn(conf.CharacterSSRMap) // up
-// 		} else if index < 700+2300 {
-// 			result = fn(conf.CharacterSSRMap) // ssr
-// 		} else if index < 700+2300+18500 {
-// 			isSr = true
-// 			result = fn(conf.CharacterSRMap) // sr
-// 		} else {
-// 			result = fn(conf.CharacterRMap) // r
-// 		}
-//
-// 		results = append(results, result)
-// 	}
-//
-// 	return results
-// }
 
 // 保存抽卡结果
 func SaveGachaResults(s *enter.Session, results []*ParcelResult) ([]*proto.GachaResult, map[int64]bool) {

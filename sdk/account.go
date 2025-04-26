@@ -94,14 +94,14 @@ func (s *SDK) YostarAuthSubmit(c *gin.Context) {
 	}
 	code.DelCode(req.Account)
 	// 通过邮箱拉取数据库账号信息
-	yostarAccount := db.GetYostarAccountByYostarAccount(req.Account)
+	yostarAccount := db.GetDBGame().GetYostarAccountByYostarAccount(req.Account)
 	if yostarAccount == nil {
 		if !config.GetAutoRegistration() {
 			logger.Debug("邮箱:%s,账号不存在且关闭自动注册 account", req.Account)
 			return
 		}
 		logger.Debug("邮箱:%s,账号不存在进行自动注册 account", req.Account)
-		yostarAccount, err = db.AddYostarAccountByYostarAccount(req.Account)
+		yostarAccount, err = db.GetDBGame().AddYostarAccountByYostarAccount(req.Account)
 		if err != nil {
 			logger.Debug("自动注册sdk账号失败,数据库错误:%s account", err.Error())
 			return
@@ -113,7 +113,7 @@ func (s *SDK) YostarAuthSubmit(c *gin.Context) {
 	}
 	// 更新token
 	yostarAccount.YostarToken = fmt.Sprintf("%v-%s", yostarAccount.YostarUid, alg.RandStr(100))
-	if err = db.UpdateYostarAccount(yostarAccount); err != nil {
+	if err = db.GetDBGame().UpdateYostarAccount(yostarAccount); err != nil {
 		logger.Debug("数据库写入出现错误:%s account", err.Error())
 		return
 	}

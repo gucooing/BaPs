@@ -1,11 +1,11 @@
 package game
 
 import (
+	dbstruct "github.com/gucooing/BaPs/db/struct"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
-	"github.com/gucooing/BaPs/db"
 	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
@@ -72,7 +72,7 @@ func GetMailCheckCount(s *enter.Session) int64 {
 	return count
 }
 
-func MailParcelInfoJsonToProtobuf(bin []*db.ParcelInfo) []*sro.ParcelInfo {
+func MailParcelInfoJsonToProtobuf(bin []*dbstruct.ParcelInfo) []*sro.ParcelInfo {
 	list := make([]*sro.ParcelInfo, len(bin))
 	for i, v := range bin {
 		list[i] = &sro.ParcelInfo{

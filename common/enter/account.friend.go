@@ -1,8 +1,9 @@
 package enter
 
 import (
-	"encoding/json"
 	"errors"
+	"github.com/bytedance/sonic"
+	dbstruct "github.com/gucooing/BaPs/db/struct"
 	"sync"
 	"time"
 
@@ -25,7 +26,7 @@ type AccountFriend struct {
 
 // 每天4点检查一次是否有用户长时间离线然后离线掉好友数据
 func (e *EnterSet) checkAccountFriend() {
-	yostarFriendList := make([]*db.YostarFriend, 0)
+	yostarFriendList := make([]*dbstruct.YostarFriend, 0)
 	for accountServerId, info := range GetAllAccountFriend() {
 		if time.Now().After(time.Unix(info.UpTime, 0).
 			Add(time.Hour * time.Duration(MaxCacheAccountFriendTime))) {
@@ -37,7 +38,7 @@ func (e *EnterSet) checkAccountFriend() {
 			logger.Debug("AccountId:%v,AccountFriend超时离线", accountServerId)
 		}
 	}
-	if db.UpAllYostarFriend(yostarFriendList) != nil {
+	if db.GetDBGame().UpAllYostarFriend(yostarFriendList) != nil {
 		logger.Error("好友数据保存失败")
 	} else {
 		logger.Info("好友数据保存完毕")
@@ -81,11 +82,11 @@ func GetAccountFriend(uid int64) *AccountFriend {
 // DbGetAccountFriend 从db拉取数据
 func DbGetAccountFriend(uid int64) (*AccountFriend, error) {
 	af := new(AccountFriend)
-	bin := db.GetYostarFriendByAccountServerId(uid)
+	bin := db.GetDBGame().GetYostarFriendByAccountServerId(uid)
 	if bin == nil {
 		return nil, errors.New("sql err")
 	}
-	json.Unmarshal([]byte(bin.FriendInfo), af)
+	sonic.Unmarshal([]byte(bin.FriendInfo), af)
 	af.Uid = uid
 	af.UpTime = time.Now().Unix()
 	af.SyncAf = sync.RWMutex{}
@@ -93,14 +94,14 @@ func DbGetAccountFriend(uid int64) (*AccountFriend, error) {
 }
 
 // GetYostarFriend 预处理db数据
-func (x *AccountFriend) GetYostarFriend() *db.YostarFriend {
+func (x *AccountFriend) GetYostarFriend() *dbstruct.YostarFriend {
 	if x == nil {
 		return nil
 	}
-	bin := &db.YostarFriend{
+	bin := &dbstruct.YostarFriend{
 		AccountServerId: x.Uid,
 	}
-	friendInfo, err := json.Marshal(x)
+	friendInfo, err := sonic.Marshal(x)
 	if err != nil {
 		return nil
 	}
