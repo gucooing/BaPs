@@ -1,6 +1,7 @@
 package pack
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
@@ -10,14 +11,14 @@ import (
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func TimeAttackDungeonLogin(s *enter.Session, request, response proto.Message) {
+func TimeAttackDungeonLogin(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.TimeAttackDungeonLoginResponse)
 
 	bin := game.GetTimeAttackBin(s)
 	rsp.PreviousRoomDB = game.GetTimeAttackDungeonRoomDB(s, bin.GetPreviousRoom())
 }
 
-func TimeAttackDungeonLobby(s *enter.Session, request, response proto.Message) {
+func TimeAttackDungeonLobby(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.TimeAttackDungeonLobbyResponse)
 
 	defer func() {
@@ -43,7 +44,7 @@ func TimeAttackDungeonLobby(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func TimeAttackDungeonCreateBattle(s *enter.Session, request, response proto.Message) {
+func TimeAttackDungeonCreateBattle(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.TimeAttackDungeonCreateBattleRequest)
 	rsp := response.(*proto.TimeAttackDungeonCreateBattleResponse)
 
@@ -56,7 +57,7 @@ func TimeAttackDungeonCreateBattle(s *enter.Session, request, response proto.Mes
 	rsp.ParcelResultDB = game.ParcelResultDB(s, nil)
 }
 
-func TimeAttackDungeonEnterBattle(s *enter.Session, request, response proto.Message) {
+func TimeAttackDungeonEnterBattle(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.TimeAttackDungeonEnterBattleRequest)
 	rsp := response.(*proto.TimeAttackDungeonEnterBattleResponse)
 
@@ -68,7 +69,7 @@ func TimeAttackDungeonEnterBattle(s *enter.Session, request, response proto.Mess
 	}
 }
 
-func TimeAttackDungeonEndBattle(s *enter.Session, request, response proto.Message) {
+func TimeAttackDungeonEndBattle(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.TimeAttackDungeonEndBattleRequest)
 	rsp := response.(*proto.TimeAttackDungeonEndBattleResponse)
 
@@ -79,7 +80,7 @@ func TimeAttackDungeonEndBattle(s *enter.Session, request, response proto.Messag
 	bin := game.GetTimeAttackBin(s)
 	curBin := game.GetTimeAttackRoom(s, bin.GetCurRoom())
 	summary := req.Summary
-	if summary == nil || curBin == nil || summary.Winner != "Group01" {
+	if summary == nil || curBin == nil || summary.Winner != proto.GroupTag_Group01 {
 		return
 	}
 	conf := gdconf.GetTimeAttackDungeonGeasExcelTable(summary.StageId)
@@ -93,7 +94,7 @@ func TimeAttackDungeonEndBattle(s *enter.Session, request, response proto.Messag
 		Frame:               int64(summary.EndFrame),
 		ClearTimePoint:      clearTimePoint,
 		DefaultPoint:        conf.ClearDefaultPoint,
-		DungeonType:         proto.GetTimeAttackDungeonType(conf.TimeAttackDungeonType).Value(),
+		DungeonType:         int32(proto.TimeAttackDungeonType_None.Value(conf.TimeAttackDungeonType)),
 		MainCharacterDBs:    make([]*sro.TimeAttackDungeonCharacter, 0),
 		SupportCharacterDBs: make([]*sro.TimeAttackDungeonCharacter, 0),
 	}
@@ -134,7 +135,7 @@ func TimeAttackDungeonEndBattle(s *enter.Session, request, response proto.Messag
 	rsp.TimePoint = clearTimePoint
 }
 
-func TimeAttackDungeonGiveUp(s *enter.Session, request, response proto.Message) {
+func TimeAttackDungeonGiveUp(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.TimeAttackDungeonGiveUpRequest)
 	rsp := response.(*proto.TimeAttackDungeonGiveUpResponse)
 
@@ -152,7 +153,7 @@ func TimeAttackDungeonGiveUp(s *enter.Session, request, response proto.Message) 
 	rsp.SeasonBestRecord = score
 }
 
-func TimeAttackDungeonSweep(s *enter.Session, request, response proto.Message) {
+func TimeAttackDungeonSweep(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.TimeAttackDungeonSweepRequest)
 	rsp := response.(*proto.TimeAttackDungeonSweepResponse)
 

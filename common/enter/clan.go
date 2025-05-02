@@ -4,13 +4,13 @@ import (
 	"errors"
 	"github.com/bytedance/sonic"
 	dbstruct "github.com/gucooing/BaPs/db/struct"
+	"github.com/gucooing/BaPs/protocol/mx"
 	"sync"
 	"time"
 
 	"github.com/gucooing/BaPs/db"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -274,7 +274,7 @@ func (x *YostarClan) RemoveAccount(uid int64) bool {
 	if info == nil {
 		return true
 	}
-	if info.SocialGrade == proto.ClanSocialGrade_President {
+	if info.SocialGrade == int32(proto.ClanSocialGrade_President) {
 		// 禁止首领退出
 		return false
 	}
@@ -292,11 +292,11 @@ func (x *YostarClan) SetPresident(uid int64) bool {
 		x.AllAccount = make(map[int64]*ClanAccount)
 	}
 	if oldPresident, ok := x.AllAccount[x.President]; ok {
-		oldPresident.SocialGrade = proto.ClanSocialGrade_Member
+		oldPresident.SocialGrade = int32(proto.ClanSocialGrade_Member)
 	}
 	if newPresident, ok := x.AllAccount[uid]; ok {
 		x.President = uid
-		newPresident.SocialGrade = proto.ClanSocialGrade_President
+		newPresident.SocialGrade = int32(proto.ClanSocialGrade_President)
 		return true
 	}
 
@@ -350,7 +350,7 @@ func (x *YostarClan) AddApplicantAccount(uid int64) bool {
 	}
 	x.ApplicantAccount[uid] = &ClanAccount{
 		Uid:           uid,
-		SocialGrade:   proto.ClanSocialGrade_Applicant,
+		SocialGrade:   int32(proto.ClanSocialGrade_Applicant),
 		ApplicantTime: time.Now().Unix(),
 	}
 	return true

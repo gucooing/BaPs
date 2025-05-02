@@ -17,8 +17,8 @@ import (
 	pb "google.golang.org/protobuf/proto"
 )
 
-var MaxCachePlayerTime = 120 // 最大玩家缓存时间 单位:分钟
-var MaxPlayerNum int64 = 0   // 最大在线玩家
+var MaxCachePlayerTime = 10 // 最大玩家缓存时间 单位:分钟
+var MaxPlayerNum int64 = 0  // 最大在线玩家
 
 type Session struct {
 	AccountServerId int64
@@ -34,6 +34,7 @@ type Session struct {
 	Toast           []string
 	PlayerHash      map[int64]any
 	arenaInfo       *ArenaInfo // 竞技场临时数据
+	Error           proto.WebAPIErrorCode
 }
 
 // 定时检查一次是否有用户长时间离线
@@ -199,13 +200,21 @@ func AddSession(x *Session) bool {
 
 // Close 保存全部玩家数据
 func Close() {
+	UpAllPlayerBin()
+}
+
+// UpAllPlayerBin 保存全部玩家数据
+func UpAllPlayerBin() {
+	logger.Info("正在保存全部在线数据")
 	// 保存玩家主要数据
 	yostarGameList := make([]*dbstruct.YostarGame, 0)
 	for _, info := range GetAllSession() {
+		info.GoroutinesSync.Lock()
 		bin := info.GetYostarGame()
 		if bin != nil {
 			yostarGameList = append(yostarGameList, bin)
 		}
+		info.GoroutinesSync.Unlock()
 	}
 	if db.GetDBGame().UpAllYostarGame(yostarGameList) != nil {
 		logger.Error("玩家数据保存失败")
@@ -215,10 +224,12 @@ func Close() {
 	// 保存玩家次要数据 (好友数据
 	yostarFriendList := make([]*dbstruct.YostarFriend, 0)
 	for _, info := range GetAllAccountFriend() {
+		info.SyncAf.Lock()
 		bin := info.GetYostarFriend()
 		if bin != nil {
 			yostarFriendList = append(yostarFriendList, bin)
 		}
+		info.SyncAf.Unlock()
 	}
 	if db.GetDBGame().UpAllYostarFriend(yostarFriendList) != nil {
 		logger.Error("好友数据保存失败")
@@ -228,16 +239,19 @@ func Close() {
 	// 保存社团数据
 	yostarClanList := make([]*dbstruct.YostarClan, 0)
 	for _, info := range GetAllYostarClan() {
+		info.SyncYC.Lock()
 		bin := info.GetYostarClan()
 		if bin != nil {
 			yostarClanList = append(yostarClanList, bin)
 		}
+		info.SyncYC.Unlock()
 	}
 	if db.GetDBGame().UpAllYostarClan(yostarClanList) != nil {
 		logger.Error("社团数据保存失败")
 	} else {
 		logger.Info("社团数据保存完毕")
 	}
+	logger.Info("保存全部在线数据成功")
 }
 
 // GetPbBinData 将玩家pb数据转二进制数据
@@ -338,6 +352,16 @@ func (x *Session) AddPlayerHash(k int64, v any) bool {
 	}
 	list[k] = v
 	return true
+}
+
+func (x *Session) DelPlayerHash(k int64) bool {
+	list := x.getPlayerHash()
+	if _, ok := list[k]; ok {
+		delete(list, k)
+		return true
+	}
+
+	return false
 }
 
 func (x *Session) getPlayerHashByKeyId(k int64) any {

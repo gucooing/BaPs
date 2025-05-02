@@ -284,9 +284,9 @@ func (l *Logger) writeLogFile() {
 					fileName = "./log/" + logTag + ".log"
 				}
 				if _, err := os.Stat("./log"); os.IsNotExist(err) {
-					os.MkdirAll("./log", 0644)
+					os.MkdirAll("./log", 0777)
 				}
-				file, err := os.OpenFile(fileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+				file, err := os.OpenFile(fileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0777)
 				if err != nil {
 					_, _ = os.Stderr.WriteString(fmt.Sprintf(string(red)+"open new log file error: %v\n"+string(reset), err))
 					return
@@ -315,7 +315,7 @@ func (l *Logger) writeLogFile() {
 				if logTag != "" {
 					fileName = "./log/" + logTag + ".log"
 				}
-				file, err := os.OpenFile(fileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+				file, err := os.OpenFile(fileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0777)
 				if err != nil {
 					_, _ = os.Stderr.WriteString(fmt.Sprintf(string(red)+"open new log file error: %v\n"+string(reset), err))
 					return

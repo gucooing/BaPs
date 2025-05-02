@@ -18,6 +18,7 @@ type ApiGiveAll struct {
 	Uid  int64  `json:"uid"`
 	Type string `json:"type"`
 	Num  int64  `json:"num"`
+	Test int    `json:"test"`
 }
 
 func (c *Command) ApplicationCommandGiveAll() {
@@ -35,6 +36,11 @@ func (c *Command) ApplicationCommandGiveAll() {
 			{
 				Name:        "num",
 				Description: "需要给予物品的数量 默认值:1",
+				Required:    false,
+			},
+			{
+				Name:        "test",
+				Description: "测试指令",
 				Required:    false,
 			},
 		}...),
@@ -69,11 +75,28 @@ func (c *Command) giveALL(options map[string]*cdq.CommandOption) (string, error)
 	// 执行
 	s.GoroutinesSync.Lock()
 	defer s.GoroutinesSync.Unlock()
-	parcelInfoList := GiveAllJsonToProtobuf(&ApiGiveAll{
-		Uid:  uid,
-		Type: typeOption.Option,
-		Num:  num,
-	})
+	parcelInfoList := make([]*sro.ParcelInfo, 0)
+	test, ok := options["test"]
+	if ok && alg.S2I64(test.Option) == 1 {
+		set := &ApiGiveAll{
+			Uid:  uid,
+			Type: typeOption.Option,
+			Num:  9000,
+		}
+		parcelInfoList = append(parcelInfoList, GiveAllMaterial(set)...)
+		parcelInfoList = append(parcelInfoList, GiveAllCharacter(set)...)
+		parcelInfoList = append(parcelInfoList, GiveAllEquipment(set)...)
+		parcelInfoList = append(parcelInfoList, GiveAllFurniture(set)...)
+		parcelInfoList = append(parcelInfoList, GiveAllFavor(set)...)
+		parcelInfoList = append(parcelInfoList, GiveAllEmblem(set)...)
+	} else {
+		parcelInfoList = GiveAllJsonToProtobuf(&ApiGiveAll{
+			Uid:  uid,
+			Type: typeOption.Option,
+			Num:  num,
+		})
+	}
+
 	if len(parcelInfoList) == 0 {
 		return "", errors.New(fmt.Sprintf("不存在此物品类型 Type:%s", typeOption.Option))
 	}
@@ -111,14 +134,12 @@ func GiveAllJsonToProtobuf(req *ApiGiveAll) []*sro.ParcelInfo {
 
 func GiveAllMaterial(req *ApiGiveAll) []*sro.ParcelInfo {
 	list := make([]*sro.ParcelInfo, 0)
-	if req.Num <= 0 {
-		req.Num = 999
-	}
+	num := alg.MinInt64(req.Num, 9999)
 	for _, conf := range gdconf.GetItemExcelCategoryMap("Material") {
 		list = append(list, &sro.ParcelInfo{
-			Type: proto.ParcelType_Item,
+			Type: int32(proto.ParcelType_Item),
 			Id:   conf.Id,
-			Num:  req.Num,
+			Num:  num,
 		})
 	}
 
@@ -129,7 +150,7 @@ func GiveAllCharacter(req *ApiGiveAll) []*sro.ParcelInfo {
 	list := make([]*sro.ParcelInfo, 0)
 	for _, conf := range gdconf.GetCharacterMap() {
 		list = append(list, &sro.ParcelInfo{
-			Type: proto.ParcelType_Character,
+			Type: int32(proto.ParcelType_Character),
 			Id:   conf.Id,
 			Num:  1,
 		})
@@ -142,17 +163,13 @@ func GiveAllEquipment(req *ApiGiveAll) []*sro.ParcelInfo {
 	for _, conf := range gdconf.GetEquipmentExcelTableMap() {
 		num := req.Num
 		if conf.MaxLevel < 10 {
-			if num <= 0 {
-				num = alg.MaxInt64(conf.StackableMax/10, 1)
-			}
+			num = alg.MinInt64(req.Num, 9999)
 		} else {
-			if num <= 0 {
-				num = 20
-			}
+			num = alg.MinInt64(req.Num, 20)
 		}
 
 		list = append(list, &sro.ParcelInfo{
-			Type: proto.ParcelType_Equipment,
+			Type: int32(proto.ParcelType_Equipment),
 			Id:   conf.Id,
 			Num:  num,
 		})
@@ -165,11 +182,9 @@ func GiveAllFurniture(req *ApiGiveAll) []*sro.ParcelInfo {
 	list := make([]*sro.ParcelInfo, 0)
 	for _, conf := range gdconf.GetFurnitureExcelTableMap() {
 		num := req.Num
-		if num <= 0 {
-			num = 2
-		}
+		num = alg.MinInt64(req.Num, 3)
 		list = append(list, &sro.ParcelInfo{
-			Type: proto.ParcelType_Furniture,
+			Type: int32(proto.ParcelType_Furniture),
 			Id:   conf.Id,
 			Num:  num,
 		})
@@ -180,14 +195,13 @@ func GiveAllFurniture(req *ApiGiveAll) []*sro.ParcelInfo {
 
 func GiveAllFavor(req *ApiGiveAll) []*sro.ParcelInfo {
 	list := make([]*sro.ParcelInfo, 0)
-	if req.Num <= 0 {
-		req.Num = 999
-	}
+	num := req.Num
+	num = alg.MinInt64(req.Num, 9999)
 	for _, conf := range gdconf.GetItemExcelCategoryMap("Favor") {
 		list = append(list, &sro.ParcelInfo{
-			Type: proto.ParcelType_Item,
+			Type: int32(proto.ParcelType_Item),
 			Id:   conf.Id,
-			Num:  req.Num,
+			Num:  num,
 		})
 	}
 
@@ -198,7 +212,7 @@ func GiveAllEmblem(req *ApiGiveAll) []*sro.ParcelInfo {
 	list := make([]*sro.ParcelInfo, 0)
 	for _, conf := range gdconf.GetEmblemExcelList() {
 		list = append(list, &sro.ParcelInfo{
-			Type: proto.ParcelType_Emblem,
+			Type: int32(proto.ParcelType_Emblem),
 			Id:   conf.Id,
 		})
 	}

@@ -174,8 +174,6 @@ func GetCharacterDB(s *enter.Session, characterId int64) *proto.CharacterDB {
 		PassiveSkillLevel:      bin.PassiveSkillLevel,
 		ExtraPassiveSkillLevel: bin.ExtraPassiveSkillLevel,
 		LeaderSkillLevel:       bin.LeaderSkillLevel,
-		IsNew:                  false,
-		IsLocked:               false,
 		IsFavorite:             bin.IsFavorite,
 		EquipmentServerIds:     GetCharacterEquipment(bin),
 		PotentialStats:         bin.PotentialStats,

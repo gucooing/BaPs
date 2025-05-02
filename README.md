@@ -102,7 +102,8 @@ docker run -d \
     "OuterAddr": "http://127.0.0.1:5000", // 外网地址
     "Tls": false, // 是否启用ssl
     "CertFile": "./data/cert.pem",
-    "KeyFile":   "./data/key.pem"
+    "KeyFile":   "./data/key.pem",
+    "Encoding": true // 是否压缩数据包
   },
   "GateWay": {
     "MaxPlayerNum": 0, // 最大在线玩家数

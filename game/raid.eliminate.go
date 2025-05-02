@@ -1,6 +1,7 @@
 package game
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
@@ -9,7 +10,6 @@ import (
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -79,7 +79,7 @@ func NewCurRaidEliminateBattleInfo(s *enter.Session, raidUniqueId int64, isPract
 	}
 	if !isPractice {
 		// 扣票
-		UpCurrency(s, conf.RaidEnterCostId, -conf.RaidEnterCostAmount)
+		UpCurrency(s, proto.CurrencyTypes(conf.RaidEnterCostId), -conf.RaidEnterCostAmount)
 	}
 	bin.CurRaidBattleInfo = &sro.CurRaidBattleInfo{
 		RaidUniqueId: raidUniqueId,
@@ -90,7 +90,7 @@ func NewCurRaidEliminateBattleInfo(s *enter.Session, raidUniqueId int64, isPract
 		// MaxHp:        chConf.MaxHP100,
 		SeasonId:     GetCurRaidEliminateInfo(s).SeasonId,
 		ServerId:     1,
-		ContentType:  proto.ContentType_EliminateRaid,
+		ContentType:  int32(proto.ContentType_EliminateRaid),
 		RaidBoosList: make([]*sro.RaidBoosInfo, 0),
 	}
 
@@ -301,7 +301,7 @@ func RaidEliminateClose(s *enter.Session) []*ParcelResult {
 		// 计算奖励
 		for _, rewardConf := range gdconf.GetEliminateRaidStageRewardExcelTable(conf.RaidRewardGroupId) {
 			list = append(list, &ParcelResult{
-				ParcelType: proto.GetParcelTypeValue(rewardConf.ClearStageRewardParcelType),
+				ParcelType: proto.ParcelType_None.Value(rewardConf.ClearStageRewardParcelType),
 				ParcelId:   rewardConf.ClearStageRewardParcelUniqueId,
 				Amount:     rewardConf.ClearStageRewardAmount,
 			})

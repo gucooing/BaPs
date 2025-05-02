@@ -2,11 +2,11 @@ package game
 
 import (
 	dbstruct "github.com/gucooing/BaPs/db/struct"
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -165,7 +165,7 @@ func GetMailDBs(s *enter.Session, IsReadMail bool) []*proto.MailDB {
 			info := &proto.MailDB{
 				ServerId:          bin.ServerId,
 				AccountServerId:   s.AccountServerId,
-				Type:              0,
+				Type:              proto.MailType_System,
 				UniqueId:          1,
 				Sender:            bin.Sender,
 				Comment:           bin.Comment,

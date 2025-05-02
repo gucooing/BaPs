@@ -4,10 +4,11 @@ import (
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/game"
+	"github.com/gucooing/BaPs/protocol/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func EchelonList(s *enter.Session, request, response proto.Message) {
+func EchelonList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.EchelonListResponse)
 
 	rsp.EchelonDBs = make([]*proto.EchelonDB, 0)
@@ -22,7 +23,7 @@ func EchelonList(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func EchelonSave(s *enter.Session, request, response proto.Message) {
+func EchelonSave(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.EchelonSaveRequest)
 	rsp := response.(*proto.EchelonSaveResponse)
 
@@ -48,7 +49,7 @@ func EchelonSave(s *enter.Session, request, response proto.Message) {
 
 }
 
-func EchelonPresetList(s *enter.Session, request, response proto.Message) {
+func EchelonPresetList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.EchelonPresetListResponse)
 
 	rsp.PresetGroupDBs = make([]*proto.EchelonPresetGroupDB, 0)

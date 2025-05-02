@@ -11,8 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/config"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
-	"github.com/gucooing/BaPs/protocol/proto"
+	"github.com/gucooing/BaPs/protocol/cmd"
+	"github.com/gucooing/BaPs/protocol/mx"
 )
 
 func status(router *gin.Engine) {
@@ -28,8 +28,9 @@ func status(router *gin.Engine) {
 	})
 }
 
-func logPlayerMsg(logType int, msg proto.Message) {
-	if _, ok := config.GetBlackCmd()[mx.Protocol(msg.GetProtocol()).String()]; ok ||
+func logPlayerMsg(logType int, msg mx.Message) {
+	cmdId := cmd.Get().GetCmdIdByProtoObj(msg)
+	if _, ok := config.GetBlackCmd()[cmdId.String()]; ok ||
 		!config.GetIsLogMsgPlayer() {
 		return
 	}
@@ -44,5 +45,5 @@ func logPlayerMsg(logType int, msg proto.Message) {
 	}
 	b, _ := sonic.MarshalIndent(msg, "", "  ")
 
-	logger.Debug("%s%s :%s", a, mx.Protocol(msg.GetProtocol()).String(), string(b))
+	logger.Debug("%s%s :%s", a, cmdId.String(), string(b))
 }

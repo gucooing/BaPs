@@ -1,6 +1,7 @@
 package gateway
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -13,7 +14,6 @@ import (
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 	pb "google.golang.org/protobuf/proto"
 )
@@ -95,14 +95,17 @@ func (g *Gateway) getEnterTicket(c *gin.Context) {
 	}
 	rsp.EnterTicket = enterTicket
 	rsp.Birth = "19000101" // 百岁老登玩ba不过分吧
-	rsp.SetSessionKey(&proto.BasePacket{
-		Protocol: req.Protocol,
-	})
+	responsePacket := &proto.ResponsePacket{
+		BasePacket: &proto.BasePacket{
+			Protocol: req.Protocol,
+		},
+	}
+	rsp.SetPacket(responsePacket)
 	logger.Debug("EnterTicket交换成功:%s", rsp.EnterTicket)
 	DelAllowedSequence(req.YostarUID)
 }
 
-func AccountCheckYostar(s *enter.Session, request, response proto.Message) {
+func AccountCheckYostar(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.AccountCheckYostarRequest)
 	rsp := response.(*proto.AccountCheckYostarResponse)
 	var err error
@@ -144,17 +147,22 @@ func AccountCheckYostar(s *enter.Session, request, response proto.Message) {
 		logger.Info("AccountServerId:%v,上线账号", tickInfo.AccountServerId)
 	}
 	rsp.ResultState = 1
-	base := &proto.BasePacket{
-		SessionKey: &proto.SessionKey{
-			AccountServerId: tickInfo.AccountServerId,
-			MxToken:         s.MxToken,
+	responsePacket := &proto.ResponsePacket{
+		BasePacket: &proto.BasePacket{
+			SessionKey: &proto.SessionKey{
+				AccountServerId: tickInfo.AccountServerId,
+				MxToken:         s.MxToken,
+			},
+			Protocol:  req.Protocol,
+			AccountId: tickInfo.AccountServerId,
 		},
-		Protocol:           response.GetProtocol(),
-		AccountId:          tickInfo.AccountServerId,
-		ServerNotification: game.GetServerNotification(s),
-		ServerTimeTicks:    game.GetServerTime(),
+		MissionProgressDBs:         nil,
+		EventMissionProgressDBDict: nil,
+		StaticOpenConditions:       nil,
+		ServerNotification:         game.GetServerNotification(s),
+		ServerTimeTicks:            game.GetServerTime(),
 	}
-	response.SetSessionKey(base)
+	response.SetPacket(responsePacket)
 	// 初始化玩家数据
 
 	newPlayerHash(s)
@@ -178,4 +186,10 @@ func newPlayerHash(s *enter.Session) {
 		}
 		s.AddPlayerHash(info.GetUniqueId(), info)
 	}
+	////初始化家具哈希表
+	//for _, info := range game.GetFurnitureInfoList(s) {
+	//	if info.IsBase {
+	//		s.AddPlayerHash(info.FurnitureId, info)
+	//	}
+	//}
 }

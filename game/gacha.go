@@ -27,7 +27,6 @@ func GetBeforehandInfo(s *enter.Session) *sro.BeforehandInfo {
 		return nil
 	}
 	if bin.BeforehandInfo == nil {
-		bin.BeforehandInfo = &sro.BeforehandInfo{}
 	}
 	return bin.BeforehandInfo
 }
@@ -79,11 +78,12 @@ func GenGachaResults(goodsId int64) []*ParcelResult {
 			}
 			switch ge.Rarity {
 			case "SSR": // 0.03
-				if len(ge.GachaElementExcelList) == 1 {
+				ssrNUm := len(ge.GachaElementExcelList)
+				if ssrNUm == 1 {
 					upParcelId = ge.GachaElementExcelList[0].ParcelId
-					probability += 700 + 2300
+					probability += 700 + 50
 				} else {
-					probability += 2300
+					probability += 2300 - 50
 				}
 			case "SR": // 0.185
 				probability += 18500
@@ -113,7 +113,7 @@ func GenGachaResults(goodsId int64) []*ParcelResult {
 					continue
 				}
 				results = append(results, &ParcelResult{
-					ParcelType: proto.GetParcelTypeValue(gee.ParcelType),
+					ParcelType: proto.ParcelType_None.Value(gee.ParcelType),
 					ParcelId:   gee.ParcelId,
 					Amount:     1,
 					IsUp:       gee.ParcelId == upParcelId,
@@ -126,7 +126,7 @@ func GenGachaResults(goodsId int64) []*ParcelResult {
 		switch pt {
 		case "Item", "Character":
 			results = append(results, &ParcelResult{
-				ParcelType: proto.GetParcelTypeValue(pt),
+				ParcelType: proto.ParcelType_None.Value(pt),
 				ParcelId:   goods.ParcelId[index],
 				Amount:     goods.ParcelAmount[index],
 			})
@@ -165,10 +165,14 @@ func SaveGachaResults(s *enter.Session, results []*ParcelResult) ([]*proto.Gacha
 				}
 				secretStoneServerId := AddItem(s, conf.SecretStoneItemId, secretStoneItemAmount)
 				gachaResult.Stone = &proto.ItemDB{
-					Type:       proto.ParcelType_Item,
-					ServerId:   secretStoneServerId,
-					UniqueId:   conf.SecretStoneItemId,
-					StackCount: secretStoneItemAmount,
+					Type: proto.ParcelType_Item,
+					ConsumableItemBaseDB: &proto.ConsumableItemBaseDB{
+						Key:        nil,
+						CanConsume: false,
+						ServerId:   secretStoneServerId,
+						UniqueId:   conf.SecretStoneItemId,
+						StackCount: int64(secretStoneItemAmount),
+					},
 				}
 				addItemList[conf.SecretStoneItemId] = true
 				// 添加碎片

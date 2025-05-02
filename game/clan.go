@@ -125,7 +125,7 @@ func GetClanMemberDB(s *enter.Session) *proto.ClanMemberDB {
 	return info
 }
 
-func NewClan(s *enter.Session, clanName string, joinOption proto.ClanJoinOption) int32 {
+func NewClan(s *enter.Session, clanName string, joinOption proto.ClanJoinOption) proto.WebAPIErrorCode {
 	bin := GetBaseBin(s)
 	if bin == nil ||
 		enter.GetYostarClanByClanName(clanName) != nil {
@@ -147,7 +147,7 @@ func NewClan(s *enter.Session, clanName string, joinOption proto.ClanJoinOption)
 		return proto.WebAPIErrorCode_ClanNotFound
 	}
 	// 添加社长
-	if !clanInfo.AddAccount(s.AccountServerId, proto.ClanSocialGrade_President) {
+	if !clanInfo.AddAccount(s.AccountServerId, int32(proto.ClanSocialGrade_President)) {
 		logger.Debug("新社团设置社长失败")
 		return 15022
 	}

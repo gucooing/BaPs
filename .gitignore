@@ -28,9 +28,10 @@ go.work.sum
 /test
 /common/server_only/*.pb.go
 /tools
-/mx/prototemp
 /bin
-pkg/mx/excel.go
+protocol/mx/excel.go
 /.vscode
 gdconf/game.config.dev.go
 common/server_only/*.py
+/mx
+/protocol/proto2

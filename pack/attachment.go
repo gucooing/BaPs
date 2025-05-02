@@ -3,22 +3,23 @@ package pack
 import (
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
+	"github.com/gucooing/BaPs/protocol/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func AttachmentGet(s *enter.Session, request, response proto.Message) {
+func AttachmentGet(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.AttachmentGetResponse)
 
 	rsp.AccountAttachmentDB = game.GetAccountAttachmentDB(s)
 }
 
-func AttachmentEmblemList(s *enter.Session, request, response proto.Message) {
+func AttachmentEmblemList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.AttachmentEmblemListResponse)
 
 	rsp.EmblemDBs = game.GetEmblemDBs(s)
 }
 
-func AttachmentEmblemAcquire(s *enter.Session, request, response proto.Message) {
+func AttachmentEmblemAcquire(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.AttachmentEmblemAcquireRequest)
 	rsp := response.(*proto.AttachmentEmblemAcquireResponse)
 
@@ -26,7 +27,7 @@ func AttachmentEmblemAcquire(s *enter.Session, request, response proto.Message) 
 	rsp.EmblemDBs = game.GetEmblemDBs(s)
 }
 
-func AttachmentEmblemAttach(s *enter.Session, request, response proto.Message) {
+func AttachmentEmblemAttach(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.AttachmentEmblemAttachRequest)
 	rsp := response.(*proto.AttachmentEmblemAttachResponse)
 

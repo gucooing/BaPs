@@ -132,3 +132,16 @@ func GetTimeHourH(h int) time.Time {
 		return time.Date(nextTime.Year(), nextTime.Month(), nextTime.Day(), h, 0, 0, 0, nextTime.Location())
 	}
 }
+
+func GetLastTimeHourH(h int) time.Time {
+	currentTime := time.Now()
+	hour := currentTime.Hour()
+	if h+12 < hour {
+		h += 12
+	}
+	if hour < h {
+		return time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), h, 0, 0, 0, currentTime.Location())
+	} else {
+		return time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), h-12, 0, 0, 0, currentTime.Location())
+	}
+}

@@ -2,6 +2,8 @@ package sdk
 
 import (
 	"fmt"
+	"github.com/gucooing/BaPs/common/mail"
+	"github.com/gucooing/BaPs/gdconf"
 	"regexp"
 	"strconv"
 
@@ -51,7 +53,18 @@ func (s *SDK) YostarAuthRequest(c *gin.Context) {
 			rsp.Result = 100302
 			return
 		} else {
-			logger.Info("邮箱:%s,写入新验证码:%v", req.Account, newCode)
+			mailConf := gdconf.GetMailInfo("LoginCode")
+			if mailConf == nil {
+				logger.Error("开启邮件服务但是找不到邮件配置")
+				rsp.Result = 100302
+				return
+			}
+			if err = mail.SendTextMail(req.Account, mailConf.Header, fmt.Sprintf(mailConf.Body, newCode)); err != nil {
+				logger.Debug("邮箱:%s,邮件发送失败:%s", req.Account, err.Error())
+				rsp.Result = 100302
+				return
+			}
+			logger.Info("邮箱:%s,验证码送达成功", req.Account)
 		}
 	}
 	rsp.Result = 0

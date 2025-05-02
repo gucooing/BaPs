@@ -3,10 +3,11 @@ package pack
 import (
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
+	"github.com/gucooing/BaPs/protocol/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func EventContentAdventureList(s *enter.Session, request, response proto.Message) {
+func EventContentAdventureList(s *enter.Session, request, response mx.Message) {
 	// req := request.(*proto.EventContentAdventureListRequest)
 	rsp := response.(*proto.EventContentAdventureListResponse)
 
@@ -17,7 +18,7 @@ func EventContentAdventureList(s *enter.Session, request, response proto.Message
 	rsp.StagePoint = 0
 }
 
-func EventContentBoxGachaShopList(s *enter.Session, request, response proto.Message) {
+func EventContentBoxGachaShopList(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.EventContentBoxGachaShopListRequest)
 	rsp := response.(*proto.EventContentBoxGachaShopListResponse)
 
@@ -30,7 +31,7 @@ func EventContentBoxGachaShopList(s *enter.Session, request, response proto.Mess
 	rsp.BoxGachaGroupIdByCount = make(map[int64]int64)
 }
 
-func EventContentScenarioGroupHistoryUpdate(s *enter.Session, request, response proto.Message) {
+func EventContentScenarioGroupHistoryUpdate(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.EventContentScenarioGroupHistoryUpdateRequest)
 	rsp := response.(*proto.EventContentScenarioGroupHistoryUpdateResponse)
 

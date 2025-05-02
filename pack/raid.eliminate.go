@@ -1,6 +1,7 @@
 package pack
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
@@ -11,7 +12,7 @@ import (
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func EliminateRaidLogin(s *enter.Session, request, response proto.Message) {
+func EliminateRaidLogin(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.EliminateRaidLoginResponse)
 
 	game.RaidEliminateCheck(s)
@@ -19,7 +20,7 @@ func EliminateRaidLogin(s *enter.Session, request, response proto.Message) {
 	rsp.SweepPointByRaidUniqueId = make(map[int64]int64) // 扫荡信息
 }
 
-func EliminateRaidLobby(s *enter.Session, request, response proto.Message) {
+func EliminateRaidLobby(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.EliminateRaidLobbyResponse)
 
 	curBattle := game.GetCurRaidEliminateBattleInfo(s)
@@ -36,7 +37,7 @@ func EliminateRaidLobby(s *enter.Session, request, response proto.Message) {
 	rsp.RaidLobbyInfoDB = game.GetEliminateRaidLobbyInfoDB(s)
 }
 
-func EliminateRaidOpponentList(s *enter.Session, request, response proto.Message) {
+func EliminateRaidOpponentList(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.EliminateRaidOpponentListRequest)
 	rsp := response.(*proto.EliminateRaidOpponentListResponse)
 
@@ -58,7 +59,7 @@ func EliminateRaidOpponentList(s *enter.Session, request, response proto.Message
 	}
 }
 
-func EliminateRaidGetBestTeam(s *enter.Session, request, response proto.Message) {
+func EliminateRaidGetBestTeam(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.EliminateRaidGetBestTeamRequest)
 	rsp := response.(*proto.EliminateRaidGetBestTeamResponse)
 
@@ -78,7 +79,7 @@ func EliminateRaidGetBestTeam(s *enter.Session, request, response proto.Message)
 	}
 }
 
-func EliminateRaidCreateBattle(s *enter.Session, request, response proto.Message) {
+func EliminateRaidCreateBattle(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.EliminateRaidCreateBattleRequest)
 	rsp := response.(*proto.EliminateRaidCreateBattleResponse)
 
@@ -107,7 +108,7 @@ func EliminateRaidCreateBattle(s *enter.Session, request, response proto.Message
 	rsp.RaidDB = game.GetRaidDB(s, curBattle)
 }
 
-func EliminateRaidEndBattle(s *enter.Session, request, response proto.Message) {
+func EliminateRaidEndBattle(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.EliminateRaidEndBattleRequest)
 	rsp := response.(*proto.EliminateRaidEndBattleResponse)
 
@@ -163,7 +164,7 @@ func EliminateRaidEndBattle(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func EliminateRaidEnterBattle(s *enter.Session, request, response proto.Message) {
+func EliminateRaidEnterBattle(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.EliminateRaidEnterBattleRequest)
 	rsp := response.(*proto.EliminateRaidEnterBattleResponse)
 
@@ -189,7 +190,7 @@ func EliminateRaidEnterBattle(s *enter.Session, request, response proto.Message)
 	rsp.RaidDB = game.GetRaidDB(s, curBattle)
 }
 
-func EliminateRaidGiveUp(s *enter.Session, request, response proto.Message) {
+func EliminateRaidGiveUp(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.EliminateRaidGiveUpRequest)
 	rsp := response.(*proto.EliminateRaidGiveUpResponse)
 
@@ -206,7 +207,7 @@ func EliminateRaidGiveUp(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func EliminateRaidSeasonReward(s *enter.Session, request, response proto.Message) {
+func EliminateRaidSeasonReward(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.EliminateRaidSeasonRewardResponse)
 
 	bin := game.GetCurRaidEliminateInfo(s)
@@ -244,7 +245,7 @@ func EliminateRaidSeasonReward(s *enter.Session, request, response proto.Message
 	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
 }
 
-func EliminateRaidRankingReward(s *enter.Session, request, response proto.Message) {
+func EliminateRaidRankingReward(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.EliminateRaidRankingRewardResponse)
 
 	bin := game.GetCurRaidEliminateInfo(s)

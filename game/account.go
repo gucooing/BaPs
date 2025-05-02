@@ -1,13 +1,13 @@
 package game
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -304,7 +304,7 @@ func GetAccountDB(s *enter.Session) *proto.AccountDB {
 		Level:                      GetAccountLevel(s),
 		Exp:                        GetAccountExp(s),
 		LastConnectTime:            GetLastConnectTime(s),
-		CreateDate:                 time.Unix(baseBin.GetCreateDate(), 0),
+		CreateDate:                 mx.Unix(baseBin.GetCreateDate(), 0),
 		VIPLevel:                   10,
 		State:                      s.AccountState,
 		Comment:                    GetComment(s),

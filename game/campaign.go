@@ -1,13 +1,13 @@
 package game
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -23,7 +23,7 @@ func NewCampaignMainStageSaveDB(s *enter.Session, stageUniqueId int64) *sro.Batt
 		LastEnemyEntityId: 0,
 		EnemyInfos:        make(map[int64]*sro.EnemyInfo),
 		StrategyObjects:   make(map[int64]*sro.EnemyInfo),
-		CampaignState:     proto.CampaignState_BeforeStart,
+		CampaignState:     int32(proto.CampaignState_BeforeStart),
 	}
 	if mapConf := gdconf.GetStrategyMap(stageConf.StrategyMap); mapConf != nil {
 		info.LastEnemyEntityId = mapConf.LastEnemyEntityId
@@ -41,19 +41,31 @@ func GetCampaignMainStageSaveDB(s *enter.Session, bin *sro.BattleCampaign) *prot
 	}
 
 	info := &proto.CampaignMainStageSaveDB{
-		ContentType:       proto.ContentType(proto.ContentType_value[stageConf.ContentType]),
-		CampaignState:     proto.CampaignState(bin.CampaignState),
-		CreateTime:        mx.Unix(bin.CreateTime, 0),
-		StageUniqueId:     bin.StageId,
-		AccountServerId:   s.AccountServerId,
+		ContentType:   proto.ContentType(proto.ContentType_value[stageConf.ContentType]),
+		CampaignState: proto.CampaignState(bin.CampaignState),
+
 		EnemyInfos:        make(map[int64]*proto.HexaUnit),
 		StrategyObjects:   make(map[int64]*proto.Strategy),
 		LastEnemyEntityId: int32(bin.LastEnemyEntityId),
+		ContentSaveDB: &proto.ContentSaveDB{
+			CreateTime:      mx.Unix(bin.CreateTime, 0),
+			StageUniqueId:   bin.StageId,
+			AccountServerId: s.AccountServerId,
+			ContentType:     proto.ContentType(proto.ContentType_value[stageConf.ContentType]),
 
+			StageEntranceFee:            make([]*proto.ParcelInfo, 0),
+			EnemyKillCountByUniqueId:    make(map[int64]int64),
+			LastEnterStageEchelonNumber: 0,
+			TacticClearTimeMscSum:       0,
+			AccountLevelWhenCreateDB:    0,
+			BIEchelon:                   "",
+			BIEchelon1:                  "",
+			BIEchelon2:                  "",
+			BIEchelon3:                  "",
+			BIEchelon4:                  "",
+		},
 		ActivatedHexaEventsAndConditions: make(map[int64][]int64),
-		EnemyKillCountByUniqueId:         make(map[int64]int64),
 		HexaEventDelayedExecutions:       make(map[int64][]int64),
-		StageEntranceFee:                 make([]*proto.ParcelInfo, 0),
 		TileMapStates:                    make(map[int32]*proto.HexaTileState),
 		CurrentTurn:                      0,
 		EnemyClearCount:                  0,

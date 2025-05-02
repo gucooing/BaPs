@@ -4,18 +4,18 @@ import (
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
+	"github.com/gucooing/BaPs/protocol/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func ShopGachaRecruitList(s *enter.Session, request, response proto.Message) {
+func ShopGachaRecruitList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.ShopGachaRecruitListResponse)
 
 	rsp.ShopRecruits = make([]*proto.ShopRecruitDB, 0)                         // 卡池数据
 	rsp.ShopFreeRecruitHistoryDBs = make([]*proto.ShopFreeRecruitHistoryDB, 0) // 免费抽卡历史数据
 }
 
-func ShopBeforehandGachaGet(s *enter.Session, request, response proto.Message) {
+func ShopBeforehandGachaGet(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.ShopBeforehandGachaGetResponse)
 
 	bin := game.GetBeforehandInfo(s)
@@ -26,7 +26,7 @@ func ShopBeforehandGachaGet(s *enter.Session, request, response proto.Message) {
 	rsp.AlreadyPicked = bin.AlreadyPicked
 }
 
-func ShopBeforehandGachaRun(s *enter.Session, request, response proto.Message) {
+func ShopBeforehandGachaRun(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ShopBeforehandGachaRunRequest)
 	rsp := response.(*proto.ShopBeforehandGachaRunResponse)
 
@@ -57,7 +57,7 @@ func ShopBeforehandGachaRun(s *enter.Session, request, response proto.Message) {
 	bin.LastIndex++
 }
 
-func ShopBeforehandGachaSave(s *enter.Session, request, response proto.Message) {
+func ShopBeforehandGachaSave(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ShopBeforehandGachaSaveRequest)
 	rsp := response.(*proto.ShopBeforehandGachaSaveResponse)
 
@@ -72,7 +72,7 @@ func ShopBeforehandGachaSave(s *enter.Session, request, response proto.Message) 
 	rsp.SelectGachaSnapshot = game.GetBeforehandGachaSnapshotDB(s)
 }
 
-func ShopBeforehandGachaPick(s *enter.Session, request, response proto.Message) {
+func ShopBeforehandGachaPick(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ShopBeforehandGachaPickRequest)
 	rsp := response.(*proto.ShopBeforehandGachaPickResponse)
 
@@ -113,15 +113,19 @@ func ShopBeforehandGachaPick(s *enter.Session, request, response proto.Message) 
 			continue
 		}
 		rsp.AcquiredItems = append(rsp.AcquiredItems, &proto.ItemDB{
-			Type:       proto.ParcelType_Item,
-			ServerId:   itemInfo.ServerId,
-			UniqueId:   itemInfo.UniqueId,
-			StackCount: itemInfo.StackCount,
+			Type: proto.ParcelType_Item,
+			ConsumableItemBaseDB: &proto.ConsumableItemBaseDB{
+				Key:        nil,
+				CanConsume: false,
+				ServerId:   itemInfo.ServerId,
+				UniqueId:   itemInfo.UniqueId,
+				StackCount: int64(itemInfo.StackCount),
+			},
 		})
 	}
 }
 
-func ShopBuyGacha3(s *enter.Session, request, response proto.Message) {
+func ShopBuyGacha3(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ShopBuyGacha3Request)
 	rsp := response.(*proto.ShopBuyGacha3Response)
 
@@ -155,7 +159,7 @@ func GenGachaCost(s *enter.Session, cost *proto.ParcelCost) []*proto.ItemDB {
 			game.RemoveItem(s, pi.Key.Id, int32(pi.Amount))
 			itemLisl = append(itemLisl, game.GetItemDB(s, pi.Key.Id))
 		case proto.ParcelType_Currency: // 代币
-			game.UpCurrency(s, pi.Key.Id, -pi.Amount)
+			game.UpCurrency(s, proto.CurrencyTypes(pi.Key.Id), -pi.Amount)
 		}
 	}
 

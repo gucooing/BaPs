@@ -1,13 +1,13 @@
 package game
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/alg"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -135,7 +135,6 @@ func GetTimeAttackDungeonCharacterDB(bin *sro.TimeAttackDungeonCharacter) *proto
 			Exp:                    bin.WeaponInfo.Exp,
 			StarGrade:              bin.WeaponInfo.StarGrade,
 			BoundCharacterServerId: bin.WeaponInfo.CharacterServerId,
-			IsLocked:               bin.WeaponInfo.IsLocked,
 		}
 	}
 
@@ -205,7 +204,7 @@ func GetTimeAttackDungeonParcelResultByScore(score, seasonId int64) (list []*Par
 			break
 		}
 		prInfo := &ParcelResult{
-			ParcelType: proto.GetParcelTypeValue(rewardConf.RewardParcelType[index]),
+			ParcelType: proto.ParcelType_None.Value(rewardConf.RewardParcelType[index]),
 			ParcelId:   rewardConf.RewardParcelId[index],
 			Amount:     rewardConf.RewardParcelDefaultAmount[index],
 		}

@@ -1,0 +1,6 @@
+{
+  "LoginCode": {
+    "header": "BaPs登陆验证码",
+    "body": "您的登陆验证码为:%v"
+  }
+}

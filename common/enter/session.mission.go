@@ -38,11 +38,10 @@ func (x *Session) AddMissionByCompleteConditionType(info *sro.CategoryMissionInf
 		if conf == nil {
 			continue
 		}
-		t := proto.GetMissionCompleteConditionType(conf.CompleteConditionType).String()
-		if bin.MissionByCompleteConditionType[t] == nil {
-			bin.MissionByCompleteConditionType[t] = make(map[int64]*sro.MissionInfo)
+		if bin.MissionByCompleteConditionType[conf.CompleteConditionType] == nil {
+			bin.MissionByCompleteConditionType[conf.CompleteConditionType] = make(map[int64]*sro.MissionInfo)
 		}
-		bin.MissionByCompleteConditionType[t][id] = mission
+		bin.MissionByCompleteConditionType[conf.CompleteConditionType][id] = mission
 	}
 }
 
@@ -124,16 +123,16 @@ func (x *Mission) MissionFinishNum(t proto.MissionCompleteConditionType, bin *sr
 	}
 	if bin.ProgressParameters == nil {
 		bin.ProgressParameters = map[int64]int64{
-			t.Value(): 0,
+			int64(t): 0,
 		}
 	}
-	old := bin.ProgressParameters[t.Value()]
-	bin.ProgressParameters[t.Value()] = alg.MaxInt64(bin.ProgressParameters[t.Value()]+num,
+	old := bin.ProgressParameters[int64(t)]
+	bin.ProgressParameters[int64(t)] = alg.MaxInt64(bin.ProgressParameters[int64(t)]+num,
 		conf.CompleteConditionCount)
-	if bin.ProgressParameters[t.Value()] == conf.CompleteConditionCount {
+	if bin.ProgressParameters[int64(t)] == conf.CompleteConditionCount {
 		bin.Complete = true
 	}
-	if bin.ProgressParameters[t.Value()] != old {
+	if bin.ProgressParameters[int64(t)] != old {
 		x.AddMissionSync(bin)
 	}
 }

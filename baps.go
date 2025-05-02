@@ -7,6 +7,9 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/gin-contrib/pprof"
+	"github.com/gucooing/BaPs/common/mail"
+	"github.com/gucooing/BaPs/protocol/mx"
 	"net/http"
 	"os"
 	"os/signal"
@@ -25,7 +28,6 @@ import (
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/sdk"
 )
 
@@ -70,6 +72,7 @@ func NewBaPs() {
 	enter.InitEnterSet()
 	// 初始化gin
 	router, server := newGin(cfg.HttpNet)
+	pprof.Register(router)
 	go check.GinNetInfo()
 	// 初始化sdk
 	sdk.New(router)
@@ -77,6 +80,8 @@ func NewBaPs() {
 	gateway.NewGateWay(router)
 	// 初始化command
 	command.NewCommand(router)
+	// 初始化邮件
+	mail.NewMail()
 	// 初始化资源文件
 	gdconf.LoadGameConfig(cfg.DataPath, cfg.ResourcesPath)
 	// 初始化排名数据

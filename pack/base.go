@@ -5,10 +5,11 @@ import (
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/protocol/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func BillingPurchaseListByYostar(s *enter.Session, request, response proto.Message) {
+func BillingPurchaseListByYostar(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.BillingPurchaseListByYostarResponse)
 
 	rsp.CountList = make([]*proto.PurchaseCountDB, 0)
@@ -17,7 +18,7 @@ func BillingPurchaseListByYostar(s *enter.Session, request, response proto.Messa
 	rsp.BlockedProductDBs = make([]*proto.BlockedProductDB, 0)
 }
 
-func EventContentPermanentList(s *enter.Session, request, response proto.Message) {
+func EventContentPermanentList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.EventContentPermanentListResponse)
 
 	rsp.PermanentDBs = make([]*proto.EventContentPermanentDB, 0)
@@ -31,7 +32,7 @@ func EventContentPermanentList(s *enter.Session, request, response proto.Message
 	}
 }
 
-func StickerLogin(s *enter.Session, request, response proto.Message) {
+func StickerLogin(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.StickerLoginResponse)
 
 	rsp.StickerBookDB = &proto.StickerBookDB{
@@ -41,13 +42,13 @@ func StickerLogin(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func EventRewardIncrease(s *enter.Session, request, response proto.Message) {
+func EventRewardIncrease(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.EventRewardIncreaseResponse)
 
 	rsp.EventRewardIncreaseDBs = make([]*proto.EventRewardIncreaseDB, 0)
 }
 
-func OpenConditionEventList(s *enter.Session, request, response proto.Message) {
+func OpenConditionEventList(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.OpenConditionEventListRequest)
 	rsp := response.(*proto.OpenConditionEventListResponse)
 
@@ -66,26 +67,37 @@ func OpenConditionEventList(s *enter.Session, request, response proto.Message) {
 			IsScenario:   false,
 			IsCleardEver: false,
 			TacticMscSum: 0,
-			RaidBattleDB: nil,
-			IsContinue:   false,
+			//RaidBattleDB: &proto.RaidBattleDB{
+			//	ContentType:        proto.ContentType_WorldRaid,
+			//	RaidUniqueId:       0,
+			//	RaidBossIndex:      0,
+			//	CurrentBossHP:      0,
+			//	CurrentBossGroggy:  0,
+			//	CurrentBossAIPhase: 0,
+			//	BIEchelon:          "",
+			//	IsClear:            false,
+			//	RaidMembers:        make([]*proto.RaidMemberDescription, 0),
+			//	SubPartsHPs:        make([]int64, 0),
+			//},
+			IsContinue: false,
 		}
 		bossList = append(bossList, boss)
 		rsp.WorldRaidLocalBossDBs[seasonId] = bossList
 	}
 }
 
-func NotificationEventContentReddotCheck(s *enter.Session, request, response proto.Message) {
+func NotificationEventContentReddotCheck(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.NotificationEventContentReddotResponse)
 
 	rsp.Reddots = make(map[int64][]proto.NotificationEventReddot)
 	rsp.EventContentUnlockCGDBs = make(map[int64][]*proto.EventContentCollectionDB)
 }
 
-func ContentLogUIOpenStatistics(s *enter.Session, request, response proto.Message) {
+func ContentLogUIOpenStatistics(s *enter.Session, request, response mx.Message) {
 
 }
 
-func ContentSweepRequest(s *enter.Session, request, response proto.Message) {
+func ContentSweepRequest(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ContentSweepRequest)
 	rsp := response.(*proto.ContentSweepResponse)
 

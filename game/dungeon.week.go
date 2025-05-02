@@ -58,7 +58,7 @@ func GetWeekDungeonStageHistoryDB(s *enter.Session, stageId int64) *proto.WeekDu
 		IsCleardEver:    false,
 	}
 	for starGoalType, status := range bin.StarGoalRecord {
-		info.StarGoalRecord[proto.StarGoalType(starGoalType)] = status
+		info.StarGoalRecord[proto.StarGoalType_None.Value(starGoalType)] = status
 	}
 	return info
 }

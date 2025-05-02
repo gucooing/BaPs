@@ -1,6 +1,7 @@
 package pack
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
@@ -10,7 +11,7 @@ import (
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func AttendanceReward(s *enter.Session, request, response proto.Message) {
+func AttendanceReward(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.AttendanceRewardRequest)
 	rsp := response.(*proto.AttendanceRewardResponse)
 

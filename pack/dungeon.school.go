@@ -5,10 +5,11 @@ import (
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
+	"github.com/gucooing/BaPs/protocol/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func SchoolDungeonList(s *enter.Session, request, response proto.Message) {
+func SchoolDungeonList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.SchoolDungeonListResponse)
 
 	rsp.SchoolDungeonStageHistoryDBList = make([]*proto.SchoolDungeonStageHistoryDB, 0)
@@ -18,7 +19,7 @@ func SchoolDungeonList(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func SchoolDungeonEnterBattle(s *enter.Session, request, response proto.Message) {
+func SchoolDungeonEnterBattle(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.SchoolDungeonEnterBattleRequest)
 	rsp := response.(*proto.SchoolDungeonEnterBattleResponse)
 
@@ -31,7 +32,7 @@ func SchoolDungeonEnterBattle(s *enter.Session, request, response proto.Message)
 	rsp.ParcelResultDB = game.ParcelResultDB(s, game.GetSchoolDungeonCost(true, 1))
 }
 
-func SchoolDungeonBattleResult(s *enter.Session, request, response proto.Message) {
+func SchoolDungeonBattleResult(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.SchoolDungeonBattleResultRequest)
 	rsp := response.(*proto.SchoolDungeonBattleResultResponse)
 
@@ -71,7 +72,7 @@ func SchoolDungeonBattleResult(s *enter.Session, request, response proto.Message
 		}
 		if (rewardConf.RewardTag == "ThreeStar" && isThreeStar) ||
 			(rewardConf.RewardTag == "FirstClear" && isFirstClear) {
-			parcelType := proto.GetParcelTypeValue(rewardConf.RewardParcelType)
+			parcelType := proto.ParcelType_None.Value(rewardConf.RewardParcelType)
 			parcelResultList = append(parcelResultList, &game.ParcelResult{
 				ParcelType: parcelType,
 				ParcelId:   rewardConf.RewardParcelId,

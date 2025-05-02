@@ -1,6 +1,7 @@
 package game
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
@@ -9,7 +10,6 @@ import (
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -92,7 +92,7 @@ func NewCurRaidBattleInfo(s *enter.Session, raidUniqueId int64, isPractice bool)
 		Begin:        time.Now().Unix(),
 		SeasonId:     GetCurRaidInfo(s).GetSeasonId(),
 		ServerId:     1,
-		ContentType:  proto.ContentType_Raid,
+		ContentType:  int32(proto.ContentType_Raid),
 		RaidBoosList: make([]*sro.RaidBoosInfo, 0),
 	}
 	for index, bosscid := range conf.BossCharacterId {
@@ -153,7 +153,7 @@ func GetPlayableHighestDifficulty(s *enter.Session) map[string]proto.Difficulty 
 	if cur := gdconf.GetCurRaidSchedule(); cur != nil {
 		conf := gdconf.GetRaidSeasonManageExcelTable(cur.SeasonId)
 		for _, name := range conf.OpenRaidBossGroup {
-			list[name] = proto.Difficulty(alg.MinInt32(GetCurRaidInfo(s).GetDifficulty()+1, proto.Difficulty_Lunatic))
+			list[name] = proto.Difficulty(alg.MinInt32(GetCurRaidInfo(s).GetDifficulty()+1, int32(proto.Difficulty_Lunatic)))
 		}
 	}
 	return list
@@ -450,7 +450,7 @@ func CheckRaidCharacter(s *enter.Session, echelonId int64,
 		return false
 	}
 	echelonType := proto.EchelonType_Raid
-	if curBattle.ContentType == proto.ContentType_EliminateRaid {
+	if curBattle.ContentType == int32(proto.ContentType_EliminateRaid) {
 		conf := gdconf.GetEliminateRaidStageExcelTable(curBattle.RaidUniqueId)
 		echelonType = gdconf.GetEliminateRaidEchelonType(curBattle.SeasonId, conf.GetRaidBossGroup())
 	}
@@ -458,7 +458,7 @@ func CheckRaidCharacter(s *enter.Session, echelonId int64,
 		logger.Warn("未知的总力战boss类型")
 		return false
 	}
-	echelonInfo := GetEchelonInfo(s, echelonType.Value(), echelonId)
+	echelonInfo := GetEchelonInfo(s, int32(echelonType), echelonId)
 	if curBattle.RaidTeamList == nil {
 		curBattle.RaidTeamList = make(map[int32]*sro.RaidTeamInfo)
 	}
@@ -548,7 +548,7 @@ func RaidClose(s *enter.Session) []*ParcelResult {
 	if !curBattle.IsPractice && curBattle.IsClose && len(curBattle.RaidTeamList) > 0 {
 		if mxHp-givenDamage == 0 {
 			// 更新通关难度
-			cur.Difficulty = alg.MaxInt32(cur.Difficulty, int32(proto.GetDifficultyByStr(conf.Difficulty)))
+			cur.Difficulty = alg.MaxInt32(cur.Difficulty, int32(proto.Difficulty_Normal.Value(conf.Difficulty)))
 		}
 		rankingPoint := curBattle.ClearTimePoint + curBattle.HpScorePoint + curBattle.DefaultPoint
 		cur.TotalScore += rankingPoint // 累积分数
@@ -560,7 +560,7 @@ func RaidClose(s *enter.Session) []*ParcelResult {
 		// 计算奖励
 		for _, rewardConf := range gdconf.GetRaidStageRewardExcelTable(conf.RaidRewardGroupId) {
 			list = append(list, &ParcelResult{
-				ParcelType: proto.GetParcelTypeValue(rewardConf.ClearStageRewardParcelType),
+				ParcelType: proto.ParcelType_None.Value(rewardConf.ClearStageRewardParcelType),
 				ParcelId:   rewardConf.ClearStageRewardParcelUniqueId,
 				Amount:     rewardConf.ClearStageRewardAmount,
 			})

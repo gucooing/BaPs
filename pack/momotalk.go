@@ -3,17 +3,17 @@ package pack
 import (
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
-	"github.com/gucooing/BaPs/pkg/mx"
+	"github.com/gucooing/BaPs/protocol/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func MemoryLobbyList(s *enter.Session, request, response proto.Message) {
+func MemoryLobbyList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.MemoryLobbyListResponse)
 
 	rsp.MemoryLobbyDBs = game.GetMemoryLobbyDBs(s)
 }
 
-func MomoTalkOutLine(s *enter.Session, request, response proto.Message) {
+func MomoTalkOutLine(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.MomoTalkOutLineResponse)
 
 	rsp.MomoTalkOutLineDBs = make([]*proto.MomoTalkOutLineDB, 0)
@@ -42,7 +42,7 @@ func MomoTalkOutLine(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func MomoTalkMessageList(s *enter.Session, request, response proto.Message) {
+func MomoTalkMessageList(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.MomoTalkMessageListRequest)
 	rsp := response.(*proto.MomoTalkMessageListResponse)
 
@@ -68,7 +68,7 @@ func MomoTalkMessageList(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func MomoTalkRead(s *enter.Session, request, response proto.Message) {
+func MomoTalkRead(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.MomoTalkReadRequest)
 	rsp := response.(*proto.MomoTalkReadResponse)
 
@@ -86,7 +86,7 @@ func MomoTalkRead(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func MomoTalkFavorSchedule(s *enter.Session, request, response proto.Message) {
+func MomoTalkFavorSchedule(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.MomoTalkFavorScheduleRequest)
 	rsp := response.(*proto.MomoTalkFavorScheduleResponse)
 

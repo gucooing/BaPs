@@ -4,10 +4,11 @@ import (
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
+	"github.com/gucooing/BaPs/protocol/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func WeekDungeonList(s *enter.Session, request, response proto.Message) {
+func WeekDungeonList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.WeekDungeonListResponse)
 
 	rsp.AdditionalStageIdList = make([]int64, 0)
@@ -18,7 +19,7 @@ func WeekDungeonList(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func WeekDungeonEnterBattle(s *enter.Session, request, response proto.Message) {
+func WeekDungeonEnterBattle(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.WeekDungeonEnterBattleRequest)
 	rsp := response.(*proto.WeekDungeonEnterBattleResponse)
 
@@ -31,7 +32,7 @@ func WeekDungeonEnterBattle(s *enter.Session, request, response proto.Message) {
 	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResult)
 }
 
-func WeekDungeonBattleResult(s *enter.Session, request, response proto.Message) {
+func WeekDungeonBattleResult(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.WeekDungeonBattleResultRequest)
 	rsp := response.(*proto.WeekDungeonBattleResultResponse)
 
@@ -73,7 +74,7 @@ func WeekDungeonBattleResult(s *enter.Session, request, response proto.Message) 
 			}
 		case "ClearTimeInSec":
 			if game.BattleIsClearTimeInSec(req.Summary,
-				conf.StarGoalAmount[index]) {
+				float32(conf.StarGoalAmount[index])) {
 				status = 1
 			}
 		}

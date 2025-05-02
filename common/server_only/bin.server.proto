@@ -111,10 +111,11 @@ message FurnitureInfo { // 家具信息
   int64 stack_count = 2; // 数量 1
   int64 server_id = 3; // 唯一id
   int64 cafe_server_id = 4; // 装备的咖啡馆唯一id
-  double position_x = 5; // 长?
-  double position_y = 6; // 宽?
-  double rotation = 7; // 旋转?
+  float position_x = 5; // 长?
+  float position_y = 6; // 宽?
+  float rotation = 7; // 旋转?
   int32 location = 8; // 家具类型
+  bool is_base = 9; // 基层
 }
 
 // 角色信息
@@ -181,7 +182,6 @@ message WeaponInfo {
   int32 star_grade = 4;
   int32 level = 5;
   int64 exp = 6;
-  bool is_locked = 7;
 }
 
 message EquipmentInfo {
@@ -192,7 +192,6 @@ message EquipmentInfo {
   int64 server_id = 5;
   int32 tier = 6;
   int64 stack_count = 7;
-  bool is_locked = 8;
 }
 
 message IdCardBackgroundInfo {

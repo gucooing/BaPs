@@ -3,9 +3,9 @@ package protocol
 import (
 	"errors"
 	"fmt"
+	"github.com/gucooing/BaPs/protocol/mx"
 
 	"github.com/bytedance/sonic"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/cmd"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
@@ -16,15 +16,15 @@ type NetworkProtocolResponse struct {
 }
 
 // UnmarshalRequest 解码req数据包
-func UnmarshalRequest(b []byte) (proto.Message, *proto.BasePacket, error) {
+func UnmarshalRequest(b []byte) (mx.Message, *proto.BasePacket, error) {
 	base := new(proto.BasePacket)
 	err := sonic.Unmarshal(b, base)
 	if err != nil {
 		return nil, nil, err
 	}
-	packet := cmd.Get().GetRequestPacketByCmdId(base.GetProtocol())
+	packet := cmd.Get().GetRequestPacketByCmdId(base.Protocol)
 	if packet == nil {
-		return nil, nil, errors.New(fmt.Sprintf("request unknown cmd id: %v", base.GetProtocol()))
+		return nil, nil, errors.New(fmt.Sprintf("request unknown cmd id: %v", base.Protocol))
 	}
 	err = sonic.Unmarshal(b, packet)
 	if err != nil {
@@ -35,7 +35,7 @@ func UnmarshalRequest(b []byte) (proto.Message, *proto.BasePacket, error) {
 }
 
 // MarshalResponse 编码rsp数据包
-func MarshalResponse(m proto.Message) (*NetworkProtocolResponse, error) {
+func MarshalResponse(m mx.Message) (*NetworkProtocolResponse, error) {
 	if m == nil {
 		return nil, errors.New("message nil")
 	}
@@ -45,7 +45,7 @@ func MarshalResponse(m proto.Message) (*NetworkProtocolResponse, error) {
 	}
 	v := &NetworkProtocolResponse{
 		Packet:   jsonData,
-		Protocol: mx.Protocol(m.GetProtocol()).String(),
+		Protocol: cmd.Get().GetCmdIdByProtoObj(m).String(),
 	}
 
 	return v, nil

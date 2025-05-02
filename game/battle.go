@@ -7,7 +7,7 @@ import (
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-var MinElapsedRealtime float64 = 10 // 最低战斗时间
+var MinElapsedRealtime float32 = 10 // 最低战斗时间
 
 func BattleCheck(s *enter.Session, info *proto.BattleSummary) {
 	if s == nil || info == nil {
@@ -39,7 +39,7 @@ func BattleIsAllAlive(battleSummary *proto.BattleSummary) bool {
 	return isSu
 }
 
-func BattleIsClearTimeInSec(battleSummary *proto.BattleSummary, realtime float64) bool {
+func BattleIsClearTimeInSec(battleSummary *proto.BattleSummary, realtime float32) bool {
 	if battleSummary == nil {
 		return false
 	}
@@ -73,7 +73,7 @@ func ContentSweepWeekDungeon(stageId int64, count int64) ([]*ParcelResult, [][]*
 			if !rewardConf.IsDisplayed {
 				continue
 			}
-			parcelType := proto.GetParcelTypeValue(rewardConf.RewardParcelType)
+			parcelType := proto.ParcelType_None.Value(rewardConf.RewardParcelType)
 			parcelResultList = append(parcelResultList, &ParcelResult{
 				ParcelType: parcelType,
 				ParcelId:   rewardConf.RewardParcelId,
@@ -103,7 +103,7 @@ func ContentSweepSchoolDungeon(stageId int64, count int64) ([]*ParcelResult, [][
 				rewardConf.RewardTag != "Default" {
 				continue
 			}
-			parcelType := proto.GetParcelTypeValue(rewardConf.RewardParcelType)
+			parcelType := proto.ParcelType_None.Value(rewardConf.RewardParcelType)
 			parcelResultList = append(parcelResultList, &ParcelResult{
 				ParcelType: parcelType,
 				ParcelId:   rewardConf.RewardParcelId,

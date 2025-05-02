@@ -1,13 +1,13 @@
 package game
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/alg"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -112,13 +112,13 @@ func GetAttendanceBookReward(s *enter.Session, attendanceId int64) *proto.Attend
 	}
 	info := &proto.AttendanceBookReward{
 		UniqueId:          bin.AttendanceId,
-		AccountType:       proto.GetAccountState(conf.AccountType),
+		AccountType:       proto.AccountState_Normal.Value(conf.AccountType),
 		BookSize:          conf.BookSize,
-		MailType:          proto.GetMailType(conf.MailType),
+		MailType:          proto.MailType_System.Value(conf.MailType),
 		Title:             conf.Title,
 		TitleImagePath:    conf.TitleImagePath,
 		AccountLevelLimit: conf.AccountLevelLimit,
-		Type:              proto.GetAttendanceType(conf.Type),
+		Type:              proto.AttendanceType_Basic.Value(conf.Type),
 		StartDate:         mx.MxTime(conf.StartTime),
 		StartableEndDate:  mx.MxTime(conf.StartableEndTime),
 		EndDate:           mx.MxTime(conf.EndTime),
@@ -126,7 +126,7 @@ func GetAttendanceBookReward(s *enter.Session, attendanceId int64) *proto.Attend
 		DailyRewardIcons:  make(map[int64]string),
 	}
 
-	for id, rewardConf := range conf.AttendanceReward {
+	for index, rewardConf := range conf.AttendanceReward {
 		reward := []*proto.ParcelInfo{
 			{
 				Key: &proto.ParcelKeyPair{
@@ -142,9 +142,9 @@ func GetAttendanceBookReward(s *enter.Session, attendanceId int64) *proto.Attend
 				},
 			},
 		}
-		info.DailyRewards[id] = reward
+		info.DailyRewards[index] = reward
 
-		info.DailyRewardIcons[id] = ""
+		info.DailyRewardIcons[index] = ""
 	}
 	return info
 }
@@ -170,7 +170,6 @@ func GetAttendanceHistoryDB(s *enter.Session, attendanceId int64) *proto.Attenda
 	}
 	info := &proto.AttendanceHistoryDB{
 		ServerId:               bin.ServerId,
-		AccountServerId:        s.AccountServerId,
 		AttendanceBookUniqueId: bin.AttendanceId,
 		AttendedDay:            make(map[int64]mx.MxTime),
 		Expired:                bin.Expired,

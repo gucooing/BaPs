@@ -25,11 +25,11 @@ func SetServerNotification(s *enter.Session, flag proto.ServerNotificationFlag, 
 	s.Actions[flag] = ok
 }
 
-func GetServerNotification(s *enter.Session) int32 {
-	flagS := int32(0)
+func GetServerNotification(s *enter.Session) proto.ServerNotificationFlag {
+	flagS := proto.ServerNotificationFlag_None
 	for flag, ok := range GetActions(s) {
 		if ok {
-			flagS += int32(flag)
+			flagS += flag
 		}
 	}
 	return flagS

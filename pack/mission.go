@@ -1,6 +1,7 @@
 package pack
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
@@ -9,11 +10,10 @@ import (
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/alg"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func MissionList(s *enter.Session, request, response proto.Message) {
+func MissionList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.MissionListResponse)
 
 	rsp.ClearedOrignalMissionIds = make([]int64, 0)                  // 已清除任务
@@ -52,7 +52,7 @@ func MissionList(s *enter.Session, request, response proto.Message) {
 	// 添加成就任务
 }
 
-func MissionReward(s *enter.Session, request, response proto.Message) {
+func MissionReward(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.MissionRewardRequest)
 	rsp := response.(*proto.MissionRewardResponse)
 
@@ -69,7 +69,7 @@ func MissionReward(s *enter.Session, request, response proto.Message) {
 	rsp.ParcelResultDB = game.ParcelResultDB(s, parcelResultList)
 }
 
-func GuideMissionSeasonList(s *enter.Session, request, response proto.Message) {
+func GuideMissionSeasonList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.GuideMissionSeasonListResponse)
 
 	rsp.MissionProgressDBs = make([]*proto.MissionProgressDB, 0)
@@ -77,20 +77,20 @@ func GuideMissionSeasonList(s *enter.Session, request, response proto.Message) {
 		{
 			SeasonId:                  3,
 			LoginCount:                1,
-			StartDate:                 time.Now().Add(-time.Hour * 24),
-			LoginDate:                 time.Now(),
+			StartDate:                 mx.Now().Add(-time.Hour * 24),
+			LoginDate:                 mx.Now(),
 			IsComplete:                false,
 			IsFinalMissionComplete:    true,
-			CollectionItemReceiveDate: time.Time{},
+			CollectionItemReceiveDate: mx.MxTime{},
 		},
 		{
 			SeasonId:                  1000,
 			LoginCount:                1,
-			StartDate:                 time.Now().Add(-time.Hour * 24),
-			LoginDate:                 time.Now(),
+			StartDate:                 mx.Now().Add(-time.Hour * 24),
+			LoginDate:                 mx.Now(),
 			IsComplete:                false,
 			IsFinalMissionComplete:    true,
-			CollectionItemReceiveDate: time.Time{},
+			CollectionItemReceiveDate: mx.MxTime{},
 		},
 		{
 			SeasonId:               1001,
@@ -99,7 +99,7 @@ func GuideMissionSeasonList(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func AccountGetTutorial(s *enter.Session, request, response proto.Message) {
+func AccountGetTutorial(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.AccountGetTutorialResponse)
 
 	if config.GetTutorial() {
@@ -112,23 +112,23 @@ func AccountGetTutorial(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func ScenarioSkip(s *enter.Session, request, response proto.Message) {
+func ScenarioSkip(s *enter.Session, request, response mx.Message) {
 
 }
 
-func AccountSetTutorial(s *enter.Session, request, response proto.Message) {
+func AccountSetTutorial(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.AccountSetTutorialRequest)
 
 	game.FinishTutorial(s, req.TutorialIds)
 }
 
-func MissionSync(s *enter.Session, request, response proto.Message) {
+func MissionSync(s *enter.Session, request, response mx.Message) {
 	if time.Now().After(alg.GetDayH(18)) {
 		s.FinishMission(proto.MissionCompleteConditionType_Reset_LoginAtSpecificTime, 1, nil)
 	}
 }
 
-func ScenarioList(s *enter.Session, request, response proto.Message) {
+func ScenarioList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.ScenarioListResponse)
 
 	rsp.ScenarioGroupHistoryDBs = game.GetScenarioGroupHistoryDBs(s)
@@ -137,14 +137,13 @@ func ScenarioList(s *enter.Session, request, response proto.Message) {
 
 	for _, bin := range game.GetScenarioHistoryInfoList(s) {
 		rsp.ScenarioHistoryDBs = append(rsp.ScenarioHistoryDBs, &proto.ScenarioHistoryDB{
-			AccountServerId:  s.AccountServerId,
 			ScenarioUniqueId: bin.ScenarioUniqueId,
-			ClearDateTime:    time.Unix(bin.ClearDateTime, 0),
+			ClearDateTime:    mx.Unix(bin.ClearDateTime, 0),
 		})
 	}
 }
 
-func ScenarioGroupHistoryUpdate(s *enter.Session, request, response proto.Message) {
+func ScenarioGroupHistoryUpdate(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ScenarioGroupHistoryUpdateRequest)
 	rsp := response.(*proto.ScenarioGroupHistoryUpdateResponse)
 
@@ -164,7 +163,7 @@ func ScenarioGroupHistoryUpdate(s *enter.Session, request, response proto.Messag
 	}
 }
 
-func ScenarioClear(s *enter.Session, request, response proto.Message) {
+func ScenarioClear(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ScenarioClearRequest)
 	rsp := response.(*proto.ScenarioClearResponse)
 
@@ -174,13 +173,12 @@ func ScenarioClear(s *enter.Session, request, response proto.Message) {
 	bin := game.GetScenarioHistoryInfo(s, req.ScenarioId)
 	if bin != nil {
 		rsp.ScenarioHistoryDB = &proto.ScenarioHistoryDB{
-			AccountServerId:  s.AccountServerId,
 			ScenarioUniqueId: bin.ScenarioUniqueId,
-			ClearDateTime:    time.Unix(bin.ClearDateTime, 0),
+			ClearDateTime:    mx.Unix(bin.ClearDateTime, 0),
 		}
 	}
 }
 
-func ScenarioSelect(s *enter.Session, request, response proto.Message) {
+func ScenarioSelect(s *enter.Session, request, response mx.Message) {
 
 }

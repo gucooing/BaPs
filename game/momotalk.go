@@ -1,13 +1,13 @@
 package game
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/alg"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -164,7 +164,6 @@ func GetMemoryLobbyDBs(s *enter.Session) []*proto.MemoryLobbyDB {
 	for _, info := range GetMemoryLobbyInfoList(s) {
 		list = append(list, &proto.MemoryLobbyDB{
 			Type:                proto.ParcelType_MemoryLobby,
-			AccountServerId:     s.AccountServerId,
 			MemoryLobbyUniqueId: info.MemoryLobbyId,
 		})
 	}
@@ -179,7 +178,6 @@ func GetMemoryLobbyDB(s *enter.Session, memoryLobbyId int64) *proto.MemoryLobbyD
 	}
 	return &proto.MemoryLobbyDB{
 		Type:                proto.ParcelType_MemoryLobby,
-		AccountServerId:     s.AccountServerId,
 		MemoryLobbyUniqueId: bin.MemoryLobbyId,
 	}
 }

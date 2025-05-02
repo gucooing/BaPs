@@ -5,7 +5,7 @@ import (
 
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
+	"github.com/gucooing/BaPs/protocol/mx"
 )
 
 func (g *GameConfig) loadCharacterExcelTable() {

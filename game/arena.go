@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
@@ -10,7 +11,6 @@ import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/alg"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -66,9 +66,9 @@ func GetArenaPlayerInfoDB(s *enter.Session) *proto.ArenaPlayerInfoDB {
 		AllTimeRecord:         bin.GetAllTimeRecord(),                                     // 历史记录
 		BattleEnterActiveTime: mx.MxTime(GetArenBattleEnterActiveTime(s)),                 // 战斗冷却结束时间
 
-		CumulativeTimeReward:     0,                              // 积累的时间奖励
-		TimeRewardLastUpdateTime: time.Now(),                     // 奖励最后更新时间
-		DailyRewardActiveTime:    time.Now().Add(24 * time.Hour), // 下一个每日排名奖励可领取时间
+		CumulativeTimeReward:     0,                            // 积累的时间奖励
+		TimeRewardLastUpdateTime: mx.Now(),                     // 奖励最后更新时间
+		DailyRewardActiveTime:    mx.Now().Add(24 * time.Hour), // 下一个每日排名奖励可领取时间
 	}
 	return info
 }

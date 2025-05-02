@@ -1,22 +1,22 @@
 package pack
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/common/rank"
 	"github.com/gucooing/BaPs/game"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func ArenaLogin(s *enter.Session, request, response proto.Message) {
+func ArenaLogin(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.ArenaLoginResponse)
 
 	rsp.ArenaPlayerInfoDB = game.GetArenaPlayerInfoDB(s)
 }
 
-func ArenaEnterLobby(s *enter.Session, request, response proto.Message) {
+func ArenaEnterLobby(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.ArenaEnterLobbyResponse)
 
 	rsp.OpponentUserDBs = game.GetOpponentUserDBs(s)
@@ -25,12 +25,12 @@ func ArenaEnterLobby(s *enter.Session, request, response proto.Message) {
 	rsp.ArenaPlayerInfoDB = game.GetArenaPlayerInfoDB(s)
 }
 
-func ArenaOpponentList(s *enter.Session, request, response proto.Message) {
+func ArenaOpponentList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.ArenaOpponentListResponse)
 
 	bin := game.GetArenaBin(s)
 	if bin == nil {
-		rsp.ErrorCode = 0
+		s.Error = 0
 		return
 	}
 	rsp.PlayerRank = rank.GetArenaRank(bin.GetCurSeasonId(), s.AccountServerId)
@@ -38,20 +38,20 @@ func ArenaOpponentList(s *enter.Session, request, response proto.Message) {
 	rsp.OpponentUserDBs = game.GetOpponentUserDBs(s)
 }
 
-func ArenaSyncEchelonSettingTime(s *enter.Session, request, response proto.Message) {
+func ArenaSyncEchelonSettingTime(s *enter.Session, request, response mx.Message) {
 	// req := request.(*proto.ArenaSyncEchelonSettingTimeRequest)
 	rsp := response.(*proto.ArenaSyncEchelonSettingTimeResponse)
 
 	rsp.EchelonSettingTime = mx.MxTime(time.Now())
 }
 
-func ArenaEnterBattlePart1(s *enter.Session, request, response proto.Message) {
+func ArenaEnterBattlePart1(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ArenaEnterBattlePart1Request)
 	rsp := response.(*proto.ArenaEnterBattlePart1Response)
 
 	au := s.GetArenaUserByIndex(req.OpponentIndex)
 	if au == nil {
-		rsp.ErrorCode = proto.WebAPIErrorCode_ArenaInfoNotFound
+		s.Error = proto.WebAPIErrorCode_ArenaInfoNotFound
 		return
 	}
 
@@ -59,12 +59,12 @@ func ArenaEnterBattlePart1(s *enter.Session, request, response proto.Message) {
 
 	// 上锁！！！！！！！！！！！！！！！！！
 	if !enter.AddArenaBattleRank(au.Rank) {
-		rsp.ErrorCode = proto.WebAPIErrorCode_ArenaInfoNotFound
+		s.Error = proto.WebAPIErrorCode_ArenaInfoNotFound
 		return
 	}
 	if !enter.AddArenaBattleRank(rank.GetArenaRank(game.GetArenaBin(s).GetCurSeasonId(), s.AccountServerId)) {
 		enter.DelArenaBattleRank(au.Rank)
-		rsp.ErrorCode = proto.WebAPIErrorCode_ArenaInfoNotFound
+		s.Error = proto.WebAPIErrorCode_ArenaInfoNotFound
 		return
 	}
 	go enter.CheckArenaBattle(
@@ -92,7 +92,7 @@ func ArenaEnterBattlePart1(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func ArenaEnterBattlePart2(s *enter.Session, request, response proto.Message) {
+func ArenaEnterBattlePart2(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ArenaEnterBattlePart2Request)
 	rsp := response.(*proto.ArenaEnterBattlePart2Response)
 
@@ -114,7 +114,7 @@ func ArenaEnterBattlePart2(s *enter.Session, request, response proto.Message) {
 
 	bau := s.GetBattleArenaUser()
 	// 判断输赢
-	if req.ArenaBattleDB.BattleSummary.Winner != "Group01" || bau == nil {
+	if req.ArenaBattleDB.BattleSummary.Winner != proto.GroupTag_Group01 || bau == nil {
 		return
 	}
 

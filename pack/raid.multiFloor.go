@@ -1,6 +1,7 @@
 package pack
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
@@ -9,7 +10,7 @@ import (
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func MultiFloorRaidSync(s *enter.Session, request, response proto.Message) {
+func MultiFloorRaidSync(s *enter.Session, request, response mx.Message) {
 	// req := request.(*proto.MultiFloorRaidSyncRequest)
 	rsp := response.(*proto.MultiFloorRaidSyncResponse)
 
@@ -18,7 +19,7 @@ func MultiFloorRaidSync(s *enter.Session, request, response proto.Message) {
 	rsp.MultiFloorRaidDBs = game.GetMultiFloorRaidDBs(s)
 }
 
-func MultiFloorRaidEnterBattle(s *enter.Session, request, response proto.Message) {
+func MultiFloorRaidEnterBattle(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.MultiFloorRaidEnterBattleRequest)
 	rsp := response.(*proto.MultiFloorRaidEnterBattleResponse)
 
@@ -33,7 +34,7 @@ func MultiFloorRaidEnterBattle(s *enter.Session, request, response proto.Message
 	}
 }
 
-func MultiFloorRaidEndBattle(s *enter.Session, request, response proto.Message) {
+func MultiFloorRaidEndBattle(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.MultiFloorRaidEndBattleRequest)
 	rsp := response.(*proto.MultiFloorRaidEndBattleResponse)
 
@@ -68,7 +69,7 @@ func MultiFloorRaidEndBattle(s *enter.Session, request, response proto.Message) 
 	}
 }
 
-func MultiFloorRaidReceiveReward(s *enter.Session, request, response proto.Message) {
+func MultiFloorRaidReceiveReward(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.MultiFloorRaidReceiveRewardRequest)
 	rsp := response.(*proto.MultiFloorRaidReceiveRewardResponse)
 
@@ -89,7 +90,7 @@ func MultiFloorRaidReceiveReward(s *enter.Session, request, response proto.Messa
 		}
 		for _, conf := range confList {
 			parcelResultList = append(parcelResultList, &game.ParcelResult{
-				ParcelType: proto.GetParcelTypeValue(conf.ClearStageRewardParcelType),
+				ParcelType: proto.ParcelType_None.Value(conf.ClearStageRewardParcelType),
 				ParcelId:   conf.ClearStageRewardParcelUniqueID,
 				Amount:     conf.ClearStageRewardAmount,
 			})

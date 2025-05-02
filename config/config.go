@@ -20,6 +20,7 @@ type Config struct {
 	DB               *DB        `json:"DB"`
 	Irc              *Irc       `json:"Irc"`
 	RankDB           *DB        `json:"RankDB"`
+	Mail             *Mail      `json:"Mail"`
 }
 
 type OtherAddr struct {
@@ -41,6 +42,7 @@ type HttpNet struct {
 	Tls       bool   `json:"Tls"`
 	CertFile  string `json:"CertFile"`
 	KeyFile   string `json:"KeyFile"`
+	Encoding  bool   `json:"Encoding"`
 }
 
 type DB struct {
@@ -52,6 +54,12 @@ type Irc struct {
 	HostAddress string `json:"HostAddress"`
 	Port        int32  `json:"Port"`
 	Password    string `json:"Password"`
+}
+
+type Mail struct {
+	Username string `json:"Username"`
+	Password string `json:"Password"`
+	Host     string `json:"Host"`
 }
 
 var CONF *Config = nil
@@ -120,6 +128,10 @@ func GetIrc() *Irc {
 	return GetConfig().Irc
 }
 
+func GetMail() *Mail {
+	return GetConfig().Mail
+}
+
 var FileNotExist = errors.New("config file not found")
 
 func LoadConfig(filePath string) error {
@@ -157,10 +169,11 @@ var DefaultConfig = &Config{
 		Tls:       false,
 		CertFile:  "./config/cert.pem",
 		KeyFile:   "./config/key.pem",
+		Encoding:  true,
 	},
 	GateWay: &GateWay{
 		MaxPlayerNum:       0,
-		MaxCachePlayerTime: 720,
+		MaxCachePlayerTime: 10,
 		BlackCmd:           make(map[string]bool),
 		IsLogMsgPlayer:     false,
 	},

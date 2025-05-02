@@ -4,11 +4,11 @@ import (
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
-	"github.com/gucooing/BaPs/pkg/mx"
+	"github.com/gucooing/BaPs/protocol/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func CampaignList(s *enter.Session, request, response proto.Message) {
+func CampaignList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.CampaignListResponse)
 
 	rsp.CampaignChapterClearRewardHistoryDBs = make([]*proto.CampaignChapterClearRewardHistoryDB, 0)
@@ -47,7 +47,7 @@ func CampaignList(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func CampaignEnterMainStage(s *enter.Session, request, response proto.Message) {
+func CampaignEnterMainStage(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.CampaignEnterMainStageRequest)
 	rsp := response.(*proto.CampaignEnterMainStageResponse)
 
@@ -55,11 +55,11 @@ func CampaignEnterMainStage(s *enter.Session, request, response proto.Message) {
 	rsp.SaveDataDB = game.GetCampaignMainStageSaveDB(s, bin)
 }
 
-func CampaignChapterClearReward(s *enter.Session, request, response proto.Message) {
+func CampaignChapterClearReward(s *enter.Session, request, response mx.Message) {
 
 }
 
-func CampaignEnterMainStageStrategySkip(s *enter.Session, request, response proto.Message) {
+func CampaignEnterMainStageStrategySkip(s *enter.Session, request, response mx.Message) {
 	// req := request.(*proto.CampaignEnterMainStageStrategySkipRequest)
 	rsp := response.(*proto.CampaignEnterMainStageStrategySkipResponse)
 
@@ -67,7 +67,7 @@ func CampaignEnterMainStageStrategySkip(s *enter.Session, request, response prot
 	rsp.ParcelResultDB = new(proto.ParcelResultDB)
 }
 
-func CampaignMainStageStrategySkipResult(s *enter.Session, request, response proto.Message) {
+func CampaignMainStageStrategySkipResult(s *enter.Session, request, response mx.Message) {
 	// req := request.(*proto.CampaignMainStageStrategySkipResultRequest)
 	// rsp := response.(*proto.CampaignMainStageStrategySkipResultResponse)
 	//

@@ -1,6 +1,7 @@
 package pack
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
@@ -10,7 +11,7 @@ import (
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func ShopList(s *enter.Session, request, response proto.Message) {
+func ShopList(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ShopListRequest)
 	rsp := response.(*proto.ShopListResponse)
 
@@ -21,10 +22,10 @@ func ShopList(s *enter.Session, request, response proto.Message) {
 		info := &proto.ShopInfoDB{
 			EventContentId:      0,
 			Category:            categoryType,
-			ManualRefreshCount:  0,                              // 手动刷新
-			IsRefresh:           conf.IsRefresh,                 // 是否刷新
-			NextAutoRefreshDate: time.Now().Add(24 * time.Hour), // 下一次
-			LastAutoRefreshDate: time.Now(),                     // 上次刷新时间
+			ManualRefreshCount:  0,                            // 手动刷新
+			IsRefresh:           conf.IsRefresh,               // 是否刷新
+			NextAutoRefreshDate: mx.Now().Add(24 * time.Hour), // 下一次
+			LastAutoRefreshDate: mx.Now(),                     // 上次刷新时间
 			ShopProductList:     make([]*proto.ShopProductDB, 0),
 		}
 		if conf.IsRefresh {
@@ -39,7 +40,7 @@ func ShopList(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func ShopBuyRefreshMerchandise(s *enter.Session, request, response proto.Message) {
+func ShopBuyRefreshMerchandise(s *enter.Session, request, response mx.Message) {
 	// req := request.(*proto.ShopBuyRefreshMerchandiseRequest)
 	// rsp := response.(*proto.ShopBuyRefreshMerchandiseResponse)
 
@@ -53,7 +54,7 @@ func ShopBuyRefreshMerchandise(s *enter.Session, request, response proto.Message
 5
 */
 
-func ShopBuyEligma(s *enter.Session, request, response proto.Message) {
+func ShopBuyEligma(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ShopBuyEligmaRequest)
 	rsp := response.(*proto.ShopBuyEligmaResponse)
 
@@ -85,7 +86,7 @@ func ShopBuyEligma(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func ShopBuyMerchandise(s *enter.Session, request, response proto.Message) {
+func ShopBuyMerchandise(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ShopBuyMerchandiseRequest)
 	rsp := response.(*proto.ShopBuyMerchandiseResponse)
 
@@ -100,7 +101,7 @@ func ShopBuyMerchandise(s *enter.Session, request, response proto.Message) {
 					num = -numList[index]
 				}
 				parcelResultList = append(parcelResultList, &game.ParcelResult{
-					ParcelType: proto.GetParcelTypeValue(rewardType),
+					ParcelType: proto.ParcelType_None.Value(rewardType),
 					ParcelId:   idList[index],
 					Amount:     num,
 				})
@@ -135,7 +136,7 @@ func ShopBuyMerchandise(s *enter.Session, request, response proto.Message) {
 	if req.IsRefreshGoods {
 		conf := gdconf.GetShopRefreshExcel(req.ShopUniqueId)
 		productType = proto.ShopProductType_Refresh
-		category = proto.GetShopCategoryType(conf.GetCategoryType())
+		category = proto.ShopCategoryType_General.Value(conf.GetCategoryType())
 		purchaseCountLimit = 1
 		displayOrder = conf.GetDisplayOrder()
 
@@ -143,7 +144,7 @@ func ShopBuyMerchandise(s *enter.Session, request, response proto.Message) {
 	} else {
 		conf := gdconf.GetShopExcelTable(req.ShopUniqueId)
 		productType = proto.ShopProductType_General
-		category = proto.GetShopCategoryType(conf.GetCategoryType())
+		category = proto.ShopCategoryType_General.Value(conf.GetCategoryType())
 		purchaseCountLimit = conf.GetPurchaseCountLimit()
 		displayOrder = conf.GetDisplayOrder()
 

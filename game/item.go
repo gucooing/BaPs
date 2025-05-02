@@ -1,6 +1,7 @@
 package game
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
@@ -8,7 +9,6 @@ import (
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -103,7 +103,7 @@ func RemoveItem(s *enter.Session, id int64, num int32) bool {
 	return false
 }
 
-var DefaultCurrencyNum = map[int32]int64{
+var DefaultCurrencyNum = map[proto.CurrencyTypes]int64{
 	proto.CurrencyTypes_Gem:                      600,   // 肝的砖
 	proto.CurrencyTypes_GemPaid:                  0,     // 氪的砖
 	proto.CurrencyTypes_GemBonus:                 600,   // 总砖
@@ -134,8 +134,8 @@ var DefaultCurrencyNum = map[int32]int64{
 func NewCurrencyInfo() map[int32]*sro.CurrencyInfo {
 	list := make(map[int32]*sro.CurrencyInfo)
 	for k, v := range DefaultCurrencyNum {
-		list[k] = &sro.CurrencyInfo{
-			CurrencyId:  k,
+		list[int32(k)] = &sro.CurrencyInfo{
+			CurrencyId:  int32(k),
 			CurrencyNum: v,
 			UpdateTime:  time.Now().Unix(),
 		}
@@ -143,12 +143,12 @@ func NewCurrencyInfo() map[int32]*sro.CurrencyInfo {
 	return list
 }
 
-func UpCurrency(s *enter.Session, parcelId int64, num int64) *sro.CurrencyInfo {
+func UpCurrency(s *enter.Session, parcelId proto.CurrencyTypes, num int64) *sro.CurrencyInfo {
 	bin := GetCurrencyList(s)
 	if bin == nil {
 		return nil
 	}
-	info := GetCurrencyInfo(s, int32(parcelId))
+	info := GetCurrencyInfo(s, parcelId)
 	if info == nil {
 		return nil
 	}
@@ -162,7 +162,7 @@ func UpCurrency(s *enter.Session, parcelId int64, num int64) *sro.CurrencyInfo {
 
 	// 砖石特殊处理
 	if parcelId == proto.CurrencyTypes_Gem || parcelId == proto.CurrencyTypes_GemPaid {
-		gem := GetCurrencyInfo(s, int32(parcelId))
+		gem := GetCurrencyInfo(s, parcelId)
 		gemBonus := GetCurrencyInfo(s, proto.CurrencyTypes_GemBonus)
 		gemBonus.UpdateTime = gem.UpdateTime
 		gemBonus.CurrencyNum += num
@@ -172,8 +172,8 @@ func UpCurrency(s *enter.Session, parcelId int64, num int64) *sro.CurrencyInfo {
 		if info.CurrencyNum > 999 {
 			AddMailBySystem(s, "MaxActionPoint", []*sro.ParcelInfo{
 				{
-					Type: proto.ParcelType_Currency,
-					Id:   proto.CurrencyTypes_ActionPoint,
+					Type: int32(proto.ParcelType_Currency),
+					Id:   int64(proto.CurrencyTypes_ActionPoint),
 					Num:  info.CurrencyNum - 999,
 				},
 			})
@@ -189,12 +189,12 @@ func UpCurrency(s *enter.Session, parcelId int64, num int64) *sro.CurrencyInfo {
 }
 
 // SetCurrency 直接设置,如需要产出请勿使用此方法
-func SetCurrency(s *enter.Session, parcelId int64, num int64) {
+func SetCurrency(s *enter.Session, parcelId proto.CurrencyTypes, num int64) {
 	bin := GetCurrencyList(s)
 	if bin == nil {
 		return
 	}
-	info := GetCurrencyInfo(s, int32(parcelId))
+	info := GetCurrencyInfo(s, parcelId)
 	if info == nil {
 		return
 	}
@@ -211,9 +211,10 @@ func GetCurrencyList(s *enter.Session) map[int32]*sro.CurrencyInfo {
 		bin.CurrencyInfoList = NewCurrencyInfo()
 	}
 	for id, db := range bin.CurrencyInfoList {
+		currencyTypes := proto.CurrencyTypes(id)
 		// 特殊物品刷新查询
 		if time.Unix(db.UpdateTime, 0).Before(alg.GetLastDayH(4)) {
-			switch id {
+			switch currencyTypes {
 			case proto.CurrencyTypes_ChaserTotalTicket,
 				proto.CurrencyTypes_SchoolDungeonTotalTicket,
 				proto.CurrencyTypes_RaidTicket: // 总力战
@@ -241,7 +242,7 @@ func GetCurrencyList(s *enter.Session) map[int32]*sro.CurrencyInfo {
 				db.UpdateTime = time.Now().Unix()
 			}
 		}
-		if id == proto.CurrencyTypes_ActionPoint {
+		if currencyTypes == proto.CurrencyTypes_ActionPoint {
 			RecoverActionPoint(s, db)
 		}
 	}
@@ -249,34 +250,34 @@ func GetCurrencyList(s *enter.Session) map[int32]*sro.CurrencyInfo {
 	return bin.CurrencyInfoList
 }
 
-func GetCurrencyInfo(s *enter.Session, currencyId int32) *sro.CurrencyInfo {
+func GetCurrencyInfo(s *enter.Session, currencyId proto.CurrencyTypes) *sro.CurrencyInfo {
 	bin := GetCurrencyList(s)
 	if bin == nil {
 		return nil
 	}
-	if bin[currencyId] == nil {
-		bin[currencyId] = &sro.CurrencyInfo{
-			CurrencyId:  currencyId,
+	if bin[int32(currencyId)] == nil {
+		bin[int32(currencyId)] = &sro.CurrencyInfo{
+			CurrencyId:  int32(currencyId),
 			CurrencyNum: DefaultCurrencyNum[currencyId],
 			UpdateTime:  time.Now().Unix(),
 		}
 		if currencyId == proto.CurrencyTypes_ActionPoint {
-			bin[currencyId].UpdateTime = time.Now().Add(1 * time.Hour).Unix()
+			bin[int32(currencyId)].UpdateTime = time.Now().Add(1 * time.Hour).Unix()
 		}
 	}
-	return bin[currencyId]
+	return bin[int32(currencyId)]
 }
 
 func GetAccountCurrencyDB(s *enter.Session) *proto.AccountCurrencyDB {
 	accountCurrencyDB := &proto.AccountCurrencyDB{
 		AccountLevel:           int64(GetAccountLevel(s)),
 		AcademyLocationRankSum: GetAcademyLocationRankSum(s),
-		CurrencyDict:           make(map[proto.CurrencyTypes]int64),
-		UpdateTimeDict:         make(map[proto.CurrencyTypes]mx.MxTime),
+		CurrencyDict:           make(map[string]int64),
+		UpdateTimeDict:         make(map[string]mx.MxTime),
 	}
 	for id, db := range GetCurrencyList(s) {
-		accountCurrencyDB.CurrencyDict[proto.CurrencyTypes(proto.CurrencyTypes_name[id])] = db.CurrencyNum
-		accountCurrencyDB.UpdateTimeDict[proto.CurrencyTypes(proto.CurrencyTypes_name[id])] = mx.Unix(db.UpdateTime, 0)
+		accountCurrencyDB.CurrencyDict[proto.CurrencyTypes(id).String()] = db.CurrencyNum
+		accountCurrencyDB.UpdateTimeDict[proto.CurrencyTypes(id).String()] = mx.Unix(db.UpdateTime, 0)
 	}
 
 	return accountCurrencyDB
@@ -304,10 +305,14 @@ func GetItemDB(s *enter.Session, id int64) *proto.ItemDB {
 		return nil
 	}
 	return &proto.ItemDB{
-		Type:       proto.ParcelType_Item,
-		ServerId:   bin.ServerId,
-		UniqueId:   bin.UniqueId,
-		StackCount: bin.StackCount,
+		Type: proto.ParcelType_Item,
+		ConsumableItemBaseDB: &proto.ConsumableItemBaseDB{
+			Key:        nil,
+			CanConsume: false,
+			ServerId:   bin.ServerId,
+			UniqueId:   bin.UniqueId,
+			StackCount: int64(bin.StackCount),
+		},
 	}
 }
 
@@ -350,7 +355,6 @@ func AddWeapon(s *enter.Session, characterId int64) {
 		StarGrade:         1,
 		Level:             1,
 		Exp:               0,
-		IsLocked:          false,
 	}
 	info.Level = 50 // TODO 没有表
 	info.StarGrade = 3
@@ -367,7 +371,6 @@ func GetWeaponDBs(s *enter.Session) []*proto.WeaponDB {
 			Exp:                    bin.Exp,
 			StarGrade:              bin.StarGrade,
 			BoundCharacterServerId: bin.CharacterServerId,
-			IsLocked:               bin.IsLocked,
 		})
 	}
 
@@ -386,7 +389,6 @@ func GetWeaponDB(s *enter.Session, characterId int64) *proto.WeaponDB {
 		Exp:                    bin.Exp,
 		StarGrade:              bin.StarGrade,
 		BoundCharacterServerId: bin.CharacterServerId,
-		IsLocked:               bin.IsLocked,
 	}
 }
 
@@ -412,14 +414,15 @@ func GetEquipmentInfo(s *enter.Session, serverId int64) *sro.EquipmentInfo {
 // AddEquipment 传入装备id
 // 如果是非佩戴装备设置id为k，并返回装备id
 // 如果是佩戴装备，则设置唯一id为k，并返回唯一id/*
-func AddEquipment(s *enter.Session, equipmentId int64, num int64) []int64 {
+func AddEquipment(s *enter.Session, equipmentId int64, num int64) (list []int64) {
+	list = make([]int64, 0)
 	bin := GetItemBin(s)
 	if bin == nil {
-		return nil
+		return
 	}
 	conf := gdconf.GetEquipmentExcelTable(equipmentId)
 	if conf == nil {
-		return nil
+		return
 	}
 	if bin.EquipmentInfoList == nil {
 		bin.EquipmentInfoList = make(map[int64]*sro.EquipmentInfo)
@@ -427,7 +430,8 @@ func AddEquipment(s *enter.Session, equipmentId int64, num int64) []int64 {
 	if conf.MaxLevel < 10 { // 装备材料
 		if info := s.GetEquipmentByKeyId(equipmentId); info != nil {
 			info.StackCount += num
-			return []int64{info.ServerId}
+			list = append(list, info.ServerId)
+			return
 		} else {
 			sid := GetServerId(s)
 			equipmentInfo := &sro.EquipmentInfo{
@@ -437,10 +441,10 @@ func AddEquipment(s *enter.Session, equipmentId int64, num int64) []int64 {
 			}
 			bin.EquipmentInfoList[sid] = equipmentInfo
 			s.AddPlayerHash(equipmentId, equipmentInfo)
-			return []int64{sid}
+			list = append(list, sid)
+			return
 		}
 	}
-	sIdLi := make([]int64, 0)
 	for i := 0; int64(i) < num; i++ {
 		sid := GetServerId(s)
 		bin.EquipmentInfoList[sid] = &sro.EquipmentInfo{
@@ -451,11 +455,10 @@ func AddEquipment(s *enter.Session, equipmentId int64, num int64) []int64 {
 			ServerId:          sid,
 			Tier:              conf.TierInit,
 			StackCount:        1,
-			IsLocked:          false,
 		}
-		sIdLi = append(sIdLi, sid)
+		list = append(list, sid)
 	}
-	return sIdLi
+	return
 }
 
 func DelEquipment(s *enter.Session, serverId int64, num int64) (bool, int64) {
@@ -473,7 +476,7 @@ func DelEquipment(s *enter.Session, serverId int64, num int64) (bool, int64) {
 		return false, 0
 	}
 	// 扣钱
-	UpCurrency(s, int64(proto.CurrencyTypes_value[statConf.LevelUpFeedCostCurrency]),
+	UpCurrency(s, proto.CurrencyTypes(proto.CurrencyTypes_value[statConf.LevelUpFeedCostCurrency]),
 		-(statConf.LevelUpFeedCostAmount * num))
 	if conf.MaxLevel < 10 { // 装备材料
 		info.StackCount -= num
@@ -492,14 +495,17 @@ func GetEquipmentDBs(s *enter.Session) []*proto.EquipmentDB {
 		}
 		list = append(list, &proto.EquipmentDB{
 			Type:                   proto.ParcelType_Equipment,
-			UniqueId:               bin.UniqueId,
 			Level:                  bin.Level,
 			Exp:                    bin.Exp,
-			StackCount:             bin.StackCount,
 			BoundCharacterServerId: bin.CharacterServerId,
 			Tier:                   bin.Tier,
-			ServerId:               bin.ServerId,
-			IsLocked:               bin.IsLocked,
+			ConsumableItemBaseDB: &proto.ConsumableItemBaseDB{
+				UniqueId:   bin.UniqueId,
+				StackCount: bin.StackCount,
+				ServerId:   bin.ServerId,
+				Key:        nil,
+				CanConsume: false,
+			},
 		})
 	}
 
@@ -513,14 +519,17 @@ func GetEquipmentDB(s *enter.Session, serverId int64) *proto.EquipmentDB {
 	}
 	return &proto.EquipmentDB{
 		Type:                   proto.ParcelType_Equipment,
-		UniqueId:               bin.UniqueId,
 		Level:                  bin.Level,
 		Exp:                    bin.Exp,
-		StackCount:             bin.StackCount,
 		BoundCharacterServerId: bin.CharacterServerId,
 		Tier:                   bin.Tier,
-		ServerId:               bin.ServerId,
-		IsLocked:               bin.IsLocked,
+		ConsumableItemBaseDB: &proto.ConsumableItemBaseDB{
+			UniqueId:   bin.UniqueId,
+			StackCount: bin.StackCount,
+			ServerId:   bin.ServerId,
+			Key:        nil,
+			CanConsume: false,
+		},
 	}
 }
 
@@ -622,7 +631,7 @@ func GetParcelResultList(typeList []string, idList, numList []int64, isDel bool)
 				num = -numList[index]
 			}
 			list = append(list, &ParcelResult{
-				ParcelType: proto.GetParcelTypeValue(rewardType),
+				ParcelType: proto.ParcelType(proto.ParcelType_value[rewardType]),
 				ParcelId:   idList[index],
 				Amount:     num,
 			})
@@ -667,7 +676,7 @@ func ParcelResultDB(s *enter.Session, parcelResultList []*ParcelResult) *proto.P
 		isParcelResult := true
 		switch parcelResult.ParcelType {
 		case proto.ParcelType_Currency: // 货币
-			UpCurrency(s, parcelResult.ParcelId, parcelResult.Amount)
+			UpCurrency(s, proto.CurrencyTypes(parcelResult.ParcelId), parcelResult.Amount)
 			info.AccountCurrencyDB = GetAccountCurrencyDB(s)
 		case proto.ParcelType_MemoryLobby: // 记忆大厅
 			UpMemoryLobbyInfo(s, parcelResult.ParcelId)

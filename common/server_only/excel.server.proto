@@ -126,9 +126,9 @@ message CharacterExcelTable {
 
 message DefaultFurnitureExcelTable {
   int64 Id = 5;
-  double PositionX = 4;
-  double PositionY = 1;
-  double Rotation = 2;
+  float PositionX = 4;
+  float PositionY = 1;
+  float Rotation = 2;
   string Location = 3;
 }
 

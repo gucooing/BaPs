@@ -1,6 +1,7 @@
 package pack
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
@@ -8,11 +9,10 @@ import (
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func ClanLogin(s *enter.Session, request, response proto.Message) {
+func ClanLogin(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.ClanLoginResponse)
 
 	rsp.AccountClanDB = game.GetClanDB(enter.GetYostarClanByServerId(game.GetClanServerId(s))) // 社团简介
@@ -20,11 +20,11 @@ func ClanLogin(s *enter.Session, request, response proto.Message) {
 	rsp.ClanAssistSlotDBs = make([]*proto.ClanAssistSlotDB, 0)                                 // 援助信息
 }
 
-func ClanCheck(s *enter.Session, request, response proto.Message) {
+func ClanCheck(s *enter.Session, request, response mx.Message) {
 
 }
 
-func ClanLobby(s *enter.Session, request, response proto.Message) {
+func ClanLobby(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.ClanLobbyResponse)
 
 	game.SetLastLoginTime(s)
@@ -37,7 +37,7 @@ func ClanLobby(s *enter.Session, request, response proto.Message) {
 	rsp.DefaultExposedClanDBs = game.GetDefaultExposedClanDBs(s)
 }
 
-func ClanSearch(s *enter.Session, request, response proto.Message) {
+func ClanSearch(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ClanSearchRequest)
 	rsp := response.(*proto.ClanSearchResponse)
 
@@ -53,7 +53,7 @@ func ClanSearch(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func ClanCreate(s *enter.Session, request, response proto.Message) {
+func ClanCreate(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ClanCreateRequest)
 	rsp := response.(*proto.ClanCreateResponse)
 
@@ -63,19 +63,19 @@ func ClanCreate(s *enter.Session, request, response proto.Message) {
 		rsp.ClanDB = game.GetClanDB(enter.GetYostarClanByServerId(game.GetClanServerId(s)))
 	}()
 
-	req.ErrorCode = game.NewClan(s, req.ClanNickName, req.ClanJoinOption)
-	if req.ErrorCode == 0 {
+	s.Error = game.NewClan(s, req.ClanNickName, req.ClanJoinOption)
+	if s.Error == 0 {
 		game.UpCurrency(s, proto.CurrencyTypes_GemBonus, -100)
 	}
 }
 
-func ClanMemberList(s *enter.Session, request, response proto.Message) {
+func ClanMemberList(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ClanMemberListRequest)
 	rsp := response.(*proto.ClanMemberListResponse)
 
 	clanInfo := enter.GetYostarClanByServerId(req.ClanDBId)
 	if clanInfo == nil {
-		rsp.ErrorCode = 0
+		s.Error = 0
 		return
 	}
 
@@ -83,7 +83,7 @@ func ClanMemberList(s *enter.Session, request, response proto.Message) {
 	rsp.ClanMemberDBs = game.GetClanMemberDBs(clanInfo)
 }
 
-func ClanJoin(s *enter.Session, request, response proto.Message) {
+func ClanJoin(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ClanJoinRequest)
 	rsp := response.(*proto.ClanJoinResponse)
 
@@ -105,9 +105,9 @@ func ClanJoin(s *enter.Session, request, response proto.Message) {
 		// 满人了
 		return
 	}
-	if clanInfo.JoinOption == proto.ClanJoinOption_Free {
+	if clanInfo.JoinOption == int32(proto.ClanJoinOption_Free) {
 		// 自动加入
-		clanInfo.AddAccount(s.AccountServerId, proto.ClanSocialGrade_Member)
+		clanInfo.AddAccount(s.AccountServerId, int32(proto.ClanSocialGrade_Member))
 		game.SetClanServerId(s, clanInfo.ServerId)
 		rsp.ClanMemberDB = game.GetClanMemberDB(s) // 本人信息
 		return
@@ -115,7 +115,7 @@ func ClanJoin(s *enter.Session, request, response proto.Message) {
 	clanInfo.AddApplicantAccount(s.AccountServerId)
 }
 
-func ClanAutoJoin(s *enter.Session, request, response proto.Message) {
+func ClanAutoJoin(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.ClanJoinResponse)
 
 	defer func() {
@@ -126,15 +126,15 @@ func ClanAutoJoin(s *enter.Session, request, response proto.Message) {
 	}()
 	// 自动加入逻辑实现
 	for _, clanInfo := range enter.GetAllYostarClanList() {
-		if clanInfo.JoinOption == proto.ClanJoinOption_Free &&
-			clanInfo.GetMemberCount() < enter.ClanMaxMemberCount {
-			clanInfo.AddAccount(s.AccountServerId, proto.ClanSocialGrade_Member)
+		if clanInfo.JoinOption == int32(proto.ClanJoinOption_Free) &&
+			clanInfo.GetMemberCount() < int64(enter.ClanMaxMemberCount) {
+			clanInfo.AddAccount(s.AccountServerId, int32(proto.ClanSocialGrade_Member))
 			break
 		}
 	}
 }
 
-func ClanSetting(s *enter.Session, request, response proto.Message) {
+func ClanSetting(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ClanSettingRequest)
 	rsp := response.(*proto.ClanSettingResponse)
 
@@ -156,7 +156,7 @@ func ClanSetting(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func ClanApplicant(s *enter.Session, request, response proto.Message) {
+func ClanApplicant(s *enter.Session, request, response mx.Message) {
 	// req := request.(*proto.ClanApplicantRequest)
 	rsp := response.(*proto.ClanApplicantResponse)
 
@@ -180,7 +180,7 @@ func ClanApplicant(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func ClanMember(s *enter.Session, request, response proto.Message) {
+func ClanMember(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ClanMemberRequest)
 	rsp := response.(*proto.ClanMemberResponse)
 
@@ -192,7 +192,7 @@ func ClanMember(s *enter.Session, request, response proto.Message) {
 	rsp.DetailedAccountInfoDB = game.GetDetailedAccountInfoDB(ps, proto.AssistRelation_Clan)
 }
 
-func ClanQuit(s *enter.Session, request, response proto.Message) {
+func ClanQuit(s *enter.Session, request, response mx.Message) {
 	clanInfo := enter.GetYostarClanByServerId(game.GetClanServerId(s))
 	if clanInfo == nil {
 		return
@@ -201,7 +201,7 @@ func ClanQuit(s *enter.Session, request, response proto.Message) {
 	game.SetClanServerId(s, 0)
 }
 
-func ClanKick(s *enter.Session, request, response proto.Message) {
+func ClanKick(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ClanKickRequest)
 
 	clanInfo := enter.GetYostarClanByServerId(game.GetClanServerId(s))
@@ -210,8 +210,8 @@ func ClanKick(s *enter.Session, request, response proto.Message) {
 	}
 	myAc := clanInfo.GetClanAccount(s.AccountServerId)
 	if myAc == nil ||
-		(myAc.SocialGrade != proto.ClanSocialGrade_President &&
-			myAc.SocialGrade != proto.ClanSocialGrade_Manager) {
+		(myAc.SocialGrade != int32(proto.ClanSocialGrade_President) &&
+			myAc.SocialGrade != int32(proto.ClanSocialGrade_Manager)) {
 		return
 	}
 	ps := enter.GetSessionByUid(req.MemberAccountId)
@@ -219,7 +219,7 @@ func ClanKick(s *enter.Session, request, response proto.Message) {
 	game.SetClanServerId(ps, 0)
 }
 
-func ClanConfer(s *enter.Session, request, response proto.Message) {
+func ClanConfer(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ClanConferRequest)
 	rsp := response.(*proto.ClanConferResponse)
 
@@ -241,7 +241,7 @@ func ClanConfer(s *enter.Session, request, response proto.Message) {
 	clanInfo.SetPresident(req.MemberAccountId)
 }
 
-func ClanPermit(s *enter.Session, request, response proto.Message) {
+func ClanPermit(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ClanPermitRequest)
 	rsp := response.(*proto.ClanPermitResponse)
 
@@ -250,8 +250,8 @@ func ClanPermit(s *enter.Session, request, response proto.Message) {
 		rsp.ClanDB = game.GetClanDB(clanInfo)
 	}()
 	myAc := clanInfo.GetClanAccount(s.AccountServerId)
-	if myAc == nil || myAc.SocialGrade > proto.ClanSocialGrade_Manager ||
-		myAc.SocialGrade == proto.ClanSocialGrade_None {
+	if myAc == nil || myAc.SocialGrade > int32(proto.ClanSocialGrade_Manager) ||
+		myAc.SocialGrade == int32(proto.ClanSocialGrade_None) {
 		return
 	}
 	aacList := clanInfo.GetAllApplicantAccount()
@@ -262,19 +262,19 @@ func ClanPermit(s *enter.Session, request, response proto.Message) {
 	}
 	clanInfo.RemoveApplicantAccount(req.ApplicantAccountId)
 	if req.IsPerMit {
-		clanInfo.AddAccount(req.ApplicantAccountId, proto.ClanSocialGrade_Member)
+		clanInfo.AddAccount(req.ApplicantAccountId, int32(proto.ClanSocialGrade_Member))
 		game.SetClanServerId(fs, clanInfo.ServerId)
 	}
 	rsp.ClanMemberDB = game.GetClanMemberDB(fs)
 }
 
-func ClanMyAssistList(s *enter.Session, request, response proto.Message) {
+func ClanMyAssistList(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.ClanMyAssistListResponse)
 
 	rsp.ClanAssistSlotDBs = game.GetClanAssistSlotDBs(s)
 }
 
-func ClanSetAssist(s *enter.Session, request, response proto.Message) {
+func ClanSetAssist(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ClanSetAssistRequest)
 	rsp := response.(*proto.ClanSetAssistResponse)
 
@@ -323,15 +323,15 @@ func ClanSetAssist(s *enter.Session, request, response proto.Message) {
 		alg.MinInt64(old.TotalRentCount, game.AssistRentRewardDailyMaxCount)*game.AssistRentalFeeAmount,
 		game.AssistRewardLimit)
 	rewardInfo.CumultativeRewardParcels = append(rewardInfo.CumultativeRewardParcels,
-		game.GetParcelInfo(proto.CurrencyTypes_Gold, rentCount, proto.ParcelType_Currency))
+		game.GetParcelInfo(int64(proto.CurrencyTypes_Gold), rentCount, proto.ParcelType_Currency))
 	parcelResultList = append(parcelResultList, &game.ParcelResult{
 		ParcelType: proto.ParcelType_Currency,
-		ParcelId:   proto.CurrencyTypes_Gold,
+		ParcelId:   int64(proto.CurrencyTypes_Gold),
 		Amount:     rentCount,
 	})
 }
 
-func ClanAllAssistList(s *enter.Session, request, response proto.Message) {
+func ClanAllAssistList(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.ClanAllAssistListRequest)
 	rsp := response.(*proto.ClanAllAssistListResponse)
 

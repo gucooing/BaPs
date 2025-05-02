@@ -1,13 +1,13 @@
 package game
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -186,7 +186,7 @@ func GetEchelonInfo(s *enter.Session, echelonType int32, num int64) *sro.Echelon
 	if bin.EchelonInfoList[num] == nil {
 		bin.EchelonInfoList[num] = &sro.EchelonInfo{
 			EchelonType:          echelonType,
-			ExtensionType:        proto.EchelonExtensionType_Base,
+			ExtensionType:        int32(proto.EchelonExtensionType_Base),
 			EchelonNum:           num,
 			LeaderCharacter:      0,
 			MainCharacterList:    make(map[int32]int64),
@@ -251,7 +251,7 @@ func GetEchelonDB(s *enter.Session, db *sro.EchelonInfo) *proto.EchelonDB {
 		TSSInteractionServerId:        db.TssId,
 		UsingFlag:                     0,
 		SkillCardMulliganCharacterIds: make([]int64, 0),
-		CombatStyleIndex:              make([]int, 0),
+		CombatStyleIndex:              make([]int32, 0),
 	}
 	if characterInfo := GetCharacterInfo(s, db.LeaderCharacter); characterInfo != nil {
 		info.LeaderServerId = characterInfo.ServerId
@@ -314,7 +314,7 @@ func GetEchelonPresetGroupDB(db *sro.EchelonInfo) *proto.EchelonPresetDB {
 		TSSInteractionUniqueId: db.TssId,
 		StrikerUniqueIds:       make([]int64, 0), // 主角色
 		SpecialUniqueIds:       make([]int64, 0), // 支援角色
-		CombatStyleIndex:       make([]int64, 0),
+		CombatStyleIndex:       make([]int32, 0),
 		MulliganUniqueIds:      make([]int64, 0),
 		ExtensionType:          proto.EchelonExtensionType_Base,
 		StrikerSlotCount:       0,

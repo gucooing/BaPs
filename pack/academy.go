@@ -4,10 +4,11 @@ import (
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/game"
 	"github.com/gucooing/BaPs/gdconf"
+	"github.com/gucooing/BaPs/protocol/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func AcademyGetInfo(s *enter.Session, request, response proto.Message) {
+func AcademyGetInfo(s *enter.Session, request, response mx.Message) {
 	// req := request.(*proto.AcademyGetInfoRequest)
 	rsp := response.(*proto.AcademyGetInfoResponse)
 
@@ -15,7 +16,7 @@ func AcademyGetInfo(s *enter.Session, request, response proto.Message) {
 	rsp.AcademyLocationDBs = game.GetAcademyLocationDBs(s)
 }
 
-func AcademyAttendSchedule(s *enter.Session, request, response proto.Message) {
+func AcademyAttendSchedule(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.AcademyAttendScheduleRequest)
 	rsp := response.(*proto.AcademyAttendScheduleResponse)
 
@@ -47,7 +48,7 @@ func AcademyAttendSchedule(s *enter.Session, request, response proto.Message) {
 	})
 	parcelResultList = append(parcelResultList, &game.ParcelResult{
 		ParcelType: proto.ParcelType_Currency,
-		ParcelId:   proto.CurrencyTypes_AcademyTicket,
+		ParcelId:   int64(proto.CurrencyTypes_AcademyTicket),
 		Amount:     -1,
 	})
 	// 添加学生好感度

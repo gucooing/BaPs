@@ -55,7 +55,7 @@ func (c *Command) give(options map[string]*cdq.CommandOption) (string, error) {
 	if !ok {
 		return "", errors.New("缺少参数 t")
 	}
-	parcelType := proto.GetParcelTypeValue(typeOption.Option)
+	parcelType := proto.ParcelType_None.Value(typeOption.Option)
 	num := int64(1)
 	itemNum, ok := options["num"]
 	if ok {
@@ -80,7 +80,7 @@ func (c *Command) give(options map[string]*cdq.CommandOption) (string, error) {
 		ExpireDate: time.Now().Add(10 * time.Minute).Unix(),
 		ParcelInfoList: []*sro.ParcelInfo{
 			{
-				Type: parcelType.Value(),
+				Type: int32(parcelType),
 				Id:   alg.S2I64(idOption.Option),
 				Num:  num,
 			},

@@ -1,6 +1,7 @@
 package game
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"math/rand"
 	"time"
 
@@ -8,7 +9,6 @@ import (
 	sro "github.com/gucooing/BaPs/common/server_only"
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/alg"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -122,7 +122,7 @@ func UpCafeVisitCharacterDB(bin *sro.CafeInfo) {
 		return
 	}
 	// 学生刷新
-	if alg.GetTimeHourH(4).Before(time.Unix(bin.LastUpdate, 0)) {
+	if alg.GetLastTimeHourH(1).After(time.Unix(bin.LastUpdate, 0)) {
 		bin.IsNew = true
 		bin.VisitCharacterList = make(map[int64]*sro.VisitCharacterInfo)
 		characterNum := int32(0)
@@ -216,31 +216,25 @@ func GetFurnitureInfo(s *enter.Session, serverId int64) *sro.FurnitureInfo {
 }
 
 func AddFurnitureInfo(s *enter.Session, furnitureId int64, num int64) []int64 {
-	bin := GetCafeBin(s)
-	if bin == nil {
-		return nil
-	}
-	if bin.FurnitureInfoList == nil {
-		bin.FurnitureInfoList = make(map[int64]*sro.FurnitureInfo)
-	}
 	list := make([]int64, 0)
+	conf := gdconf.GetFurnitureExcelTable(furnitureId)
+	if conf == nil {
+		return list
+	}
+	binList := GetFurnitureInfoList(s)
 	for i := int64(0); i < num; i++ {
-		conf := gdconf.GetFurnitureExcelTable(furnitureId)
-		if conf == nil {
-			continue
-		}
 		sid := GetServerId(s)
 		info := &sro.FurnitureInfo{
 			FurnitureId:  conf.Id,
 			StackCount:   1,
 			ServerId:     sid,
-			Location:     proto.FurnitureLocation_Inventory,
+			Location:     int32(proto.FurnitureLocation_Inventory),
 			CafeServerId: 0,
 			PositionX:    0,
 			PositionY:    0,
 			Rotation:     0,
 		}
-		bin.FurnitureInfoList[sid] = info
+		binList[sid] = info
 		list = append(list, sid)
 	}
 
@@ -253,20 +247,40 @@ func RemoveFurniture(s *enter.Session, furnitureServerId int64, cafeServerId int
 		return
 	}
 	furnitureInfo := GetFurnitureInfo(s, furnitureServerId)
-	if furnitureInfo == nil {
+	if furnitureInfo == nil ||
+		furnitureInfo.PositionX == furnitureInfo.PositionY &&
+			furnitureInfo.PositionY == furnitureInfo.Rotation &&
+			furnitureInfo.Rotation == 0 {
 		return
 	}
 	furnitureInfo.CafeServerId = 0
-	furnitureInfo.Location = proto.FurnitureLocation_Inventory
+	furnitureInfo.Location = int32(proto.FurnitureLocation_Inventory)
 	delete(cafeInfo.FurnitureList, furnitureServerId)
 }
 
-func DeployRelocateFurniture(s *enter.Session, furnitureDB *proto.FurnitureDB, cafeServerId int64) {
+func DeployRelocateFurniture(s *enter.Session, furnitureDB *proto.FurnitureDB, cafeServerId int64) int64 {
 	cafeInfo := GetCafeInfo(s, cafeServerId)
 	furnitureInfo := GetFurnitureInfo(s, furnitureDB.ServerId)
 	if furnitureInfo == nil || cafeInfo == nil {
-		return
+		return 0
 	}
+	if furnitureDB.PositionX == furnitureDB.PositionY &&
+		furnitureDB.PositionY == furnitureDB.Rotation &&
+		furnitureDB.Rotation == 0 { //唯一家具
+		for oldSid, ok := range cafeInfo.FurnitureList {
+			if oldInfo := GetFurnitureInfo(s, oldSid); oldInfo != nil && ok &&
+				proto.FurnitureLocation(oldInfo.Location) == furnitureDB.Location &&
+				oldInfo.PositionX == oldInfo.PositionY &&
+				oldInfo.PositionY == oldInfo.Rotation &&
+				oldInfo.Rotation == 0 {
+				oldInfo.CafeServerId = 0
+				oldInfo.Location = int32(proto.FurnitureLocation_Inventory)
+				delete(cafeInfo.FurnitureList, oldSid)
+				break
+			}
+		}
+	}
+
 	furnitureInfo.CafeServerId = furnitureDB.CafeDBId
 	furnitureInfo.Location = int32(furnitureDB.Location)
 	furnitureInfo.PositionX = furnitureDB.PositionX
@@ -278,6 +292,8 @@ func DeployRelocateFurniture(s *enter.Session, furnitureDB *proto.FurnitureDB, c
 	}
 	cafeInfo.FurnitureList[furnitureInfo.ServerId] = true
 	UpCafeComfortValue(s, cafeServerId)
+
+	return furnitureInfo.ServerId
 }
 
 func GetPbCafeDBs(s *enter.Session) []*proto.CafeDB {
@@ -307,7 +323,10 @@ func GetCafeDB(s *enter.Session, serverId int64) *proto.CafeDB {
 
 	for _, visitCharacterInfo := range bin.VisitCharacterList {
 		cafeCharacterDB := &proto.CafeCharacterDB{
-			UniqueId:         visitCharacterInfo.CharacterId,
+			VisitingCharacterDB: &proto.VisitingCharacterDB{
+				UniqueId: visitCharacterInfo.CharacterId,
+				ServerId: 0,
+			},
 			LastInteractTime: mx.Unix(visitCharacterInfo.LastInteractTime, 0),
 			IsSummon:         visitCharacterInfo.IsSummon,
 		}
@@ -331,7 +350,7 @@ func GetCafeDB(s *enter.Session, serverId int64) *proto.CafeDB {
 	}
 	for _, productionBin := range bin.ProductionList {
 		productionDB.ProductionParcelInfos = append(productionDB.ProductionParcelInfos, &proto.CafeProductionParcelInfo{
-			Key: proto.ParcelKeyPair{
+			Key: &proto.ParcelKeyPair{
 				Type: proto.ParcelType(productionBin.ParcelType),
 				Id:   productionBin.ParcelId,
 			},
@@ -355,9 +374,13 @@ func GetFurnitureDBs(s *enter.Session) []*proto.FurnitureDB {
 			PositionY:          bin.PositionY,
 			Rotation:           bin.Rotation,
 			ItemDeploySequence: 0,
-			ServerId:           bin.ServerId,
-			UniqueId:           bin.FurnitureId,
-			StackCount:         bin.StackCount,
+			ConsumableItemBaseDB: &proto.ConsumableItemBaseDB{
+				ServerId:   bin.ServerId,
+				UniqueId:   bin.FurnitureId,
+				StackCount: bin.StackCount,
+				Key:        nil,
+				CanConsume: false,
+			},
 		}
 		if bin.CafeServerId != 0 {
 			info.ItemDeploySequence = bin.ServerId
@@ -380,9 +403,13 @@ func GetFurnitureDB(s *enter.Session, serverId int64) *proto.FurnitureDB {
 		PositionY:          bin.PositionY,
 		Rotation:           bin.Rotation,
 		ItemDeploySequence: 0,
-		ServerId:           bin.ServerId,
-		UniqueId:           bin.FurnitureId,
-		StackCount:         bin.StackCount,
+		ConsumableItemBaseDB: &proto.ConsumableItemBaseDB{
+			ServerId:   bin.ServerId,
+			UniqueId:   bin.FurnitureId,
+			StackCount: bin.StackCount,
+			Key:        nil,
+			CanConsume: false,
+		},
 	}
 	if bin.CafeServerId != 0 {
 		info.ItemDeploySequence = bin.ServerId

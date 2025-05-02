@@ -1,6 +1,7 @@
 package pack
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
@@ -9,7 +10,7 @@ import (
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
-func MailCheck(s *enter.Session, request, response proto.Message) {
+func MailCheck(s *enter.Session, request, response mx.Message) {
 	rsp := response.(*proto.MailCheckResponse)
 
 	rsp.Count = game.GetMailCheckCount(s) // 未领取数量
@@ -20,15 +21,16 @@ func MailCheck(s *enter.Session, request, response proto.Message) {
 	}
 }
 
-func MailList(s *enter.Session, request, response proto.Message) {
+func MailList(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.MailListRequest)
 	rsp := response.(*proto.MailListResponse)
 
+	rsp.Count = game.GetMailCheckCount(s) // 未领取数量
 	rsp.MailDBs = game.GetMailDBs(s, req.IsReadMail)
 	game.SetServerNotification(s, proto.ServerNotificationFlag_HasUnreadMail, false)
 }
 
-func MailReceive(s *enter.Session, request, response proto.Message) {
+func MailReceive(s *enter.Session, request, response mx.Message) {
 	req := request.(*proto.MailReceiveRequest)
 	rsp := response.(*proto.MailReceiveResponse)
 
@@ -47,9 +49,8 @@ func MailReceive(s *enter.Session, request, response proto.Message) {
 		rsp.MailServerIds = append(rsp.MailServerIds, mailServerId)
 		readParcelNum += len(bin.ParcelInfoList)
 		if readParcelNum >= game.MaxMailParcelNum {
-			goto ty
+			break
 		}
 	}
-ty:
 	rsp.ParcelResultDB = game.ParcelResultDB(s, result)
 }

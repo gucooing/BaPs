@@ -1,6 +1,7 @@
 package game
 
 import (
+	"github.com/gucooing/BaPs/protocol/mx"
 	"time"
 
 	"github.com/gucooing/BaPs/common/enter"
@@ -8,7 +9,6 @@ import (
 	"github.com/gucooing/BaPs/gdconf"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol/proto"
 )
 
@@ -186,7 +186,7 @@ func GetDayMissionInfo(s *enter.Session) *sro.CategoryMissionInfo {
 					Complete:  false,
 					Finish:    false,
 					ProgressParameters: map[int64]int64{
-						proto.GetMissionCompleteConditionType(conf.CompleteConditionType).Value(): 0,
+						int64(proto.MissionCompleteConditionType_None.Value(conf.CompleteConditionType)): 0,
 					},
 				}
 			}
@@ -229,7 +229,7 @@ func GetMissionProgressDB(s *enter.Session, missionId int64) *proto.MissionProgr
 	info := &proto.MissionProgressDB{
 		MissionUniqueId:    bin.MissionId,
 		Complete:           bin.Complete,
-		StartTime:          time.Unix(bin.StartTime, 0),
+		StartTime:          mx.Unix(bin.StartTime, 0),
 		ProgressParameters: bin.ProgressParameters,
 	}
 	return info
@@ -257,9 +257,9 @@ func GetDailySuddenMissionInfoDb(s *enter.Session) *proto.MissionInfo {
 		Description:                 3475540373,
 		IsVisible:                   true,
 		IsLimited:                   false,
-		StartDate:                   time.Date(2024, 4, 24, 4, 0, 0, 0, time.UTC),
-		StartableEndDate:            time.Date(9999, 12, 31, 23, 59, 59, 9999999, time.UTC),
-		EndDate:                     time.Date(9999, 12, 31, 23, 59, 59, 9999999, time.UTC),
+		StartDate:                   mx.TimeData(2024, 4, 24, 4, 0, 0, 0, time.UTC),
+		StartableEndDate:            mx.TimeData(9999, 12, 31, 23, 59, 59, 9999999, time.UTC),
+		EndDate:                     mx.TimeData(9999, 12, 31, 23, 59, 59, 9999999, time.UTC),
 		EndDday:                     0,
 		AccountState:                s.AccountState,
 		AccountLevel:                int64(GetAccountLevel(s)),

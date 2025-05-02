@@ -1,16 +1,19 @@
 package gateway
 
 import (
+	"bytes"
+	"compress/gzip"
 	"fmt"
+	"github.com/bytedance/sonic"
+	"github.com/gucooing/BaPs/protocol/mx"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gucooing/BaPs/common/enter"
 	"github.com/gucooing/BaPs/config"
 	"github.com/gucooing/BaPs/pkg/alg"
 	"github.com/gucooing/BaPs/pkg/logger"
-	"github.com/gucooing/BaPs/pkg/mx"
 	"github.com/gucooing/BaPs/protocol"
-	"github.com/gucooing/BaPs/protocol/proto"
 )
 
 type Gateway struct {
@@ -38,13 +41,27 @@ func (g *Gateway) initRouter() {
 	}
 }
 
-func (g *Gateway) send(c *gin.Context, n proto.Message) {
+func (g *Gateway) send(c *gin.Context, n mx.Message) {
 	rsp, err := protocol.MarshalResponse(n)
 	if err != nil {
 		logger.Debug("marshal err:", err)
 		return
 	}
-	c.JSON(200, rsp)
+	var str string
+	if config.GetHttpNet().Encoding {
+		byt, _ := sonic.Marshal(rsp)
+		var b bytes.Buffer
+		gz := gzip.NewWriter(&b)
+		gz.Write(byt)
+		gz.Close()
+		c.Header("Content-Encoding", "gzip")
+		c.Header("Vary", "Accept-Encoding")
+		str = b.String()
+	} else {
+		str, _ = sonic.MarshalString(rsp)
+	}
+
+	c.String(http.StatusOK, str)
 }
 
 func (g *Gateway) gateWay(c *gin.Context) {
