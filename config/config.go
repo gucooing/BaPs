@@ -21,6 +21,7 @@ type Config struct {
 	Irc              *Irc       `json:"Irc"`
 	RankDB           *DB        `json:"RankDB"`
 	Mail             *Mail      `json:"Mail"`
+	Bot              *Bot       `json:"Bot"`
 }
 
 type OtherAddr struct {
@@ -60,6 +61,12 @@ type Mail struct {
 	Username string `json:"Username"`
 	Password string `json:"Password"`
 	Host     string `json:"Host"`
+}
+
+type Bot struct {
+	Addr     string `json:"Addr"`
+	LoginNum int64  `json:"LoginNum"`
+	CycLogin bool   `json:"CycLogin"`
 }
 
 var CONF *Config = nil
@@ -130,6 +137,10 @@ func GetIrc() *Irc {
 
 func GetMail() *Mail {
 	return GetConfig().Mail
+}
+
+func GetBot() *Bot {
+	return GetConfig().Bot
 }
 
 var FileNotExist = errors.New("config file not found")

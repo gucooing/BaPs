@@ -9,6 +9,7 @@ require (
 	github.com/gin-contrib/pprof v1.5.3
 	github.com/gin-gonic/contrib v0.0.0-20250113154928-93b827325fec
 	github.com/gin-gonic/gin v1.10.0
+	github.com/go-resty/resty/v2 v2.16.5
 	github.com/gucooing/cdq v0.0.3
 	github.com/ncruces/go-sqlite3 v0.25.0
 	github.com/ncruces/go-sqlite3/gormlite v0.24.0

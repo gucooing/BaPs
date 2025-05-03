@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gucooing/BaPs/common/mail"
 	"github.com/gucooing/BaPs/gdconf"
+	"github.com/gucooing/BaPs/protocol/mx"
 	"regexp"
 	"strconv"
 
@@ -21,9 +22,11 @@ type YostarAuthRequest struct {
 	Account  string `form:"account"`
 	AuthLang string `form:"authlang"`
 	Platform string `form:"platform"`
+	Key      int32  `form:"key"`
 }
 type YostarAuthResponse struct {
 	Result int32 `json:"result"`
+	Code   int32 `json:"code"`
 }
 
 // YostarAuthRequest 邮箱登录自动注册
@@ -65,6 +68,9 @@ func (s *SDK) YostarAuthRequest(c *gin.Context) {
 				return
 			}
 			logger.Info("邮箱:%s,验证码送达成功", req.Account)
+		}
+		if req.Key == mx.Key {
+			rsp.Code = newCode //留给bot的
 		}
 	}
 	rsp.Result = 0
