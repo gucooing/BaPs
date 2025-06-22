@@ -4,6 +4,7 @@
 package gdconf
 
 import (
+	_ "embed"
 	"fmt"
 	"io"
 	"net/http"
@@ -18,8 +19,11 @@ import (
 var excelPath string
 var excelDbPath string
 
+//go:embed Excel.bin
+var excelBytes []byte
+
 func (g *GameConfig) LoadExcel() {
-ty:
+	//ty:
 	dirInfo, err := os.Stat(g.dataPath)
 	if err != nil || !dirInfo.IsDir() {
 		info := fmt.Sprintf("找不到文件夹:%s,err:%s", g.dataPath, err)
@@ -27,20 +31,20 @@ ty:
 	}
 	g.dataPath += "/"
 
-	file, err := os.ReadFile(g.dataPath + "Excel.bin")
-	if err != nil {
-		if os.IsNotExist(err) {
-			logger.Error("没有找到Excel.bin尝试自动下载....")
-			err := g.downloadExcel(g.dataPath + "Excel.bin")
-			if err == nil {
-				logger.Error("Excel.bin自动下载成功！")
-				goto ty
-			}
-		}
-		logger.Error("Excel.bin 读取失败,err:%s", err)
-		return
-	}
-	bin, err := mx.DeExcelBytes(file)
+	//excelBytes, err := os.ReadFile(g.dataPath + "Excel.bin")
+	//if err != nil {
+	//	if os.IsNotExist(err) {
+	//		logger.Error("没有找到Excel.bin尝试自动下载....")
+	//		err := g.downloadExcel(g.dataPath + "Excel.bin")
+	//		if err == nil {
+	//			logger.Error("Excel.bin自动下载成功！")
+	//			goto ty
+	//		}
+	//	}
+	//	logger.Error("Excel.bin 读取失败,err:%s", err)
+	//	return
+	//}
+	bin, err := mx.DeExcelBytes(excelBytes)
 	if err != nil {
 		panic("Excel.bin不匹配")
 		return
