@@ -1,6 +1,6 @@
 ![introduce](https://socialify.git.ci/gucooing/BaPs/image?description=1&font=Source+Code+Pro&forks=1&issues=1&language=1&name=1&owner=1&pattern=Plus&pulls=1&stargazers=1&theme=Light)
 
-# BaPs 🎮
+# BaPs 🎮 此存储库已过期，无法使用
 
 #### [English](README_EN.md)
   
